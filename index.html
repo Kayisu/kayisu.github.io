@@ -10,6 +10,26 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- GitHub Pages SPA Redirect Handler -->
+    <script type="text/javascript">
+      (function(l) {
+        if (l.search[1] === '/' ) {
+          var decoded = l.search.slice(1).split('&').map(function(s) { 
+            return s.replace(/~and~/g, '&')
+          }).join('?');
+          window.history.replaceState(null, null,
+              l.pathname.slice(0, -1) + decoded + l.hash
+          );
+        } else if (l.search.indexOf('redirect=') !== -1) {
+            var urlParams = new URLSearchParams(l.search);
+            var redirectPath = urlParams.get('redirect');
+            if(redirectPath) {
+                window.history.replaceState(null, null, redirectPath);
+            }
+        }
+      }(window.location))
+    </script>
+
     <!-- Three.js Import Map -->
     <script type="importmap">
         {
@@ -40,6 +60,16 @@
             </div>
         </div>
     </main>
+
+    <!-- Placeholder UI for Planet Routing -->
+    <div id="planet-info-panel" class="planet-info-panel hidden">
+        <button id="close-btn" class="close-btn"><i class="fas fa-times"></i></button>
+        <h2 id="planet-name" class="planet-name">Planet Name</h2>
+        <p class="planet-desc">Incoming data transmission...</p>
+        <div class="planet-stats">
+            <div class="stat"><span class="label">Type:</span> <span id="planet-type">Unknown</span></div>
+        </div>
+    </div>
 
     <script type="module" src="script.js"></script>
 </body>

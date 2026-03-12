@@ -132,3 +132,76 @@ body {
         padding: 2rem 1.5rem;
     }
 }
+
+/* --- Planet Info Panel (Routing UI) --- */
+.planet-info-panel {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    width: 320px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    z-index: 10;
+    transition: all 0.3s ease;
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+}
+
+.planet-info-panel.hidden {
+    opacity: 0;
+    transform: translateX(20px);
+    pointer-events: none;
+}
+
+.close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.close-btn:hover {
+    color: var(--text-primary);
+}
+
+.planet-name {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--highlight);
+    text-transform: capitalize;
+}
+
+.planet-desc {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    margin-bottom: 1rem;
+}
+
+.planet-stats {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 1rem;
+    font-size: 0.85rem;
+}
+
+.planet-stats .stat {
+    margin-bottom: 0.25rem;
+    color: var(--text-primary);
+}
+
+.planet-stats .label {
+    color: var(--text-secondary);
+    font-weight: 600;
+}
