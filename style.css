@@ -44,6 +44,12 @@ body {
     width: 100%;
     pointer-events: none; /* Let mouse clicks pass through the padding to the background */
     margin-top: 2rem; /* Give it some breathing room from the exact top */
+    transition: opacity 0.8s ease; /* For auto-hide */
+}
+
+.content.hidden {
+    opacity: 0 !important;
+    pointer-events: none !important;
 }
 
 .profile-container {
@@ -204,4 +210,139 @@ body {
 .planet-stats .label {
     color: var(--text-secondary);
     font-weight: 600;
+}
+
+/* --- Phase 6: Top Controls --- */
+.profile-toggle-btn {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    color: var(--text-primary);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 20;
+    backdrop-filter: blur(12px);
+    transition: all 0.3s ease;
+}
+
+.profile-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.sim-controls {
+    position: absolute;
+    top: 2rem;
+    left: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    z-index: 20;
+}
+
+.speed-controls {
+    display: flex;
+    gap: 0.5rem;
+    background: var(--card-bg);
+    padding: 0.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--card-border);
+    backdrop-filter: blur(12px);
+}
+
+.speed-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.speed-btn:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.speed-btn.active {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--highlight);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+.search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    backdrop-filter: blur(12px);
+}
+
+.search-icon {
+    color: var(--text-secondary);
+    margin-right: 0.5rem;
+    font-size: 0.9rem;
+}
+
+#planet-search {
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 0.95rem;
+    outline: none;
+    width: 150px;
+}
+
+#planet-search::placeholder {
+    color: var(--text-secondary);
+}
+
+.search-results {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    left: 0;
+    width: 100%;
+    background: var(--bg-color);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    overflow: hidden;
+    max-height: 200px;
+    overflow-y: auto;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.search-results.hidden {
+    display: none;
+}
+
+.search-item {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: all 0.2s ease;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.search-item:last-child {
+    border-bottom: none;
+}
+
+.search-item:hover {
+    background: rgba(255,255,255,0.05);
+    color: var(--text-primary);
 }

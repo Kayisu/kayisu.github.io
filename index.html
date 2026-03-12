@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- GitHub Pages SPA Redirect Handler -->
+    <!-- GitHub Pages SPA Redirect Handler (rafgraph approach) -->
     <script type="text/javascript">
       (function(l) {
         if (l.search[1] === '/' ) {
@@ -20,12 +20,6 @@
           window.history.replaceState(null, null,
               l.pathname.slice(0, -1) + decoded + l.hash
           );
-        } else if (l.search.indexOf('redirect=') !== -1) {
-            var urlParams = new URLSearchParams(l.search);
-            var redirectPath = urlParams.get('redirect');
-            if(redirectPath) {
-                window.history.replaceState(null, null, redirectPath);
-            }
         }
       }(window.location))
     </script>
@@ -42,8 +36,28 @@
 </head>
 <body>
     <canvas id="stars"></canvas>
+
+    <!-- Top-Right Toggle Button -->
+    <button id="profile-toggle-btn" class="profile-toggle-btn" aria-label="Toggle Profile">
+        <i id="toggle-icon" class="fas fa-eye"></i>
+    </button>
+
+    <!-- Top-Left Simulation Controls & Search -->
+    <div class="sim-controls">
+        <div class="speed-controls">
+            <button class="speed-btn" data-speed="0" title="Pause"><i class="fas fa-pause"></i></button>
+            <button class="speed-btn active" data-speed="1" title="Play (1x)"><i class="fas fa-play"></i></button>
+            <button class="speed-btn" data-speed="5" title="Fast (5x)"><i class="fas fa-forward"></i></button>
+            <button class="speed-btn" data-speed="20" title="Fastest (20x)"><i class="fas fa-fast-forward"></i></button>
+        </div>
+        <div class="search-container">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" id="planet-search" placeholder="Search a planet..." autocomplete="off">
+            <div id="search-results" class="search-results hidden"></div>
+        </div>
+    </div>
     
-    <main class="content">
+    <main id="main-content" class="content">
         <div class="profile-container">
             <h1 class="name">Hi, these are all about me:</h1>
             

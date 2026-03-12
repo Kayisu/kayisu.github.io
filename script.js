@@ -28,6 +28,7 @@ const mouse = new THREE.Vector2();
 // Global State
 const planets = [];
 const interactables = []; // Meshes we can click
+let globalSpeedMultiplier = 1; // 0=Pause, 1=Play, 5=Fast, 20=Fastest
 
 // Colors & Materials (Sleek, monochrome)
 const sunMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff }); // Pure white sun
@@ -54,7 +55,11 @@ scene.add(sun);
 interactables.push(sun);
 
 // Helper function to create planets and their orbit rings
-function createPlanet(name, radius, distance, speed, colorHex, type, desc, hasRing=false) {
+function createPlanet(name, radius, distance, colorHex, type, desc, hasRing=false) {
+    // Kepler's Third Law Approximation: Velocity ~ 1 / sqrt(distance)
+    // Scaled by 0.015 for a relaxing base speed
+    const speed = (1 / Math.sqrt(distance)) * 0.015;
+
     // Planet mesh with unique color
     const planetMat = new THREE.MeshStandardMaterial({
         color: colorHex,
@@ -99,17 +104,17 @@ function createPlanet(name, radius, distance, speed, colorHex, type, desc, hasRi
     });
 }
 
-// 2. Create 8+1 planets (Radius, Distance, Speed, Color, Type, Desc)
-// Distances/speeds are scaled for aesthetics, not 100% physically accurate
-createPlanet('mercury', 0.4, 6, 0.015, 0x8c7c6e, 'Terrestrial', 'The smallest and innermost planet, blistering hot during the day.');
-createPlanet('venus', 0.8, 10, 0.011, 0xe3bb76, 'Terrestrial', 'A dense, toxic atmosphere traps heat in a runaway greenhouse effect.');
-createPlanet('earth', 0.9, 15, 0.009, 0x5a7684, 'Terrestrial', 'Our home world. The only known planet to harbor life.');
-createPlanet('mars', 0.7, 21, 0.007, 0x9b5d4e, 'Terrestrial', 'The Red Planet, known for its iron oxide surface and ancient river valleys.');
-createPlanet('jupiter', 2.0, 32, 0.004, 0xbcaf9b, 'Gas Giant', 'The largest planet, featuring a Great Red Spot and dozens of moons.');
-createPlanet('saturn', 1.7, 45, 0.003, 0xe2cfb5, 'Gas Giant', 'Adorned with a dazzling, complex system of icy rings.', true);
-createPlanet('uranus', 1.2, 58, 0.002, 0xaed6f1, 'Ice Giant', 'Rolls on its side as it orbits, appearing as a pale blue dot.');
-createPlanet('neptune', 1.1, 70, 0.0015, 0x2e86c1, 'Ice Giant', 'A dark, cold, and very windy world in the outer solar system.');
-createPlanet('pluto', 0.3, 85, 0.001, 0xdddddd, 'Dwarf Planet', 'A beloved dwarf planet floating in the Kuiper Belt.');
+// 2. Create 8+1 planets (Radius, Distance, Color, Type, Desc)
+// Distances are scaled for aesthetics, but speeds are calculated dynamically based on distance
+createPlanet('mercury', 0.4, 6, 0x8c7c6e, 'Terrestrial', 'The smallest and innermost planet, blistering hot during the day.');
+createPlanet('venus', 0.8, 10, 0xe3bb76, 'Terrestrial', 'A dense, toxic atmosphere traps heat in a runaway greenhouse effect.');
+createPlanet('earth', 0.9, 15, 0x5a7684, 'Terrestrial', 'Our home world. The only known planet to harbor life.');
+createPlanet('mars', 0.7, 21, 0x9b5d4e, 'Terrestrial', 'The Red Planet, known for its iron oxide surface and ancient river valleys.');
+createPlanet('jupiter', 2.0, 32, 0xbcaf9b, 'Gas Giant', 'The largest planet, featuring a Great Red Spot and dozens of moons.');
+createPlanet('saturn', 1.7, 45, 0xe2cfb5, 'Gas Giant', 'Adorned with a dazzling, complex system of icy rings.', true);
+createPlanet('uranus', 1.2, 58, 0xaed6f1, 'Ice Giant', 'Rolls on its side as it orbits, appearing as a pale blue dot.');
+createPlanet('neptune', 1.1, 70, 0x2e86c1, 'Ice Giant', 'A dark, cold, and very windy world in the outer solar system.');
+createPlanet('pluto', 0.3, 85, 0xdddddd, 'Dwarf Planet', 'A beloved dwarf planet floating in the Kuiper Belt.');
 
 // 3. Create background stars (3D points)
 const starsGeo = new THREE.BufferGeometry();
@@ -181,14 +186,14 @@ function animate() {
     requestAnimationFrame(animate);
     const elapsedTime = clock.getElapsedTime();
 
-    // Rotate planets
+    // Rotate planets based on global speed
     planets.forEach(planet => {
-        planet.group.rotation.y += planet.speed;
-        planet.mesh.rotation.y += 0.01; // Spin planet on axis
+        planet.group.rotation.y += (planet.speed * globalSpeedMultiplier);
+        planet.mesh.rotation.y += (0.01 * globalSpeedMultiplier); // Spin planet on axis
     });
     
     // Very slowly rotate the entire universe (stars + tilt)
-    scene.rotation.y = elapsedTime * 0.02;
+    scene.rotation.y += (0.0005 * globalSpeedMultiplier);
 
     // Update star shader time
     starsMaterial.uniforms.time.value = elapsedTime;
@@ -266,6 +271,113 @@ window.addEventListener('click', (event) => {
 
 // Run route handler on load
 handleRoute();
+
+// --- Advanced Controls (Phase 6) ---
+// Profile Auto-hide logic
+const mainContent = document.getElementById('main-content');
+const toggleBtn = document.getElementById('profile-toggle-btn');
+const toggleIcon = document.getElementById('toggle-icon');
+let hideTimeout;
+let isProfileLockedHidden = false;
+
+function resetHideTimer() {
+    if (isProfileLockedHidden) return; // don't show if manually closed
+    
+    mainContent.classList.remove('hidden');
+    toggleIcon.className = 'fas fa-eye';
+    
+    clearTimeout(hideTimeout);
+    hideTimeout = setTimeout(() => {
+        mainContent.classList.add('hidden');
+    }, 2000); // hide after 2 seconds of no mouse movement
+}
+
+// Reset timer on mouse move over the document
+document.addEventListener('mousemove', resetHideTimer);
+
+// Manual toggle
+toggleBtn.addEventListener('click', (e) => {
+    e.stopPropagation(); // Prevent raycasting or other clicks
+    if (mainContent.classList.contains('hidden') || isProfileLockedHidden) {
+        // Show
+        isProfileLockedHidden = false;
+        resetHideTimer();
+    } else {
+        // Manually hide
+        isProfileLockedHidden = true;
+        mainContent.classList.add('hidden');
+        toggleIcon.className = 'fas fa-eye-slash';
+        clearTimeout(hideTimeout);
+    }
+});
+
+// Start hidden timer on load
+resetHideTimer();
+
+
+// Speed Controls
+const speedBtns = document.querySelectorAll('.speed-btn');
+speedBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        
+        // Remove active class from all
+        speedBtns.forEach(b => b.classList.remove('active'));
+        
+        // Add active to clicked
+        btn.classList.add('active');
+        
+        // Set new speed
+        globalSpeedMultiplier = parseFloat(btn.getAttribute('data-speed'));
+    });
+});
+
+// Arama Motoru (Search Bar)
+const searchInput = document.getElementById('planet-search');
+const searchResults = document.getElementById('search-results');
+const searchableObjects = ['sun', 'mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto'];
+
+searchInput.addEventListener('input', (e) => {
+    const query = e.target.value.toLowerCase().trim();
+    searchResults.innerHTML = '';
+    
+    if (query.length === 0) {
+        searchResults.classList.add('hidden');
+        return;
+    }
+    
+    const matches = searchableObjects.filter(name => name.includes(query));
+    
+    if (matches.length > 0) {
+        searchResults.classList.remove('hidden');
+        matches.forEach(match => {
+            const div = document.createElement('div');
+            div.className = 'search-item';
+            div.textContent = match.charAt(0).toUpperCase() + match.slice(1);
+            
+            // Navigate on click
+            div.addEventListener('mousedown', () => { // mousedown fires before blur
+                const route = match === 'sun' ? '/star/sun' : `/planet/${match}`;
+                navigateTo(route);
+                searchInput.value = '';
+                searchResults.classList.add('hidden');
+            });
+            
+            searchResults.appendChild(div);
+        });
+    } else {
+        searchResults.classList.add('hidden');
+    }
+});
+
+// Hide results when losing focus
+searchInput.addEventListener('blur', () => {
+    // Delay slightly so mousedown on results can fire
+    setTimeout(() => { searchResults.classList.add('hidden'); }, 150);
+});
+
+// Focus prevention
+searchInput.addEventListener('click', (e) => e.stopPropagation());
 
 // Window Resize Handling
 window.addEventListener('resize', () => {
