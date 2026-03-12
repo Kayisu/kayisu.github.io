@@ -127,15 +127,29 @@ body {
     font-size: 1.1rem;
 }
 
-@media (max-width: 480px) {
-    .name {
-        font-size: 2rem;
+@media (max-width: 768px) {
+    body {
+        padding: 1rem;
     }
-    .links {
-        flex-direction: column;
+    .content {
+        margin-top: 6rem; /* Clear top controls */
     }
     .profile-container {
-        padding: 2rem 1.5rem;
+        padding: 1.2rem 1rem;
+    }
+    .name {
+        font-size: 1.3rem;
+    }
+    .bio {
+        font-size: 0.9rem;
+    }
+    .links {
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+    .social-link {
+        padding: 0.6rem 1rem;
+        font-size: 0.85rem;
     }
 }
 
@@ -345,4 +359,56 @@ body {
 .search-item:hover {
     background: rgba(255,255,255,0.05);
     color: var(--text-primary);
+}
+
+/* --- Mobile Responsiveness for Advanced Controls --- */
+@media (max-width: 768px) {
+    .sim-controls {
+        top: 1rem;
+        left: 1rem;
+        right: 4rem; /* Space for the toggle button */
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .speed-controls, .search-container {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    #planet-search {
+        flex-grow: 1;
+        width: auto;
+    }
+
+    .profile-toggle-btn {
+        top: 1rem;
+        right: 1rem;
+        width: 36px;
+        height: 36px;
+    }
+
+    .planet-info-panel {
+        top: auto;
+        bottom: 1rem;
+        left: 1rem;
+        right: 1rem;
+        width: auto;
+        padding: 1.2rem;
+        transform: translateY(0);
+    }
+
+    .planet-info-panel.hidden {
+        transform: translateY(120%);
+    }
+
+    .planet-name {
+        font-size: 1.3rem;
+    }
+
+    .planet-desc {
+        font-size: 0.85rem;
+        margin-bottom: 0.8rem;
+    }
 }
