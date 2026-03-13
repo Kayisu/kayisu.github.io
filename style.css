@@ -44,11 +44,16 @@ body {
     width: 100%;
     pointer-events: none; /* Let mouse clicks pass through the padding to the background */
     margin-top: 2rem; /* Give it some breathing room from the exact top */
-    transition: opacity 0.8s ease; /* For auto-hide */
+    transition: opacity 0.8s ease, visibility 0.8s ease; /* For auto-hide */
 }
 
 .content.hidden {
     opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
+.content.hidden .profile-container {
     pointer-events: none !important;
 }
 
