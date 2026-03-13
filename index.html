@@ -37,7 +37,7 @@
 <body>
     <canvas id="stars"></canvas>
 
-    <!-- Top-Right Toggle Button -->
+    <!-- Bottom-Left Toggle Button (Moved from top-right) -->
     <button id="profile-toggle-btn" class="profile-toggle-btn" aria-label="Toggle Profile">
         <i id="toggle-icon" class="fas fa-eye"></i>
     </button>
@@ -82,6 +82,17 @@
         <p class="planet-desc">Incoming data transmission...</p>
         <div class="planet-stats">
             <div class="stat"><span class="label">Type:</span> <span id="planet-type">Unknown</span></div>
+        </div>
+        <button id="explore-btn" class="explore-btn">Explore <span id="explore-name"></span></button>
+    </div>
+
+    <!-- Dedicated Planet Detail View (WIP) -->
+    <div id="planet-detail-view" class="planet-detail-view hidden">
+        <button id="back-to-solar-btn" class="back-to-solar-btn"><i class="fas fa-arrow-left"></i> Back to Solar System</button>
+        <div class="detail-content">
+            <h1 id="detail-title" class="detail-title">Planet Name</h1>
+            <p class="detail-wip-badge">Work In Progress</p>
+            <p id="detail-desc" class="detail-desc">Detailed data will be populated here...</p>
         </div>
     </div>
 

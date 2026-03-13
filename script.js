@@ -30,21 +30,27 @@ const planets = [];
 const interactables = []; // Meshes we can click
 let globalSpeedMultiplier = 1; // 0=Pause, 1=Play, 5=Fast, 20=Fastest
 
-// Colors & Materials (Sleek, monochrome)
-const sunMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff }); // Pure white sun
+// Texture Loader
+const textureLoader = new THREE.TextureLoader();
+
+// Sun: use locally hosted sun texture
+const sunMaterial = new THREE.MeshBasicMaterial({ 
+    map: textureLoader.load('./textures/sun.jpg'),
+    color: 0xfff4c2
+});
 
 // Base properties for planet materials
 const materialProps = {
-    roughness: 0.8,
-    metalness: 0.2
+    roughness: 0.7,
+    metalness: 0.1
 };
 const orbitMaterial = new THREE.LineBasicMaterial({ color: 0x333333, transparent: true, opacity: 0.5 }); // Very subtle orbits
 
 // Add Lights
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.4); // Brighter ambient light to see planets
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.8); // Brighter ambient to illuminate planets
 scene.add(ambientLight);
 
-const pointLight = new THREE.PointLight(0xffffff, 2, 100); // Light from the sun
+const pointLight = new THREE.PointLight(0xffddaa, 3, 150); // Light from the sun
 scene.add(pointLight);
 
 // 1. Create the Sun
@@ -55,16 +61,24 @@ scene.add(sun);
 interactables.push(sun);
 
 // Helper function to create planets and their orbit rings
-function createPlanet(name, radius, distance, colorHex, type, desc, hasRing=false) {
+function createPlanet(name, radius, distance, colorHex, textureUrl, type, desc, hasRing=false) {
     // Kepler's Third Law Approximation: Velocity ~ 1 / sqrt(distance)
     // Scaled by 0.015 for a relaxing base speed
     const speed = (1 / Math.sqrt(distance)) * 0.015;
 
-    // Planet mesh with unique color
-    const planetMat = new THREE.MeshStandardMaterial({
-        color: colorHex,
-        ...materialProps
-    });
+    // Use MeshBasicMaterial when texture is provided (always fully lit)
+    // Use MeshStandardMaterial for flat color fallback (nicer with lighting)
+    let planetMat;
+    if (textureUrl) {
+        planetMat = new THREE.MeshBasicMaterial({
+            map: textureLoader.load(textureUrl)
+        });
+    } else {
+        planetMat = new THREE.MeshStandardMaterial({
+            color: colorHex,
+            ...materialProps
+        });
+    }
     const geo = new THREE.SphereGeometry(radius, 32, 32);
     const mesh = new THREE.Mesh(geo, planetMat);
     mesh.userData = { name, type, desc };
@@ -106,15 +120,16 @@ function createPlanet(name, radius, distance, colorHex, type, desc, hasRing=fals
 
 // 2. Create 8+1 planets (Radius, Distance, Color, Type, Desc)
 // Distances are scaled for aesthetics, but speeds are calculated dynamically based on distance
-createPlanet('mercury', 0.4, 6, 0x8c7c6e, 'Terrestrial', 'The smallest and innermost planet, blistering hot during the day.');
-createPlanet('venus', 0.8, 10, 0xe3bb76, 'Terrestrial', 'A dense, toxic atmosphere traps heat in a runaway greenhouse effect.');
-createPlanet('earth', 0.9, 15, 0x5a7684, 'Terrestrial', 'Our home world. The only known planet to harbor life.');
-createPlanet('mars', 0.7, 21, 0x9b5d4e, 'Terrestrial', 'The Red Planet, known for its iron oxide surface and ancient river valleys.');
-createPlanet('jupiter', 2.0, 32, 0xbcaf9b, 'Gas Giant', 'The largest planet, featuring a Great Red Spot and dozens of moons.');
-createPlanet('saturn', 1.7, 45, 0xe2cfb5, 'Gas Giant', 'Adorned with a dazzling, complex system of icy rings.', true);
-createPlanet('uranus', 1.2, 58, 0xaed6f1, 'Ice Giant', 'Rolls on its side as it orbits, appearing as a pale blue dot.');
-createPlanet('neptune', 1.1, 70, 0x2e86c1, 'Ice Giant', 'A dark, cold, and very windy world in the outer solar system.');
-createPlanet('pluto', 0.3, 85, 0xdddddd, 'Dwarf Planet', 'A beloved dwarf planet floating in the Kuiper Belt.');
+// All textures are locally hosted in /textures/ for reliability
+createPlanet('mercury', 0.4, 6, 0x8a7761, './textures/mercury.jpg', 'Terrestrial', 'The smallest and innermost planet, blistering hot during the day.');
+createPlanet('venus', 0.8, 10, 0xd4a96a, './textures/venus.jpg', 'Terrestrial', 'A dense, toxic atmosphere traps heat in a runaway greenhouse effect.');
+createPlanet('earth', 0.9, 15, 0x5a7684, './textures/earth.jpg', 'Terrestrial', 'Our home world. The only known planet to harbor life.');
+createPlanet('mars', 0.7, 21, 0x9b5d4e, './textures/mars.jpg', 'Terrestrial', 'The Red Planet, known for its iron oxide surface and ancient river valleys.');
+createPlanet('jupiter', 2.0, 32, 0xc9a87c, './textures/jupiter.jpg', 'Gas Giant', 'The largest planet, featuring a Great Red Spot and dozens of moons.');
+createPlanet('saturn', 1.7, 45, 0xe2cfb5, './textures/saturn.jpg', 'Gas Giant', 'Adorned with a dazzling, complex system of icy rings.', true);
+createPlanet('uranus', 1.2, 58, 0x9ed8d8, './textures/uranus.jpg', 'Ice Giant', 'Rolls on its side as it orbits, appearing as a pale blue dot.');
+createPlanet('neptune', 1.1, 70, 0x2e5fb5, './textures/neptune.jpg', 'Ice Giant', 'A dark, cold, and very windy world in the outer solar system.');
+createPlanet('pluto', 0.3, 85, 0xbcb5a7, './textures/pluto.jpg', 'Dwarf Planet', 'A beloved dwarf planet floating in the Kuiper Belt.');
 
 // 3. Create background stars (3D points)
 const starsGeo = new THREE.BufferGeometry();
@@ -212,6 +227,16 @@ const uiType = document.getElementById('planet-type');
 const uiDesc = document.querySelector('.planet-desc');
 const closeBtn = document.getElementById('close-btn');
 
+const exploreBtn = document.getElementById('explore-btn');
+const exploreName = document.getElementById('explore-name');
+
+const detailView = document.getElementById('planet-detail-view');
+const detailTitle = document.getElementById('detail-title');
+const detailDesc = document.getElementById('detail-desc');
+const backToSolarBtn = document.getElementById('back-to-solar-btn');
+
+let currentSelectedPlanet = null; // Used for the info panel before routing
+
 function navigateTo(path) {
     window.history.pushState({}, '', path);
     handleRoute();
@@ -221,31 +246,63 @@ function handleRoute() {
     const path = window.location.pathname;
     
     if (path.startsWith('/planet/') || path === '/star/sun') {
+        // We are on a dedicated planet page
         const parts = path.split('/');
         const targetName = parts[parts.length - 1].toLowerCase();
         
-        // Find data from interactables
         const targetObj = interactables.find(obj => obj.userData.name === targetName);
         if (targetObj) {
-            uiName.textContent = targetObj.userData.name;
-            uiType.textContent = targetObj.userData.type;
-            uiDesc.textContent = targetObj.userData.desc;
-            uiPanel.classList.remove('hidden');
-        } else {
+            // Hide main UI and show dedicated view
             uiPanel.classList.add('hidden');
+            document.getElementById('stars').style.visibility = 'hidden';
+            
+            detailTitle.textContent = targetObj.userData.name;
+            detailDesc.textContent = targetObj.userData.desc;
+            detailView.classList.remove('hidden');
         }
     } else {
+        // We are on the root homepage
+        document.getElementById('stars').style.visibility = 'visible';
+        detailView.classList.add('hidden');
         uiPanel.classList.add('hidden');
+        currentSelectedPlanet = null;
     }
 }
 
 // Handle browser back/forward buttons
 window.addEventListener('popstate', handleRoute);
 
-// Handle clicking close
+// Handle clicking close on the info panel (dismiss info panel, but we are already at /)
 closeBtn.addEventListener('click', () => {
+    uiPanel.classList.add('hidden');
+    currentSelectedPlanet = null;
+});
+
+// Handle clicking "Explore" inside the info panel
+exploreBtn.addEventListener('click', () => {
+    if (currentSelectedPlanet) {
+        const route = currentSelectedPlanet === 'sun' ? '/star/sun' : `/planet/${currentSelectedPlanet}`;
+        navigateTo(route);
+    }
+});
+
+// Handle clicking "Back to Solar System" from the dedicated view
+backToSolarBtn.addEventListener('click', () => {
     navigateTo('/');
 });
+
+// Open Info Panel logic (trigger by raycast or search)
+function openInfoPanel(name) {
+    const targetObj = interactables.find(obj => obj.userData.name === name);
+    if (targetObj) {
+        currentSelectedPlanet = name;
+        uiName.textContent = targetObj.userData.name;
+        uiType.textContent = targetObj.userData.type;
+        uiDesc.textContent = targetObj.userData.desc;
+        exploreName.textContent = targetObj.userData.name;
+        uiPanel.classList.remove('hidden');
+    }
+}
 
 // Raycasting: Click on 3D objects
 window.addEventListener('click', (event) => {
@@ -261,11 +318,9 @@ window.addEventListener('click', (event) => {
     if (intersects.length > 0) {
         const clickedObj = intersects[0].object;
         const name = clickedObj.userData.name;
-        if (name === 'sun') {
-            navigateTo('/star/sun');
-        } else {
-            navigateTo(`/planet/${name}`);
-        }
+        
+        // Only open the info panel, DO NOT navigate yet
+        openInfoPanel(name);
     }
 });
 
@@ -355,10 +410,9 @@ searchInput.addEventListener('input', (e) => {
             div.className = 'search-item';
             div.textContent = match.charAt(0).toUpperCase() + match.slice(1);
             
-            // Navigate on click
+            // Open Info Panel on search select (do not navigate immediately)
             div.addEventListener('mousedown', () => { // mousedown fires before blur
-                const route = match === 'sun' ? '/star/sun' : `/planet/${match}`;
-                navigateTo(route);
+                openInfoPanel(match);
                 searchInput.value = '';
                 searchResults.classList.add('hidden');
             });
