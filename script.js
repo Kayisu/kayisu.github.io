@@ -17,9 +17,10 @@ camera.lookAt(0, 0, 0);
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.05;
-controls.enablePan = false;
-controls.minDistance = 5;
-controls.maxDistance = 250; // Increased to see Pluto
+controls.enablePan = true; // Allow panning for free navigation
+controls.minDistance = 2;
+controls.maxDistance = 300; // Extended to see outer planets
+controls.panSpeed = 1.2;
 
 // Raycaster for click detection
 const raycaster = new THREE.Raycaster();
@@ -29,6 +30,16 @@ const mouse = new THREE.Vector2();
 const planets = [];
 const interactables = []; // Meshes we can click
 let globalSpeedMultiplier = 1; // 0=Pause, 1=Play, 5=Fast, 20=Fastest
+
+// --- Camera Animation State ---
+let cameraFollowTarget = null;   // Name of the planet to track (e.g., 'earth')
+let cameraZoomDistance = 10;     // How far to stay from the target
+let isCameraAnimating = false;
+const CAMERA_LERP_SPEED = 0.06;
+
+// --- WASD Movement State ---
+const keysPressed = {};
+const KEYBOARD_MOVE_SPEED = 0.5;
 
 // Texture Loader
 const textureLoader = new THREE.TextureLoader();
@@ -114,7 +125,8 @@ function createPlanet(name, radius, distance, colorHex, textureUrl, type, desc, 
         group: orbitGroup,
         mesh: mesh,
         speed: speed,
-        distance: distance
+        distance: distance,
+        radius: radius
     });
 }
 
@@ -200,6 +212,7 @@ const clock = new THREE.Clock();
 function animate() {
     requestAnimationFrame(animate);
     const elapsedTime = clock.getElapsedTime();
+    const delta = clock.getDelta();
 
     // Rotate planets based on global speed
     planets.forEach(planet => {
@@ -212,6 +225,56 @@ function animate() {
 
     // Update star shader time
     starsMaterial.uniforms.time.value = elapsedTime;
+
+    // --- Camera Animation (Smooth Zoom, tracks moving planets) ---
+    if (cameraFollowTarget) {
+        const targetPos = getPlanetWorldPos(cameraFollowTarget);
+        if (targetPos) {
+            if (isCameraAnimating) {
+                // Zoom phase: move camera towards desired position
+                const direction = new THREE.Vector3().subVectors(camera.position, targetPos).normalize();
+                const desiredCamPos = new THREE.Vector3().copy(targetPos).addScaledVector(direction, cameraZoomDistance);
+                
+                camera.position.lerp(desiredCamPos, CAMERA_LERP_SPEED);
+                controls.target.lerp(targetPos, CAMERA_LERP_SPEED);
+                
+                if (camera.position.distanceTo(desiredCamPos) < 0.5) {
+                    isCameraAnimating = false;
+                }
+            } else {
+                // Post-zoom: keep controls.target locked on the planet so it stays centered
+                controls.target.lerp(targetPos, 0.1);
+            }
+        }
+    }
+
+    // --- WASD Keyboard Navigation ---
+    if (!isCameraAnimating) {
+        const forward = new THREE.Vector3();
+        camera.getWorldDirection(forward);
+        forward.y = 0; // Keep movement horizontal
+        forward.normalize();
+        
+        const right = new THREE.Vector3();
+        right.crossVectors(forward, camera.up).normalize();
+        
+        if (keysPressed['w'] || keysPressed['W']) {
+            camera.position.addScaledVector(forward, KEYBOARD_MOVE_SPEED);
+            controls.target.addScaledVector(forward, KEYBOARD_MOVE_SPEED);
+        }
+        if (keysPressed['s'] || keysPressed['S']) {
+            camera.position.addScaledVector(forward, -KEYBOARD_MOVE_SPEED);
+            controls.target.addScaledVector(forward, -KEYBOARD_MOVE_SPEED);
+        }
+        if (keysPressed['a'] || keysPressed['A']) {
+            camera.position.addScaledVector(right, -KEYBOARD_MOVE_SPEED);
+            controls.target.addScaledVector(right, -KEYBOARD_MOVE_SPEED);
+        }
+        if (keysPressed['d'] || keysPressed['D']) {
+            camera.position.addScaledVector(right, KEYBOARD_MOVE_SPEED);
+            controls.target.addScaledVector(right, KEYBOARD_MOVE_SPEED);
+        }
+    }
 
     // Update controls (required for damping)
     controls.update();
@@ -272,10 +335,12 @@ function handleRoute() {
 // Handle browser back/forward buttons
 window.addEventListener('popstate', handleRoute);
 
-// Handle clicking close on the info panel (dismiss info panel, but we are already at /)
+// Handle clicking close on the info panel — stop tracking
 closeBtn.addEventListener('click', () => {
     uiPanel.classList.add('hidden');
     currentSelectedPlanet = null;
+    cameraFollowTarget = null; // Stop tracking
+    isCameraAnimating = false;
 });
 
 // Handle clicking "Explore" inside the info panel
@@ -291,7 +356,35 @@ backToSolarBtn.addEventListener('click', () => {
     navigateTo('/');
 });
 
-// Open Info Panel logic (trigger by raycast or search)
+// --- Camera helper: get world position of a planet mesh ---
+function getPlanetWorldPos(name) {
+    const target = name === 'sun' ? sun : planets.find(p => p.mesh.userData.name === name)?.mesh;
+    if (!target) return null;
+    // Force FULL scene graph matrix update for accurate world position
+    scene.updateMatrixWorld(true);
+    const pos = new THREE.Vector3();
+    target.getWorldPosition(pos);
+    return pos;
+}
+
+function getPlanetRadius(name) {
+    if (name === 'sun') return 3;
+    const planet = planets.find(p => p.mesh.userData.name === name);
+    return planet ? planet.radius : 1;
+}
+
+// Smooth zoom to a named celestial body
+function smoothZoomTo(name) {
+    const worldPos = getPlanetWorldPos(name);
+    if (!worldPos) return;
+    
+    const radius = getPlanetRadius(name);
+    cameraZoomDistance = radius * 5 + 2; // Zoom to N radii away
+    cameraFollowTarget = name;
+    isCameraAnimating = true;
+}
+
+// Open Info Panel logic (trigger by raycast or search) + ZOOM
 function openInfoPanel(name) {
     const targetObj = interactables.find(obj => obj.userData.name === name);
     if (targetObj) {
@@ -301,13 +394,16 @@ function openInfoPanel(name) {
         uiDesc.textContent = targetObj.userData.desc;
         exploreName.textContent = targetObj.userData.name;
         uiPanel.classList.remove('hidden');
+        
+        // Smooth zoom to the planet
+        smoothZoomTo(name);
     }
 }
 
-// Raycasting: Click on 3D objects
+// Raycasting: Single click on 3D objects → open info + zoom
 window.addEventListener('click', (event) => {
     // Exclude clicks on UI elements
-    if (event.target.closest('#planet-info-panel') || event.target.closest('.content')) return;
+    if (event.target.closest('#planet-info-panel') || event.target.closest('.content') || event.target.closest('.sim-controls') || event.target.closest('.profile-toggle-btn')) return;
 
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -318,10 +414,36 @@ window.addEventListener('click', (event) => {
     if (intersects.length > 0) {
         const clickedObj = intersects[0].object;
         const name = clickedObj.userData.name;
-        
-        // Only open the info panel, DO NOT navigate yet
         openInfoPanel(name);
     }
+});
+
+// Double-click: Lock camera focus on a planet
+window.addEventListener('dblclick', (event) => {
+    if (event.target.closest('#planet-info-panel') || event.target.closest('.content') || event.target.closest('.sim-controls')) return;
+
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObjects(interactables);
+
+    if (intersects.length > 0) {
+        const clickedObj = intersects[0].object;
+        const name = clickedObj.userData.name;
+        smoothZoomTo(name);
+        openInfoPanel(name);
+    }
+});
+
+// WASD Keyboard listeners
+window.addEventListener('keydown', (e) => {
+    // Don't capture if typing in search
+    if (document.activeElement === searchInput) return;
+    keysPressed[e.key] = true;
+});
+window.addEventListener('keyup', (e) => {
+    keysPressed[e.key] = false;
 });
 
 // Run route handler on load
@@ -410,9 +532,9 @@ searchInput.addEventListener('input', (e) => {
             div.className = 'search-item';
             div.textContent = match.charAt(0).toUpperCase() + match.slice(1);
             
-            // Open Info Panel on search select (do not navigate immediately)
+            // Open Info Panel on search select + zoom (do not navigate immediately)
             div.addEventListener('mousedown', () => { // mousedown fires before blur
-                openInfoPanel(match);
+                openInfoPanel(match); // This now also zooms
                 searchInput.value = '';
                 searchResults.classList.add('hidden');
             });
