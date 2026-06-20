@@ -4,51 +4,77 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-Personal portfolio site for Emre Kaan Ataş, deployed as a GitHub Pages **user site** (`Kayisu.github.io`, served from the `main` branch root). The centerpiece is an interactive Three.js solar system. There is **no build step, no package manager, and no test suite** — files are served exactly as they sit in the repo root.
+Personal portfolio for Emre Kaan Ataş, deployed as a GitHub Pages **user site**
+(`kayisu.github.io`, served from root). It's an **Astro** static site whose
+centerpiece is an interactive **React Three Fiber** solar system where the Sun +
+9 bodies orbit and clicking one opens an info panel and zooms the camera. Static
+content (profile, planet detail pages) ships **zero framework JS**; only the
+solar-system island loads React + Three.js.
 
-## Running locally
-
-Open `index.html` with any static file server (the History API routing and ES module imports require `http://`, not `file://`):
+## Commands
 
 ```bash
-python -m http.server 8000   # then visit http://localhost:8000
+npm install        # install deps
+npm run dev        # dev server (http://localhost:4321)
+npm run build      # static build to dist/
+npm run preview    # serve the built dist/ locally
+npx astro check    # type-check .astro/.tsx
 ```
 
-Three.js is loaded from the unpkg CDN via the `<script type="importmap">` in `index.html` (pinned to `three@0.160.0`); there are no local `node_modules`. Deploys happen automatically on push to `main`.
+There is no test suite. Deployment is automatic: pushing to `main` triggers
+`.github/workflows/deploy.yml` (withastro/action → deploy-pages). The repo's
+**Pages source must be set to "GitHub Actions"** in Settings → Pages (one-time,
+done in the GitHub UI, not in code).
 
 ## Architecture
 
-Three files do all the work:
+### The island boundary (this is the whole point of the Astro choice)
+- `src/pages/index.astro` renders a static `ProfileCard.astro` plus
+  `<SolarApp client:only="react" />`. **`client:only` is required** — the scene
+  is WebGL and cannot be server-rendered. Everything interactive lives inside
+  that one island; everything else is static HTML.
+- The detail pages (`src/pages/planet/[name].astro`, `src/pages/star/sun.astro`,
+  `src/pages/404.astro`) are pure static — **never** import the R3F components
+  into them or you'll ship Three.js on pages that don't need it.
 
-- **`index.html`** — markup, the Three.js import map, and all UI panels (`#planet-info-panel`, `#planet-detail-view`, `.sim-controls`, profile card). UI elements are static in the DOM and toggled via the `.hidden` class from `script.js`.
-- **`script.js`** — the entire application (ES module). Scene setup → planet creation → animation loop → routing → event wiring, top to bottom.
-- **`style.css`** — all styling, including mobile responsiveness.
+### Single source of truth
+- `src/data/planets.ts` holds every body (`SUN`, `PLANETS`, `BODIES`) with
+  radius/distance/color/texture/type/desc/href, plus `orbitalSpeed(distance)`
+  (Kepler approximation `1/sqrt(distance)*0.015`) and `getBody(name)`. The scene,
+  the info panel, the search box, and `getStaticPaths` for the per-planet pages
+  all read from here. Add or change a body in this one file.
 
-### Solar system model (`script.js`)
+### Shared state
+- `src/store/solarStore.ts` (zustand) is the bridge between the WebGL canvas and
+  the DOM overlay UI (they're in one React tree but don't prop-drill):
+  `speedMultiplier`, `selected` (info panel), `followTarget` + `isAnimating`
+  (camera). `select(name)` opens the panel and starts the zoom; `close()` clears
+  both. **In `useFrame`, read the store via `useSolarStore.getState()`** (not the
+  hook) so per-frame reads don't trigger React re-renders.
 
-- `createPlanet(name, radius, distance, colorHex, textureUrl, type, desc, hasRing)` builds each body. Each planet mesh lives inside its own `THREE.Group` (`orbitGroup`); orbiting is done by rotating the group, axial spin by rotating the mesh. Orbital speed is derived from distance via a Kepler's-Third-Law approximation (`1/sqrt(distance) * 0.015`), not hardcoded.
-- The 9 bodies (Mercury→Pluto) plus the Sun are registered in two arrays: `planets` (orbit/animation data) and `interactables` (everything raycastable). The Sun is added to `interactables` separately.
-- `userData = { name, type, desc }` on each mesh is the single source of truth for the info panels and search — read it rather than duplicating planet data elsewhere.
-- Textures are local under `./textures/` (one `.jpg` per body). Planets with a texture use `MeshBasicMaterial` (fully lit, no shading); the color fallback path uses `MeshStandardMaterial`. Background stars are a custom `ShaderMaterial` point cloud with a twinkle effect driven by a `time` uniform updated each frame.
+### Solar-system components (`src/components/solar/`)
+- `SolarApp.tsx` — island root: `<Canvas>` + `CameraRig` + the DOM overlay
+  (`SimControls`, `InfoPanel`).
+- `Scene.tsx` — lights + a tilted, slowly-spinning "universe" `<group>` holding
+  `Stars`, `Sun`, and a `Planet` per entry in `PLANETS`.
+- `Planet.tsx` — orbit `<group>` (revolves) wrapping the mesh (spins); faint
+  orbit-line; optional Saturn ring. Each mesh gets `name={body.name}`.
+- `CameraRig.tsx` — drei `OrbitControls` (`makeDefault`) + smooth follow/zoom +
+  WASD, ported from the original `animate()` loop. It locates the focused body
+  with `scene.getObjectByName(followTarget)` — **that name tag is load-bearing**;
+  removing `name` from a mesh breaks camera follow.
+- `Stars.tsx` — shader-based twinkling starfield (shaders copied verbatim from
+  the pre-migration `script.js`).
 
-### Camera & navigation
+### Routing
+- Per-body pages are real pre-rendered static routes (`getStaticPaths` over
+  `PLANETS`). Deep links and refresh work natively — there is **no** SPA redirect
+  hack (the old `404.html`/`index.html` redirects were deleted in the migration).
+  `InfoPanel`'s "Explore" is a plain `<a href={body.href}>`.
 
-The animation loop (`animate()`) blends three control schemes that must coexist:
-- **OrbitControls** with damping (`controls.update()` every frame).
-- **Smooth follow/zoom**: `cameraFollowTarget` + `isCameraAnimating` drive a lerp toward a moving planet's world position. `smoothZoomTo(name)` starts it; clicking the panel close button clears it. Because planets move, the camera re-reads the world position each frame via `getPlanetWorldPos()`, which calls `scene.updateMatrixWorld(true)` before reading.
-- **WASD** translation, applied only when `!isCameraAnimating`. Keyboard capture is suppressed while the search input is focused.
-
-### Routing (the tricky part)
-
-Client-side routing uses the History API (`/planet/<name>`, `/star/sun`) handled by `handleRoute()`/`navigateTo()`. Two redirect mechanisms keep GitHub Pages happy but currently **force a return to root on any deep link or refresh**:
-
-- `404.html` is the rafgraph SPA hack — GitHub Pages serves it for unknown paths, and it re-encodes the path into a `/?/...` query and bounces to root.
-- The inline script at the top of `index.html` then detects either that `/?/` query **or** a direct sub-path load and calls `window.location.replace('/')`.
-
-Net effect: deep links and refreshes land on the homepage, not the requested planet. The in-session `pushState` navigation (clicking Explore) works within a single page load. If you intend deep links to actually restore a planet view, both redirects above need to change — don't assume the routing is simply broken.
-
-### UI behavior
-
-- Profile card (`#main-content`) auto-hides after 2s of mouse inactivity (`resetHideTimer`), with a manual lock toggle (`isProfileLockedHidden`).
-- Click handlers raycast against `interactables` but bail early when the click originated inside a UI panel (the `event.target.closest(...)` guards) — preserve these guards when adding click logic, or UI clicks will trigger planet selection.
-- Speed control buttons set `globalSpeedMultiplier` (0/1/5/20), which scales every per-frame rotation.
+### Gotchas
+- TSX uses `className`; `.astro` files use `class`. Don't mix them up.
+- `astro.config.mjs` sets `site` but no `base` (user page at root). If this ever
+  becomes a project page, a `base` would be needed and all root-absolute paths
+  (`/textures/...`, `href="/"`) would have to account for it.
+- Textures live in `public/textures/` and are referenced as `/textures/*.jpg`.
