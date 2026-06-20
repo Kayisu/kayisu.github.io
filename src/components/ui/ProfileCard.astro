@@ -1,0 +1,82 @@
+---
+// Static profile banner + its auto-hide/toggle behavior.
+// Kept out of the React island: it's plain chrome, so it ships only ~20 lines
+// of vanilla JS rather than pulling in the framework.
+---
+
+<button id="profile-toggle-btn" class="profile-toggle-btn" aria-label="Toggle Profile">
+  <i id="toggle-icon" class="fas fa-eye"></i>
+</button>
+
+<main id="main-content" class="content">
+  <div class="profile-container">
+    <h1 class="name">Hi, these are all about me:</h1>
+
+    <div class="links">
+      <a
+        href="https://github.com/Kayisu/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="social-link"
+        id="link-github"
+      >
+        <i class="fab fa-github"></i> GitHub
+      </a>
+      <a href="mailto:emre-atas-01@hotmail.com" class="social-link" id="link-email">
+        <i class="fas fa-envelope"></i> Email
+      </a>
+      <a
+        href="https://www.linkedin.com/in/emrekaanatas/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="social-link"
+        id="link-linkedin"
+      >
+        <i class="fab fa-linkedin"></i> LinkedIn
+      </a>
+    </div>
+  </div>
+</main>
+
+<script>
+  // Auto-hide the profile card after 2s of mouse inactivity, with a manual
+  // lock toggle. Ported from the original script.js (resetHideTimer + toggle).
+  const mainContent = document.getElementById('main-content');
+  const toggleBtn = document.getElementById('profile-toggle-btn');
+  const toggleIcon = document.getElementById('toggle-icon');
+
+  if (mainContent && toggleBtn && toggleIcon) {
+    let hideTimeout: ReturnType<typeof setTimeout>;
+    let isProfileLockedHidden = false;
+
+    function resetHideTimer() {
+      if (isProfileLockedHidden) return; // don't show if manually closed
+      mainContent!.classList.remove('hidden');
+      toggleIcon!.className = 'fas fa-eye';
+
+      clearTimeout(hideTimeout);
+      hideTimeout = setTimeout(() => {
+        mainContent!.classList.add('hidden');
+      }, 2000); // hide after 2 seconds of no mouse movement
+    }
+
+    document.addEventListener('mousemove', resetHideTimer);
+
+    toggleBtn.addEventListener('click', (e) => {
+      e.stopPropagation(); // Prevent raycasting or other clicks
+      if (mainContent!.classList.contains('hidden') || isProfileLockedHidden) {
+        // Show
+        isProfileLockedHidden = false;
+        resetHideTimer();
+      } else {
+        // Manually hide
+        isProfileLockedHidden = true;
+        mainContent!.classList.add('hidden');
+        toggleIcon!.className = 'fas fa-eye-slash';
+        clearTimeout(hideTimeout);
+      }
+    });
+
+    resetHideTimer(); // start hidden timer on load
+  }
+</script>

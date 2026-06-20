@@ -1,0 +1,528 @@
+:root {
+    --bg-color: #050508;
+    --text-primary: #ffffff;
+    --text-secondary: #a0a0b0;
+    --highlight: #ffffff;
+    --card-bg: rgba(255, 255, 255, 0.02);
+    --card-border: rgba(255, 255, 255, 0.06);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    overflow: hidden; /* Prevent scrolling for a fixed view */
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align to top */
+    padding: 2rem; /* Keep it away from absolute edges */
+    position: relative;
+    -webkit-font-smoothing: antialiased;
+}
+
+#stars {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+.content {
+    position: relative;
+    z-index: 1;
+    text-align: center; /* Center text inside the bar */
+    max-width: 800px; /* Make it a bit wider to fit everything horizontally */
+    width: 100%;
+    pointer-events: none; /* Let mouse clicks pass through the padding to the background */
+    margin-top: 2rem; /* Give it some breathing room from the exact top */
+    transition: opacity 0.8s ease, visibility 0.8s ease; /* For auto-hide */
+}
+
+.content.hidden {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
+.content.hidden .profile-container {
+    pointer-events: none !important;
+}
+
+.profile-container {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 1.5rem 2rem; /* Slimmer padding for a banner feel */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    animation: fadeIn 1.5s ease-out;
+    pointer-events: auto; /* Re-enable pointer events for links in the card */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.name {
+    font-size: 1.5rem; /* Smaller, subtler name */
+    font-weight: 600;
+    margin-bottom: 0;
+    letter-spacing: -0.5px;
+}
+
+.highlight {
+    color: var(--highlight);
+    font-weight: 600;
+}
+
+.bio {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    font-weight: 300;
+    margin-bottom: 0.5rem; /* Less space between text and buttons */
+    line-height: 1.4;
+}
+
+.links {
+    display: flex;
+    gap: 1rem;
+    justify-content: center; /* Center horizontally */
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-primary);
+    text-decoration: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 400;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.3s ease;
+}
+
+.social-link:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.05);
+}
+
+.social-link i {
+    font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 1rem;
+    }
+    .content {
+        margin-top: 6rem; /* Clear top controls */
+    }
+    .profile-container {
+        padding: 1.2rem 1rem;
+    }
+    .name {
+        font-size: 1.3rem;
+    }
+    .bio {
+        font-size: 0.9rem;
+    }
+    .links {
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+    .social-link {
+        padding: 0.6rem 1rem;
+        font-size: 0.85rem;
+    }
+}
+
+/* --- Planet Info Panel (Routing UI) --- */
+.planet-info-panel {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    width: 320px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    z-index: 10;
+    transition: all 0.3s ease;
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+}
+
+.planet-info-panel.hidden {
+    opacity: 0;
+    transform: translateX(20px);
+    pointer-events: none;
+}
+
+.close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.close-btn:hover {
+    color: var(--text-primary);
+}
+
+.planet-name {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--highlight);
+    text-transform: capitalize;
+}
+
+.planet-desc {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    margin-bottom: 1rem;
+}
+
+.planet-stats {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 1rem;
+    font-size: 0.85rem;
+}
+
+.planet-stats .stat {
+    margin-bottom: 0.25rem;
+    color: var(--text-primary);
+}
+
+.planet-stats .label {
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+/* --- Phase 6 & 8: Controls --- */
+.profile-toggle-btn {
+    position: absolute;
+    bottom: 2rem;
+    left: 2rem;
+    top: auto;
+    right: auto;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    color: var(--text-primary);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 20;
+    backdrop-filter: blur(12px);
+    transition: all 0.3s ease;
+}
+
+.profile-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.sim-controls {
+    position: absolute;
+    top: 2rem;
+    left: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    z-index: 20;
+}
+
+.speed-controls {
+    display: flex;
+    gap: 0.5rem;
+    background: var(--card-bg);
+    padding: 0.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--card-border);
+    backdrop-filter: blur(12px);
+}
+
+.speed-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.speed-btn:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.speed-btn.active {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--highlight);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+.search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    backdrop-filter: blur(12px);
+}
+
+.search-icon {
+    color: var(--text-secondary);
+    margin-right: 0.5rem;
+    font-size: 0.9rem;
+}
+
+#planet-search {
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 0.95rem;
+    outline: none;
+    width: 150px;
+}
+
+#planet-search::placeholder {
+    color: var(--text-secondary);
+}
+
+.search-results {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    left: 0;
+    width: 100%;
+    background: var(--bg-color);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    overflow: hidden;
+    max-height: 200px;
+    overflow-y: auto;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.search-results.hidden {
+    display: none;
+}
+
+.search-item {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: all 0.2s ease;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.search-item:last-child {
+    border-bottom: none;
+}
+
+.search-item:hover {
+    background: rgba(255,255,255,0.05);
+    color: var(--text-primary);
+}
+
+/* --- Phase 8: Explore Button & Detail View --- */
+.explore-btn {
+    margin-top: 1rem;
+    width: 100%;
+    padding: 0.75rem 0;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: block;
+    text-align: center;
+    text-transform: capitalize;
+}
+
+.explore-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+}
+
+.planet-detail-view {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: var(--bg-color);
+    z-index: 30; /* Over everything */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.5s ease;
+    visibility: visible;
+}
+
+.planet-detail-view.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.back-to-solar-btn {
+    position: absolute;
+    top: 2rem;
+    left: 2rem;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+}
+
+.back-to-solar-btn:hover {
+    color: var(--highlight);
+}
+
+.detail-content {
+    text-align: center;
+}
+
+.detail-title {
+    font-size: 4rem;
+    margin-bottom: 0.5rem;
+    text-transform: capitalize;
+}
+
+.detail-wip-badge {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.2rem 1rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    margin-bottom: 2rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+}
+
+.detail-desc {
+    max-width: 600px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+/* --- Mobile Responsiveness for Advanced Controls --- */
+@media (max-width: 768px) {
+    .sim-controls {
+        top: 1rem;
+        left: 1rem;
+        right: 4rem; /* Space for the toggle button */
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .speed-controls, .search-container {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    #planet-search {
+        flex-grow: 1;
+        width: auto;
+    }
+
+    .profile-toggle-btn {
+        top: 1rem;
+        right: 1rem;
+        width: 36px;
+        height: 36px;
+    }
+
+    .planet-info-panel {
+        top: auto;
+        bottom: 1rem;
+        left: 1rem;
+        right: 1rem;
+        width: auto;
+        padding: 1.2rem;
+        transform: translateY(0);
+    }
+
+    .planet-info-panel.hidden {
+        transform: translateY(120%);
+    }
+
+    .planet-name {
+        font-size: 1.3rem;
+    }
+
+    .planet-desc {
+        font-size: 0.85rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .planet-detail-view .detail-title {
+        font-size: 2.5rem;
+    }
+}
+
+/* --- Canvas (R3F island) fills the viewport behind the UI --- */
+.solar-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
