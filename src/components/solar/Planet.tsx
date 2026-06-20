@@ -42,6 +42,7 @@ export default function Planet({ body }: { body: Body }) {
       <group ref={orbitRef}>
         <mesh
           ref={meshRef}
+          name={body.name}
           position={[body.distance, 0, 0]}
           onClick={(e) => {
             e.stopPropagation();

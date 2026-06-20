@@ -10,6 +10,7 @@ export default function Sun() {
 
   return (
     <mesh
+      name={SUN.name}
       onClick={(e) => {
         e.stopPropagation();
         select(SUN.name);
