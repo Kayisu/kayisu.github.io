@@ -1,11 +1,14 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ProfileCard from '../components/ui/ProfileCard.astro';
+import SolarApp from '../components/solar/SolarApp';
 ---
 
 <BaseLayout>
+  <!-- Interactive solar-system island: the only JS-heavy part of the page.
+       client:only because it's WebGL and can't be server-rendered. -->
+  <SolarApp client:only="react" />
+
   <!-- Static profile chrome (zero framework JS). -->
   <ProfileCard />
-
-  <!-- The interactive solar-system island is mounted here in a later step. -->
 </BaseLayout>
