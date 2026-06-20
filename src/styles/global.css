@@ -519,9 +519,8 @@ body {
 
 /* --- Canvas (R3F island) fills the viewport behind the UI --- */
 .solar-canvas {
-    position: absolute;
-    top: 0;
-    left: 0;
+    position: fixed;
+    inset: 0;
     width: 100%;
     height: 100%;
     z-index: 0;

@@ -14,6 +14,10 @@ export default function SolarApp() {
     <>
       <Canvas
         className="solar-canvas"
+        // R3F hardcodes inline `position: relative` on its container, which would
+        // make the canvas a flex child of <body> and shove the profile aside.
+        // Override it to a fixed, full-viewport background (R3F spreads style last).
+        style={{ position: 'fixed', inset: 0, width: '100%', height: '100%', zIndex: 0 }}
         camera={{ fov: 60, near: 0.1, far: 1000, position: [0, 15, 40] }}
         gl={{ alpha: true, antialias: true }}
         dpr={[1, 2]}
