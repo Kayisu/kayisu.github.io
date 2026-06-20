@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+// Real static 404 (GitHub Pages serves dist/404.html for unknown paths),
+// replacing the old SPA-redirect hack.
+---
+
+<BaseLayout title="Lost in space | Kayisu">
+  <div class="planet-detail-view">
+    <a href="/" class="back-to-solar-btn">
+      <i class="fas fa-arrow-left"></i> Back to Solar System
+    </a>
+    <div class="detail-content">
+      <h1 class="detail-title">404</h1>
+      <p class="detail-wip-badge">Lost in space</p>
+      <p class="detail-desc">This corner of the galaxy doesn't exist. Head back to the solar system.</p>
+    </div>
+  </div>
+</BaseLayout>

@@ -1,0 +1,22 @@
+---
+import type { Body } from '../../data/planets';
+
+interface Props {
+  body: Body;
+}
+
+const { body } = Astro.props;
+---
+
+<!-- Full-screen detail view for one body. Now a real static page rather than a
+     toggled overlay, so "Back to Solar System" is a normal link home. -->
+<div class="planet-detail-view">
+  <a href="/" class="back-to-solar-btn">
+    <i class="fas fa-arrow-left"></i> Back to Solar System
+  </a>
+  <div class="detail-content">
+    <h1 class="detail-title">{body.name}</h1>
+    <p class="detail-wip-badge">Work In Progress</p>
+    <p class="detail-desc">{body.desc}</p>
+  </div>
+</div>

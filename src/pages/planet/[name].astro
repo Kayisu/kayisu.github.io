@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BodyDetail from '../../components/ui/BodyDetail.astro';
+import { PLANETS, getBody } from '../../data/planets';
+
+// Pre-render one real static page per planet → /planet/<name>/index.html.
+// Deep links and refreshes now resolve natively (no SPA redirect hack).
+export function getStaticPaths() {
+  return PLANETS.map((planet) => ({ params: { name: planet.name } }));
+}
+
+const { name } = Astro.params;
+const body = getBody(name!)!;
+const title = `${body.name.charAt(0).toUpperCase()}${body.name.slice(1)} | Kayisu`;
+---
+
+<BaseLayout title={title} description={body.desc}>
+  <BodyDetail body={body} />
+</BaseLayout>

@@ -1,0 +1,11 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BodyDetail from '../../components/ui/BodyDetail.astro';
+import { SUN } from '../../data/planets';
+
+// Dedicated page for the sun, preserving the original /star/sun route.
+---
+
+<BaseLayout title="Sun | Kayisu" description={SUN.desc}>
+  <BodyDetail body={SUN} />
+</BaseLayout>
