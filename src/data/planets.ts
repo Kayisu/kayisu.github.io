@@ -17,9 +17,9 @@ export interface Body {
   color: number;
   /** texture under public/textures/ */
   texture: string;
-  /** category shown in the info panel */
+  /** category label shown in the info panel and as the detail-page eyebrow */
   type: string;
-  /** short blurb shown in the info panel and detail page */
+  /** identity tagline shown in the info panel and detail page */
   desc: string;
   /** the sun is lit differently and does not orbit */
   isStar?: boolean;
@@ -34,8 +34,8 @@ export const SUN: Body = {
   distance: 0,
   color: 0xfff4c2,
   texture: '/textures/sun.jpg',
-  type: 'Star',
-  desc: 'The heart of the solar system. A massive burning ball of hydrogen and helium.',
+  type: 'Core',
+  desc: "The center everything orbits. Who I am, what I'm chasing, and why.",
   isStar: true,
 };
 
@@ -47,8 +47,8 @@ export const PLANETS: Body[] = [
     distance: 6,
     color: 0x8a7761,
     texture: '/textures/mercury.jpg',
-    type: 'Terrestrial',
-    desc: 'The smallest and innermost planet, blistering hot during the day.',
+    type: 'Tools',
+    desc: 'Small, sharp utilities — single-purpose things that just work.',
   },
   {
     name: 'venus',
@@ -57,8 +57,8 @@ export const PLANETS: Body[] = [
     distance: 10,
     color: 0xd4a96a,
     texture: '/textures/venus.jpg',
-    type: 'Terrestrial',
-    desc: 'A dense, toxic atmosphere traps heat in a runaway greenhouse effect.',
+    type: 'Creative',
+    desc: 'Stories, games, and designs — things I make to be felt, not just used.',
   },
   {
     name: 'earth',
@@ -67,8 +67,8 @@ export const PLANETS: Body[] = [
     distance: 15,
     color: 0x5a7684,
     texture: '/textures/earth.jpg',
-    type: 'Terrestrial',
-    desc: 'Our home world. The only known planet to harbor life.',
+    type: 'Roots',
+    desc: 'Where I come from — education, fundamentals, the ground I\'m built on.',
   },
   {
     name: 'mars',
@@ -77,8 +77,8 @@ export const PLANETS: Body[] = [
     distance: 21,
     color: 0x9b5d4e,
     texture: '/textures/mars.jpg',
-    type: 'Terrestrial',
-    desc: 'The Red Planet, known for its iron oxide surface and ancient river valleys.',
+    type: 'Research',
+    desc: "Frontier questions and unfinished problems I'm pushing into.",
   },
   {
     name: 'jupiter',
@@ -87,8 +87,8 @@ export const PLANETS: Body[] = [
     distance: 32,
     color: 0xc9a87c,
     texture: '/textures/jupiter.jpg',
-    type: 'Gas Giant',
-    desc: 'The largest planet, featuring a Great Red Spot and dozens of moons.',
+    type: 'Ventures',
+    desc: 'The big bets — startups and products with real weight behind them.',
   },
   {
     name: 'saturn',
@@ -97,8 +97,8 @@ export const PLANETS: Body[] = [
     distance: 45,
     color: 0xe2cfb5,
     texture: '/textures/saturn.jpg',
-    type: 'Gas Giant',
-    desc: 'Adorned with a dazzling, complex system of icy rings.',
+    type: 'Systems',
+    desc: 'Serious, durable engineering — built with structure and meant to last.',
     hasRing: true,
   },
   {
@@ -108,8 +108,8 @@ export const PLANETS: Body[] = [
     distance: 58,
     color: 0x9ed8d8,
     texture: '/textures/uranus.jpg',
-    type: 'Ice Giant',
-    desc: 'Rolls on its side as it orbits, appearing as a pale blue dot.',
+    type: 'Lab',
+    desc: 'Experiments and prototypes — half-finished, rule-breaking, learning by doing.',
   },
   {
     name: 'neptune',
@@ -118,8 +118,8 @@ export const PLANETS: Body[] = [
     distance: 70,
     color: 0x2e5fb5,
     texture: '/textures/neptune.jpg',
-    type: 'Ice Giant',
-    desc: 'A dark, cold, and very windy world in the outer solar system.',
+    type: 'Mind',
+    desc: 'Essays, ideas, and the thinking itself — process over product.',
   },
   {
     name: 'pluto',
@@ -128,8 +128,8 @@ export const PLANETS: Body[] = [
     distance: 85,
     color: 0xbcb5a7,
     texture: '/textures/pluto.jpg',
-    type: 'Dwarf Planet',
-    desc: 'A beloved dwarf planet floating in the Kuiper Belt.',
+    type: 'Archive',
+    desc: 'Retired and old work — cold storage, kept for the record.',
   },
 ];
 

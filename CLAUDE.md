@@ -43,6 +43,27 @@ done in the GitHub UI, not in code).
   (Kepler approximation `1/sqrt(distance)*0.015`) and `getBody(name)`. The scene,
   the info panel, the search box, and `getStaticPaths` for the per-planet pages
   all read from here. Add or change a body in this one file.
+- The bodies are an **identity map**, not astronomy: each body's `type` is its
+  **category label** (Core, Tools, Creative, Roots, Research, Ventures, Systems,
+  Lab, Mind, Archive) and `desc` is its **identity tagline**. These two content
+  fields are the only ones safe to edit — radius/distance/color/texture/name/
+  hasRing/isStar are load-bearing for the R3F scene.
+
+### Content model (projects)
+- Projects live as plain markdown in `src/content/projects/*.md`, loaded by a
+  `projects` content collection (Astro Content Layer `glob` loader) defined in
+  `src/content.config.ts`. The collection is the easy-to-extend core: **adding a
+  project = dropping one markdown file — no code changes.**
+- Each file's frontmatter `planet` field assigns its **category** (which body it
+  shows up under); the markdown body is the full write-up. Schema fields: `title`,
+  `planet`, `summary` (required); `status`, `year`, `tags`, `role`, `repo`,
+  `demo`, `featured` (optional).
+- `BodyDetail.astro` queries the collection, filters by the current body's name,
+  and renders project cards (sorted featured → year desc → title), or a tasteful
+  empty state when a category has none. `src/pages/projects/[...slug].astro`
+  renders each project as its own static page from the markdown body.
+- The Sun (`/star/sun`) is the **Core / about-me** page — static prose, **not**
+  project-driven (it never lists projects).
 
 ### Shared state
 - `src/store/solarStore.ts` (zustand) is the bridge between the WebGL canvas and

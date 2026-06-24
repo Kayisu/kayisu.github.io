@@ -1,0 +1,80 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getBody } from '../../data/planets';
+
+// One real static page per project. Deep links and refresh resolve natively.
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+const category = getBody(entry.data.planet);
+const accent = category
+  ? `#${category.color.toString(16).padStart(6, '0')}`
+  : '#ffffff';
+
+const statusLabels: Record<string, string> = {
+  active: 'Active',
+  shipped: 'Shipped',
+  prototype: 'Prototype',
+  wip: 'WIP',
+  archived: 'Archived',
+};
+---
+
+<BaseLayout title={`${entry.data.title} | Kayisu`} description={entry.data.summary}>
+  <div class="project-view" style={`--accent: ${accent};`}>
+    <a href={`/planet/${entry.data.planet}`} class="back-to-solar-btn">
+      <i class="fas fa-arrow-left"></i> Back to {category?.type ?? 'Solar System'}
+    </a>
+
+    <article class="project-article">
+      <header class="project-article-header">
+        {category && <p class="detail-eyebrow">{category.type}</p>}
+        <h1 class="project-article-title">{entry.data.title}</h1>
+        <p class="project-article-summary">{entry.data.summary}</p>
+
+        <ul class="project-meta">
+          {
+            entry.data.status && (
+              <li class={`status-badge status-${entry.data.status}`}>
+                {statusLabels[entry.data.status] ?? entry.data.status}
+              </li>
+            )
+          }
+          {entry.data.year && <li class="meta-item">{entry.data.year}</li>}
+          {entry.data.role && <li class="meta-item">{entry.data.role}</li>}
+          {entry.data.tags?.map((tag) => <li class="tag-pill">{tag}</li>)}
+        </ul>
+
+        {
+          (entry.data.repo || entry.data.demo) && (
+            <div class="project-links">
+              {entry.data.repo && (
+                <a class="project-link-btn" href={entry.data.repo} target="_blank" rel="noopener noreferrer">
+                  <i class="fab fa-github"></i> Repository
+                </a>
+              )}
+              {entry.data.demo && (
+                <a class="project-link-btn" href={entry.data.demo} target="_blank" rel="noopener noreferrer">
+                  <i class="fas fa-arrow-up-right-from-square"></i> Live demo
+                </a>
+              )}
+            </div>
+          )
+        }
+      </header>
+
+      <div class="prose">
+        <Content />
+      </div>
+    </article>
+  </div>
+</BaseLayout>

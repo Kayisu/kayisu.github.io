@@ -1,11 +1,47 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import BodyDetail from '../../components/ui/BodyDetail.astro';
 import { SUN } from '../../data/planets';
 
-// Dedicated page for the sun, preserving the original /star/sun route.
+// The "Core" — about me / manifesto. This is the one body page that is NOT
+// project-driven: it's a static prose bio. Placeholder draft copy for now.
+const accent = `#${SUN.color.toString(16).padStart(6, '0')}`;
 ---
 
-<BaseLayout title="Sun | Kayisu" description={SUN.desc}>
-  <BodyDetail body={SUN} />
+<BaseLayout title="Core | Kayisu" description={SUN.desc}>
+  <div class="project-view" style={`--accent: ${accent};`}>
+    <a href="/" class="back-to-solar-btn">
+      <i class="fas fa-arrow-left"></i> Back to Solar System
+    </a>
+
+    <article class="project-article">
+      <header class="project-article-header">
+        <p class="detail-eyebrow">{SUN.type}</p>
+        <h1 class="project-article-title">Emre Kaan Ataş</h1>
+        <p class="project-article-summary">{SUN.desc}</p>
+      </header>
+
+      <div class="prose">
+        <p>
+          <em>Draft — still writing this.</em> I'm a software developer who likes
+          building things that are equal parts ambitious and useful. This map is
+          how I think about my work: each orbit is a different kind of thing I
+          make, and the center is the part that ties it all together.
+        </p>
+
+        <h2>What I'm building</h2>
+        <p>
+          <em>Placeholder.</em> A short tour of the big bets and the day-to-day
+          engineering — the startups, the systems, and the experiments that keep
+          me up at night. I'll fill this in with the work I'm proudest of.
+        </p>
+
+        <h2>What I care about</h2>
+        <p>
+          <em>Placeholder.</em> The principles underneath the projects — why I
+          choose the problems I choose, what "good" looks like to me, and the
+          kind of impact I'm chasing.
+        </p>
+      </div>
+    </article>
+  </div>
 </BaseLayout>
