@@ -59,6 +59,7 @@ export default function TerrainMesh() {
     geom.setAttribute('normal', new THREE.BufferAttribute(normals, 3));
     geom.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
     geom.setIndex(new THREE.BufferAttribute(indices, 1));
+    geom.computeVertexNormals();
 
     return geom;
   }, []);

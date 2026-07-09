@@ -1,7 +1,7 @@
 import { useRef, useMemo, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
-import { BufferGeometryUtils } from 'three/addons/utils/BufferGeometryUtils';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils';
 import { useSandboxStore } from '../../store/sandboxStore';
 import { gridToWorld } from '../../lib/sandbox/grid';
 import { TOWER_BASE_RADIUS, TOWER_HEIGHT, TOWER_FLAG_HEIGHT, COLORS } from '../../lib/sandbox/constants';
@@ -26,9 +26,7 @@ export default function Towers() {
     flag.translate(0, TOWER_HEIGHT + TOWER_FLAG_HEIGHT, 0.4);
     flag.rotateY(Math.PI / 2);
 
-    const merged = new THREE.BufferGeometry();
-    THREE.BufferGeometryUtils.mergeGeometries([base, roof, pole, flag], false, merged);
-    return merged;
+    return mergeGeometries([base, roof, pole, flag], false);
   }, []);
 
   const material = useMemo(() => {
