@@ -1,0 +1,148 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import { EARTH_GAMES } from '../../../../data/games';
+---
+
+<BaseLayout
+  title="Earth Games | Kayisu"
+  description="Interactive browser experiments from the Earth playground."
+>
+  <main class="games-page">
+    <nav class="games-page__navigation" aria-label="Games navigation">
+      <a href="/planet/earth/">&larr; Back to Earth</a>
+      <a href="/">Solar System</a>
+    </nav>
+
+    <header class="games-page__header">
+      <p>Earth / Playground</p>
+      <h1>Games</h1>
+      <p>Small browser experiments, each with its own static page.</p>
+    </header>
+
+    <ul class="games-page__grid">
+      {
+        EARTH_GAMES.map((game) => (
+          <li>
+            <article class="games-page__card">
+              <div class="games-page__card-heading">
+                <h2>{game.title}</h2>
+                <span>{game.status}</span>
+              </div>
+              <p>{game.summary}</p>
+              <ul aria-label={`${game.title} features`}>
+                {game.controls.map((control) => <li>{control}</li>)}
+              </ul>
+              <a href={game.href}>Open {game.title} <span aria-hidden="true">&rarr;</span></a>
+            </article>
+          </li>
+        ))
+      }
+    </ul>
+  </main>
+</BaseLayout>
+
+<style>
+  .games-page {
+    position: fixed;
+    inset: 0;
+    overflow-y: auto;
+    padding: 2rem clamp(1.25rem, 5vw, 5rem) 5rem;
+    background:
+      radial-gradient(circle at 75% 15%, rgba(68, 113, 196, 0.18), transparent 34rem),
+      var(--bg-color);
+  }
+
+  .games-page__navigation {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  .games-page__navigation a,
+  .games-page__card > a {
+    color: var(--text-primary);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .games-page__header,
+  .games-page__grid {
+    width: min(100%, 960px);
+    margin-inline: auto;
+  }
+
+  .games-page__header {
+    padding: clamp(4rem, 10vw, 7rem) 0 2.5rem;
+  }
+
+  .games-page__header > p:first-child {
+    color: #83b4ff;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  .games-page__header h1 {
+    margin: 0.5rem 0 0.75rem;
+    font-size: clamp(3rem, 9vw, 5.5rem);
+    line-height: 1;
+  }
+
+  .games-page__header > p:last-child,
+  .games-page__card > p,
+  .games-page__card ul {
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .games-page__grid {
+    list-style: none;
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .games-page__card {
+    display: grid;
+    gap: 1.2rem;
+    padding: clamp(1.4rem, 4vw, 2rem);
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid var(--card-border);
+    border-radius: 18px;
+  }
+
+  .games-page__card-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .games-page__card-heading span {
+    color: #c9a8ff;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .games-page__card ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    padding-left: 1.1rem;
+  }
+
+  .games-page__card > a {
+    justify-self: start;
+    color: #9fc5ff;
+  }
+
+  a:focus-visible {
+    outline: 2px solid #9fc5ff;
+    outline-offset: 4px;
+    border-radius: 3px;
+  }
+</style>

@@ -1,0 +1,18 @@
+---
+interface Props {
+  title: string;
+  backHref: string;
+  backLabel: string;
+}
+
+const { title, backHref, backLabel } = Astro.props;
+---
+
+<main class="sandbox-shell" aria-label={title}>
+  <nav class="sandbox-shell__navigation" aria-label="Game navigation">
+    <a href={backHref}>
+      <span aria-hidden="true">&larr;</span> {backLabel}
+    </a>
+  </nav>
+  <slot />
+</main>

@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import GameShell from '../../../../components/games/GameShell.astro';
+import SandboxApp from '../../../../components/sandbox/SandboxApp';
+---
+
+<BaseLayout
+  title="Sandcastle Sandbox | Kayisu"
+  description="Sculpt terrain, guide water, and build a small coastal scene in the browser."
+>
+  <GameShell
+    title="Sandcastle Sandbox"
+    backHref="/planet/earth/games/"
+    backLabel="Back to Earth Games"
+  >
+    <SandboxApp client:only="react">
+      <div slot="fallback" class="sandbox-shell__status" role="status">
+        Loading sandbox&hellip;
+      </div>
+    </SandboxApp>
+  </GameShell>
+</BaseLayout>
