@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useSandboxStore } from '../../store/sandboxStore';
 import { TOOLS, DECORATIONS, SANDBOX_CONFIG } from '../../lib/sandbox/constants';
-import type { ToolType, DecorationType } from '../../lib/sandbox/constants';
 
 export default function SandboxControls() {
   const {

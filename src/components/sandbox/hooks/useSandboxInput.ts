@@ -2,12 +2,12 @@ import { useRef, useEffect } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useSandboxStore } from '../../../store/sandboxStore';
-import { worldToGrid, gridToWorld } from '../../../lib/sandbox/grid';
+import { worldToGrid } from '../../../lib/sandbox/grid';
 import { SANDBOX_CONFIG, BRUSH_STRENGTH, TOWER_FLATNESS_THRESHOLD } from '../../../lib/sandbox/constants';
 
 const groundPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
 const raycaster = new THREE.Raycaster();
-const pointer = { x: 0, y: 0 };
+const pointer = new THREE.Vector2();
 
 export function useSandboxInput() {
   const { gl, camera } = useThree();
@@ -18,7 +18,7 @@ export function useSandboxInput() {
   const {
     tool,
     brushSize,
-    activeDecoration,
+    decorType,
     heightGrid,
     waterGrid,
     towers,
@@ -28,7 +28,6 @@ export function useSandboxInput() {
     setGhostPosition,
     setGhostValid,
     setShowGhost,
-    setCameraTarget,
   } = useSandboxStore();
 
   // Track pointer position
@@ -47,10 +46,6 @@ export function useSandboxInput() {
     const onPointerDown = (e: PointerEvent) => {
       if (e.button !== 0) return;
       if (e.target !== canvas) return;
-      
-      // Ignore clicks on UI
-      const target = e.target as HTMLElement;
-      if (target.closest('.sandbox-controls')) return;
       
       isDragging.current = true;
       canvas.setPointerCapture(e.pointerId);
@@ -83,7 +78,11 @@ export function useSandboxInput() {
     };
   }, [canvas, tool, setShowGhost]);
 
-  function applyToolAtPoint(clientX: number, clientY: number, type: string) {
+  function applyToolAtPoint(
+    clientX: number,
+    clientY: number,
+    type: 'pointerdown' | 'pointermove',
+  ) {
     const rect = canvas.getBoundingClientRect();
     const px = ((clientX - rect.left) / rect.width) * 2 - 1;
     const py = -((clientY - rect.top) / rect.height) * 2 + 1;
@@ -131,7 +130,7 @@ export function useSandboxInput() {
         break;
       case 'decorate':
         if (type === 'pointerdown' && !isDecorationAt(gx, gz)) {
-          addDecoration(gx, gz, activeDecoration, Math.random() * Math.PI * 2, 0.8 + Math.random() * 0.4);
+          addDecoration(gx, gz, decorType, Math.random() * Math.PI * 2, 0.8 + Math.random() * 0.4);
         }
         break;
     }
@@ -163,8 +162,4 @@ export function useSandboxInput() {
     }
   });
 
-  // Keep camera target centered on sandbox
-  useFrame(() => {
-    setCameraTarget({ x: 0, z: 0 });
-  });
 }

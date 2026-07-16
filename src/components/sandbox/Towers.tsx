@@ -1,15 +1,18 @@
 import { useRef, useMemo, useEffect } from 'react';
-import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
-import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { useSandboxStore } from '../../store/sandboxStore';
 import { gridToWorld } from '../../lib/sandbox/grid';
-import { TOWER_BASE_RADIUS, TOWER_HEIGHT, TOWER_FLAG_HEIGHT, COLORS } from '../../lib/sandbox/constants';
-
-const MAX_TOWERS = 256;
+import {
+  TOWER_BASE_RADIUS,
+  TOWER_HEIGHT,
+  TOWER_FLAG_HEIGHT,
+  MAX_TOWERS,
+  COLORS,
+} from '../../lib/sandbox/constants';
 
 export default function Towers() {
-  const { towers } = useSandboxStore();
+  const towers = useSandboxStore((state) => state.towers);
   const meshRef = useRef<THREE.InstancedMesh>(null);
   const dummy = useRef(new THREE.Object3D()).current;
 
@@ -26,7 +29,15 @@ export default function Towers() {
     flag.translate(0, TOWER_HEIGHT + TOWER_FLAG_HEIGHT, 0.4);
     flag.rotateY(Math.PI / 2);
 
-    return mergeGeometries([base, roof, pole, flag], false);
+    const parts = [base, roof, pole, flag];
+    const merged = mergeGeometries(parts, false);
+    parts.forEach((part) => part.dispose());
+
+    if (!merged) {
+      throw new Error('Could not merge tower geometry.');
+    }
+
+    return merged;
   }, []);
 
   const material = useMemo(() => {
@@ -38,30 +49,26 @@ export default function Towers() {
     });
   }, []);
 
-  const instancedMesh = useMemo(() => {
-    const mesh = new THREE.InstancedMesh(towerGeometry, material, MAX_TOWERS);
+  useEffect(() => {
+    const mesh = meshRef.current;
+    if (!mesh) return;
+
     mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
-    mesh.count = 0;
-    mesh.castShadow = true;
-    mesh.receiveShadow = true;
-    return mesh;
-  }, [towerGeometry, material]);
+    const count = Math.min(towers.length, MAX_TOWERS);
 
-  // Update instances when towers array changes
-  useFrame(() => {
-    const mesh = instancedMesh;
-    mesh.count = towers.length;
-
-    towers.forEach((tower, i) => {
+    for (let i = 0; i < count; i++) {
+      const tower = towers[i];
       const { x, z } = gridToWorld(tower.gx, tower.gz);
       dummy.position.set(x, 0, z);
-      dummy.rotation.y = tower.rotation;
+      dummy.rotation.set(0, tower.rotation, 0);
+      dummy.scale.set(1, 1, 1);
       dummy.updateMatrix();
       mesh.setMatrixAt(i, dummy.matrix);
-    });
+    }
 
+    mesh.count = count;
     mesh.instanceMatrix.needsUpdate = true;
-  });
+  }, [dummy, towers]);
 
   useEffect(() => {
     return () => {
@@ -70,5 +77,13 @@ export default function Towers() {
     };
   }, [towerGeometry, material]);
 
-  return <instancedMesh ref={meshRef} args={[towerGeometry, material, MAX_TOWERS]} />;
+  return (
+    <instancedMesh
+      ref={meshRef}
+      args={[towerGeometry, material, MAX_TOWERS]}
+      castShadow
+      receiveShadow
+      dispose={null}
+    />
+  );
 }

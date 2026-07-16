@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { HeightGrid } from '../lib/sandbox/terrain';
 import { WaterGrid } from '../lib/sandbox/water';
-import { SANDBOX_CONFIG, type ToolType, type DecorationType, TOOLS, DECORATIONS } from '../lib/sandbox/constants';
+import { type ToolType, type DecorationType } from '../lib/sandbox/constants';
 
 interface Tower {
   gx: number;
@@ -49,18 +49,10 @@ interface SandboxState {
   ghostValid: boolean;
   setGhostValid: (valid: boolean) => void;
 
-  // Camera state
-  cameraTarget: { x: number; z: number };
-  setCameraTarget: (target: { x: number; z: number }) => void;
-
   // Persistence
   save: () => void;
   load: () => boolean;
   reset: () => void;
-
-  // Derived
-  activeTool: ReturnType<typeof TOOLS.find>;
-  activeDecoration: ReturnType<typeof DECORATIONS.find>;
 }
 
 const STORAGE_KEY = 'kayisu-sandbox-state';
@@ -109,10 +101,6 @@ export const useSandboxStore = create<SandboxState>((set, get) => ({
   ghostValid: true,
   setGhostValid: (valid) => set({ ghostValid: valid }),
 
-  // Camera
-  cameraTarget: { x: 0, z: 0 },
-  setCameraTarget: (target) => set({ cameraTarget: target }),
-
   // Persistence
   save: () => {
     const state = get();
@@ -155,16 +143,7 @@ export const useSandboxStore = create<SandboxState>((set, get) => ({
     set({
       towers: [],
       decorations: [],
-      cameraTarget: { x: 0, z: 0 },
     });
     localStorage.removeItem(STORAGE_KEY);
-  },
-
-  // Derived
-  get activeTool() {
-    return TOOLS.find((t) => t.type === get().tool);
-  },
-  get activeDecoration() {
-    return DECORATIONS.find((d) => d.type === get().decorType);
   },
 }));

@@ -1,5 +1,4 @@
-import { Suspense } from 'react';
-import { Canvas, extend } from '@react-three/fiber';
+import { Suspense, useMemo } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from '@react-three/drei';
 import TerrainMesh from './TerrainMesh';
@@ -7,14 +6,15 @@ import WaterMesh from './WaterMesh';
 import Towers from './Towers';
 import Decorations from './Decorations';
 import SkyDome from './SkyDome';
-import { useSandboxStore } from '../../store/sandboxStore';
 import { useWaterSim } from './hooks/useWaterSim';
 import { useSandboxInput } from './hooks/useSandboxInput';
-
-extend({ OrbitControls });
+import { CAMERA_DEFAULTS } from '../../lib/sandbox/constants';
 
 export default function SandboxScene() {
-  const { cameraTarget } = useSandboxStore();
+  const cameraTarget = useMemo(
+    () => new THREE.Vector3(...CAMERA_DEFAULTS.target),
+    [],
+  );
 
   // Run water simulation
   useWaterSim();

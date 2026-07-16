@@ -1,11 +1,15 @@
 import { useRef, useMemo, useEffect } from 'react';
-import { useFrame, useThree } from '@react-three/fiber';
+import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useSandboxStore } from '../../store/sandboxStore';
-import { GRID_SIZE, WORLD_SIZE, CELL_SIZE, COLORS, WATER_RENDER_THRESHOLD } from '../../lib/sandbox/constants';
-import { WaterGrid } from '../../lib/sandbox/water';
-
-const MAX_WATER_INSTANCES = 8192;
+import {
+  GRID_SIZE,
+  WORLD_SIZE,
+  CELL_SIZE,
+  COLORS,
+  WATER_RENDER_THRESHOLD,
+  MAX_WATER_INSTANCES,
+} from '../../lib/sandbox/constants';
 
 // Water vertex shader
 const waterVertexShader = `
@@ -66,9 +70,8 @@ const waterFragmentShader = `
 `;
 
 export default function WaterMesh() {
-  const { waterGrid } = useSandboxStore();
+  const waterGrid = useSandboxStore((state) => state.waterGrid);
   const meshRef = useRef<THREE.InstancedMesh>(null);
-  const { gl } = useThree();
 
   // Shared geometry (quad)
   const geometry = useMemo(() => {
@@ -95,20 +98,14 @@ export default function WaterMesh() {
     return mat;
   }, []);
 
-  // Instanced mesh
-  const instancedMesh = useMemo(() => {
-    const mesh = new THREE.InstancedMesh(geometry, material, MAX_WATER_INSTANCES);
-    mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
-    mesh.frustumCulled = true;
-    mesh.count = 0;
-    return mesh;
-  }, [geometry, material]);
-
   const dummy = useRef(new THREE.Object3D()).current;
 
   // Update water instances each frame
   useFrame((state) => {
-    const mesh = instancedMesh;
+    const mesh = meshRef.current;
+    if (!mesh) return;
+
+    mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
     const time = state.clock.getElapsedTime();
 
     // Update shader time
@@ -149,5 +146,12 @@ export default function WaterMesh() {
     };
   }, [geometry, material]);
 
-  return <instancedMesh ref={meshRef} args={[geometry, material, MAX_WATER_INSTANCES]} />;
+  return (
+    <instancedMesh
+      ref={meshRef}
+      args={[geometry, material, MAX_WATER_INSTANCES]}
+      frustumCulled
+      dispose={null}
+    />
+  );
 }

@@ -23,6 +23,9 @@ export const TOWER_BASE_RADIUS = 1.2;
 export const TOWER_HEIGHT = 2.8;
 export const TOWER_FLAG_HEIGHT = 0.6;
 export const TOWER_FLATNESS_THRESHOLD = 0.25;
+export const MAX_TOWERS = 256;
+export const MAX_DECORATIONS = 1024;
+export const MAX_WATER_INSTANCES = GRID_SIZE * GRID_SIZE;
 
 export const DECOR_SCALE = {
   palm: 1.0,
