@@ -1,165 +1,167 @@
-import { useRef, useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useSandboxStore } from '../../../store/sandboxStore';
 import { worldToGrid } from '../../../lib/sandbox/grid';
-import { SANDBOX_CONFIG, BRUSH_STRENGTH, TOWER_FLATNESS_THRESHOLD } from '../../../lib/sandbox/constants';
+import {
+  BRUSH_STRENGTH,
+  SANDBOX_CONFIG,
+  TOWER_FLATNESS_THRESHOLD,
+} from '../../../lib/sandbox/constants';
 
 const groundPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
-const raycaster = new THREE.Raycaster();
-const pointer = new THREE.Vector2();
 
 export function useSandboxInput() {
   const { gl, camera } = useThree();
   const canvas = gl.domElement;
   const isDragging = useRef(false);
-  const lastGridPos = useRef<{ gx: number; gz: number } | null>(null);
+  const lastGridPosition = useRef<{ gx: number; gz: number } | null>(null);
+  const pointer = useRef(new THREE.Vector2()).current;
+  const raycaster = useRef(new THREE.Raycaster()).current;
+  const intersection = useRef(new THREE.Vector3()).current;
 
-  const {
-    tool,
-    brushSize,
-    decorType,
-    heightGrid,
-    waterGrid,
-    towers,
-    decorations,
-    addTower,
-    addDecoration,
-    setGhostPosition,
-    setGhostValid,
-    setShowGhost,
-  } = useSandboxStore();
+  const applyToolAtPoint = useCallback((
+    clientX: number,
+    clientY: number,
+    eventType: 'pointerdown' | 'pointermove',
+  ) => {
+    const rect = canvas.getBoundingClientRect();
+    pointer.set(
+      ((clientX - rect.left) / rect.width) * 2 - 1,
+      -((clientY - rect.top) / rect.height) * 2 + 1,
+    );
+    raycaster.setFromCamera(pointer, camera);
 
-  // Track pointer position
+    if (!raycaster.ray.intersectPlane(groundPlane, intersection)) return;
+    const { gx, gz } = worldToGrid(intersection.x, intersection.z);
+
+    if (
+      lastGridPosition.current?.gx === gx
+      && lastGridPosition.current.gz === gz
+    ) {
+      return;
+    }
+    lastGridPosition.current = { gx, gz };
+
+    const state = useSandboxStore.getState();
+    const radius = SANDBOX_CONFIG.BRUSH_SIZES[state.brushSize];
+
+    switch (state.tool) {
+      case 'build':
+        state.heightGrid.build(gx, gz, radius, BRUSH_STRENGTH);
+        break;
+      case 'dig': {
+        state.heightGrid.dig(gx, gz, radius, BRUSH_STRENGTH);
+        if (state.heightGrid.get(gx, gz) < SANDBOX_CONFIG.WATER_LEVEL) {
+          state.waterGrid.add(gx, gz, 0.3);
+        }
+        break;
+      }
+      case 'flatten':
+        state.heightGrid.flatten(gx, gz, radius, 0.5);
+        break;
+      case 'tower':
+        if (
+          eventType === 'pointerdown'
+          && state.heightGrid.isFlat(gx, gz, 2, TOWER_FLATNESS_THRESHOLD)
+          && !state.towers.some((tower) => tower.gx === gx && tower.gz === gz)
+        ) {
+          state.addTower(gx, gz, Math.random() * Math.PI * 2);
+          state.setShowGhost(false);
+        }
+        break;
+      case 'decorate':
+        if (
+          eventType === 'pointerdown'
+          && !state.decorations.some(
+            (decoration) => decoration.gx === gx && decoration.gz === gz,
+          )
+        ) {
+          state.addDecoration(
+            gx,
+            gz,
+            state.decorType,
+            Math.random() * Math.PI * 2,
+            0.8 + Math.random() * 0.4,
+          );
+        }
+        break;
+    }
+  }, [camera, canvas, intersection, pointer, raycaster]);
+
   useEffect(() => {
-    const onPointerMove = (e: PointerEvent) => {
+    const onPointerMove = (event: PointerEvent) => {
       const rect = canvas.getBoundingClientRect();
-      pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-      pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+      pointer.set(
+        ((event.clientX - rect.left) / rect.width) * 2 - 1,
+        -((event.clientY - rect.top) / rect.height) * 2 + 1,
+      );
     };
+
     canvas.addEventListener('pointermove', onPointerMove);
     return () => canvas.removeEventListener('pointermove', onPointerMove);
-  }, [canvas]);
+  }, [canvas, pointer]);
 
-  // Handle pointer events
   useEffect(() => {
-    const onPointerDown = (e: PointerEvent) => {
-      if (e.button !== 0) return;
-      if (e.target !== canvas) return;
-      
+    const onPointerDown = (event: PointerEvent) => {
+      if (event.button !== 0 || event.target !== canvas || !event.isPrimary) return;
       isDragging.current = true;
-      canvas.setPointerCapture(e.pointerId);
-      applyToolAtPoint(e.clientX, e.clientY, 'pointerdown');
+      canvas.setPointerCapture(event.pointerId);
+      applyToolAtPoint(event.clientX, event.clientY, 'pointerdown');
     };
 
-    const onPointerMove = (e: PointerEvent) => {
-      if (!isDragging.current) return;
-      applyToolAtPoint(e.clientX, e.clientY, 'pointermove');
+    const onPointerMove = (event: PointerEvent) => {
+      if (!isDragging.current || !event.isPrimary) return;
+      applyToolAtPoint(event.clientX, event.clientY, 'pointermove');
     };
 
-    const onPointerUp = () => {
+    const stopDragging = () => {
       isDragging.current = false;
-      lastGridPos.current = null;
-      if (tool === 'tower') setShowGhost(false);
+      lastGridPosition.current = null;
+      const state = useSandboxStore.getState();
+      if (state.showGhost) state.setShowGhost(false);
     };
 
     canvas.addEventListener('pointerdown', onPointerDown);
     canvas.addEventListener('pointermove', onPointerMove);
-    canvas.addEventListener('pointerup', onPointerUp);
-    canvas.addEventListener('pointerleave', onPointerUp);
-    canvas.addEventListener('pointercancel', onPointerUp);
+    canvas.addEventListener('pointerup', stopDragging);
+    canvas.addEventListener('pointerleave', stopDragging);
+    canvas.addEventListener('pointercancel', stopDragging);
 
     return () => {
       canvas.removeEventListener('pointerdown', onPointerDown);
       canvas.removeEventListener('pointermove', onPointerMove);
-      canvas.removeEventListener('pointerup', onPointerUp);
-      canvas.removeEventListener('pointerleave', onPointerUp);
-      canvas.removeEventListener('pointercancel', onPointerUp);
+      canvas.removeEventListener('pointerup', stopDragging);
+      canvas.removeEventListener('pointerleave', stopDragging);
+      canvas.removeEventListener('pointercancel', stopDragging);
     };
-  }, [canvas, tool, setShowGhost]);
+  }, [applyToolAtPoint, canvas]);
 
-  function applyToolAtPoint(
-    clientX: number,
-    clientY: number,
-    type: 'pointerdown' | 'pointermove',
-  ) {
-    const rect = canvas.getBoundingClientRect();
-    const px = ((clientX - rect.left) / rect.width) * 2 - 1;
-    const py = -((clientY - rect.top) / rect.height) * 2 + 1;
-
-    raycaster.setFromCamera(new THREE.Vector2(px, py), camera);
-    
-    const intersect = new THREE.Vector3();
-    if (!raycaster.ray.intersectPlane(groundPlane, intersect)) return;
-
-    const { gx, gz } = worldToGrid(intersect.x, intersect.z);
-    
-    // Skip if same cell for continuous tools
-    if (lastGridPos.current && 
-        lastGridPos.current.gx === gx && 
-        lastGridPos.current.gz === gz) {
-      return;
-    }
-    lastGridPos.current = { gx, gz };
-
-    const radius = SANDBOX_CONFIG.BRUSH_SIZES[brushSize];
-
-    switch (tool) {
-      case 'build':
-        heightGrid.build(gx, gz, radius, BRUSH_STRENGTH);
-        break;
-      case 'dig':
-        heightGrid.dig(gx, gz, radius, BRUSH_STRENGTH);
-        // Add water if dug deep enough
-        const h = heightGrid.get(gx, gz);
-        if (h < SANDBOX_CONFIG.WATER_LEVEL) {
-          waterGrid.add(gx, gz, 0.3);
-        }
-        break;
-      case 'flatten':
-        heightGrid.flatten(gx, gz, radius, 0.5);
-        break;
-      case 'tower':
-        if (type === 'pointerdown') {
-          const valid = heightGrid.isFlat(gx, gz, 2, TOWER_FLATNESS_THRESHOLD);
-          if (valid && !isTowerAt(gx, gz)) {
-            addTower(gx, gz, Math.random() * Math.PI * 2);
-            setShowGhost(false);
-          }
-        }
-        break;
-      case 'decorate':
-        if (type === 'pointerdown' && !isDecorationAt(gx, gz)) {
-          addDecoration(gx, gz, decorType, Math.random() * Math.PI * 2, 0.8 + Math.random() * 0.4);
-        }
-        break;
-    }
-  }
-
-  function isTowerAt(gx: number, gz: number): boolean {
-    return towers.some((t) => t.gx === gx && t.gz === gz);
-  }
-
-  function isDecorationAt(gx: number, gz: number): boolean {
-    return decorations.some((d) => d.gx === gx && d.gz === gz);
-  }
-
-  // Update ghost preview for tower tool
   useFrame(() => {
-    if (tool !== 'tower') {
-      setShowGhost(false);
+    const state = useSandboxStore.getState();
+    if (state.tool !== 'tower') {
+      if (state.showGhost) state.setShowGhost(false);
       return;
     }
 
     raycaster.setFromCamera(pointer, camera);
-    const intersect = new THREE.Vector3();
-    if (raycaster.ray.intersectPlane(groundPlane, intersect)) {
-      const { gx, gz } = worldToGrid(intersect.x, intersect.z);
-      const valid = heightGrid.isFlat(gx, gz, 2, TOWER_FLATNESS_THRESHOLD) && !isTowerAt(gx, gz);
-      setGhostPosition({ gx, gz });
-      setGhostValid(valid);
-      setShowGhost(true);
+    if (!raycaster.ray.intersectPlane(groundPlane, intersection)) {
+      if (state.showGhost) state.setShowGhost(false);
+      return;
     }
-  });
 
+    const { gx, gz } = worldToGrid(intersection.x, intersection.z);
+    const valid = state.heightGrid.isFlat(
+      gx,
+      gz,
+      2,
+      TOWER_FLATNESS_THRESHOLD,
+    ) && !state.towers.some((tower) => tower.gx === gx && tower.gz === gz);
+
+    if (state.ghostPosition?.gx !== gx || state.ghostPosition.gz !== gz) {
+      state.setGhostPosition({ gx, gz });
+    }
+    if (state.ghostValid !== valid) state.setGhostValid(valid);
+    if (!state.showGhost) state.setShowGhost(true);
+  });
 }

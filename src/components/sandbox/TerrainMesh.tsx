@@ -9,7 +9,7 @@ const TRIANGLE_COUNT = (GRID_SIZE - 1) * (GRID_SIZE - 1) * 2;
 
 export default function TerrainMesh() {
   const meshRef = useRef<THREE.Mesh>(null);
-  const { heightGrid } = useSandboxStore();
+  const heightGrid = useSandboxStore((state) => state.heightGrid);
 
   // Create geometry once
   const geometry = useMemo(() => {

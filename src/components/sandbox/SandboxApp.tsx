@@ -1,4 +1,4 @@
-import { Suspense, useRef, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import * as THREE from 'three';
 import SandboxScene from './SandboxScene';
@@ -8,16 +8,13 @@ import { useSandboxStore } from '../../store/sandboxStore';
 import { CAMERA_DEFAULTS } from '../../lib/sandbox/constants';
 
 export default function SandboxApp() {
-  const { showUI, load } = useSandboxStore();
+  const load = useSandboxStore((state) => state.load);
   const [canvasReady, setCanvasReady] = useState(false);
   const [webGLAvailable, setWebGLAvailable] = useState<boolean | null>(null);
 
-  // Load persisted state on mount
-  const loaded = useRef(false);
-  if (!loaded.current) {
+  useEffect(() => {
     load();
-    loaded.current = true;
-  }
+  }, [load]);
 
   useEffect(() => {
     const probe = document.createElement('canvas');
@@ -81,7 +78,7 @@ export default function SandboxApp() {
         </SandboxErrorBoundary>
       )}
 
-      {showUI && <SandboxControls />}
+      <SandboxControls />
     </div>
   );
 }

@@ -58,6 +58,15 @@ export default function SandboxScene() {
         minAzimuthAngle={-Math.PI / 4}
         maxAzimuthAngle={Math.PI / 4}
         target={cameraTarget}
+        mouseButtons={{
+          LEFT: undefined,
+          MIDDLE: THREE.MOUSE.PAN,
+          RIGHT: THREE.MOUSE.ROTATE,
+        }}
+        touches={{
+          ONE: undefined,
+          TWO: THREE.TOUCH.DOLLY_ROTATE,
+        }}
       />
 
       {/* Scene objects */}
