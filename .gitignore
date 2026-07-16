@@ -11,3 +11,7 @@ npm-debug.log*
 .env.production
 # macOS / editors
 .DS_Store
+AGENTS.md
+CODEX_IMPLEMENTATION_REPORT.md
+CODEX_PROJECT_AUDIT.md
+CODEX_RELEVANT_FILES.txt
