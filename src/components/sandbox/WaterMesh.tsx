@@ -72,6 +72,7 @@ const waterFragmentShader = `
 export default function WaterMesh() {
   const waterGrid = useSandboxStore((state) => state.waterGrid);
   const meshRef = useRef<THREE.InstancedMesh>(null);
+  const renderedRevision = useRef(-1);
 
   // Shared geometry (quad)
   const geometry = useMemo(() => {
@@ -100,18 +101,19 @@ export default function WaterMesh() {
 
   const dummy = useRef(new THREE.Object3D()).current;
 
-  // Update water instances each frame
+  useEffect(() => {
+    meshRef.current?.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+  }, []);
+
+  // Animate the shader every frame, but rebuild instances only after simulation changes.
   useFrame((state) => {
     const mesh = meshRef.current;
     if (!mesh) return;
 
-    mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
-    const time = state.clock.getElapsedTime();
+    material.uniforms.uTime.value = state.clock.getElapsedTime();
+    if (renderedRevision.current === waterGrid.revision) return;
+    renderedRevision.current = waterGrid.revision;
 
-    // Update shader time
-    material.uniforms.uTime.value = time;
-
-    // Rebuild instances from water grid
     let count = 0;
 
     for (let gz = 0; gz < GRID_SIZE; gz++) {
@@ -119,15 +121,14 @@ export default function WaterMesh() {
       const z = (gz + 0.5) * CELL_SIZE - WORLD_SIZE * 0.5;
       
       for (let gx = 0; gx < GRID_SIZE; gx++) {
-        if (count >= MAX_WATER_INSTANCES) break;
-
         const waterDepth = waterGrid.data[base + gx];
         if (waterDepth < WATER_RENDER_THRESHOLD) continue;
 
         const x = (gx + 0.5) * CELL_SIZE - WORLD_SIZE * 0.5;
         
         dummy.position.set(x, waterDepth * 0.5, z);
-        dummy.rotation.x = -Math.PI / 2;
+        dummy.rotation.set(0, 0, 0);
+        dummy.scale.set(1, 1, 1);
         dummy.updateMatrix();
         mesh.setMatrixAt(count, dummy.matrix);
         count++;
@@ -150,7 +151,7 @@ export default function WaterMesh() {
     <instancedMesh
       ref={meshRef}
       args={[geometry, material, MAX_WATER_INSTANCES]}
-      frustumCulled
+      frustumCulled={false}
       dispose={null}
     />
   );

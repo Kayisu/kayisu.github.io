@@ -2,7 +2,7 @@ import { useRef, useMemo, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useSandboxStore } from '../../store/sandboxStore';
-import { GRID_SIZE, WORLD_SIZE, CELL_SIZE, MAX_HEIGHT, COLORS } from '../../lib/sandbox/constants';
+import { GRID_SIZE, WORLD_SIZE, CELL_SIZE, COLORS } from '../../lib/sandbox/constants';
 
 const VERTEX_COUNT = GRID_SIZE * GRID_SIZE;
 const TRIANGLE_COUNT = (GRID_SIZE - 1) * (GRID_SIZE - 1) * 2;
@@ -75,28 +75,25 @@ export default function TerrainMesh() {
     });
   }, []);
 
-  // Update vertex positions (height) and normals each frame
+  // Apply only terrain edits accumulated since the previous rendered frame.
   useFrame(() => {
     const mesh = meshRef.current;
-    if (!mesh) return;
+    if (!mesh || !heightGrid.hasDirty()) return;
 
     const positions = mesh.geometry.attributes.position;
-    const normals = mesh.geometry.attributes.normal;
     const data = heightGrid.data;
+    const { minX, minZ, maxX, maxZ } = heightGrid.getDirtyRect();
 
-    // Update heights
-    for (let i = 0; i < VERTEX_COUNT; i++) {
-      positions.array[i * 3 + 1] = data[i];
+    for (let gz = minZ; gz <= maxZ; gz++) {
+      const row = gz * GRID_SIZE;
+      for (let gx = minX; gx <= maxX; gx++) {
+        const vertexIndex = row + gx;
+        positions.array[vertexIndex * 3 + 1] = data[vertexIndex];
+      }
     }
     positions.needsUpdate = true;
-
-    // Recompute normals (only for dirty region for perf)
-    const { minX, minZ, maxX, maxZ } = heightGrid.getDirtyRect();
-    if (heightGrid.hasDirty()) {
-      // For simplicity, recompute all - 16k vertices is fast enough
-      mesh.geometry.computeVertexNormals();
-      heightGrid.clearDirty();
-    }
+    mesh.geometry.computeVertexNormals();
+    heightGrid.clearDirty();
   });
 
   // Cleanup

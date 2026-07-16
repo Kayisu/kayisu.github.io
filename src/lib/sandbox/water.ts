@@ -1,16 +1,29 @@
-import { GRID_SIZE, WATER_LEVEL, SEA_LEVEL, WATER_DIFFUSION, WATER_EVAPORATION, WATER_STEPS_PER_FRAME } from './constants';
-import { idx, inBounds, neighbors4, forEachCell } from './grid';
+import {
+  GRID_SIZE,
+  SEA_LEVEL,
+  WATER_DIFFUSION,
+  WATER_EVAPORATION,
+  WATER_LEVEL,
+  WATER_STEPS_PER_TICK,
+} from './constants';
+import { idx, inBounds } from './grid';
 import { HeightGrid } from './terrain';
 
+const NEIGHBOR_OFFSETS = [
+  [-1, 0],
+  [1, 0],
+  [0, -1],
+  [0, 1],
+] as const;
+
 export class WaterGrid {
-  data: Float32Array;    // water depth (0 = dry)
-  next: Float32Array;    // next frame buffer
-  dirty: Uint8Array;     // cells that changed this frame
+  data: Float32Array;
+  next: Float32Array;
+  revision = 0;
 
   constructor() {
     this.data = new Float32Array(GRID_SIZE * GRID_SIZE);
     this.next = new Float32Array(GRID_SIZE * GRID_SIZE);
-    this.dirty = new Uint8Array(GRID_SIZE * GRID_SIZE);
   }
 
   get(gx: number, gz: number): number {
@@ -20,16 +33,20 @@ export class WaterGrid {
 
   set(gx: number, gz: number, value: number): void {
     if (!inBounds(gx, gz)) return;
-    const i = idx(gx, gz);
-    this.data[i] = Math.max(0, value);
-    this.dirty[i] = 1;
+    const index = idx(gx, gz);
+    const nextValue = Math.max(0, value);
+    if (this.data[index] === nextValue) return;
+    this.data[index] = nextValue;
+    this.revision++;
   }
 
   add(gx: number, gz: number, delta: number): void {
     if (!inBounds(gx, gz)) return;
-    const i = idx(gx, gz);
-    this.data[i] = Math.max(0, this.data[i] + delta);
-    this.dirty[i] = 1;
+    const index = idx(gx, gz);
+    const nextValue = Math.max(0, this.data[index] + delta);
+    if (this.data[index] === nextValue) return;
+    this.data[index] = nextValue;
+    this.revision++;
   }
 
   has(gx: number, gz: number): boolean {
@@ -37,153 +54,120 @@ export class WaterGrid {
     return this.data[idx(gx, gz)] > 0.01;
   }
 
-  clearDirty(): void {
-    this.dirty.fill(0);
+  replace(values: ArrayLike<number>): void {
+    this.data.set(values);
+    this.next.set(values);
+    this.revision++;
   }
 
-  /** Check if any water exists and mark dirty cells for rendering update */
-  getDirtyCells(): Array<{ gx: number; gz: number }> {
-    const out: Array<{ gx: number; gz: number }> = [];
-    for (let i = 0; i < this.dirty.length; i++) {
-      if (this.dirty[i]) {
-        out.push({ gx: i % GRID_SIZE, gz: Math.floor(i / GRID_SIZE) });
-      }
-    }
-    return out;
-  }
-
-  /** 
-   * Cellular automata water simulation:
-   * - Water flows from higher total elevation (terrain + water) to lower
-   * - Ocean source at bottom edge maintains SEA_LEVEL
-   * - Diffusion spreads water to neighbors
-   * - Evaporation slowly removes water
-   */
+  /** Run the configured simulation substeps and publish one visual revision. */
   step(heightGrid: HeightGrid): void {
-    // Multiple sub-steps per frame for stability
-    for (let step = 0; step < WATER_STEPS_PER_FRAME; step++) {
-      this.singleStep(heightGrid);
+    let changed = false;
+    for (let step = 0; step < WATER_STEPS_PER_TICK; step++) {
+      changed = this.singleStep(heightGrid) || changed;
     }
+    if (changed) this.revision++;
   }
 
-  private singleStep(heightGrid: HeightGrid): void {
-    this.clearDirty();
-    this.next.set(this.data); // copy current to next
+  private singleStep(heightGrid: HeightGrid): boolean {
+    this.next.set(this.data);
 
-    // 1. Ocean boundary condition: bottom row (z = GRID_SIZE - 1) connects to sea
     const bottomZ = GRID_SIZE - 1;
     for (let gx = 0; gx < GRID_SIZE; gx++) {
-      const i = idx(gx, bottomZ);
-      const terrainH = heightGrid.data[i];
-      const targetLevel = Math.max(SEA_LEVEL, terrainH + WATER_LEVEL);
-      if (this.next[i] < targetLevel) {
-        this.next[i] = targetLevel;
-        this.dirty[i] = 1;
-      }
+      const index = idx(gx, bottomZ);
+      const targetLevel = Math.max(
+        SEA_LEVEL,
+        heightGrid.data[index] + WATER_LEVEL,
+      );
+      if (this.next[index] < targetLevel) this.next[index] = targetLevel;
     }
 
-    // 2. Flow simulation: water moves from high total elevation to low
-    // Total elevation = terrain + water
     for (let gz = 0; gz < GRID_SIZE; gz++) {
-      const base = gz * GRID_SIZE;
+      const row = gz * GRID_SIZE;
       for (let gx = 0; gx < GRID_SIZE; gx++) {
-        const i = base + gx;
-        const waterHere = this.data[i];
+        const index = row + gx;
+        const waterHere = this.data[index];
         if (waterHere <= 0.001) continue;
 
-        const terrainHere = heightGrid.data[i];
-        const totalHere = terrainHere + waterHere;
+        const totalHere = heightGrid.data[index] + waterHere;
+        for (const [offsetX, offsetZ] of NEIGHBOR_OFFSETS) {
+          const neighborX = gx + offsetX;
+          const neighborZ = gz + offsetZ;
+          if (!inBounds(neighborX, neighborZ)) continue;
 
-        // Check 4 neighbors
-        const nbs = neighbors4(gx, gz);
-        let totalOutflow = 0;
+          const neighborIndex = neighborZ * GRID_SIZE + neighborX;
+          const totalThere = heightGrid.data[neighborIndex]
+            + this.data[neighborIndex];
+          const difference = totalHere - totalThere;
+          if (difference <= 0.01) continue;
 
-        for (const nb of nbs) {
-          const j = idx(nb.gx, nb.gz);
-          const terrainThere = heightGrid.data[j];
-          const waterThere = this.data[j];
-          const totalThere = terrainThere + waterThere;
-
-          // Flow if neighbor is lower
-          const diff = totalHere - totalThere;
-          if (diff > 0.01) {
-            const flow = Math.min(waterHere * 0.25, diff * WATER_DIFFUSION);
-            this.next[i] -= flow;
-            this.next[j] += flow;
-            totalOutflow += flow;
-            this.dirty[i] = 1;
-            this.dirty[j] = 1;
-          }
+          const flow = Math.min(
+            waterHere * 0.25,
+            difference * WATER_DIFFUSION,
+          );
+          this.next[index] -= flow;
+          this.next[neighborIndex] += flow;
         }
 
-        // Clamp
-        if (this.next[i] < 0) this.next[i] = 0;
+        if (this.next[index] < 0) this.next[index] = 0;
       }
     }
 
-    // 3. Diffusion: spread water to equalize (even on flat terrain)
     for (let gz = 0; gz < GRID_SIZE; gz++) {
-      const base = gz * GRID_SIZE;
+      const row = gz * GRID_SIZE;
       for (let gx = 0; gx < GRID_SIZE; gx++) {
-        const i = base + gx;
-        const waterHere = this.next[i];
+        const index = row + gx;
+        const waterHere = this.next[index];
         if (waterHere <= 0.001) continue;
 
-        const nbs = neighbors4(gx, gz);
-        let totalDiff = 0;
+        for (const [offsetX, offsetZ] of NEIGHBOR_OFFSETS) {
+          const neighborX = gx + offsetX;
+          const neighborZ = gz + offsetZ;
+          if (!inBounds(neighborX, neighborZ)) continue;
 
-        for (const nb of nbs) {
-          const j = idx(nb.gx, nb.gz);
-          const diff = waterHere - this.next[j];
-          if (diff > 0.005) {
-            const flow = diff * 0.1;
-            this.next[i] -= flow;
-            this.next[j] += flow;
-            totalDiff += flow;
-            this.dirty[i] = 1;
-            this.dirty[j] = 1;
-          }
+          const neighborIndex = neighborZ * GRID_SIZE + neighborX;
+          const difference = waterHere - this.next[neighborIndex];
+          if (difference <= 0.005) continue;
+
+          const flow = difference * 0.1;
+          this.next[index] -= flow;
+          this.next[neighborIndex] += flow;
         }
       }
     }
 
-    // 4. Evaporation
-    for (let i = 0; i < this.next.length; i++) {
-      if (this.next[i] > 0) {
-        this.next[i] = Math.max(0, this.next[i] - WATER_EVAPORATION);
-        if (this.next[i] < 0.001) this.next[i] = 0;
-        if (this.next[i] !== this.data[i]) this.dirty[i] = 1;
+    let changed = false;
+    for (let index = 0; index < this.next.length; index++) {
+      if (this.next[index] > 0) {
+        this.next[index] = Math.max(0, this.next[index] - WATER_EVAPORATION);
+        if (this.next[index] < 0.001) this.next[index] = 0;
       }
+      if (this.next[index] !== this.data[index]) changed = true;
     }
 
-    // Swap buffers
-    const tmp = this.data;
+    const current = this.data;
     this.data = this.next;
-    this.next = tmp;
+    this.next = current;
+    return changed;
   }
 
-  /** Add water at a cell (e.g., from digging connecting to ocean) */
   addWater(gx: number, gz: number, amount: number): void {
     this.add(gx, gz, amount);
   }
 
-  /** Reset entire grid */
   reset(): void {
     this.data.fill(0);
     this.next.fill(0);
-    this.dirty.fill(0);
+    this.revision++;
   }
 
-  /** Serialize for localStorage */
   toJSON(): string {
     return JSON.stringify(Array.from(this.data));
   }
 
-  /** Deserialize from localStorage */
   static fromJSON(json: string): WaterGrid {
     const grid = new WaterGrid();
-    const arr = JSON.parse(json) as number[];
-    grid.data.set(arr);
+    grid.replace(JSON.parse(json) as number[]);
     return grid;
   }
 }

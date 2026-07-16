@@ -157,9 +157,8 @@ export const useSandboxStore = create<SandboxState>((set, get) => ({
         return 'invalid';
       }
 
-      heightGrid.data.set(parsed.data.heights);
-      waterGrid.data.set(parsed.data.water);
-      waterGrid.next.set(parsed.data.water);
+      heightGrid.replace(parsed.data.heights);
+      waterGrid.replace(parsed.data.water);
       set({
         towers: parsed.data.towers,
         decorations: parsed.data.decorations,

@@ -1,5 +1,5 @@
 import { GRID_SIZE, MAX_HEIGHT, CELL_SIZE, WORLD_SIZE } from './constants';
-import { idx, neighbors8, inBounds, forEachCell } from './grid';
+import { idx, inBounds } from './grid';
 
 export class HeightGrid {
   data: Float32Array;
@@ -24,14 +24,18 @@ export class HeightGrid {
   set(gx: number, gz: number, value: number): void {
     if (!inBounds(gx, gz)) return;
     const i = idx(gx, gz);
-    this.data[i] = Math.max(0, Math.min(MAX_HEIGHT, value));
+    const nextValue = Math.max(0, Math.min(MAX_HEIGHT, value));
+    if (this.data[i] === nextValue) return;
+    this.data[i] = nextValue;
     this.markDirty(gx, gz);
   }
 
   add(gx: number, gz: number, delta: number): void {
     if (!inBounds(gx, gz)) return;
     const i = idx(gx, gz);
-    this.data[i] = Math.max(0, Math.min(MAX_HEIGHT, this.data[i] + delta));
+    const nextValue = Math.max(0, Math.min(MAX_HEIGHT, this.data[i] + delta));
+    if (this.data[i] === nextValue) return;
+    this.data[i] = nextValue;
     this.markDirty(gx, gz);
   }
 
@@ -40,6 +44,23 @@ export class HeightGrid {
     if (gz < this.dirtyMinZ) this.dirtyMinZ = gz;
     if (gx > this.dirtyMaxX) this.dirtyMaxX = gx;
     if (gz > this.dirtyMaxZ) this.dirtyMaxZ = gz;
+  }
+
+  private markDirtyRect(minX: number, minZ: number, maxX: number, maxZ: number): void {
+    this.markDirty(minX, minZ);
+    this.markDirty(maxX, maxZ);
+  }
+
+  markAllDirty(): void {
+    this.dirtyMinX = 0;
+    this.dirtyMinZ = 0;
+    this.dirtyMaxX = GRID_SIZE - 1;
+    this.dirtyMaxZ = GRID_SIZE - 1;
+  }
+
+  replace(values: ArrayLike<number>): void {
+    this.data.set(values);
+    this.markAllDirty();
   }
 
   clearDirty(): void {
@@ -89,8 +110,7 @@ export class HeightGrid {
         }
       }
     }
-    this.dirtyMinX = minX; this.dirtyMaxX = maxX;
-    this.dirtyMinZ = minZ; this.dirtyMaxZ = maxZ;
+    this.markDirtyRect(minX, minZ, maxX, maxZ);
   }
 
   /** Dig tool: lower terrain */
@@ -113,8 +133,7 @@ export class HeightGrid {
         }
       }
     }
-    this.dirtyMinX = minX; this.dirtyMaxX = maxX;
-    this.dirtyMinZ = minZ; this.dirtyMaxZ = maxZ;
+    this.markDirtyRect(minX, minZ, maxX, maxZ);
   }
 
   /** Flatten tool: smooth toward average height */
@@ -156,8 +175,7 @@ export class HeightGrid {
         }
       }
     }
-    this.dirtyMinX = minX; this.dirtyMaxX = maxX;
-    this.dirtyMinZ = minZ; this.dirtyMaxZ = maxZ;
+    this.markDirtyRect(minX, minZ, maxX, maxZ);
   }
 
   /** Get min/max/avg in radius */
@@ -223,7 +241,7 @@ export class HeightGrid {
   /** Reset entire grid */
   reset(): void {
     this.data.fill(0);
-    this.clearDirty();
+    this.markAllDirty();
   }
 
   /** Serialize for localStorage */
@@ -235,7 +253,7 @@ export class HeightGrid {
   static fromJSON(json: string): HeightGrid {
     const grid = new HeightGrid();
     const arr = JSON.parse(json) as number[];
-    grid.data.set(arr);
+    grid.replace(arr);
     return grid;
   }
 }
