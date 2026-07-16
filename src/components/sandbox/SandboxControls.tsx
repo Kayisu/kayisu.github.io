@@ -24,10 +24,10 @@ export default function SandboxControls() {
   if (!showUI) return null;
 
   return (
-    <div className="sandbox-controls">
+    <div className="sandbox-app__controls">
       {/* Collapse toggle */}
       <button
-        className="sandbox-toggle"
+        className="sandbox-app__controls-toggle"
         onClick={() => setCollapsed(!collapsed)}
         aria-label={collapsed ? 'Expand controls' : 'Collapse controls'}
       >
@@ -35,20 +35,20 @@ export default function SandboxControls() {
       </button>
 
       {!collapsed && (
-        <div className="sandbox-panel">
+        <div className="sandbox-app__panel">
           {/* Tool Palette */}
-          <div className="control-group">
+          <div className="sandbox-app__control-group">
             <h4>Tools</h4>
-            <div className="tool-palette">
+            <div className="sandbox-app__tool-palette">
               {TOOLS.map((t) => (
                 <button
                   key={t.type}
-                  className={`tool-btn ${tool === t.type ? 'active' : ''}`}
+                  className={`sandbox-app__tool-button ${tool === t.type ? 'is-active' : ''}`}
                   onClick={() => setTool(t.type)}
                   title={t.label}
                 >
-                  <span className="tool-icon">{t.icon}</span>
-                  <span className="tool-label">{t.label}</span>
+                  <span className="sandbox-app__tool-icon">{t.icon}</span>
+                  <span className="sandbox-app__tool-label">{t.label}</span>
                 </button>
               ))}
             </div>
@@ -56,7 +56,7 @@ export default function SandboxControls() {
 
           {/* Brush Size (for build/dig/flatten) */}
           {(tool === 'build' || tool === 'dig' || tool === 'flatten') && (
-            <div className="control-group">
+            <div className="sandbox-app__control-group">
               <label>
                 Brush Size: {SANDBOX_CONFIG.BRUSH_SIZES[brushSize]}
               </label>
@@ -66,25 +66,25 @@ export default function SandboxControls() {
                 max={SANDBOX_CONFIG.BRUSH_SIZES.length - 1}
                 value={brushSize}
                 onChange={(e) => setBrushSize(Number(e.target.value))}
-                className="brush-slider"
+                className="sandbox-app__brush-slider"
               />
             </div>
           )}
 
           {/* Decoration Selector */}
           {tool === 'decorate' && (
-            <div className="control-group">
+            <div className="sandbox-app__control-group">
               <h4>Decorations</h4>
-              <div className="tool-palette">
+              <div className="sandbox-app__tool-palette">
                 {DECORATIONS.map((d) => (
                   <button
                     key={d.type}
-                    className={`tool-btn ${decorType === d.type ? 'active' : ''}`}
+                    className={`sandbox-app__tool-button ${decorType === d.type ? 'is-active' : ''}`}
                     onClick={() => setDecorType(d.type)}
                     title={d.label}
                   >
-                    <span className="tool-icon">{d.icon}</span>
-                    <span className="tool-label">{d.label}</span>
+                    <span className="sandbox-app__tool-icon">{d.icon}</span>
+                    <span className="sandbox-app__tool-label">{d.label}</span>
                   </button>
                 ))}
               </div>
@@ -92,32 +92,32 @@ export default function SandboxControls() {
           )}
 
           {/* Stats */}
-          <div className="control-group stats">
-<div className="stat">
-              <span className="stat-label">Towers</span>
-              <span className="stat-value">{towers.length}</span>
+          <div className="sandbox-app__control-group sandbox-app__stats">
+            <div className="sandbox-app__stat">
+              <span className="sandbox-app__stat-label">Towers</span>
+              <span className="sandbox-app__stat-value">{towers.length}</span>
             </div>
-            <div className="stat">
-              <span className="stat-label">Decorations</span>
-              <span className="stat-value">{decorations.length}</span>
+            <div className="sandbox-app__stat">
+              <span className="sandbox-app__stat-label">Decorations</span>
+              <span className="sandbox-app__stat-value">{decorations.length}</span>
             </div>
           </div>
 
           {/* Actions */}
-          <div className="control-group actions">
-            <button className="action-btn secondary" onClick={save}>
+          <div className="sandbox-app__control-group sandbox-app__actions">
+            <button className="sandbox-app__action-button sandbox-app__action-button--secondary" onClick={save}>
               💾 Save
             </button>
-            <button className="action-btn danger" onClick={reset}>
+            <button className="sandbox-app__action-button sandbox-app__action-button--danger" onClick={reset}>
               ↺ Reset
             </button>
-            <button className="action-btn" onClick={toggleUI}>
+            <button className="sandbox-app__action-button" onClick={toggleUI}>
               ✕ Hide UI
             </button>
           </div>
 
           {/* Help text */}
-          <div className="control-group help">
+          <div className="sandbox-app__control-group sandbox-app__help">
             <p><kbd>LMB</kbd> Drag to sculpt</p>
             <p><kbd>RMB</kbd> Orbit camera</p>
             <p><kbd>Scroll</kbd> Zoom</p>

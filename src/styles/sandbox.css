@@ -1,0 +1,342 @@
+.sandbox-shell {
+    position: fixed;
+    inset: 0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow: hidden;
+    isolation: isolate;
+    background:
+        radial-gradient(circle at 50% 15%, rgba(69, 103, 151, 0.2), transparent 38rem),
+        var(--bg-color);
+}
+
+.sandbox-shell__navigation {
+    position: absolute;
+    top: max(1rem, env(safe-area-inset-top));
+    left: max(1rem, env(safe-area-inset-left));
+    z-index: 30;
+}
+
+.sandbox-shell__navigation a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    padding: 0.65rem 1rem;
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    background: rgba(5, 5, 8, 0.72);
+    border: 1px solid var(--card-border);
+    border-radius: 999px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.sandbox-shell__navigation a:hover,
+.sandbox-shell__navigation a:focus-visible {
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.sandbox-shell__navigation a:focus-visible,
+.sandbox-app button:focus-visible,
+.sandbox-app input:focus-visible {
+    outline: 2px solid #9fc5ff;
+    outline-offset: 3px;
+}
+
+.sandbox-shell > astro-island,
+.sandbox-app {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.sandbox-app {
+    overflow: hidden;
+}
+
+.sandbox-app__canvas {
+    z-index: 0;
+    touch-action: none;
+}
+
+.sandbox-app__status,
+.sandbox-shell__status {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 25;
+    width: min(90vw, 32rem);
+    padding: 1rem 1.25rem;
+    color: var(--text-primary);
+    text-align: center;
+    line-height: 1.5;
+    transform: translate(-50%, -50%);
+    background: rgba(5, 5, 8, 0.84);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.sandbox-app__status--error {
+    color: #ffd3d3;
+    border-color: rgba(255, 107, 107, 0.5);
+}
+
+.sandbox-app__controls {
+    position: absolute;
+    bottom: max(1.5rem, env(safe-area-inset-bottom));
+    left: 50%;
+    z-index: 20;
+    max-height: calc(100dvh - 6rem - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    pointer-events: none;
+}
+
+.sandbox-app__controls-toggle {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    z-index: 21;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    color: var(--text-primary);
+    font-size: 1.2rem;
+    cursor: pointer;
+    transform: translateX(-50%);
+    pointer-events: auto;
+    background: rgba(5, 5, 8, 0.82);
+    border: 1px solid var(--card-border);
+    border-radius: 50%;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.sandbox-app__controls-toggle:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.sandbox-app__panel {
+    min-width: 280px;
+    max-width: 90vw;
+    max-height: calc(100dvh - 9rem - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    margin-bottom: 3rem;
+    padding: 1.25rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    pointer-events: auto;
+    background: rgba(5, 5, 8, 0.82);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    animation: sandbox-panel-in 0.3s ease-out;
+}
+
+@keyframes sandbox-panel-in {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.sandbox-app__control-group {
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--card-border);
+}
+
+.sandbox-app__control-group:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.sandbox-app__control-group h4 {
+    margin-bottom: 0.75rem;
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.sandbox-app__tool-palette {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.sandbox-app__tool-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 70px;
+    padding: 0.6rem 0.9rem;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.sandbox-app__tool-button:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.sandbox-app__tool-button.is-active {
+    color: var(--accent, #fff);
+    background: rgba(255, 255, 255, 0.12);
+    border-color: var(--accent, #fff);
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.1);
+}
+
+.sandbox-app__tool-icon {
+    font-size: 1.3rem;
+    line-height: 1;
+}
+
+.sandbox-app__tool-label {
+    font-size: 0.65rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.sandbox-app__brush-slider {
+    width: 100%;
+    accent-color: var(--accent, #fff);
+}
+
+.sandbox-app__stats {
+    display: flex;
+    justify-content: space-between;
+}
+
+.sandbox-app__stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+}
+
+.sandbox-app__stat-label {
+    color: var(--text-secondary);
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.sandbox-app__stat-value {
+    color: var(--text-primary);
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.sandbox-app__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.sandbox-app__action-button {
+    flex: 1;
+    min-width: 80px;
+    padding: 0.6rem 1rem;
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.sandbox-app__action-button:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.sandbox-app__action-button--secondary {
+    color: var(--accent, #fff);
+    border-color: var(--accent, #fff);
+}
+
+.sandbox-app__action-button--danger {
+    color: #ff8c8c;
+    border-color: #ff6b6b;
+}
+
+.sandbox-app__help {
+    color: var(--text-secondary);
+    font-size: 0.7rem;
+    line-height: 1.8;
+}
+
+.sandbox-app__help kbd {
+    display: inline-block;
+    margin-right: 0.3rem;
+    padding: 0.1rem 0.4rem;
+    font-family: inherit;
+    font-size: 0.65rem;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--card-border);
+    border-radius: 4px;
+}
+
+@media (max-width: 768px) {
+    .sandbox-app__controls {
+        right: max(1rem, env(safe-area-inset-right));
+        bottom: max(1rem, env(safe-area-inset-bottom));
+        left: max(1rem, env(safe-area-inset-left));
+        transform: none;
+    }
+
+    .sandbox-app__controls-toggle {
+        left: 1rem;
+        transform: none;
+    }
+
+    .sandbox-app__panel {
+        width: 100%;
+        min-width: 0;
+        margin-bottom: 3.5rem;
+    }
+
+    .sandbox-app__tool-button {
+        min-width: 60px;
+        padding: 0.5rem 0.7rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sandbox-app__panel {
+        animation: none;
+    }
+
+    .sandbox-app__controls-toggle,
+    .sandbox-app__tool-button,
+    .sandbox-app__action-button {
+        transition: none;
+    }
+}
