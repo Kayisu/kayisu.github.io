@@ -1,0 +1,106 @@
+---
+import { SITE } from '../../data/site';
+import { getDictionary, homePath, sectionPath, type Locale } from '../../i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const dictionary = getDictionary(locale);
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="site-footer__inner site-container">
+    <div>
+      <a class="site-footer__name" href={homePath(locale)}>{SITE.name}</a>
+      <p>{dictionary.footer.note}</p>
+    </div>
+
+    <nav aria-label={dictionary.footer.navigationLabel}>
+      <a href={sectionPath(locale, 'projects')}>{dictionary.nav.projects}</a>
+      <a href={sectionPath(locale, 'about')}>{dictionary.nav.about}</a>
+      <a href={`mailto:${SITE.email}`}>{dictionary.contact.email}</a>
+      <a href={SITE.github} target="_blank" rel="noopener noreferrer">
+        {dictionary.contact.github}
+        <span class="visually-hidden"> — {dictionary.accessibility.externalLink}</span>
+      </a>
+      <a href={SITE.linkedin} target="_blank" rel="noopener noreferrer">
+        {dictionary.contact.linkedin}
+        <span class="visually-hidden"> — {dictionary.accessibility.externalLink}</span>
+      </a>
+    </nav>
+
+    <p class="site-footer__copyright">© {year} {SITE.name}</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    padding-block: clamp(2.5rem, 6vw, 4rem);
+    background: var(--color-surface-muted);
+    border-top: 1px solid var(--color-border-subtle);
+  }
+
+  .site-footer__inner {
+    display: grid;
+    grid-template-columns: minmax(14rem, 1fr) auto;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  .site-footer__name {
+    color: var(--color-text-primary);
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .site-footer p {
+    max-width: 32rem;
+    margin-top: 0.45rem;
+    color: var(--color-text-secondary);
+    font-size: 0.88rem;
+  }
+
+  nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.35rem 1.15rem;
+  }
+
+  nav a {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    color: var(--color-text-secondary);
+    font-size: 0.86rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  nav a:hover {
+    color: var(--color-accent-hover);
+  }
+
+  .site-footer__copyright {
+    grid-column: 1 / -1;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border-subtle);
+  }
+
+  @media (max-width: 680px) {
+    .site-footer__inner {
+      grid-template-columns: 1fr;
+    }
+
+    nav {
+      justify-content: flex-start;
+    }
+
+    .site-footer__copyright {
+      grid-column: auto;
+    }
+  }
+</style>

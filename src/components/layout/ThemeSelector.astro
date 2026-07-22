@@ -1,0 +1,57 @@
+---
+import { getDictionary, type Locale } from '../../i18n';
+
+interface Props {
+  locale: Locale;
+  id?: string;
+}
+
+const { locale, id = `theme-${locale}` } = Astro.props;
+const { theme } = getDictionary(locale);
+---
+
+<label class="theme-selector" for={id}>
+  <span>{theme.label}</span>
+  <select id={id} name="theme" data-theme-select aria-label={theme.label}>
+    <option value="system">{theme.system}</option>
+    <option value="light">{theme.light}</option>
+    <option value="dark">{theme.dark}</option>
+  </select>
+</label>
+
+<style>
+  .theme-selector {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-text-secondary);
+    font-size: 0.82rem;
+    font-weight: 600;
+  }
+
+  select {
+    min-height: 44px;
+    max-width: 7.5rem;
+    padding: 0.5rem 1.8rem 0.5rem 0.65rem;
+    color: var(--color-text-primary);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 0.55rem;
+  }
+
+  select:hover {
+    border-color: var(--color-border-strong);
+  }
+
+  @media (max-width: 390px) {
+    .theme-selector {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    select {
+      min-width: 6.5rem;
+    }
+  }
+</style>

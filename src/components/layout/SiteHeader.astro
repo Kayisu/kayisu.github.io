@@ -1,0 +1,241 @@
+---
+import { SITE } from '../../data/site';
+import {
+  explorePath,
+  getDictionary,
+  homePath,
+  sectionPath,
+  type Locale,
+  type LocalisedRoute,
+} from '../../i18n';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+import ThemeSelector from './ThemeSelector.astro';
+
+type ActiveNavigation = 'home' | 'projects' | 'about' | 'contact' | 'explore';
+
+interface Props {
+  locale: Locale;
+  languageHref?: string;
+  languageRoute?: LocalisedRoute;
+  active?: ActiveNavigation;
+}
+
+const { locale, languageHref, languageRoute, active } = Astro.props;
+const dictionary = getDictionary(locale);
+const links = [
+  { key: 'projects', label: dictionary.nav.projects, href: sectionPath(locale, 'projects') },
+  { key: 'about', label: dictionary.nav.about, href: sectionPath(locale, 'about') },
+  { key: 'contact', label: dictionary.nav.contact, href: sectionPath(locale, 'contact') },
+  { key: 'explore', label: dictionary.nav.explore, href: explorePath(locale) },
+] as const;
+---
+
+<a class="skip-link" href="#main-content">{dictionary.accessibility.skipToContent}</a>
+
+<header class="site-header">
+  <div class="site-header__inner site-container">
+    <a
+      class="site-header__wordmark"
+      href={homePath(locale)}
+      aria-current={active === 'home' ? 'page' : undefined}
+    >
+      {SITE.name}
+    </a>
+
+    <nav class="site-header__desktop-nav" aria-label={dictionary.nav.label}>
+      {
+        links.map((link) => (
+          <a href={link.href} aria-current={active === link.key ? 'page' : undefined}>
+            {link.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="site-header__desktop-controls">
+      <LanguageSwitcher locale={locale} href={languageHref} route={languageRoute} />
+      <ThemeSelector locale={locale} id={`theme-${locale}-desktop`} />
+      <a class="site-header__github" href={SITE.github} target="_blank" rel="noopener noreferrer">
+        {dictionary.nav.github}
+        <span class="visually-hidden"> — {dictionary.accessibility.externalLink}</span>
+      </a>
+    </div>
+
+    <details class="site-header__mobile-menu">
+      <summary>{dictionary.nav.openMenu}</summary>
+      <div class="site-header__mobile-panel">
+        <nav aria-label={dictionary.nav.label}>
+          {
+            links.map((link) => (
+              <a href={link.href} aria-current={active === link.key ? 'page' : undefined}>
+                {link.label}
+              </a>
+            ))
+          }
+          <a href={SITE.github} target="_blank" rel="noopener noreferrer">
+            {dictionary.nav.github}
+            <span class="visually-hidden"> — {dictionary.accessibility.externalLink}</span>
+          </a>
+        </nav>
+        <div class="site-header__mobile-controls">
+          <LanguageSwitcher locale={locale} href={languageHref} route={languageRoute} />
+          <ThemeSelector locale={locale} id={`theme-${locale}-mobile`} />
+        </div>
+      </div>
+    </details>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    width: 100%;
+    background: color-mix(in srgb, var(--color-page) 88%, transparent);
+    border-bottom: 1px solid var(--color-border-subtle);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
+  .site-header__inner {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    min-height: 4.75rem;
+    gap: clamp(1rem, 3vw, 2rem);
+  }
+
+  .site-header__wordmark {
+    color: var(--color-text-primary);
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .site-header__desktop-nav,
+  .site-header__desktop-controls,
+  .site-header__mobile-controls {
+    display: flex;
+    align-items: center;
+  }
+
+  .site-header__desktop-nav {
+    justify-content: center;
+    gap: clamp(0.8rem, 2vw, 1.5rem);
+  }
+
+  .site-header__desktop-nav a,
+  .site-header__mobile-panel nav a {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    color: var(--color-text-secondary);
+    font-size: 0.88rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .site-header__desktop-nav a:hover,
+  .site-header__desktop-nav a[aria-current='page'],
+  .site-header__mobile-panel nav a:hover,
+  .site-header__mobile-panel nav a[aria-current='page'] {
+    color: var(--color-accent-hover);
+  }
+
+  .site-header__desktop-controls {
+    justify-content: flex-end;
+    gap: 0.65rem;
+  }
+
+  .site-header__github {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0.55rem 0.85rem;
+    color: var(--color-surface);
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-decoration: none;
+    background: var(--color-text-primary);
+    border-radius: 0.55rem;
+  }
+
+  .site-header__github:hover {
+    background: var(--color-accent-hover);
+  }
+
+  .site-header__mobile-menu {
+    position: relative;
+    display: none;
+  }
+
+  summary {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 0.8rem;
+    color: var(--color-text-primary);
+    font-size: 0.84rem;
+    font-weight: 700;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 0.55rem;
+    list-style: none;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  summary::after {
+    content: '+';
+    margin-left: 0.5rem;
+    color: var(--color-accent);
+  }
+
+  details[open] summary::after {
+    content: '−';
+  }
+
+  .site-header__mobile-panel {
+    position: absolute;
+    top: calc(100% + 0.65rem);
+    right: 0;
+    width: min(20rem, calc(100vw - 2rem));
+    padding: 1rem;
+    background: var(--color-surface-raised);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 0.8rem;
+    box-shadow: 0 1rem 2.5rem var(--color-shadow);
+  }
+
+  .site-header__mobile-panel nav {
+    display: grid;
+  }
+
+  .site-header__mobile-controls {
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding-top: 0.8rem;
+    margin-top: 0.6rem;
+    border-top: 1px solid var(--color-border-subtle);
+  }
+
+  @media (max-width: 900px) {
+    .site-header__inner {
+      grid-template-columns: 1fr auto;
+    }
+
+    .site-header__desktop-nav,
+    .site-header__desktop-controls {
+      display: none;
+    }
+
+    .site-header__mobile-menu {
+      display: block;
+    }
+  }
+</style>

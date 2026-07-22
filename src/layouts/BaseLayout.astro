@@ -1,34 +1,155 @@
 ---
 import '../styles/global.css';
+import { SITE } from '../data/site';
+import {
+  LOCALES,
+  getDictionary,
+  localeMeta,
+  type Locale,
+} from '../i18n';
 
-interface Props {
+export interface Props {
   title?: string;
   description?: string;
+  locale?: Locale;
+  canonicalPath?: string;
+  alternatePaths?: Partial<Record<Locale, string>>;
+  noindex?: boolean;
+  ogType?: 'website' | 'article';
+  bodyClass?: string;
 }
 
 const {
-  title = 'Kayisu | Portfolio',
-  description = 'Portfolio of Emre Kaan Atas, a Software Developer crafting digital experiences with precision.',
+  locale = 'en',
+  canonicalPath = Astro.url.pathname,
+  alternatePaths,
+  noindex = false,
+  ogType = 'website',
+  bodyClass,
 } = Astro.props;
+
+const dictionary = getDictionary(locale);
+const title = Astro.props.title ?? dictionary.metadata.landingTitle;
+const description = Astro.props.description ?? dictionary.metadata.landingDescription;
+const siteUrl = Astro.site ?? new URL(SITE.url);
+const canonicalUrl = new URL(canonicalPath, siteUrl);
+const completeAlternates = alternatePaths
+  ? LOCALES.map((alternateLocale) => {
+      const path = alternatePaths[alternateLocale];
+      return path
+        ? {
+            locale: alternateLocale,
+            href: new URL(path, siteUrl).toString(),
+          }
+        : undefined;
+    }).filter((entry): entry is { locale: Locale; href: string } => Boolean(entry))
+  : [];
+const hasTrueLanguagePair = completeAlternates.length === LOCALES.length;
+const englishAlternate = completeAlternates.find((entry) => entry.locale === 'en');
 ---
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang={localeMeta[locale].htmlLang} data-theme-mode="system">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script is:inline>
+      (() => {
+        const key = 'kayisu-theme';
+        const validModes = new Set(['system', 'light', 'dark']);
+        const root = document.documentElement;
+        const media = window.matchMedia('(prefers-color-scheme: dark)');
+        let mode = 'system';
+
+        try {
+          const storedMode = window.localStorage.getItem(key);
+          if (storedMode && validModes.has(storedMode)) mode = storedMode;
+        } catch {
+          mode = 'system';
+        }
+
+        const resolveTheme = () => (mode === 'system' ? (media.matches ? 'dark' : 'light') : mode);
+        const applyTheme = (announce = false) => {
+          const theme = resolveTheme();
+          root.dataset.themeMode = mode;
+          root.dataset.theme = theme;
+          root.style.colorScheme = theme;
+
+          document.querySelectorAll('[data-theme-select]').forEach((control) => {
+            if (control instanceof HTMLSelectElement) control.value = mode;
+          });
+
+          if (announce) {
+            window.dispatchEvent(
+              new CustomEvent('kayisu:theme-change', { detail: { mode, theme } }),
+            );
+          }
+        };
+
+        applyTheme();
+
+        media.addEventListener('change', () => {
+          if (mode === 'system') applyTheme(true);
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+          document.querySelectorAll('[data-theme-select]').forEach((control) => {
+            if (!(control instanceof HTMLSelectElement)) return;
+            control.value = mode;
+            control.addEventListener('change', () => {
+              if (!validModes.has(control.value)) return;
+              mode = control.value;
+
+              try {
+                window.localStorage.setItem(key, mode);
+              } catch {
+                // The selected theme still applies for this page when storage is unavailable.
+              }
+
+              applyTheme(true);
+            });
+          });
+        });
+      })();
+    </script>
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
+    <link rel="canonical" href={canonicalUrl.toString()} />
+    {
+      noindex && <meta name="robots" content="noindex, nofollow" />
+    }
+    {
+      hasTrueLanguagePair && completeAlternates.map(({ locale: alternateLocale, href }) => (
+        <link
+          rel="alternate"
+          hreflang={localeMeta[alternateLocale].htmlLang}
+          href={href}
+        />
+      ))
+    }
+    {
+      hasTrueLanguagePair && englishAlternate && (
+        <link rel="alternate" hreflang="x-default" href={englishAlternate.href} />
+      )
+    }
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content={SITE.shortName} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl.toString()} />
+    <meta property="og:locale" content={localeMeta[locale].ogLocale} />
+    {
+      hasTrueLanguagePair && completeAlternates
+        .filter(({ locale: alternateLocale }) => alternateLocale !== locale)
+        .map(({ locale: alternateLocale }) => (
+          <meta property="og:locale:alternate" content={localeMeta[alternateLocale].ogLocale} />
+        ))
+    }
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
   </head>
-  <body>
+  <body class={bodyClass}>
     <slot />
   </body>
 </html>

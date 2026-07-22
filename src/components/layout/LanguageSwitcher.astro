@@ -1,0 +1,55 @@
+---
+import {
+  getDictionary,
+  homePath,
+  otherLocale,
+  resolveEquivalentPath,
+  type Locale,
+  type LocalisedRoute,
+} from '../../i18n';
+
+interface Props {
+  locale: Locale;
+  href?: string;
+  route?: LocalisedRoute;
+}
+
+const { locale, href, route } = Astro.props;
+const targetLocale = otherLocale(locale);
+const dictionary = getDictionary(locale);
+const destination = href ?? (route ? resolveEquivalentPath(route, targetLocale) : homePath(targetLocale));
+---
+
+<a
+  class="language-switcher"
+  href={destination}
+  lang={targetLocale}
+  hreflang={targetLocale}
+  aria-label={dictionary.language.switchTo}
+>
+  <span aria-hidden="true">{dictionary.language.shortTarget}</span>
+</a>
+
+<style>
+  .language-switcher {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+    padding-inline: 0.7rem;
+    color: var(--color-text-primary);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 0.55rem;
+  }
+
+  .language-switcher:hover {
+    color: var(--color-accent-hover);
+    border-color: var(--color-border-strong);
+  }
+</style>

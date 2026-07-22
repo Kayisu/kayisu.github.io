@@ -1,0 +1,125 @@
+:root,
+:root[data-theme='light'] {
+    color-scheme: light;
+    --color-page: #f4f1e9;
+    --color-surface: #fbfaf6;
+    --color-surface-raised: #fffdf8;
+    --color-surface-muted: #ebe7dc;
+    --color-text-primary: #26323d;
+    --color-text-secondary: #53616c;
+    --color-text-muted: #6a777f;
+    --color-border-subtle: #d7d2c8;
+    --color-border-strong: #b8b2a6;
+    --color-accent: #3f687f;
+    --color-accent-hover: #31566a;
+    --color-accent-soft: #dbe6ea;
+    --color-focus: #315f7a;
+    --color-success: #2f7559;
+    --color-warning: #8a6528;
+    --color-shadow: rgba(38, 50, 61, 0.12);
+    --color-overlay: rgba(244, 241, 233, 0.9);
+    --solar-background: #dce5e8;
+    --solar-orbit: rgba(49, 86, 106, 0.34);
+    --solar-label: #26323d;
+    --solar-halo: #3f687f;
+    --solar-selection: var(--solar-halo);
+    --solar-stars: #587284;
+
+    /* Compatibility aliases for established portfolio and sandbox selectors. */
+    --page-bg: var(--color-page);
+    --surface: var(--color-surface);
+    --focus: var(--color-focus);
+    --bg-color: var(--color-page);
+    --text-primary: var(--color-text-primary);
+    --text-secondary: var(--color-text-secondary);
+    --highlight: var(--color-accent);
+    --accent: var(--color-accent);
+    --card-bg: color-mix(in srgb, var(--color-surface) 92%, transparent);
+    --card-border: var(--color-border-subtle);
+}
+
+:root[data-theme='dark'] {
+    color-scheme: dark;
+    --color-page: #121a22;
+    --color-surface: #18232d;
+    --color-surface-raised: #1e2b36;
+    --color-surface-muted: #22313d;
+    --color-text-primary: #edf0ec;
+    --color-text-secondary: #b7c1c8;
+    --color-text-muted: #929fa8;
+    --color-border-subtle: #31414d;
+    --color-border-strong: #4b5c68;
+    --color-accent: #82abc0;
+    --color-accent-hover: #a1c2d1;
+    --color-accent-soft: #263e4b;
+    --color-focus: #a4d4e6;
+    --color-success: #78c3a2;
+    --color-warning: #d7b36b;
+    --color-shadow: rgba(4, 9, 13, 0.34);
+    --color-overlay: rgba(18, 26, 34, 0.9);
+    --solar-background: #121a22;
+    --solar-orbit: rgba(164, 212, 230, 0.22);
+    --solar-label: #edf0ec;
+    --solar-halo: #82abc0;
+    --solar-selection: var(--solar-halo);
+    --solar-stars: #d9e9f2;
+
+    --page-bg: var(--color-page);
+    --surface: var(--color-surface);
+    --focus: var(--color-focus);
+    --bg-color: var(--color-page);
+    --text-primary: var(--color-text-primary);
+    --text-secondary: var(--color-text-secondary);
+    --highlight: var(--color-accent);
+    --accent: var(--color-accent);
+    --card-bg: color-mix(in srgb, var(--color-surface) 92%, transparent);
+    --card-border: var(--color-border-subtle);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root[data-theme-mode='system']:not([data-theme]) {
+        color-scheme: dark;
+        --color-page: #121a22;
+        --color-surface: #18232d;
+        --color-surface-raised: #1e2b36;
+        --color-surface-muted: #22313d;
+        --color-text-primary: #edf0ec;
+        --color-text-secondary: #b7c1c8;
+        --color-text-muted: #929fa8;
+        --color-border-subtle: #31414d;
+        --color-border-strong: #4b5c68;
+        --color-accent: #82abc0;
+        --color-accent-hover: #a1c2d1;
+        --color-accent-soft: #263e4b;
+        --color-focus: #a4d4e6;
+        --color-success: #78c3a2;
+        --color-warning: #d7b36b;
+        --color-shadow: rgba(4, 9, 13, 0.34);
+        --color-overlay: rgba(18, 26, 34, 0.9);
+        --solar-background: #121a22;
+        --solar-orbit: rgba(164, 212, 230, 0.22);
+        --solar-label: #edf0ec;
+        --solar-halo: #82abc0;
+        --solar-selection: var(--solar-halo);
+        --solar-stars: #d9e9f2;
+    }
+}
+
+/* The game remains intentionally dark, independent of the portfolio theme. */
+.sandbox-shell {
+    color-scheme: dark;
+    --color-page: #050508;
+    --color-surface: #11151c;
+    --color-surface-raised: #171d26;
+    --color-text-primary: #f0f2f5;
+    --color-text-secondary: #b2bac5;
+    --color-border-subtle: rgba(255, 255, 255, 0.14);
+    --color-accent: #9fc5ff;
+    --bg-color: #050508;
+    --text-primary: #f0f2f5;
+    --text-secondary: #b2bac5;
+    --highlight: #9fc5ff;
+    --accent: #9fc5ff;
+    --card-bg: rgba(17, 21, 28, 0.88);
+    --card-border: rgba(255, 255, 255, 0.14);
+}
