@@ -1,0 +1,177 @@
+---
+import { getDictionary, type CelestialBodyId, type Locale } from '../../i18n';
+import type { ProjectEntry } from '../../lib/projects';
+import type { SolarBody } from '../solar/SolarApp';
+
+interface Props {
+  locale: Locale;
+  bodies: SolarBody[];
+  projects: readonly ProjectEntry[];
+  id?: string;
+  compact?: boolean;
+}
+
+const {
+  locale,
+  bodies,
+  projects,
+  id = 'categories',
+  compact = false,
+} = Astro.props;
+const dictionary = getDictionary(locale);
+const projectCount = (name: CelestialBodyId) =>
+  name === 'sun' ? undefined : projects.filter((entry) => entry.data.planet === name).length;
+---
+
+<section
+  id={id}
+  class:list={['planet-categories', { 'planet-categories--compact': compact }]}
+  aria-labelledby={`${id}-title`}
+>
+  <div class:list={[{ 'site-container': !compact }]}>
+    <header class="section-heading">
+      <p class="section-eyebrow">{dictionary.sections.categoriesEyebrow}</p>
+      <h2 id={`${id}-title`}>{dictionary.sections.categoriesTitle}</h2>
+      <p>{dictionary.sections.categoriesDescription}</p>
+    </header>
+
+    <ul class="planet-categories__grid">
+      {
+        bodies.map((body) => {
+          const name = body.name as CelestialBodyId;
+          const count = projectCount(name);
+          const countLabel = count === 1
+            ? dictionary.planet.projectCount
+            : dictionary.planet.projectCountPlural;
+
+          return (
+            <li>
+              <a href={body.href} data-solar-body={name}>
+                <span
+                  class="planet-categories__orb"
+                  style={`--body-colour: #${body.color.toString(16).padStart(6, '0')};`}
+                  aria-hidden="true"
+                />
+                <span class="planet-categories__content">
+                  <span class="planet-categories__name">{body.label}</span>
+                  <span class="planet-categories__type">{body.type}</span>
+                  <span class="planet-categories__description">{body.desc}</span>
+                  {count !== undefined && (
+                    <span class="planet-categories__count">{count} {countLabel}</span>
+                  )}
+                </span>
+                <span class="planet-categories__arrow" aria-hidden="true">→</span>
+              </a>
+            </li>
+          );
+        })
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .planet-categories {
+    padding-block: clamp(4rem, 8vw, 7rem);
+    background:
+      radial-gradient(circle at 12% 12%, color-mix(in srgb, var(--color-accent-soft) 68%, transparent), transparent 28rem),
+      var(--color-surface);
+    border-block: 1px solid var(--color-border-subtle);
+  }
+
+  .planet-categories--compact {
+    min-height: 100%;
+    padding: clamp(1.25rem, 3vw, 2rem);
+    border: 0;
+    background: var(--color-surface);
+  }
+
+  .planet-categories__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+    gap: 0.75rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .planet-categories--compact .planet-categories__grid {
+    grid-template-columns: 1fr;
+  }
+
+  a {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    min-height: 100%;
+    gap: 0.9rem;
+    padding: 1rem;
+    color: var(--color-text-primary);
+    text-decoration: none;
+    background: color-mix(in srgb, var(--color-surface-raised) 92%, transparent);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 0.9rem;
+    transition: transform 180ms ease, border-color 180ms ease;
+  }
+
+  a:hover,
+  a:focus-visible {
+    border-color: var(--color-accent);
+    transform: translateY(-0.15rem);
+  }
+
+  .planet-categories__orb {
+    width: 2.35rem;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--body-colour);
+    box-shadow: inset -0.55rem -0.35rem 0.8rem rgb(18 26 34 / 36%);
+  }
+
+  .planet-categories__content {
+    display: grid;
+    min-width: 0;
+  }
+
+  .planet-categories__name {
+    font-size: 1.05rem;
+    font-weight: 750;
+  }
+
+  .planet-categories__type,
+  .planet-categories__count {
+    color: var(--color-accent);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+
+  .planet-categories__description {
+    margin-top: 0.35rem;
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+    line-height: 1.45;
+  }
+
+  .planet-categories__count {
+    margin-top: 0.55rem;
+    color: var(--color-text-muted);
+    letter-spacing: 0.03em;
+  }
+
+  .planet-categories__arrow {
+    color: var(--color-accent);
+    font-size: 1.1rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    a {
+      transition: none;
+    }
+
+    a:hover,
+    a:focus-visible {
+      transform: none;
+    }
+  }
+</style>

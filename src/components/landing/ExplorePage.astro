@@ -1,0 +1,116 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SiteHeader from '../layout/SiteHeader.astro';
+import SolarApp from '../solar/SolarApp';
+import PlanetCategories from './PlanetCategories.astro';
+import {
+  getAlternatePaths,
+  getDictionary,
+  type Locale,
+} from '../../i18n';
+import { getProjectIndex } from '../../lib/projects';
+import { createSolarPresentation } from '../../lib/solarPresentation';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const dictionary = getDictionary(locale);
+const route = { kind: 'explore' } as const;
+const projectIndex = await getProjectIndex();
+const projects = projectIndex.forLocale(locale);
+const { bodies, copy } = createSolarPresentation(locale, dictionary);
+---
+
+<BaseLayout
+  locale={locale}
+  title={dictionary.metadata.exploreTitle}
+  description={dictionary.metadata.exploreDescription}
+  canonicalPath={locale === 'en' ? '/explore/' : '/tr/explore/'}
+  alternatePaths={getAlternatePaths(route)}
+  bodyClass="explore-body"
+>
+  <div class="explore-page">
+    <SiteHeader locale={locale} languageRoute={route} active="explore" />
+    <main id="main-content" class="explore-page__main">
+      <section class="explore-page__visual" aria-label={copy.canvasLabel}>
+        <SolarApp mode="explore" bodies={bodies} copy={copy} client:only="react">
+          <div slot="fallback" class="solar-prehydrate solar-prehydrate--explore" role="status">
+            <p>{copy.loadingLabel}</p>
+            <a href="#explore-categories">{copy.unavailableMessage}</a>
+          </div>
+        </SolarApp>
+      </section>
+      <aside class="explore-page__categories">
+        <PlanetCategories
+          locale={locale}
+          bodies={bodies}
+          projects={projects}
+          id="explore-categories"
+          compact
+        />
+      </aside>
+    </main>
+  </div>
+</BaseLayout>
+
+<style>
+  .explore-page {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    overflow: hidden;
+    background: var(--color-page);
+  }
+
+  .explore-page__main {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(20rem, 25rem);
+    min-height: 0;
+  }
+
+  .explore-page__visual {
+    min-width: 0;
+    min-height: 32rem;
+    background: var(--solar-background);
+  }
+
+  .explore-page__visual :global(astro-island) {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .explore-page__categories {
+    min-width: 0;
+    overflow-y: auto;
+    border-left: 1px solid var(--color-border-subtle);
+    background: var(--color-surface);
+  }
+
+  @media (max-width: 900px) {
+    .explore-page {
+      position: relative;
+      min-height: 100dvh;
+      overflow: visible;
+    }
+
+    .explore-page__main {
+      grid-template-columns: 1fr;
+    }
+
+    .explore-page__visual {
+      height: min(42rem, 68dvh);
+      min-height: 30rem;
+    }
+
+    .explore-page__categories {
+      overflow: visible;
+      border-top: 1px solid var(--color-border-subtle);
+      border-left: 0;
+    }
+  }
+</style>

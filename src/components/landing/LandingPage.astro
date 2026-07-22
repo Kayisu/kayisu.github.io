@@ -1,0 +1,172 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SiteHeader from '../layout/SiteHeader.astro';
+import SiteFooter from '../layout/SiteFooter.astro';
+import HeroSection from './HeroSection.astro';
+import ProjectCollection from './ProjectCollection.astro';
+import PlanetCategories from './PlanetCategories.astro';
+import { SITE } from '../../data/site';
+import {
+  getAlternatePaths,
+  getDictionary,
+  type Locale,
+} from '../../i18n';
+import { getProjectIndex } from '../../lib/projects';
+import { createSolarPresentation } from '../../lib/solarPresentation';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const dictionary = getDictionary(locale);
+const route = { kind: 'landing' } as const;
+const projectIndex = await getProjectIndex();
+const projects = projectIndex.forLocale(locale);
+const featured = projects.filter((entry) => entry.data.featured);
+const current = projects.filter(
+  (entry) => !entry.data.featured && (entry.data.status === 'active' || entry.data.status === 'wip'),
+);
+const { bodies, copy } = createSolarPresentation(locale, dictionary);
+---
+
+<BaseLayout
+  locale={locale}
+  title={dictionary.metadata.landingTitle}
+  description={dictionary.metadata.landingDescription}
+  canonicalPath={locale === 'en' ? '/' : '/tr/'}
+  alternatePaths={getAlternatePaths(route)}
+  bodyClass="portfolio-page"
+>
+  <SiteHeader locale={locale} languageRoute={route} active="home" />
+
+  <main id="main-content">
+    <HeroSection locale={locale} bodies={bodies} copy={copy} />
+
+    <ProjectCollection
+      id="projects"
+      locale={locale}
+      eyebrow={dictionary.sections.featuredEyebrow}
+      title={dictionary.sections.featuredTitle}
+      description={dictionary.sections.featuredDescription}
+      entries={featured}
+    />
+
+    <ProjectCollection
+      id="current-work"
+      locale={locale}
+      eyebrow={dictionary.sections.currentEyebrow}
+      title={dictionary.sections.currentTitle}
+      description={dictionary.sections.currentDescription}
+      entries={current}
+    />
+
+    <PlanetCategories locale={locale} bodies={bodies} projects={projects} />
+
+    <section id="about" class="editorial-section section-block" aria-labelledby="about-title">
+      <div class="editorial-section__inner site-container">
+        <p class="section-eyebrow">{dictionary.sections.aboutEyebrow}</p>
+        <h2 id="about-title">{dictionary.sections.aboutTitle}</h2>
+        <p>{dictionary.sections.aboutBody}</p>
+      </div>
+    </section>
+
+    <section id="contact" class="contact-section section-block" aria-labelledby="contact-title">
+      <div class="contact-section__inner site-container">
+        <div>
+          <p class="section-eyebrow">{dictionary.sections.contactEyebrow}</p>
+          <h2 id="contact-title">{dictionary.sections.contactTitle}</h2>
+          <p>{dictionary.sections.contactBody}</p>
+        </div>
+        <ul>
+          <li><a href={`mailto:${SITE.email}`}>{dictionary.contact.email}<span aria-hidden="true">→</span></a></li>
+          <li>
+            <a href={SITE.github} target="_blank" rel="noopener noreferrer">
+              {dictionary.contact.github}<span aria-hidden="true">↗</span>
+              <span class="visually-hidden"> — {dictionary.accessibility.externalLink}</span>
+            </a>
+          </li>
+          <li>
+            <a href={SITE.linkedin} target="_blank" rel="noopener noreferrer">
+              {dictionary.contact.linkedin}<span aria-hidden="true">↗</span>
+              <span class="visually-hidden"> — {dictionary.accessibility.externalLink}</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <SiteFooter locale={locale} />
+</BaseLayout>
+
+<style>
+  .editorial-section__inner {
+    display: grid;
+    grid-template-columns: minmax(12rem, 0.6fr) minmax(0, 1.4fr);
+    gap: clamp(2rem, 6vw, 6rem);
+  }
+
+  .editorial-section h2,
+  .contact-section h2 {
+    margin-top: 0.55rem;
+    font-size: clamp(2.2rem, 5vw, 4.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.045em;
+  }
+
+  .editorial-section__inner > p:last-child,
+  .contact-section p:last-child {
+    max-width: 44rem;
+    color: var(--color-text-secondary);
+    font-size: clamp(1.05rem, 2vw, 1.25rem);
+    line-height: 1.75;
+  }
+
+  .contact-section {
+    color: var(--color-text-primary);
+    background: var(--color-surface-muted);
+    border-top: 1px solid var(--color-border-subtle);
+  }
+
+  .contact-section__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(16rem, 0.7fr);
+    align-items: end;
+    gap: clamp(2rem, 6vw, 6rem);
+  }
+
+  .contact-section p:last-child {
+    margin-top: 1rem;
+  }
+
+  .contact-section ul {
+    display: grid;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--color-border-subtle);
+  }
+
+  .contact-section a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 3.5rem;
+    padding-inline: 0.25rem;
+    color: var(--color-text-primary);
+    font-weight: 700;
+    text-decoration: none;
+    border-bottom: 1px solid var(--color-border-subtle);
+  }
+
+  .contact-section a:hover {
+    color: var(--color-accent-hover);
+  }
+
+  @media (max-width: 720px) {
+    .editorial-section__inner,
+    .contact-section__inner {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

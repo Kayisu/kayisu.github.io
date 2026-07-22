@@ -1,35 +1,5 @@
 ---
-import SolarApp from '../components/solar/SolarApp';
-import { getAlternatePaths, getDictionary } from '../i18n';
-import BaseLayout from '../layouts/BaseLayout.astro';
-import { createSolarPresentation } from '../lib/solarPresentation';
-
-const locale = 'en' as const;
-const dictionary = getDictionary(locale);
-const { bodies, copy } = createSolarPresentation(locale, dictionary);
+import LandingPage from '../components/landing/LandingPage.astro';
 ---
 
-<BaseLayout
-  locale={locale}
-  title={dictionary.metadata.landingTitle}
-  description={dictionary.metadata.landingDescription}
-  canonicalPath="/"
-  alternatePaths={getAlternatePaths({ kind: 'landing' })}
->
-  <main id="main-content" class="solar-transition-page">
-    <SolarApp mode="hero" bodies={bodies} copy={copy} client:only="react">
-      <div slot="fallback" class="solar-prehydrate" role="status">
-        <p>{copy.loadingLabel}</p>
-      </div>
-    </SolarApp>
-  </main>
-</BaseLayout>
-
-<style>
-  .solar-transition-page {
-    width: min(calc(100% - 2rem), 72rem);
-    min-height: 100dvh;
-    margin-inline: auto;
-    padding-block: clamp(2rem, 8vw, 6rem);
-  }
-</style>
+<LandingPage locale="en" />

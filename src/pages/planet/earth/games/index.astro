@@ -1,16 +1,24 @@
 ---
-import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import SiteFooter from '../../../../components/layout/SiteFooter.astro';
+import SiteHeader from '../../../../components/layout/SiteHeader.astro';
 import { EARTH_GAMES } from '../../../../data/games';
+import type { LocalisedRoute } from '../../../../i18n';
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+
+const locale = 'en' as const;
+const route = { kind: 'earth-games' } satisfies LocalisedRoute;
 ---
 
 <BaseLayout
   title="Earth Games | Kayisu"
   description="Interactive browser experiments from the Earth playground."
+  locale={locale}
+  canonicalPath="/planet/earth/games/"
 >
-  <main class="games-page">
+  <SiteHeader locale={locale} languageRoute={route} />
+  <main id="main-content" class="games-page">
     <nav class="games-page__navigation" aria-label="Games navigation">
-      <a href="/planet/earth/">&larr; Back to Earth</a>
-      <a href="/">Solar System</a>
+      <a href="/planet/earth/"><span aria-hidden="true">←</span> Back to Earth</a>
     </nav>
 
     <header class="games-page__header">
@@ -29,48 +37,43 @@ import { EARTH_GAMES } from '../../../../data/games';
                 <span>{game.status}</span>
               </div>
               <p>{game.summary}</p>
-              <ul aria-label={`${game.title} features`}>
+              <ul aria-label={`${game.title} controls`}>
                 {game.controls.map((control) => <li>{control}</li>)}
               </ul>
-              <a href={game.href}>Open {game.title} <span aria-hidden="true">&rarr;</span></a>
+              <a href={game.href}>Open {game.title} <span aria-hidden="true">→</span></a>
             </article>
           </li>
         ))
       }
     </ul>
   </main>
+  <SiteFooter locale={locale} />
 </BaseLayout>
 
 <style>
   .games-page {
-    position: fixed;
-    inset: 0;
-    overflow-y: auto;
-    padding: 2rem clamp(1.25rem, 5vw, 5rem) 5rem;
+    min-height: 100vh;
+    padding: clamp(2rem, 5vw, 4rem) 1.25rem clamp(4rem, 8vw, 7rem);
     background:
-      radial-gradient(circle at 75% 15%, rgba(68, 113, 196, 0.18), transparent 34rem),
-      var(--bg-color);
+      radial-gradient(circle at 75% 15%, var(--color-accent-soft), transparent 34rem),
+      var(--color-page);
   }
 
-  .games-page__navigation {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    max-width: 960px;
-    margin: 0 auto;
+  .games-page__navigation,
+  .games-page__header,
+  .games-page__grid {
+    width: min(100%, 60rem);
+    margin-inline: auto;
   }
 
   .games-page__navigation a,
   .games-page__card > a {
-    color: var(--text-primary);
-    font-weight: 600;
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    color: var(--color-accent-hover);
+    font-weight: 700;
     text-decoration: none;
-  }
-
-  .games-page__header,
-  .games-page__grid {
-    width: min(100%, 960px);
-    margin-inline: auto;
   }
 
   .games-page__header {
@@ -78,10 +81,10 @@ import { EARTH_GAMES } from '../../../../data/games';
   }
 
   .games-page__header > p:first-child {
-    color: #83b4ff;
+    color: var(--color-accent);
     font-size: 0.78rem;
-    font-weight: 600;
-    letter-spacing: 0.18em;
+    font-weight: 750;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
   }
 
@@ -94,23 +97,24 @@ import { EARTH_GAMES } from '../../../../data/games';
   .games-page__header > p:last-child,
   .games-page__card > p,
   .games-page__card ul {
-    color: var(--text-secondary);
-    line-height: 1.6;
+    color: var(--color-text-secondary);
+    line-height: 1.65;
   }
 
   .games-page__grid {
-    list-style: none;
     display: grid;
     gap: 1.25rem;
+    padding: 0;
+    list-style: none;
   }
 
   .games-page__card {
     display: grid;
     gap: 1.2rem;
     padding: clamp(1.4rem, 4vw, 2rem);
-    background: rgba(255, 255, 255, 0.035);
-    border: 1px solid var(--card-border);
-    border-radius: 18px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 1rem;
   }
 
   .games-page__card-heading {
@@ -121,9 +125,9 @@ import { EARTH_GAMES } from '../../../../data/games';
   }
 
   .games-page__card-heading span {
-    color: #c9a8ff;
+    color: var(--color-accent-hover);
     font-size: 0.7rem;
-    font-weight: 600;
+    font-weight: 750;
     letter-spacing: 0.1em;
     text-transform: uppercase;
   }
@@ -133,16 +137,5 @@ import { EARTH_GAMES } from '../../../../data/games';
     flex-wrap: wrap;
     gap: 0.5rem 1.5rem;
     padding-left: 1.1rem;
-  }
-
-  .games-page__card > a {
-    justify-self: start;
-    color: #9fc5ff;
-  }
-
-  a:focus-visible {
-    outline: 2px solid #9fc5ff;
-    outline-offset: 4px;
-    border-radius: 3px;
   }
 </style>
