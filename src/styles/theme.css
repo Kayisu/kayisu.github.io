@@ -19,7 +19,7 @@
     --color-shadow: rgba(38, 50, 61, 0.12);
     --color-overlay: rgba(244, 241, 233, 0.9);
     --solar-background: #dce5e8;
-    --solar-orbit: rgba(49, 86, 106, 0.34);
+    --solar-orbit: #31566a;
     --solar-label: #26323d;
     --solar-halo: #3f687f;
     --solar-selection: var(--solar-halo);
@@ -58,7 +58,7 @@
     --color-shadow: rgba(4, 9, 13, 0.34);
     --color-overlay: rgba(18, 26, 34, 0.9);
     --solar-background: #121a22;
-    --solar-orbit: rgba(164, 212, 230, 0.22);
+    --solar-orbit: #a4d4e6;
     --solar-label: #edf0ec;
     --solar-halo: #82abc0;
     --solar-selection: var(--solar-halo);
@@ -97,7 +97,7 @@
         --color-shadow: rgba(4, 9, 13, 0.34);
         --color-overlay: rgba(18, 26, 34, 0.9);
         --solar-background: #121a22;
-        --solar-orbit: rgba(164, 212, 230, 0.22);
+        --solar-orbit: #a4d4e6;
         --solar-label: #edf0ec;
         --solar-halo: #82abc0;
         --solar-selection: var(--solar-halo);

@@ -43,6 +43,9 @@ jobs:
       - name: Build static site
         run: npm run build
 
+      - name: Verify generated routes and bundles
+        run: npm run verify:build
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:

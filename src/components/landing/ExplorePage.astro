@@ -35,6 +35,7 @@ const { bodies, copy } = createSolarPresentation(locale, dictionary);
     <SiteHeader locale={locale} languageRoute={route} active="explore" />
     <main id="main-content" class="explore-page__main">
       <section class="explore-page__visual" aria-label={copy.canvasLabel}>
+        <h1 class="visually-hidden">{dictionary.nav.explore}</h1>
         <SolarApp mode="explore" bodies={bodies} copy={copy} client:only="react">
           <div slot="fallback" class="solar-prehydrate solar-prehydrate--explore" role="status">
             <p>{copy.loadingLabel}</p>

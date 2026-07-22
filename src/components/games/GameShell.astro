@@ -9,6 +9,7 @@ const { title, backHref, backLabel } = Astro.props;
 ---
 
 <main class="sandbox-shell" aria-label={title}>
+  <h1 class="visually-hidden">{title}</h1>
   <nav class="sandbox-shell__navigation" aria-label="Game navigation">
     <a href={backHref}>
       <span aria-hidden="true">&larr;</span> {backLabel}
