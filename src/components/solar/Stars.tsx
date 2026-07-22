@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
@@ -20,6 +20,7 @@ const vertexShader = /* glsl */ `
 
 const fragmentShader = /* glsl */ `
   uniform float time;
+  uniform vec3 starColor;
   varying float vAlpha;
   void main() {
     // Twinkle math
@@ -30,11 +31,16 @@ const fragmentShader = /* glsl */ `
     float dist = length(gl_PointCoord - vec2(0.5));
     if (dist > 0.5) discard;
 
-    gl_FragColor = vec4(1.0, 1.0, 1.0, finalAlpha * 0.8);
+    gl_FragColor = vec4(starColor, finalAlpha * 0.8);
   }
 `;
 
-export default function Stars() {
+interface StarsProps {
+  color: string;
+  reducedMotion: boolean;
+}
+
+export default function Stars({ color, reducedMotion }: StarsProps) {
   const matRef = useRef<THREE.ShaderMaterial>(null);
 
   const { positions, alphas } = useMemo(() => {
@@ -52,8 +58,17 @@ export default function Stars() {
     return { positions, alphas };
   }, []);
 
+  const uniforms = useMemo(
+    () => ({ time: { value: 0 }, starColor: { value: new THREE.Color(color) } }),
+    [],
+  );
+
+  useEffect(() => {
+    uniforms.starColor.value.set(color);
+  }, [color, uniforms]);
+
   useFrame((state) => {
-    if (matRef.current) {
+    if (matRef.current && !reducedMotion) {
       matRef.current.uniforms.time.value = state.clock.getElapsedTime();
     }
   });
@@ -66,15 +81,11 @@ export default function Stars() {
       </bufferGeometry>
       <shaderMaterial
         ref={matRef}
-        args={[
-          {
-            uniforms: { time: { value: 0 } },
-            vertexShader,
-            fragmentShader,
-            transparent: true,
-            depthWrite: false,
-          },
-        ]}
+        uniforms={uniforms}
+        vertexShader={vertexShader}
+        fragmentShader={fragmentShader}
+        transparent
+        depthWrite={false}
       />
     </points>
   );

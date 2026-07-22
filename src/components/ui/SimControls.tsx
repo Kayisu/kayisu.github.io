@@ -1,73 +1,149 @@
-import { useState } from 'react';
-import { BODIES } from '../../data/planets';
+import { useId, useRef, useState, type KeyboardEvent } from 'react';
+import type { SolarBody, SolarCopy, SolarSpeed } from '../solar/types';
 import { useSolarStore } from '../../store/solarStore';
 
-// Top-left simulation speed buttons + planet search, ported from script.js.
-const SPEEDS = [
-  { value: 0, icon: 'fa-pause', title: 'Pause' },
-  { value: 1, icon: 'fa-play', title: 'Play (1x)' },
-  { value: 5, icon: 'fa-forward', title: 'Fast (5x)' },
-  { value: 20, icon: 'fa-fast-forward', title: 'Fastest (20x)' },
-];
+interface SimControlsProps {
+  bodies: SolarBody[];
+  copy: SolarCopy;
+}
 
-const BODY_NAMES = BODIES.map((b) => b.name); // sun + 9 planets
+interface SpeedOption {
+  value: SolarSpeed;
+  shortLabel: string;
+  label: string;
+}
 
-export default function SimControls() {
+function normaliseSearchText(value: string): string {
+  return value
+    .normalize('NFKD')
+    .toLowerCase()
+    .replace(/\p{M}/gu, '')
+    .replace(/ı/g, 'i');
+}
+
+export default function SimControls({ bodies, copy }: SimControlsProps) {
   const speed = useSolarStore((s) => s.speedMultiplier);
   const setSpeed = useSolarStore((s) => s.setSpeed);
   const select = useSolarStore((s) => s.select);
+  const selected = useSolarStore((s) => s.selected);
 
   const [query, setQuery] = useState('');
-  const [focused, setFocused] = useState(false);
+  const [open, setOpen] = useState(false);
+  const searchRegionRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const inputId = useId();
 
-  const q = query.toLowerCase().trim();
-  const matches = q ? BODY_NAMES.filter((name) => name.includes(q)) : [];
-  const showResults = focused && matches.length > 0;
+  const speeds: SpeedOption[] = [
+    { value: 0, shortLabel: '0', label: copy.speedOptions.paused },
+    { value: 0.5, shortLabel: '0.5×', label: copy.speedOptions.half },
+    { value: 1, shortLabel: '1×', label: copy.speedOptions.normal },
+    { value: 2, shortLabel: '2×', label: copy.speedOptions.double },
+  ];
+
+  const q = normaliseSearchText(query).trim();
+  const matches = q
+    ? bodies.filter((body) =>
+        normaliseSearchText(`${body.label} ${body.name} ${body.type}`).includes(q),
+      )
+    : [];
+  const showResults = open && q.length > 0;
+
+  const choose = (body: SolarBody) => {
+    inputRef.current?.focus({ preventScroll: true });
+    select(body.name);
+    setQuery('');
+    setOpen(false);
+  };
+
+  const onInputKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      event.stopPropagation();
+      setQuery('');
+      setOpen(false);
+    } else if (event.key === 'Enter' && matches[0]) {
+      event.preventDefault();
+      choose(matches[0]);
+    }
+  };
 
   return (
-    <div className="sim-controls">
-      <div className="speed-controls">
-        {SPEEDS.map((s) => (
-          <button
-            key={s.value}
-            className={`speed-btn${speed === s.value ? ' active' : ''}`}
-            title={s.title}
-            onClick={() => setSpeed(s.value)}
-          >
-            <i className={`fas ${s.icon}`}></i>
-          </button>
-        ))}
-      </div>
-
-      <div className="search-container">
-        <i className="fas fa-search search-icon"></i>
-        <input
-          id="planet-search"
-          type="text"
-          placeholder="Search a planet..."
-          autoComplete="off"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onFocus={() => setFocused(true)}
-          // Delay so a result's onMouseDown fires before the list hides.
-          onBlur={() => setTimeout(() => setFocused(false), 150)}
-        />
-        <div className={`search-results${showResults ? '' : ' hidden'}`}>
-          {matches.map((name) => (
-            <div
-              key={name}
-              className="search-item"
-              // mousedown fires before the input's blur
-              onMouseDown={() => {
-                select(name);
-                setQuery('');
-              }}
+    <div className="solar-controls">
+      <fieldset className="solar-speed">
+        <legend className="solar-speed__label">{copy.speedLabel}</legend>
+        <div className="solar-speed__buttons">
+          {speeds.map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              className="solar-speed__button"
+              aria-label={option.label}
+              aria-pressed={speed === option.value}
+              title={option.label}
+              onClick={() => setSpeed(option.value)}
             >
-              {name.charAt(0).toUpperCase() + name.slice(1)}
-            </div>
+              {option.shortLabel}
+            </button>
           ))}
         </div>
+      </fieldset>
+
+      <div
+        ref={searchRegionRef}
+        className="solar-search"
+        onBlurCapture={(event) => {
+          if (!event.currentTarget.contains(event.relatedTarget)) setOpen(false);
+        }}
+      >
+        <label className="solar-search__label" htmlFor={inputId}>
+          {copy.searchLabel}
+        </label>
+        <input
+          ref={inputRef}
+          id={inputId}
+          className="solar-search__input"
+          type="search"
+          placeholder={copy.searchPlaceholder}
+          autoComplete="off"
+          value={query}
+          onChange={(event) => {
+            setQuery(event.target.value);
+            setOpen(true);
+          }}
+          onFocus={() => setOpen(true)}
+          onKeyDown={onInputKeyDown}
+        />
+        {showResults && matches.length > 0 && (
+          <ul className="solar-search__results">
+            {matches.map((body) => (
+              <li key={body.name}>
+                <button
+                  type="button"
+                  className="solar-search__result"
+                  aria-pressed={selected === body.name}
+                  onClick={() => choose(body)}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Escape') {
+                      event.preventDefault();
+                      setOpen(false);
+                      inputRef.current?.focus();
+                    }
+                  }}
+                >
+                  {body.label} · {body.type}
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+        {showResults && matches.length === 0 && (
+          <p className="solar-search__empty" role="status">
+            {copy.searchNoResults}
+          </p>
+        )}
       </div>
+
+      <p className="solar-keyboard-help">{copy.keyboardHelp}</p>
     </div>
   );
 }
