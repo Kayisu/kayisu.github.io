@@ -1,92 +1,175 @@
 ---
-import { getCollection } from 'astro:content';
 import type { Body } from '../../data/planets';
+import {
+  getDictionary,
+  type CelestialBodyId,
+  type Locale,
+} from '../../i18n';
+import { getProjectIndex, type ProjectPlanet } from '../../lib/projects';
 import EarthGamesSection from '../games/EarthGamesSection.astro';
+import SiteFooter from '../layout/SiteFooter.astro';
+import SiteHeader from '../layout/SiteHeader.astro';
+import ProjectCard from '../projects/ProjectCard.astro';
 
 interface Props {
   body: Body;
+  locale: Locale;
+  languageHref: string;
 }
 
-const { body } = Astro.props;
-
-// 0xRRGGBB number → "#rrggbb" so we can use the body's scene color as a subtle
-// accent in the (static, zero-JS) detail page.
+const { body, locale, languageHref } = Astro.props;
+const dictionary = getDictionary(locale);
+const bodyCopy = dictionary.solar.bodies[body.name as CelestialBodyId];
 const accent = `#${body.color.toString(16).padStart(6, '0')}`;
-
-const statusLabels: Record<string, string> = {
-  active: 'Active',
-  shipped: 'Shipped',
-  prototype: 'Prototype',
-  wip: 'WIP',
-  archived: 'Archived',
-};
-
-// Pull every project tagged for this category and order them: featured first,
-// then newest year, then alphabetical.
-const projects = (await getCollection('projects'))
-  .filter((entry) => entry.data.planet === body.name)
-  .sort((a, b) => {
-    if (!!a.data.featured !== !!b.data.featured) {
-      return a.data.featured ? -1 : 1;
-    }
-    if ((a.data.year ?? 0) !== (b.data.year ?? 0)) {
-      return (b.data.year ?? 0) - (a.data.year ?? 0);
-    }
-    return a.data.title.localeCompare(b.data.title);
-  });
+const projects = (await getProjectIndex()).forPlanet(locale, body.name as ProjectPlanet);
+const countLabel = projects.length === 1
+  ? dictionary.planet.projectCount
+  : dictionary.planet.projectCountPlural;
 ---
 
-<!-- Full-screen, zero-JS category page for one celestial body. Lists the
-     projects that belong to this category as a responsive grid of cards. -->
-<div class="planet-detail-view" style={`--accent: ${accent};`}>
-  <a href="/" class="back-to-solar-btn">
-    <i class="fas fa-arrow-left"></i> Back to Solar System
-  </a>
-
-  <div class="detail-shell">
-    <header class="detail-header">
-      <p class="detail-eyebrow">{body.type}</p>
-      <h1 class="detail-title">{body.name}</h1>
-      <p class="detail-tagline">{body.desc}</p>
+<SiteHeader locale={locale} languageHref={languageHref} />
+<main id="main-content" class="planet-page" style={`--accent: ${accent};`}>
+  <div class="planet-page-shell">
+    <header class="planet-page-header">
+      <p class="planet-page-eyebrow">{dictionary.planet.categoryLabel} · {bodyCopy.category}</p>
+      <h1>{bodyCopy.name}</h1>
+      <p class="planet-page-description">{bodyCopy.description}</p>
+      {projects.length > 0 && (
+        <p class="planet-project-count">{projects.length} {countLabel}</p>
+      )}
     </header>
 
     {
       projects.length > 0 ? (
-        <ul class="project-grid">
-          {projects.map((entry) => (
-            <li>
-              <a class="project-card" href={`/projects/${entry.id}`}>
-                <div class="project-card-top">
-                  <h2 class="project-card-title">{entry.data.title}</h2>
-                  {entry.data.status && (
-                    <span class={`status-badge status-${entry.data.status}`}>
-                      {statusLabels[entry.data.status] ?? entry.data.status}
-                    </span>
-                  )}
-                </div>
-                <p class="project-card-summary">{entry.data.summary}</p>
-                {entry.data.tags && entry.data.tags.length > 0 && (
-                  <ul class="tag-list">
-                    {entry.data.tags.map((tag) => (
-                      <li class="tag-pill">{tag}</li>
-                    ))}
-                  </ul>
-                )}
-              </a>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <div class="empty-state">
-          <i class="fas fa-satellite-dish"></i>
-          <p class="empty-state-title">More landing here soon.</p>
-          <p class="empty-state-sub">
-            This category is still taking shape — work in progress.
-          </p>
-        </div>
-      )
+        <section aria-labelledby="planet-projects-title">
+          <h2 id="planet-projects-title" class="section-title">{dictionary.project.projects}</h2>
+          <ul class="planet-project-grid">
+            {projects.map((entry) => (
+              <li>
+                <ProjectCard
+                  entry={entry}
+                  statusLabel={dictionary.status[entry.data.status]}
+                  categoryLabel={bodyCopy.category}
+                  ctaLabel={dictionary.common.readMore}
+                  tagsLabel={dictionary.project.technologies}
+                />
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : body.name === 'earth' && locale === 'tr' ? (
+        <section class="earth-games-discovery" aria-labelledby="earth-games-discovery-title">
+          <p class="planet-page-eyebrow">{dictionary.planet.gamesTitle}</p>
+          <h2 id="earth-games-discovery-title">{dictionary.planet.earthEmptyWithGames}</h2>
+          <p>{dictionary.planet.gamesDescription}</p>
+          <a href="/planet/earth/games/">
+            {dictionary.planet.exploreGames} <span aria-hidden="true">→</span>
+          </a>
+        </section>
+      ) : body.name !== 'earth' ? (
+        <section class="planet-empty-state" aria-labelledby="empty-state-title">
+          <h2 id="empty-state-title">{dictionary.project.noProjectsTitle}</h2>
+          <p>{dictionary.project.noProjectsDescription}</p>
+        </section>
+      ) : null
     }
 
-    {body.name === 'earth' && <EarthGamesSection />}
+    {body.name === 'earth' && locale === 'en' && <EarthGamesSection />}
   </div>
-</div>
+</main>
+<SiteFooter locale={locale} />
+
+<style>
+  .planet-page {
+    min-height: 100vh;
+    padding: clamp(6rem, 10vw, 8rem) 1.25rem 5rem;
+    background: var(--color-page, var(--bg-color));
+  }
+
+  .planet-page-shell {
+    width: min(100%, 70rem);
+    margin: 0 auto;
+  }
+
+  .planet-page-header {
+    max-width: 46rem;
+    margin-bottom: 3.5rem;
+  }
+
+  .planet-page-eyebrow {
+    margin-bottom: 0.65rem;
+    color: var(--color-accent, var(--accent));
+    font-size: 0.76rem;
+    font-weight: 650;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    font-size: clamp(3rem, 10vw, 6.5rem);
+    line-height: 0.95;
+  }
+
+  .planet-page-description {
+    max-width: 38rem;
+    margin-top: 1rem;
+    color: var(--color-text-secondary, var(--text-secondary));
+    font-size: clamp(1.05rem, 2.4vw, 1.25rem);
+    line-height: 1.6;
+  }
+
+  .planet-project-count {
+    margin-top: 1rem;
+    color: var(--color-text-muted, var(--text-secondary));
+    font-size: 0.85rem;
+  }
+
+  .section-title {
+    margin-bottom: 1.25rem;
+    font-size: clamp(1.5rem, 4vw, 2rem);
+  }
+
+  .planet-project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+    gap: 1.25rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .planet-empty-state,
+  .earth-games-discovery {
+    padding: clamp(1.4rem, 4vw, 2rem);
+    background: var(--color-surface, var(--card-bg));
+    border: 1px solid var(--color-border-subtle, var(--card-border));
+    border-radius: 1rem;
+  }
+
+  .planet-empty-state h2,
+  .earth-games-discovery h2 {
+    font-size: clamp(1.25rem, 3vw, 1.6rem);
+  }
+
+  .planet-empty-state p,
+  .earth-games-discovery > p:not(.planet-page-eyebrow) {
+    max-width: 40rem;
+    margin-top: 0.6rem;
+    color: var(--color-text-secondary, var(--text-secondary));
+    line-height: 1.6;
+  }
+
+  .earth-games-discovery a {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    margin-top: 1.2rem;
+    color: var(--color-accent, var(--accent));
+    font-weight: 650;
+    text-decoration: none;
+  }
+
+  .earth-games-discovery a:focus-visible {
+    outline: 3px solid var(--color-focus, var(--accent));
+    outline-offset: 3px;
+  }
+</style>

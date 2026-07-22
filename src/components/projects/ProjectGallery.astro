@@ -1,0 +1,68 @@
+---
+import { Image } from 'astro:assets';
+import type { ProjectEntry } from '../../lib/projects';
+
+interface Props {
+  gallery: NonNullable<ProjectEntry['data']['gallery']>;
+  heading: string;
+}
+
+const { gallery, heading } = Astro.props;
+---
+
+<section class="project-gallery" aria-labelledby="project-gallery-heading">
+  <h2 id="project-gallery-heading">{heading}</h2>
+  <div class="project-gallery-grid">
+    {
+      gallery.map((item) => (
+        <figure>
+          <Image
+            src={item.src}
+            alt={item.alt}
+            widths={[640, 960, 1280]}
+            sizes="(max-width: 760px) 100vw, 760px"
+            loading="lazy"
+          />
+          {item.caption && <figcaption>{item.caption}</figcaption>}
+        </figure>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .project-gallery {
+    margin-top: 3rem;
+  }
+
+  .project-gallery h2 {
+    margin-bottom: 1rem;
+    font-size: 1.4rem;
+  }
+
+  .project-gallery-grid {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  figure {
+    overflow: hidden;
+    margin: 0;
+    background: var(--color-surface-muted, var(--card-bg));
+    border: 1px solid var(--color-border-subtle, var(--card-border));
+    border-radius: 1rem;
+  }
+
+  figure :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  figcaption {
+    padding: 0.8rem 1rem;
+    color: var(--color-text-secondary, var(--text-secondary));
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+</style>

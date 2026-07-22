@@ -1,6 +1,6 @@
 ---
-import ProjectCaseStudy from '../../components/projects/ProjectCaseStudy.astro';
-import { getBody } from '../../data/planets';
+import ProjectCaseStudy from '../../../components/projects/ProjectCaseStudy.astro';
+import { getBody } from '../../../data/planets';
 import {
   getAlternatePaths,
   getDictionary,
@@ -8,13 +8,13 @@ import {
   projectPath,
   resolveEquivalentPath,
   type LocalisedRoute,
-} from '../../i18n';
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getProjectIndex, type ProjectEntry } from '../../lib/projects';
+} from '../../../i18n';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getProjectIndex, type ProjectEntry } from '../../../lib/projects';
 
 export async function getStaticPaths() {
   const projectIndex = await getProjectIndex();
-  return projectIndex.forLocale('en').map((entry) => ({
+  return projectIndex.forLocale('tr').map((entry) => ({
     params: { slug: entry.data.slug },
     props: { entry },
   }));
@@ -24,15 +24,15 @@ interface Props {
   entry: ProjectEntry;
 }
 
-const locale = 'en' as const;
+const locale = 'tr' as const;
 const { entry }: Props = Astro.props;
 const projectIndex = await getProjectIndex();
 const translation = projectIndex.translationOf(entry, otherLocale(locale));
 const route = {
   kind: 'project',
   slugs: {
-    en: entry.data.slug,
-    ...(translation ? { tr: translation.data.slug } : {}),
+    ...(translation ? { en: translation.data.slug } : {}),
+    tr: entry.data.slug,
   },
 } satisfies LocalisedRoute;
 const body = getBody(entry.data.planet)!;

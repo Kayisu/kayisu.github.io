@@ -1,6 +1,6 @@
 ---
-import BodyDetail from '../../components/ui/BodyDetail.astro';
-import { PLANETS, getBody } from '../../data/planets';
+import BodyDetail from '../../../components/ui/BodyDetail.astro';
+import { PLANETS, getBody } from '../../../data/planets';
 import {
   getAlternatePaths,
   getDictionary,
@@ -9,14 +9,14 @@ import {
   resolveEquivalentPath,
   type CelestialBodyId,
   type LocalisedRoute,
-} from '../../i18n';
-import BaseLayout from '../../layouts/BaseLayout.astro';
+} from '../../../i18n';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
 
 export function getStaticPaths() {
   return PLANETS.map((planet) => ({ params: { name: planet.name } }));
 }
 
-const locale = 'en' as const;
+const locale = 'tr' as const;
 const { name } = Astro.params;
 const body = getBody(name!)!;
 const dictionary = getDictionary(locale);

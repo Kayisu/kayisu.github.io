@@ -1,47 +1,107 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import SiteFooter from '../../components/layout/SiteFooter.astro';
+import SiteHeader from '../../components/layout/SiteHeader.astro';
 import { SUN } from '../../data/planets';
+import {
+  getAlternatePaths,
+  getDictionary,
+  resolveEquivalentPath,
+  type LocalisedRoute,
+} from '../../i18n';
+import BaseLayout from '../../layouts/BaseLayout.astro';
 
-// The "Core" — about me / manifesto. This is the one body page that is NOT
-// project-driven: it's a static prose bio. Placeholder draft copy for now.
+const locale = 'en' as const;
+const dictionary = getDictionary(locale);
+const bodyCopy = dictionary.solar.bodies.sun;
 const accent = `#${SUN.color.toString(16).padStart(6, '0')}`;
+const route = { kind: 'sun' } satisfies LocalisedRoute;
 ---
 
-<BaseLayout title="Core | Kayisu" description={SUN.desc}>
-  <div class="project-view" style={`--accent: ${accent};`}>
-    <a href="/" class="back-to-solar-btn">
-      <i class="fas fa-arrow-left"></i> Back to Solar System
-    </a>
+<BaseLayout
+  title={`${bodyCopy.category} | Kayisu`}
+  description={bodyCopy.description}
+  locale={locale}
+  canonicalPath="/star/sun/"
+  alternatePaths={getAlternatePaths(route)}
+>
+  <SiteHeader
+    locale={locale}
+    languageHref={resolveEquivalentPath(route, 'tr')}
+    active="about"
+  />
+  <main id="main-content" class="core-page" style={`--accent: ${accent};`}>
+    <article>
+      <p class="core-eyebrow">{bodyCopy.category}</p>
+      <h1>Emre Kaan Ataş</h1>
+      <p class="core-summary">
+        I build practical systems across sustainability, applied AI, research, and
+        interactive software.
+      </p>
 
-    <article class="project-article">
-      <header class="project-article-header">
-        <p class="detail-eyebrow">{SUN.type}</p>
-        <h1 class="project-article-title">Emre Kaan Ataş</h1>
-        <p class="project-article-summary">{SUN.desc}</p>
-      </header>
-
-      <div class="prose">
+      <div class="prose core-prose">
+        <h2>The centre of the system</h2>
         <p>
-          <em>Draft — still writing this.</em> I'm a software developer who likes
-          building things that are equal parts ambitious and useful. This map is
-          how I think about my work: each orbit is a different kind of thing I
-          make, and the center is the part that ties it all together.
+          This portfolio uses a solar system to organise different kinds of work.
+          Each orbit represents a category, while the Core connects the projects,
+          research, tools, and experiments within them.
         </p>
 
-        <h2>What I'm building</h2>
+        <h2>Current work</h2>
         <p>
-          <em>Placeholder.</em> A short tour of the big bets and the day-to-day
-          engineering — the startups, the systems, and the experiments that keep
-          me up at night. I'll fill this in with the work I'm proudest of.
+          Current projects include EcoReport, a sustainability-reporting SaaS with
+          LLM-powered drafting, and Cognitive Comfort, a senior-thesis exploration
+          combining IoT sensing and computer vision. Earth also hosts a browser-based
+          terrain sandbox as an interactive experiment.
         </p>
 
-        <h2>What I care about</h2>
         <p>
-          <em>Placeholder.</em> The principles underneath the projects — why I
-          choose the problems I choose, what "good" looks like to me, and the
-          kind of impact I'm chasing.
+          The individual project pages distinguish active work, research in progress,
+          prototypes, and draft documentation without presenting unfinished work as
+          complete.
         </p>
       </div>
     </article>
-  </div>
+  </main>
+  <SiteFooter locale={locale} />
 </BaseLayout>
+
+<style>
+  .core-page {
+    min-height: 100vh;
+    padding: clamp(6rem, 10vw, 8rem) 1.25rem 5rem;
+    background: var(--color-page, var(--bg-color));
+  }
+
+  article {
+    width: min(100%, 48rem);
+    margin: 0 auto;
+  }
+
+  .core-eyebrow {
+    margin-bottom: 0.75rem;
+    color: var(--color-accent, var(--accent));
+    font-size: 0.78rem;
+    font-weight: 650;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    font-size: clamp(2.6rem, 8vw, 5.5rem);
+    line-height: 1;
+  }
+
+  .core-summary {
+    max-width: 42rem;
+    margin-top: 1rem;
+    color: var(--color-text-secondary, var(--text-secondary));
+    font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+    line-height: 1.65;
+  }
+
+  .core-prose {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-border-subtle, var(--card-border));
+  }
+</style>

@@ -1,0 +1,375 @@
+---
+import { Image } from 'astro:assets';
+import { render } from 'astro:content';
+import SiteFooter from '../layout/SiteFooter.astro';
+import SiteHeader from '../layout/SiteHeader.astro';
+import type { Body } from '../../data/planets';
+import {
+  getDictionary,
+  homePath,
+  planetPath,
+  type CelestialBodyId,
+  type Locale,
+} from '../../i18n';
+import type { ProjectEntry, ProjectNeighbours } from '../../lib/projects';
+import { projectHref } from '../../lib/projects';
+import ProjectGallery from './ProjectGallery.astro';
+
+interface Props {
+  entry: ProjectEntry;
+  body: Body;
+  locale: Locale;
+  languageHref: string;
+  accent: string;
+  neighbours: ProjectNeighbours;
+}
+
+const { entry, body, locale, languageHref, accent, neighbours } = Astro.props;
+const dictionary = getDictionary(locale);
+const bodyCopy = dictionary.solar.bodies[body.name as CelestialBodyId];
+const categoryHref = planetPath(locale, body.name as Exclude<CelestialBodyId, 'sun'>);
+const { Content } = await render(entry);
+const { cover, demo, gallery, highlights, period, repo, role, status, tags, team, title, year } =
+  entry.data;
+---
+
+<SiteHeader locale={locale} languageHref={languageHref} active="projects" />
+<main id="main-content" class="project-case-study" style={`--accent: ${accent};`}>
+  <div class="project-case-study-shell">
+    <nav class="project-breadcrumb" aria-label={dictionary.nav.label}>
+      <a href={homePath(locale)}>{dictionary.common.home}</a>
+      <span aria-hidden="true">/</span>
+      <a href={categoryHref}>{bodyCopy.name}</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">{title}</span>
+    </nav>
+
+    <article>
+      <header class="project-case-study-header">
+        <p class="project-eyebrow">{bodyCopy.category}</p>
+        <h1>{title}</h1>
+        <p class="project-summary">{entry.data.summary}</p>
+
+        <dl class="project-facts">
+          <div>
+            <dt>{dictionary.project.status}</dt>
+            <dd><span class={`status-badge status-${status}`}>{dictionary.status[status]}</span></dd>
+          </div>
+          {role && (
+            <div>
+              <dt>{dictionary.project.role}</dt>
+              <dd>{role}</dd>
+            </div>
+          )}
+          {(period || year) && (
+            <div>
+              <dt>{period ? dictionary.project.period : dictionary.project.year}</dt>
+              <dd>{period ?? year}</dd>
+            </div>
+          )}
+          {team && team.length > 0 && (
+            <div>
+              <dt>{dictionary.project.team}</dt>
+              <dd>{team.join(', ')}</dd>
+            </div>
+          )}
+        </dl>
+
+        {tags && tags.length > 0 && (
+          <ul class="tag-list" aria-label={dictionary.project.technologies}>
+            {tags.map((tag) => <li class="tag-pill">{tag}</li>)}
+          </ul>
+        )}
+
+        {(repo || demo) && (
+          <div class="project-actions">
+            {repo && (
+              <a href={repo} target="_blank" rel="noopener noreferrer">
+                {dictionary.common.repository} <span aria-hidden="true">↗</span>
+                <span class="visually-hidden"> ({dictionary.accessibility.externalLink})</span>
+              </a>
+            )}
+            {demo && (
+              <a href={demo} target="_blank" rel="noopener noreferrer">
+                {dictionary.common.demo} <span aria-hidden="true">↗</span>
+                <span class="visually-hidden"> ({dictionary.accessibility.externalLink})</span>
+              </a>
+            )}
+          </div>
+        )}
+      </header>
+
+      {cover && (
+        <figure class="project-cover">
+          <Image src={cover.src} alt={cover.alt} widths={[760, 1120, 1520]} sizes="(max-width: 800px) 100vw, 760px" />
+        </figure>
+      )}
+
+      {highlights && highlights.length > 0 && (
+        <section class="project-highlights" aria-labelledby="project-highlights-heading">
+          <h2 id="project-highlights-heading">{dictionary.project.highlights}</h2>
+          <ul>
+            {highlights.map((highlight) => <li>{highlight}</li>)}
+          </ul>
+        </section>
+      )}
+
+      <div class="prose project-prose">
+        <Content />
+      </div>
+
+      {gallery && gallery.length > 0 && (
+        <ProjectGallery gallery={gallery} heading={dictionary.project.gallery} />
+      )}
+    </article>
+
+    {(neighbours.previous || neighbours.next) && (
+      <nav class="project-neighbours" aria-label={dictionary.project.projects}>
+        {neighbours.previous ? (
+          <a href={projectHref(neighbours.previous)} rel="prev">
+            <span>{dictionary.project.previous}</span>
+            <strong>{neighbours.previous.data.title}</strong>
+          </a>
+        ) : (
+          <span />
+        )}
+        {neighbours.next && (
+          <a href={projectHref(neighbours.next)} rel="next">
+            <span>{dictionary.project.next}</span>
+            <strong>{neighbours.next.data.title}</strong>
+          </a>
+        )}
+      </nav>
+    )}
+
+    <a class="project-back-link" href={categoryHref}>
+      <span aria-hidden="true">←</span> {dictionary.project.backToCategory}
+    </a>
+  </div>
+</main>
+<SiteFooter locale={locale} />
+
+<style>
+  .project-case-study {
+    min-height: 100vh;
+    padding: clamp(6rem, 10vw, 8rem) 1.25rem 5rem;
+    background: var(--color-page, var(--bg-color));
+  }
+
+  .project-case-study-shell {
+    width: min(100%, 52rem);
+    margin: 0 auto;
+  }
+
+  .project-breadcrumb {
+    display: flex;
+    overflow: hidden;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    color: var(--color-text-muted, var(--text-secondary));
+    font-size: 0.82rem;
+    white-space: nowrap;
+  }
+
+  .project-breadcrumb a,
+  .project-back-link {
+    color: var(--color-accent, var(--accent));
+  }
+
+  .project-breadcrumb span:last-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .project-case-study-header {
+    padding-bottom: 2.25rem;
+    border-bottom: 1px solid var(--color-border-subtle, var(--card-border));
+  }
+
+  .project-eyebrow {
+    margin-bottom: 0.75rem;
+    color: var(--color-accent, var(--accent));
+    font-size: 0.78rem;
+    font-weight: 650;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    max-width: 18ch;
+    font-size: clamp(2.4rem, 8vw, 4.5rem);
+    line-height: 1.02;
+  }
+
+  .project-summary {
+    max-width: 42rem;
+    margin-top: 1rem;
+    color: var(--color-text-secondary, var(--text-secondary));
+    font-size: clamp(1.05rem, 2.5vw, 1.25rem);
+    line-height: 1.6;
+  }
+
+  .project-facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .project-facts div {
+    min-width: 0;
+  }
+
+  .project-facts dt {
+    margin-bottom: 0.35rem;
+    color: var(--color-text-muted, var(--text-secondary));
+    font-size: 0.72rem;
+    font-weight: 650;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .project-facts dd {
+    margin: 0;
+    color: var(--color-text-primary, var(--text-primary));
+    line-height: 1.45;
+  }
+
+  .tag-list {
+    margin-top: 1.5rem;
+  }
+
+  .project-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+
+  .project-actions a {
+    min-height: 2.75rem;
+    padding: 0.7rem 1rem;
+    color: var(--color-text-primary, var(--text-primary));
+    text-decoration: none;
+    background: var(--color-surface, var(--card-bg));
+    border: 1px solid var(--color-border-subtle, var(--card-border));
+    border-radius: 0.65rem;
+  }
+
+  .project-actions a:hover,
+  .project-actions a:focus-visible,
+  .project-neighbours a:hover,
+  .project-neighbours a:focus-visible {
+    border-color: var(--color-accent, var(--accent));
+  }
+
+  .project-actions a:focus-visible,
+  .project-neighbours a:focus-visible,
+  .project-back-link:focus-visible,
+  .project-breadcrumb a:focus-visible {
+    outline: 3px solid var(--color-focus, var(--accent));
+    outline-offset: 3px;
+  }
+
+  .visually-hidden {
+    position: absolute;
+    overflow: hidden;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    white-space: nowrap;
+    border: 0;
+    clip: rect(0 0 0 0);
+  }
+
+  .project-cover {
+    overflow: hidden;
+    margin: 2rem 0 0;
+    background: var(--color-surface-muted, var(--card-bg));
+    border-radius: 1rem;
+  }
+
+  .project-cover :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .project-highlights {
+    margin-top: 2.5rem;
+    padding: 1.4rem;
+    background: var(--color-surface-muted, var(--card-bg));
+    border: 1px solid var(--color-border-subtle, var(--card-border));
+    border-radius: 1rem;
+  }
+
+  .project-highlights h2 {
+    margin-bottom: 0.8rem;
+    font-size: 1.2rem;
+  }
+
+  .project-highlights ul {
+    padding-left: 1.25rem;
+    color: var(--color-text-secondary, var(--text-secondary));
+    line-height: 1.65;
+  }
+
+  .project-prose {
+    margin-top: 2.75rem;
+  }
+
+  .project-neighbours {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border-subtle, var(--card-border));
+  }
+
+  .project-neighbours a {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-height: 4.5rem;
+    padding: 0.9rem;
+    color: var(--color-text-primary, var(--text-primary));
+    text-decoration: none;
+    border: 1px solid var(--color-border-subtle, var(--card-border));
+    border-radius: 0.75rem;
+  }
+
+  .project-neighbours a:last-child {
+    text-align: right;
+  }
+
+  .project-neighbours span {
+    color: var(--color-text-muted, var(--text-secondary));
+    font-size: 0.72rem;
+    text-transform: uppercase;
+  }
+
+  .project-back-link {
+    display: inline-flex;
+    gap: 0.4rem;
+    margin-top: 2rem;
+    font-weight: 650;
+    text-decoration: none;
+  }
+
+  @media (max-width: 520px) {
+    .project-neighbours {
+      grid-template-columns: 1fr;
+    }
+
+    .project-neighbours > span {
+      display: none;
+    }
+
+    .project-neighbours a:last-child {
+      text-align: left;
+    }
+  }
+</style>
