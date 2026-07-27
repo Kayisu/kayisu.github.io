@@ -178,12 +178,14 @@ const htmlFiles = listFiles(dist).filter((file) => file.endsWith('.html'));
 const htmlByRoute = new Map(htmlFiles.map((file) => [routeForHtml(file), readFileSync(file, 'utf8')]));
 const interactiveRoutes = ['/', '/tr/', '/explore/', '/tr/explore/'];
 const sandboxRoute = '/planet/earth/games/sandbox/';
+const yksRoute = '/yks/2026/tip-tercih/';
 
 for (const route of interactiveRoutes) assertIsland(route, 'SolarApp');
 assertIsland(sandboxRoute, 'SandboxApp');
+assertIsland(yksRoute, 'YksApp');
 
 for (const [route] of htmlByRoute) {
-  if (![...interactiveRoutes, sandboxRoute].includes(route)) assertStatic(route);
+  if (![...interactiveRoutes, sandboxRoute, yksRoute].includes(route)) assertStatic(route);
 }
 
 const planetNames = [
@@ -325,6 +327,68 @@ for (const [route, html] of htmlByRoute) {
   if (route !== sandboxRoute && html.includes('SandboxApp')) {
     fail(`${route} unexpectedly references SandboxApp`);
   }
+}
+
+// --- Unlisted YKS explorer -------------------------------------------------
+// The page must stay reachable only by direct URL, and its CSS/JS must not load
+// anywhere else on the site.
+const yksHtml = read(htmlPath(yksRoute));
+const nonYksHtml = [...htmlByRoute.entries()].filter(([route]) => route !== yksRoute);
+
+if (!yksHtml.includes('<meta name="robots" content="noindex, nofollow, noarchive">')) {
+  fail(`${yksRoute} must carry a noindex, nofollow, noarchive robots directive`);
+}
+
+for (const [route, html] of nonYksHtml) {
+  if (/href="(?:\/yks|https:\/\/kayisu\.github\.io\/yks)/.test(html)) {
+    fail(`${route} links to the unlisted YKS page; it must not be discoverable`);
+  }
+}
+
+if (existsSync(join(dist, 'sitemap-index.xml')) || existsSync(join(dist, 'sitemap-0.xml'))) {
+  fail('A sitemap was generated; it would list the unlisted YKS page');
+}
+
+const yksStyles = [...stylesheetHrefs(yksHtml)].filter((href) =>
+  read(href.replace(/^\//, '')).includes('.yks-shell'),
+);
+if (yksStyles.length !== 1) {
+  fail(`YKS expected exactly one namespaced stylesheet; found ${JSON.stringify(yksStyles)}`);
+}
+for (const style of yksStyles) {
+  for (const [route, html] of nonYksHtml) {
+    if (assetReferences(html).has(style)) fail(`${route} unexpectedly loads YKS CSS ${style}`);
+  }
+}
+
+const yksAssets = assetReferences(yksHtml);
+const yksGraph = javascriptGraph(yksAssets);
+const nonYksGraph = javascriptGraph(nonYksHtml.flatMap(([, html]) => [...assetReferences(html)]));
+const yksEntries = [...yksAssets].filter((asset) => /YksApp/i.test(asset));
+if (yksEntries.length !== 1) {
+  fail(`YKS expected one YksApp entry; found ${JSON.stringify(yksEntries)}`);
+}
+for (const asset of yksEntries) {
+  if (nonYksGraph.has(asset)) fail(`YKS entry leaks into another route's graph: ${asset}`);
+}
+if (![...yksGraph].some((asset) => /YksApp/i.test(asset))) {
+  fail('YKS JavaScript graph does not contain its YksApp entry');
+}
+if ([...yksGraph].some((asset) => /three|SolarApp|SandboxApp/i.test(asset))) {
+  fail('YKS page must not ship the solar-system or sandbox bundles');
+}
+
+for (const [route, html] of nonYksHtml) {
+  if (html.includes('YksApp')) fail(`${route} unexpectedly references YksApp`);
+}
+
+// The dataset totals are rendered server-side, so they prove the data layer ran.
+for (const expected of [
+  '225</span>',
+  '<span class="yks-summary-label">devlet programı</span>',
+  '<span class="yks-summary-label">vakıf programı</span>',
+]) {
+  if (!yksHtml.includes(expected)) fail(`${yksRoute} is missing rendered summary data: ${expected}`);
 }
 
 for (const file of htmlFiles) {

@@ -1,0 +1,630 @@
+/**
+ * Styles for the unlisted 2026 YKS medicine preference explorer.
+ *
+ * Everything is namespaced under `.yks-shell` so this sheet cannot leak into the
+ * portfolio pages, and every value comes from the shared tokens in `theme.css`
+ * rather than a new palette. Meaning is never carried by colour alone: each
+ * chance band also carries a text label.
+ */
+
+.yks-shell {
+  --yks-gap: 1rem;
+  --yks-radius: 0.75rem;
+  --yks-tap: 2.75rem; /* 44px minimum touch target */
+
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1.25rem 1rem 6rem;
+  color: var(--color-text-primary);
+  font-family: inherit;
+}
+
+.yks-shell *,
+.yks-shell *::before,
+.yks-shell *::after {
+  box-sizing: border-box;
+}
+
+/* Long tokens (codes, URLs) must wrap rather than widen the page at 320px. */
+.yks-shell p,
+.yks-shell li,
+.yks-shell dd,
+.yks-shell td {
+  overflow-wrap: anywhere;
+}
+
+.yks-shell :focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: 0.35rem;
+}
+
+/* ------------------------------------------------------------------ header */
+
+.yks-header {
+  margin-bottom: 1.5rem;
+}
+
+.yks-eyebrow {
+  margin: 0 0 0.35rem;
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.yks-title {
+  margin: 0 0 0.5rem;
+  font-size: clamp(1.5rem, 5vw, 2.25rem);
+  line-height: 1.2;
+}
+
+.yks-lede {
+  margin: 0;
+  max-width: 60ch;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+.yks-notice {
+  margin: 1.25rem 0;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--color-border-strong);
+  border-left-width: 4px;
+  border-radius: var(--yks-radius);
+  background: var(--color-surface-muted);
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.yks-notice strong {
+  color: var(--color-text-primary);
+}
+
+/* ------------------------------------------------------------- summary grid */
+
+.yks-summary {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  margin: 1.5rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.yks-summary-item {
+  padding: 0.85rem;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--yks-radius);
+  background: var(--color-surface);
+}
+
+.yks-summary-value {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.yks-summary-label {
+  display: block;
+  margin-top: 0.25rem;
+  color: var(--color-text-secondary);
+  font-size: 0.8rem;
+}
+
+/* --------------------------------------------------------------------- tabs */
+
+.yks-tabs {
+  display: flex;
+  gap: 0.4rem;
+  overflow-x: auto;
+  margin: 1.5rem 0 1rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid var(--color-border-subtle);
+  scrollbar-width: thin;
+}
+
+.yks-tab {
+  flex: 0 0 auto;
+  min-height: var(--yks-tap);
+  padding: 0.5rem 0.9rem;
+  border: 1px solid transparent;
+  border-radius: var(--yks-radius) var(--yks-radius) 0 0;
+  background: none;
+  color: var(--color-text-secondary);
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.yks-tab:hover {
+  color: var(--color-text-primary);
+  background: var(--color-surface-muted);
+}
+
+.yks-tab[aria-selected='true'] {
+  border-color: var(--color-border-subtle);
+  border-bottom-color: var(--color-surface);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+/* ------------------------------------------------------------------ filters */
+
+.yks-filters {
+  display: grid;
+  gap: var(--yks-gap);
+  margin-bottom: 1.25rem;
+  padding: 1rem;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--yks-radius);
+  background: var(--color-surface);
+}
+
+.yks-field {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.yks-field > span,
+.yks-fieldset > legend {
+  color: var(--color-text-secondary);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.yks-input,
+.yks-select {
+  width: 100%;
+  min-height: var(--yks-tap);
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 0.5rem;
+  background: var(--color-page);
+  color: var(--color-text-primary);
+  font: inherit;
+  font-size: 0.95rem;
+}
+
+.yks-fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.yks-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.4rem;
+}
+
+.yks-chip {
+  min-height: var(--yks-tap);
+  padding: 0.4rem 0.8rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 999px;
+  background: var(--color-page);
+  color: var(--color-text-secondary);
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.yks-chip:hover {
+  border-color: var(--color-accent);
+  color: var(--color-text-primary);
+}
+
+/* The checkmark keeps selection legible without relying on the accent colour. */
+.yks-chip[aria-pressed='true'] {
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+.yks-chip[aria-pressed='true']::before {
+  content: '✓ ';
+}
+
+.yks-filter-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.yks-button {
+  min-height: var(--yks-tap);
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 0.5rem;
+  background: var(--color-page);
+  color: var(--color-text-primary);
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.yks-button:hover {
+  border-color: var(--color-accent);
+}
+
+.yks-button--primary {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+  color: var(--color-page);
+  font-weight: 600;
+}
+
+.yks-result-count {
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+}
+
+/* ------------------------------------------------------------------- cards */
+
+.yks-list {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.yks-card {
+  display: grid;
+  gap: 0.6rem;
+  padding: 0.9rem;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--yks-radius);
+  background: var(--color-surface);
+}
+
+.yks-card-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.yks-card-title {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.yks-card-sub {
+  margin: 0.15rem 0 0;
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+}
+
+.yks-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.yks-badge {
+  padding: 0.2rem 0.55rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+/* Band colours are decorative; the badge text always states the band. */
+.yks-badge--strong {
+  border-color: var(--color-success);
+  color: var(--color-success);
+}
+
+.yks-badge--borderline {
+  border-color: var(--color-warning);
+  color: var(--color-warning);
+}
+
+.yks-badge--weak,
+.yks-badge--unmeasured {
+  color: var(--color-text-secondary);
+}
+
+.yks-facts {
+  display: grid;
+  gap: 0.4rem 1rem;
+  margin: 0;
+  grid-template-columns: 1fr;
+}
+
+.yks-facts > div {
+  display: flex;
+  gap: 0.4rem;
+  justify-content: space-between;
+  font-size: 0.85rem;
+}
+
+.yks-facts dt {
+  color: var(--color-text-secondary);
+}
+
+.yks-facts dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.yks-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.yks-empty {
+  padding: 2rem 1rem;
+  border: 1px dashed var(--color-border-strong);
+  border-radius: var(--yks-radius);
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
+/* --------------------------------------------------------------- shortlist */
+
+.yks-shortlist-bar {
+  position: fixed;
+  inset: auto 0 0;
+  z-index: 20;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.7rem 1rem;
+  border-top: 1px solid var(--color-border-strong);
+  background: var(--color-surface-raised);
+  box-shadow: 0 -4px 16px var(--color-shadow);
+}
+
+.yks-shortlist-count {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.yks-order-controls {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.yks-icon-button {
+  width: var(--yks-tap);
+  min-height: var(--yks-tap);
+  border: 1px solid var(--color-border-strong);
+  border-radius: 0.5rem;
+  background: var(--color-page);
+  color: var(--color-text-primary);
+  font: inherit;
+  cursor: pointer;
+}
+
+.yks-icon-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.yks-position {
+  display: inline-flex;
+  min-width: 1.9rem;
+  height: 1.9rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--color-accent-soft);
+  font-size: 0.85rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* -------------------------------------------------------------- comparison */
+
+.yks-table-scroll {
+  overflow-x: auto;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--yks-radius);
+}
+
+.yks-table {
+  width: 100%;
+  min-width: 34rem;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.yks-table th,
+.yks-table td {
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid var(--color-border-subtle);
+  text-align: left;
+  vertical-align: top;
+}
+
+.yks-table th {
+  background: var(--color-surface-muted);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.yks-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+/* ------------------------------------------------------------------ detail */
+
+.yks-detail-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: var(--color-overlay);
+}
+
+.yks-detail {
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 1.25rem 1rem 2rem;
+  border-radius: var(--yks-radius) var(--yks-radius) 0 0;
+  background: var(--color-surface-raised);
+}
+
+.yks-detail h2 {
+  margin: 0 0 0.25rem;
+  font-size: 1.15rem;
+  padding-right: 3rem;
+}
+
+.yks-detail-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: var(--yks-tap);
+  height: var(--yks-tap);
+  border: 1px solid var(--color-border-strong);
+  border-radius: 0.5rem;
+  background: var(--color-page);
+  color: var(--color-text-primary);
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.yks-detail-section {
+  margin-top: 1.1rem;
+}
+
+.yks-detail-section h3 {
+  margin: 0 0 0.35rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.yks-detail-section p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+/* ----------------------------------------------------------------- prose */
+
+.yks-section {
+  margin-top: 2rem;
+}
+
+.yks-section > h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.15rem;
+}
+
+.yks-note-list {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+}
+
+.yks-note-list > div {
+  padding: 0.75rem 0.85rem;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--yks-radius);
+  background: var(--color-surface);
+}
+
+.yks-note-list dt {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.yks-note-list dd {
+  margin: 0.3rem 0 0;
+  color: var(--color-text-secondary);
+  font-size: 0.87rem;
+  line-height: 1.6;
+}
+
+.yks-source-list {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.85rem;
+}
+
+.yks-source-unverified {
+  display: block;
+  margin-top: 0.15rem;
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  overflow-wrap: anywhere;
+}
+
+.yks-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------------- wider screens */
+
+@media (min-width: 40rem) {
+  .yks-shell {
+    padding: 2rem 1.5rem 6rem;
+  }
+
+  .yks-facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .yks-detail-backdrop {
+    align-items: center;
+    padding: 1.5rem;
+  }
+
+  .yks-detail {
+    max-width: 40rem;
+    border-radius: var(--yks-radius);
+  }
+}
+
+@media (min-width: 60rem) {
+  .yks-list--grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .yks-shell *,
+  .yks-shell *::before,
+  .yks-shell *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

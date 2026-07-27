@@ -1,0 +1,609 @@
+[
+  {
+    "university": "Acıbadem Mehmet Ali Aydınlar Üniversitesi (İstanbul)",
+    "city": "İstanbul",
+    "listTuition2026": "3.300.000 TL (KDV dâhil; dil/programa göre)",
+    "preferenceDiscount": "Genel bir ilk-tercih fiyat indirimi ilan edilmiyor. %50 kontenjanındaki Kerem Aydınlar Bursu için programı 1. sıraya veya burslu kontenjanın hemen arkasından 2. sıraya yazma, ön başvuru, mülakat ve mali ihtiyaç değerlendirmesi var; kalan öğrenim ücretinin tamamına kadar destek çıkabilir.",
+    "academicScholarship": "ÖSYM tam bursu olmayan öğrencide GNO 3,76–4,00 ise ödenecek tutara %20; 3,50–3,75 ise %10 başarı indirimi, izleyen bir akademik yıl için.",
+    "extraBenefits": "Acıbadem Sağlık Grubu klinik ağı; tam burslu ve derece koşullu öğrenciler için yemek/yurt-kira desteği ve yurt dışı tıp/araştırma stajına 2.000 ABD dolarına kadar destek. Sağlık veya eğitim çalışanı ebeveyn/eş için ayrıca %10 indirim koşulu bulunuyor.",
+    "verificationStatus": "2026 resmî sayfa; özel burs başvuru ve mülakatlı",
+    "accreditation": "TEPDAD: İngilizce",
+    "staffSignal": "Güncel akreditasyon",
+    "staffCount": 214,
+    "uncertainty": null,
+    "codes": [
+      "200110071",
+      "200190144"
+    ]
+  },
+  {
+    "university": "Altınbaş Üniversitesi (İstanbul)",
+    "city": "İstanbul",
+    "listTuition2026": "2.190.000 TL (KDV dâhil; dil/programa göre)",
+    "preferenceDiscount": "2026 ücret robotu “%50’ye varan tercih indirimi” gösteriyor; Tıp için kesin oran ve hangi sırada uygulanacağı statik sayfada yayımlanmamış. Tercih kodu verilerek yazılı ücret teklif alınmalı.",
+    "academicScholarship": "2026 burs sayfası güncelleniyor; Tıp için uygulanacak üniversite içi başarı indiriminin güncel oranı resmî statik metinde doğrulanamadı. İlk yıl bütçesine başarı bursu yazılmamalı.",
+    "extraBenefits": "Yerleşke tercihi için %5; anlaşmalı kurum/protokol ve tercih sırasına göre %5–%10; kardeş için %10 indirim başlıkları var. Birleşme koşulları yazılı teyit edilmeli.",
+    "verificationStatus": "Oran dinamik; 2026 Tıp teklif yazılı alınmalı",
+    "accreditation": "TEPDAD güncel listesinde yok",
+    "staffSignal": "Yeni/dar kadro",
+    "staffCount": 54,
+    "uncertainty": "Bazı ücretli/indirimli satırlarda 2025 kapanışı yok; bu durum “garanti” anlamına gelmez.",
+    "codes": [
+      "202900206",
+      "202900213"
+    ]
+  },
+  {
+    "university": "Ankara Medipol Üniversitesi",
+    "city": null,
+    "listTuition2026": "990.000 TL / 1.150.000 TL (KDV dâhil; dil/programa göre)",
+    "preferenceDiscount": "Ücretli lisans kontenjanında, yerleşilen programdan önceki tercihlerin Ankara Medipol veya devlet programlarından oluşması koşuluyla tercih indirimi var. 2026 sayfasındaki birleşik örnek %10 tercih + %15 başarı destek bursu = %25; Tıp satırındaki oran/başarı eşiği ayrıca doğrulanmalı.",
+    "academicScholarship": "SANO en az 2,91, o yılın tüm dersleri başarılı ve sınıfta ilk üç: sonraki yıl 1.’ye %100, 2.’ye %50, 3.’ye %25 öğrenim indirimi. Tam burslularda nakit destek uygulanıyor.",
+    "extraBenefits": "Kardeş %10, engelli %15, şehit/gazi çocuğu %20; sporcuya %25 –%50. İlk 1.000’e dereceye göre aylık burs, yurt ve yemek desteği var; 26.000 sıralama bu giriş desteğine yetmiyor.",
+    "verificationStatus": "2026 resmî sayfa; Tıp program tablosu teyit edilmeli",
+    "accreditation": "TEPDAD güncel listesinde yok",
+    "staffSignal": "Gelişen/orta kadro",
+    "staffCount": 76,
+    "uncertainty": "Bazı ücretli/indirimli satırlarda 2025 kapanışı yok; bu durum “garanti” anlamına gelmez.",
+    "codes": [
+      "209210053",
+      "209210052",
+      "209210050",
+      "209210049"
+    ]
+  },
+  {
+    "university": "Atılım Üniversitesi (Ankara)",
+    "city": "Ankara",
+    "listTuition2026": "1.280.000 TL (KDV dâhil; dil/programa göre)",
+    "preferenceDiscount": "2026 burs yönetmeliğinde genel bir ilk-tercih indirimi yok.",
+    "academicScholarship": "Tıp öğrencisi yılda 60 AKTS tamamlayıp son iki dönemde en az 3,30 ortalama ile programında ilk üçe girerse sonraki yıl 1.’nin bursu %100’e, 2.’nin %90’a, 3.’nün %80’e tamamlanır.",
+    "extraBenefits": "İhtiyaç ve spor destekleri; İngilizce tıp eğitimi. Başarı bursu rekabetçi ve yalnız sonraki yıl içindir.",
+    "verificationStatus": "9 Haziran 2026 tarihli resmî yönetmelik",
+    "accreditation": "TEPDAD güncel listesinde yok",
+    "staffSignal": "Gelişen/orta kadro",
+    "staffCount": 62,
+    "uncertainty": null,
+    "codes": [
+      "200290141",
+      "200290142",
+      "200290140"
+    ]
+  },
+  {
+    "university": "Bahçeşehir Üniversitesi (İstanbul)",
+    "city": "İstanbul",
+    "listTuition2026": "2.415.000 TL (KDV dâhil; dil/programa göre)",
+    "preferenceDiscount": "2026 aday SSS’si açıkça tercih bursu bulunmadığını söylüyor.",
+    "academicScholarship": "Sabit oranlı öğrenim indirimi yerine BAU Başarı Destekleri var: GNO en az 3,90 ile üniversite genelinde Rektör Onur; en az 3,75 ile fakülte bazında Dekan Şeref ödülü. Nakit tutar her yıl Mütevelli Heyet tarafından belirleniyor.",
+    "extraBenefits": "Tıp için BİSEP başvuru bursu; ücretli programa yerleşme ve önceden kabul mektubu koşullu. Çift anadal/yan dal ek ücretsizi, CO-OP/iş deneyimi ve BAU Global ağı.",
+    "verificationStatus": "2026 resmî SSS + 2025/2026 burs yönergesi",
+    "accreditation": "TEPDAD: İngilizce",
+    "staffSignal": "Güncel akreditasyon",
+    "staffCount": 130,
+    "uncertainty": "Bazı ücretli/indirimli satırlarda 2025 kapanışı yok; bu durum “garanti” anlamına gelmez.",
+    "codes": [
+      "200511241",
+      "200511259"
+    ]
+  },
+  {
+    "university": "Başkent Üniversitesi (Ankara)",
+    "city": "Ankara",
+    "listTuition2026": "1.980.000 TL (KDV dâhil; dil/programa göre)",
+    "preferenceDiscount": "Güncel burs yönergesinde genel bir ilk-tercih indirimi yok.",
+    "academicScholarship": "Tıp dönem notu en az 92 olanlar arasından sınıfın ilk %10’u değerlendirilir; bir akademik yıl için uygulanacak destek miktarı üniversite kararınca belirlenir.",
+    "extraBenefits": "Başkent Üniversitesi hastaneleri ve yerleşik klinik ağ; kardeş %10, Başkent mezunu %25, IB/uluslararası diploma ve spor başarılarına göre ek indirimler.",
+    "verificationStatus": "Resmî burs yönergesi; başarı tutarı yıllık kararla",
+    "accreditation": "TEPDAD: Türkçe",
+    "staffSignal": "Güncel akreditasyon",
+    "staffCount": 390,
+    "uncertainty": "Bazı ücretli/indirimli satırlarda 2025 kapanışı yok; bu durum “garanti” anlamına gelmez.",
+    "codes": [
+      "200611488",
+      "200610666",
+      "200610657",
+      "200690358",
+      "200690359",
+      "200690357"
+    ]
+  },
+  {
+    "university": "Bezm-İ Âlem Vakıf Üniversitesi (İstanbul)",
+    "city": "İstanbul",
+    "listTuition2026": "2.168.496 TL (KDV dâhil; dil/programa göre)",
+    "preferenceDiscount": "Programlar ilk tercihten başlayarak ardışık yazılıp yerleşilirse ödenecek tutara %10; ücretli program ilk tercih olursa %20. 2026 Tıp’ta ücretli satır yok; %50 Tıp için pratik oran %10. Kampüste danışmanla tercih hazırlamaya ayrıca %5 açıklanıyor.",
+    "academicScholarship": "En az 58 AKTS, YANO en az 3,50/80, başarısız-bütünleme dersi olmama koşuluyla sınıf 1./2./3.’süne ödenecek tutar üzerinden sırasıyla %20/%15/%10, sonraki yıl.",
+    "extraBenefits": "Vakıf Gureba geleneği ve üniversite hastanesi; İngilizce Tıp ilk iki tercihteyse ilk 5.000’e 20.000 TL, ilk 10.000’e 10.000 TL/ay (9 ay). Peşin ödeme ve kardeş için %10.",
+    "verificationStatus": "2026 resmî aday sayfası",
+    "accreditation": "TEPDAD: Türkçe",
+    "staffSignal": "Güncel akreditasyon",
+    "staffCount": 113,
+    "uncertainty": "Bazı ücretli/indirimli satırlarda 2025 kapanışı yok; bu durum “garanti” anlamına gelmez.",
+    "codes": [
+      "200910027",
+      "200910036",
+      "200900346",
+      "200900353"
+    ]
+  },
+  {
+    "university": "Biruni Üniversitesi (İstanbul)",
+    "city": "İstanbul",
+    "listTuition2026": "2.000.000 TL (KDV dâhil; dil/programa göre)",
+    "preferenceDiscount": "Tıp adayında SAY 1–30.000 ve programı 1. tercih koşuluyla, ÖSYM indiriminden sonra kalan ücrete %25 ilk-tercih indirimi. 26.000 sıralama eşiği sağlıyor.",
+    "academicScholarship": "En az 60 AKTS ve yıllık akademik değerlendirme koşullu; oran Mütevelli Heyet tarafından her yıl belirleniyor. İlk yıl için gelir kabul edilmemeli.",
+    "extraBenefits": "Sağlık temalı kampüs, Biruni Üniversite Hastanesi, klinik/simülasyon altyapısı ve Erasmus olanakları.",
+    "verificationStatus": "2026 resmî tercih ve tanıtm kılavuzu",
+    "accreditation": "TEPDAD: Türkçe",
+    "staffSignal": "Güncel akreditasyon",
+    "staffCount": 128,
+    "uncertainty": null,
+    "codes": [
+      "207610354",
+      "207610451",
+      "207650947",
+      "207650948"
+    ]
+  },
+  {
+    "university": "Demiroğlu Bilim Üniversitesi (İstanbul)",
+    "city": "İstanbul",
+    "listTuition2026": "1.980.000 TL (KDV dâhil; dil/programa göre)",
+    "preferenceDiscount": "2026 Geleceğin Tıp Liderleri tercihi: 5.001–15.000’e %25, 15.001– 20.000’e %15, 20.001–25.000’e %5. Aday 26.000 olduğu için bu giriş indirimini alamıyor.",
+    "academicScholarship": "60 AKTS koşuluyla %50 ÖSYM indirimli öğrencide GANO 3,85+ toplam indirimi %100’e; 3,75–3,84 %75’e; 3,65–3,74 %60’a tamamlıyor.",
+    "extraBenefits": "Florence Nightingale hastane grubu klinik ağı; proje desteği ve kardeş indirimi.",
+    "verificationStatus": "2026 giriş programı + resmî burs yönergesi",
+    "accreditation": "TEPDAD güncel listesinde yok",
+    "staffSignal": "Gelişen/orta kadro",
+    "staffCount": 119,
+    "uncertainty": null,
+    "codes": [
+      "202610033",
+      "202610157"
+    ]
+  },
+  {
+    "university": "Haliç Üniversitesi (İstanbul)",
+    "city": "İstanbul",
+    "listTuition2026": "1.220.000 TL / 1.730.000 TL (KDV dâhil; dil/programa göre)",
+    "preferenceDiscount": "Ücretli programa 1. tercihte %40; %50/%25 programlara 1. tercihte kalan ücrete %30. 2–5. tercihlerde ücretli veya indirimli programa %20.",
+    "academicScholarship": "Üniversite içi akademik başarı bursu var; 2026 aday sayfası sabit GNO/oran tablosu yayımlamıyor. Burs yönergesi ve Tıp’a uygulanacak oran kayıt öncesi yazılı istenmeli.",
+    "extraBenefits": "Tam burslu girişte dereceye göre aylık nakit burs ve ilk 1.000’e dizüstü bilgisayar; 26.000 sıralama bu derece desteğine yetmiyor.",
+    "verificationStatus": "2026 resmî aday sayfası; başarı oranı yıllık teyit",
+    "accreditation": "TEPDAD güncel listesinde yok",
+    "staffSignal": "Gelişen/orta kadro",
+    "staffCount": 66,
+    "uncertainty": "Bazı ücretli/indirimli satırlarda 2025 kapanışı yok; bu durum “garanti” anlamına gelmez.",
+    "codes": [
+      "201911094",
+      "201990545",
+      "201990530",
+      "201990552"
+    ]
+  },
+  {
+    "university": "İstanbul Arel Üniversitesi",
+    "city": null,
+    "listTuition2026": "1.500.000 TL (KDV dâhil; dil/programa göre)",
+    "preferenceDiscount": "İlk 5 tercih için indirim ve tercih öncesi “Kariyerine İlk Adım” başvurusu var; Tıp’ın kesin 2026 oranı ücret robotunda dinamik. Kayıttan önce kod bazlı yazılı teklif alınmalı.",
+    "academicScholarship": "GNO en az 3,50 ve program birinciliği koşuluyla, sonraki akademik yılda ödenecek ücretin %25’i kadar başarı indirimi.",
+    "extraBenefits": "Tam burslu olup ailesi son üç yıldır İstanbul dışında yaşayanlarda üç kişilik öğrenci evi ve akşam yemeği desteği; ihtiyaç/yemek bursları.",
+    "verificationStatus": "2026 resmî aday sayfası; tercih oranı dinamik",
+    "accreditation": "TEPDAD güncel listesinde yok",
+    "staffSignal": "Gelişen/orta kadro",
+    "staffCount": 67,
+    "uncertainty": null,
+    "codes": [
+      "202390209",
+      "202391004",
+      "202390228"
+    ]
+  },
+  {
+    "university": "İstanbul Atlas Üniversitesi",
+    "city": null,
+    "listTuition2026": "2.110.708 TL (KDV dâhil; dil/programa göre)",
+    "preferenceDiscount": "Tıp %50 programına ilk 5 tercihten yerleşmede, kalan ücrete %25. Resmî tabloda yaklaşık 831.091 TL taksitli / 791.515 TL peşin örnekleniyor.",
+    "academicScholarship": "Dönem/yıl ortalamasına dayalı akademik başarı bursu bulunuyor; güncel aday sayfası sabit oran yayımlamıyor. Sonraki yılın oranı yazılı teyit edilmeli.",
+    "extraBenefits": "Atlas Üniversite Hastanesi; ücretsiz çift anadal/yan dal, isteğe bağlı İngilizce ve mavi diploma olanakları.",
+    "verificationStatus": "2026 resmî aday sayfası",
+    "accreditation": "TEPDAD güncel listesinde yok",
+    "staffSignal": "Yerleşik kadro sinyali",
+    "staffCount": 174,
+    "uncertainty": null,
+    "codes": [
+      "209310037",
+      "209310124",
+      "209310072",
+      "209310131"
+    ]
+  },
+  {
+    "university": "İstanbul Aydın Üniversitesi",
+    "city": null,
+    "listTuition2026": "1.680.000 TL (KDV dâhil; dil/programa göre)",
+    "preferenceDiscount": "Genel %30 tercih indirimi Tıp Türkçe ve İngilizce programlarını açıkça kapsam dışı bırakıyor.",
+    "academicScholarship": "Sınıfında ilk üçe girenler Üstün Başarı Bursu için değerlendirilir; sonraki yıl oranını Mütevelli Heyet belirler.",
+    "extraBenefits": "Ücretsiz çift anadal/yan dal; Florya yerleşkesi ve VM Medical Park Florya ile klinik iş birliği.",
+    "verificationStatus": "2026 resmî aday sayfası; Tıp tercih indirimi yok",
+    "accreditation": "TEPDAD güncel listesinde yok",
+    "staffSignal": "Yerleşik kadro sinyali",
+    "staffCount": 206,
+    "uncertainty": null,
+    "codes": [
+      "202412737",
+      "202412746",
+      "202490634",
+      "202490682"
+    ]
+  },
+  {
+    "university": "İstanbul Beykent Üniversitesi",
+    "city": null,
+    "listTuition2026": "3.592.157 TL (KDV dâhil; dil/programa göre)",
+    "preferenceDiscount": "2026 resmî burs sayfasında Tıp için genel ilk-tercih indirimi yayımlanmıyor.",
+    "academicScholarship": "Program/sınıf birincisine izleyen akademik yıl için %50 başarı indirimi.",
+    "extraBenefits": "Ücretsiz çift anadal/yan dal (normal süre +1); üniversite hastanesi ve sağlık kampüsü.",
+    "verificationStatus": "2026 resmî burs sayfası",
+    "accreditation": "TEPDAD güncel listesinde yok",
+    "staffSignal": "Gelişen/orta kadro",
+    "staffCount": 73,
+    "uncertainty": null,
+    "codes": [
+      "210302061",
+      "210302068"
+    ]
+  },
+  {
+    "university": "İstanbul Medipol Üniversitesi",
+    "city": null,
+    "listTuition2026": "990.000 TL (KDV dâhil; dil/programa göre)",
+    "preferenceDiscount": "Ücretli programda, yerleşilen programın önündeki tercihler Medipol veya devlet programlarından oluşursa tercih indirimi; 2026 birleşik örnekte %10. Tıp satırındaki kesin oran/başarı eşiği program tablosundan yazılı doğrulanmalı.",
+    "academicScholarship": "SANO en az 2,91 ve sınıfta ilk üç: sonraki yıl 1.’ye %100, 2.’ye %50, 3.’ye %25. Tam burslularda aylık nakit destek.",
+    "extraBenefits": "Medipol Mega Üniversite Hastanesi ve geniş klinik ağ; çift anadal/yan dal ek ücretsizi.",
+    "verificationStatus": "2026 resmî burs sayfası; Tıp tablosu teyit",
+    "accreditation": "TEPDAD: Türkçe",
+    "staffSignal": "Güncel akreditasyon",
+    "staffCount": 310,
+    "uncertainty": "Bazı ücretli/indirimli satırlarda 2025 kapanışı yok; bu durum “garanti” anlamına gelmez.",
+    "codes": [
+      "203110035",
+      "203111166",
+      "203190967",
+      "203101284"
+    ]
+  },
+  {
+    "university": "İstanbul Medipol Üniversitesi Uluslararası Tıp Fakültesi",
+    "city": null,
+    "listTuition2026": "990.000 TL (KDV dâhil; dil/programa göre)",
+    "preferenceDiscount": "Ücretli programda, yerleşilen programın önündeki tercihler Medipol veya devlet programlarından oluşursa tercih indirimi; 2026 birleşik örnekte %10. Tıp satırındaki kesin oran/başarı eşiği program tablosundan yazılı doğrulanmalı.",
+    "academicScholarship": "SANO en az 2,91 ve sınıfta ilk üç: sonraki yıl 1.’ye %100, 2.’ye %50, 3.’ye %25. Tam burslularda aylık nakit destek.",
+    "extraBenefits": "Medipol Mega Üniversite Hastanesi ve geniş klinik ağ; çift anadal/yan dal ek ücretsizi.",
+    "verificationStatus": "2026 resmî burs sayfası; Tıp tablosu teyit",
+    "accreditation": "TEPDAD: İngilizce",
+    "staffSignal": "Güncel akreditasyon",
+    "staffCount": 81,
+    "uncertainty": "Bazı ücretli/indirimli satırlarda 2025 kapanışı yok; bu durum “garanti” anlamına gelmez.",
+    "codes": [
+      "203110477",
+      "203101291"
+    ]
+  },
+  {
+    "university": "İstanbul Nişantaşı Üniversitesi",
+    "city": null,
+    "listTuition2026": "3.740.000 TL (KDV dâhil; dil/programa göre)",
+    "preferenceDiscount": "Tıp için %30 ilk-tercih bursu ve kampüste tercih işlemiyle ilave %15 ilan ediliyor; peşin ödemede ayrıca %10 gösteriliyor. İndirimlerin kalan tutara hangi sırayla uygulandığı yazılı alınmalı.",
+    "academicScholarship": "En az iki yarıyıl öğrenim sonrası akademik başarı bursu bulunuyor; güncel 2026 tanıtm sayfası Tıp için sabit GNO/oran tablosunu yayımlamıyor.",
+    "extraBenefits": "Kayıt yenileme koşuluyla sabit ücret garantisi; NeoTech kampüs, mavi diploma, Erasmus ve ücretsiz çift diploma.",
+    "verificationStatus": "2026 resmî aday sayfası; birleşme hesabı yazılı teyit",
+    "accreditation": "TEPDAD güncel listesinde yok",
+    "staffSignal": "Gelişen/orta kadro",
+    "staffCount": 76,
+    "uncertainty": "Bazı ücretli/indirimli satırlarda 2025 kapanışı yok; bu durum “garanti” anlamına gelmez.",
+    "codes": [
+      "210402544",
+      "210403237",
+      "210402551"
+    ]
+  },
+  {
+    "university": "İstanbul Okan Üniversitesi",
+    "city": null,
+    "listTuition2026": "2.423.674 TL (KDV dâhil; dil/programa göre)",
+    "preferenceDiscount": "2026 tercih indirimi oranları resmî aday sayfasında “güncelleniyor”; Tıp için kesin oran yok.",
+    "academicScholarship": "60 AKTS ve GNO 3,60–3,69: %10; 3,70–3,79: %20; 3,80–3,89: %30; 3,90–4,00: %40, izleyen akademik yıl.",
+    "extraBenefits": "Okan Üniversitesi Hastanesi ve klinik/simülasyon altyapısı; derece ve spor destekleri.",
+    "verificationStatus": "Başarı oranı resmî; 2026 tercih oranı henüz yayımlanmamış",
+    "accreditation": "TEPDAD: Türkçe + İngilizce",
+    "staffSignal": "Güncel akreditasyon",
+    "staffCount": 152,
+    "uncertainty": "Bazı ücretli/indirimli satırlarda 2025 kapanışı yok; bu durum “garanti” anlamına gelmez.",
+    "codes": [
+      "204713108",
+      "204790612",
+      "204790512",
+      "204712455",
+      "204790584"
+    ]
+  },
+  {
+    "university": "İstanbul Sağlık ve Teknoloji Üniversitesi",
+    "city": null,
+    "listTuition2026": "1.065.600 TL (KDV dâhil; dil/programa göre)",
+    "preferenceDiscount": "İlk 5 tercih için her yıl belirlenen oranda tercih indirimi var; 2026 Tıp oranı statik metinde yayımlanmıyor. Kod bazlı yazılı ücret istenmeli.",
+    "academicScholarship": "AGNO 3,75–3,99 için %5; 4,00 için %10, izleyen akademik yıl.",
+    "extraBenefits": "Sağlık ve teknoloji odaklı laboratuvarlar; ücretsiz çift anadal/yan dal ve Erasmus olanakları.",
+    "verificationStatus": "2026 resmî sayfa; tercih oranı yıllık/dinamik",
+    "accreditation": "TEPDAD güncel listesinde yok",
+    "staffSignal": "Yerleşik kadro sinyali",
+    "staffCount": 156,
+    "uncertainty": null,
+    "codes": [
+      "209410023",
+      "209410025",
+      "209410061",
+      "209410124"
+    ]
+  },
+  {
+    "university": "İstanbul Yeni Yüzyıl Üniversitesi",
+    "city": null,
+    "listTuition2026": "1.024.000 TL (KDV dâhil; dil/programa göre)",
+    "preferenceDiscount": "2026 aday sayfası %25 tercih bursu ilan ediyor. Tıp %25 ÖSYM indirimli satırında bu bursun kalan ücrete uygulanma ve tercih sırası koşulu kayıt öncesi yazılı doğrulanmalı.",
+    "academicScholarship": "En az 60 AKTS, yıl ortalaması en az 3,50 ve sınıfta ilk üç: sonraki yıl 1.’ye %75, 2.’ye %50, 3.’ye %25.",
+    "extraBenefits": "Merkezi Topkapı yerleşkesi; Gaziosmanpaşa Hastanesi klinik ağı; kardeş için %5.",
+    "verificationStatus": "2026 resmî aday sayfası; Tıp birleşme koşulu teyit",
+    "accreditation": "TEPDAD güncel listesinde yok",
+    "staffSignal": "Gelişen/orta kadro",
+    "staffCount": 108,
+    "uncertainty": null,
+    "codes": [
+      "206210697",
+      "206290226"
+    ]
+  },
+  {
+    "university": "İstinye Üniversitesi (İstanbul)",
+    "city": "İstanbul",
+    "listTuition2026": "1.980.000 TL (KDV dâhil; dil/programa göre)",
+    "preferenceDiscount": "Genel %15 Bilinçli Tercih Bursu Tıp programlarını açıkça kapsam dışı bırakıyor.",
+    "academicScholarship": "Akademik Başarı Bursu var; yayımlanmış kriterlerde ikinci sınıftan itibaren AGNO en az 3,50 ve program birinciliğine %50. 2026 uygulama metni kayıt öncesi teyit edilmeli.",
+    "extraBenefits": "Liv Hospital, Medical Park ve VM Medical Park klinik ağı; Genç Tıp Akademisi ve araştırma olanakları.",
+    "verificationStatus": "2026 tercih istisnası kesin; başarı kuralı güncel teyit",
+    "accreditation": "TEPDAD: Türkçe",
+    "staffSignal": "Güncel akreditasyon",
+    "staffCount": 223,
+    "uncertainty": "Bazı ücretli/indirimli satırlarda 2025 kapanışı yok; bu durum “garanti” anlamına gelmez.",
+    "codes": [
+      "208410017",
+      "208410502",
+      "208450758",
+      "208450759"
+    ]
+  },
+  {
+    "university": "İzmir Ekonomi Üniversitesi",
+    "city": null,
+    "listTuition2026": "1.800.000 TL (KDV dâhil; dil/programa göre)",
+    "preferenceDiscount": "2026 resmî burs sayfasında Tıp için genel bir ilk-tercih indirimi yok.",
+    "academicScholarship": "Programında ilk üçe giren öğrenciler için izleyen akademik yılda %50 başarı indirimi.",
+    "extraBenefits": "İngilizce tıp; Medical Point hastane iş birliği, Erasmus ve uluslararası akademik ağ.",
+    "verificationStatus": "2026 resmî burs sayfası",
+    "accreditation": "TEPDAD: İngilizce",
+    "staffSignal": "Güncel akreditasyon",
+    "staffCount": 88,
+    "uncertainty": null,
+    "codes": [
+      "203511505",
+      "203511514"
+    ]
+  },
+  {
+    "university": "İzmir Tınaztepe Üniversitesi",
+    "city": null,
+    "listTuition2026": "1.673.155 TL (KDV dâhil; dil/programa göre)",
+    "preferenceDiscount": "Yayımlanan tercih indirimi sağlık bilimleri programlarına yönelik; Tıp için genel ilk-tercih indirimi doğrulanmadı.",
+    "academicScholarship": "Yıllık GNO en az 3,50, tüm ders/stajlar başarılı ve disiplin cezası olmama koşuluyla başarı indirimi; kontenjan ve oran her yıl Mütevelli Heyet kararıyla.",
+    "extraBenefits": "Tınaztepe sağlık grubu ve üniversite hastaneleri; kardeş/ebeveyn/eş için %10 uygulanabilir.",
+    "verificationStatus": "Resmî burs yönergesi; oran yıllık kararla",
+    "accreditation": "TEPDAD güncel listesinde yok",
+    "staffSignal": "Gelişen/orta kadro",
+    "staffCount": 100,
+    "uncertainty": null,
+    "codes": [
+      "209610021",
+      "209610033",
+      "209610020"
+    ]
+  },
+  {
+    "university": "Koç Üniversitesi (İstanbul)",
+    "city": "İstanbul",
+    "listTuition2026": "3.249.000 TL (KDV dâhil; dil/programa göre)",
+    "preferenceDiscount": "Tıp için genel bir ilk-tercih fiyat indirimi yayımlanmıyor.",
+    "academicScholarship": "Tıp Fakültesi yönergesinde sınırlı sayıda Akademik Başarı Bursu var; tutar ve kapsam izleyen yılın bütçe/kurul kararına bağlı. İlk yıl finansmanı olarak kabul edilmemeli.",
+    "extraBenefits": "Koç Üniversitesi Hastanesi, güçlü araştırma altyapısı ve uluslararası klinik/araştırma ağı; ihtiyaç bursuna başvuru.",
+    "verificationStatus": "Resmî aday sayfası + Tıp Fakültesi yönergesi",
+    "accreditation": "TEPDAD: İngilizce",
+    "staffSignal": "Güncel akreditasyon",
+    "staffCount": 157,
+    "uncertainty": null,
+    "codes": [
+      "203910699",
+      "203910706"
+    ]
+  },
+  {
+    "university": "KTO Karatay Üniversitesi (Konya)",
+    "city": "Konya",
+    "listTuition2026": "1.337.600 TL (KDV dâhil; dil/programa göre)",
+    "preferenceDiscount": "1./2./3./4./5. tercihten yerleşmede sırasıyla %30/%25/%20/%15/%10 tercih indirimi. Karatay’a Hoş Geldin %10 indirimi ise Tıp’ı kapsamıyor.",
+    "academicScholarship": "Yıllık ortalama en az 3,50, başarısız ders olmadan sınıf birinciliği: izleyen yıl Üstün Başarı Bursu; sabit oran güncel sayfada belirtilmiyor.",
+    "extraBenefits": "Tıp için burs/indirim 7 yıl; yemek bursu, asistan öğrenci desteği ve Konya Ticaret Odası ekosistemi.",
+    "verificationStatus": "2026 resmî aday sayfası/yönerge",
+    "accreditation": "TEPDAD güncel listesinde yok",
+    "staffSignal": "Yeni/dar kadro",
+    "staffCount": 46,
+    "uncertainty": null,
+    "codes": [
+      "204010827",
+      "204010818"
+    ]
+  },
+  {
+    "university": "Lokman Hekim Üniversitesi (Ankara)",
+    "city": "Ankara",
+    "listTuition2026": "1.440.000 TL (KDV dâhil; dil/programa göre)",
+    "preferenceDiscount": "Burs yönergesinde ÖSYM tercih indirimi var; 2026 Tıp için kesin oran statik sayfada yayımlanmamış. Eski oranlar 2026 için kullanılmamalı; program koduyla yazılı teyit gerekli.",
+    "academicScholarship": "Tüm dersleri başarılı olma ve sınıf mevcuduna göre üst dilime girme koşullu akademik başarı indirimi var; 2026 oranı yıllık kararla açıklanıyor.",
+    "extraBenefits": "Lokman Hekim Üniversitesi Ankara Hastanesi ve afiliye Akay Hastanesi; simülasyon merkezi, TUS/USMLE hazırlık modülleri ve Erasmus.",
+    "verificationStatus": "Resmî yönerge; 2026 Tıp oranı yazılı teyit",
+    "accreditation": "TEPDAD güncel listesinde yok",
+    "staffSignal": "Yerleşik kadro sinyali",
+    "staffCount": 120,
+    "uncertainty": null,
+    "codes": [
+      "208810010",
+      "208810063",
+      "208810078",
+      "208810151"
+    ]
+  },
+  {
+    "university": "Maltepe Üniversitesi (İstanbul)",
+    "city": "İstanbul",
+    "listTuition2026": "1.960.000 TL (KDV dâhil; dil/programa göre)",
+    "preferenceDiscount": "2026 ücret tablosunda Tıp Türkçe/İngilizce ücretli ve %50 satırları için tercih indirimi “—”.",
+    "academicScholarship": "Tıp 1–5. sınıflarda GANO sıralamasında ilk üçe: sonraki yıl 1.’ye %50, 2.’ye %25, 3.’ye %15 başarı indirimi.",
+    "extraBenefits": "Marmara Eğitim Köyü yerleşkesi; ihtiyaç/nakit bursu, kardeş %5 ve üniversite hastanesi.",
+    "verificationStatus": "2026 ücret sayfası + resmî burs yönergesi",
+    "accreditation": "TEPDAD güncel listesinde yok",
+    "staffSignal": "Gelişen/orta kadro",
+    "staffCount": 108,
+    "uncertainty": "Bazı ücretli/indirimli satırlarda 2025 kapanışı yok; bu durum “garanti” anlamına gelmez.",
+    "codes": [
+      "204110395",
+      "204110386",
+      "204111921",
+      "204110571",
+      "204112488",
+      "204110377"
+    ]
+  },
+  {
+    "university": "Sanko Üniversitesi (Gaziantep)",
+    "city": "Gaziantep",
+    "listTuition2026": "1.620.000 TL (KDV dâhil; dil/programa göre)",
+    "preferenceDiscount": "2026 resmî burs sayfasında Tıp için genel ilk-tercih indirimi yok.",
+    "academicScholarship": "Tıp 1–2. sınıf derecelerinde 1./2./3.’ye %40/%35/%30; 3–5. sınıfta ilk altıya %50/%45/%40/%35/%30/%25, izleyen yıl.",
+    "extraBenefits": "SANKO Üniversitesi Hastanesi ve Gaziantep’te yerleşik klinik ağ; kardeş %10.",
+    "verificationStatus": "2026 resmî burs sayfası",
+    "accreditation": "TEPDAD: Türkçe",
+    "staffSignal": "Güncel akreditasyon",
+    "staffCount": 80,
+    "uncertainty": "Bazı ücretli/indirimli satırlarda 2025 kapanışı yok; bu durum “garanti” anlamına gelmez.",
+    "codes": [
+      "207710089",
+      "207710091",
+      "207710071"
+    ]
+  },
+  {
+    "university": "TOBB Ekonomi ve Teknoloji Üniversitesi (Ankara)",
+    "city": "Ankara",
+    "listTuition2026": "1.750.000 TL (KDV dâhil; dil/programa göre)",
+    "preferenceDiscount": "Tıp için genel ilk-tercih indirimi yok; ilk 100 yurt dışı hazırlık desteği 26.000’e uygulanmaz.",
+    "academicScholarship": "Tıp’ta akademik yıl sonu GNO en az 3,50 ise sonraki akademik yılın öğrenim ücretinden tam muafiyet. İş Dünyası Burs Programı Tıp’ı açıkça kapsam dışı bırakıyor.",
+    "extraBenefits": "TOBB ETÜ Hastanesi; araştırma ve iş dünyası ağı. Tıp ücret/burs süresi ayrı yönergede düzenleniyor.",
+    "verificationStatus": "2026 resmî burs sayfası + lisans burs yönergesi",
+    "accreditation": "TEPDAD güncel listesinde yok",
+    "staffSignal": "Gelişen/orta kadro",
+    "staffCount": 61,
+    "uncertainty": "Bazı ücretli/indirimli satırlarda 2025 kapanışı yok; bu durum “garanti” anlamına gelmez.",
+    "codes": [
+      "205411015",
+      "205411024",
+      "205411033"
+    ]
+  },
+  {
+    "university": "Ufuk Üniversitesi (Ankara)",
+    "city": "Ankara",
+    "listTuition2026": "1.250.000 TL (KDV dâhil; dil/programa göre)",
+    "preferenceDiscount": "2026’da 1. tercihten yerleşene veya yerleşilen programdan önceki tercihlerin tamamı Ufuk programıysa %10 tercih indirimi.",
+    "academicScholarship": "Hazırlık ve tam burslu hariç; Tıp 1–5. sınıflarda yönerge koşullarını sağlayana izleyen bir akademik yıl için %25 başarı indirimi.",
+    "extraBenefits": "Dr. Rıdvan Ege Hastanesi klinik altyapısı; Ankara merkez konumu.",
+    "verificationStatus": "2026 resmî burs sayfası",
+    "accreditation": "TEPDAD: Türkçe",
+    "staffSignal": "Güncel akreditasyon",
+    "staffCount": 92,
+    "uncertainty": null,
+    "codes": [
+      "205810164",
+      "205810155",
+      "205850717",
+      "205850724"
+    ]
+  },
+  {
+    "university": "Üsküdar Üniversitesi (İstanbul)",
+    "city": "İstanbul",
+    "listTuition2026": "2.495.000 TL (KDV dâhil; dil/programa göre)",
+    "preferenceDiscount": "%50 Tıp programına 1. tercihten +%35, 2–3. tercihten +%25, 4–5. tercihten +%15; ilk beş tercihin tamamının Üsküdar olması gerekmiyor.",
+    "academicScholarship": "GNO 3,90–4,00: %50; 3,80–3,89: %40; 3,70–3,79: %30; 3,60–3,69: %20; 3,50–3,59: %10, izleyen yıl.",
+    "extraBenefits": "NPİSTANBUL Beyin Hastanesi ve sağlık/behavioral science odağı; Tıp bursları normal süre +1 yıl.",
+    "verificationStatus": "2026 resmî burs sayfası",
+    "accreditation": "TEPDAD güncel listesinde yok",
+    "staffSignal": "Yerleşik kadro sinyali",
+    "staffCount": 182,
+    "uncertainty": "Bazı ücretli/indirimli satırlarda 2025 kapanışı yok; bu durum “garanti” anlamına gelmez.",
+    "codes": [
+      "206552469",
+      "206552471",
+      "206552535",
+      "206552536"
+    ]
+  },
+  {
+    "university": "Yeditepe Üniversitesi (İstanbul)",
+    "city": "İstanbul",
+    "listTuition2026": "2.300.000 TL (KDV dâhil; dil/programa göre)",
+    "preferenceDiscount": "Tıp için tercih sırasına bağlı genel indirim yok.",
+    "academicScholarship": "Sınıf/program başarı sıralamasında ilk üçe izleyen yıl %75’e kadar akademik başarı bursu; 2026 ücret sayfasındaki bazı %50 başarı destekleri Tıp’ı kapsam dışı bırakıyor.",
+    "extraBenefits": "Yeditepe Üniversitesi Koşuyolu Hastanesi ve güçlü İngilizce/akredite program; çift anadal/yan dal ek ücretsizi.",
+    "verificationStatus": "2026 resmî aday/SSS sayfası",
+    "accreditation": "TEPDAD: İngilizce",
+    "staffSignal": "Güncel akreditasyon",
+    "staffCount": 142,
+    "uncertainty": "Bazı ücretli/indirimli satırlarda 2025 kapanışı yok; bu durum “garanti” anlamına gelmez.",
+    "codes": [
+      "206110759",
+      "206111615",
+      "206110741"
+    ]
+  },
+  {
+    "university": "Yüksek İhtisas Üniversitesi (Ankara)",
+    "city": "Ankara",
+    "listTuition2026": "1.200.000 TL (KDV dâhil; dil/programa göre)",
+    "preferenceDiscount": "1./2./3. tercihten yerleşmede sırasıyla %10/%7/%5; Tıp’ta 6+1 yıl geçerli.",
+    "academicScholarship": "Ücretli Tıp öğrencisi tüm dersleri başarılı, GANO en az 3,50 ve sınıfında ilk iki içindeyse izleyen yıl öğrenim ücretinin %75’inden muaf.",
+    "extraBenefits": "Sağlık ihtisas üniversitesi; sosyal destek, şehit/gazi çocuğuna %25 ve kardeşe %5.",
+    "verificationStatus": "2026 resmî aday sayfası/yönerge",
+    "accreditation": "TEPDAD güncel listesinde yok",
+    "staffSignal": "Yerleşik kadro sinyali",
+    "staffCount": 176,
+    "uncertainty": null,
+    "codes": [
+      "207910015",
+      "207950202",
+      "207910033",
+      "207950115",
+      "207950209",
+      "207950114"
+    ]
+  }
+]

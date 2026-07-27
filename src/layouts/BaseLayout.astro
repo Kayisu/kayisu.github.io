@@ -15,6 +15,8 @@ export interface Props {
   canonicalPath?: string;
   alternatePaths?: Partial<Record<Locale, string>>;
   noindex?: boolean;
+  /** Robots directive emitted when `noindex` is set. */
+  robots?: string;
   ogType?: 'website' | 'article';
   bodyClass?: string;
 }
@@ -24,6 +26,7 @@ const {
   canonicalPath = Astro.url.pathname,
   alternatePaths,
   noindex = false,
+  robots = 'noindex, nofollow',
   ogType = 'website',
   bodyClass,
 } = Astro.props;
@@ -116,7 +119,7 @@ const englishAlternate = completeAlternates.find((entry) => entry.locale === 'en
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalUrl.toString()} />
     {
-      noindex && <meta name="robots" content="noindex, nofollow" />
+      noindex && <meta name="robots" content={robots} />
     }
     {
       hasTrueLanguagePair && completeAlternates.map(({ locale: alternateLocale, href }) => (

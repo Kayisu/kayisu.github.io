@@ -1,0 +1,272 @@
+[
+  {
+    "id": "1",
+    "label": "ÖSYM 2026-YKS Yükseköğretim Programları ve Kontenjanları Kılavuzu — 21 Temmuz 2026 ön bilgi sürümü",
+    "url": "https://cdn.osym.gov.tr/pdfdokuman/2026/YKS/TERCIH/kontkilavuz_yktd21072026.pdf",
+    "verified": true
+  },
+  {
+    "id": "2",
+    "label": "ÖSYM — ön bilgi kılavuzunun yayımlanması ve nihai sürüm uyarısı",
+    "url": "https://www.osym.gov.tr/2026yks-yuksekogretim-programlari-ve-kontenjanlari-kilavuzununyayimlanmasi",
+    "verified": false
+  },
+  {
+    "id": "3",
+    "label": "YÖK Atlas — lisans programı doğrulama",
+    "url": "https://yokatlas.yok.gov.tr/",
+    "verified": true
+  },
+  {
+    "id": "4",
+    "label": "TEPDAD — güncel akredite eğitim programları listesi",
+    "url": "https://tepdad.org.tr/akredite-egitim-programlarinin-guncel-listesi/",
+    "verified": true
+  },
+  {
+    "id": "5",
+    "label": "Eleman.net — YÖK Atlas kaynaklı 2022–2025 tıp başarı sırası geçmişi (ikincil kaynak)",
+    "url": "https://www.eleman.net/bolum/tip/taban-puanlari",
+    "verified": true
+  },
+  {
+    "id": "6",
+    "label": "Ağrı İbrahim Çeçen Üniversitesi Tıp Fakültesi — tarihçe ve klinik eğitim",
+    "url": "https://www.agri.edu.tr/detail.aspx?bid=500&dil=tr-TR&id=5931&td=6",
+    "verified": true
+  },
+  {
+    "id": "7",
+    "label": "Kafkas Üniversitesi Sağlık Araştırma ve Uygulama Hastanesi — hastane ve 2024 istatistiği",
+    "url": "https://hastane.kafkas.edu.tr/TR/index.php/tanitim/hastanemiz/hastane-istatistik",
+    "verified": true
+  },
+  {
+    "id": "8",
+    "label": "Erzincan Binali Yıldırım Üniversitesi Tıp Fakültesi — tarihçe / Mengücek Gazi EAH",
+    "url": "https://tip.ebyu.edu.tr/fakultemiz-tarihcesi-ve-tanitimi/",
+    "verified": true
+  },
+  {
+    "id": "9",
+    "label": "Karabük Üniversitesi — Tıp Fakültesi ek hizmet binası ve afiliye klinik eğitim",
+    "url": "https://kbumedya.karabuk.edu.tr/karabuk-universitesi-tip-fakultesi-ek-hizmet-binasi-torenlehizmete-acildi",
+    "verified": false
+  },
+  {
+    "id": "10",
+    "label": "Bitlis Eren Üniversitesi — ilk üç yıl İstanbul Tıp modeli",
+    "url": "https://www.beu.edu.tr/Haberler/bitlis-eren-universitesinde-saglik-ve-bilim-bulusmasi-i-uluslararasisaglik-ve-tip-bilimleri-kongresi-yogun-katilimla-gerceklestirildi",
+    "verified": false
+  },
+  {
+    "id": "11",
+    "label": "Burdur Mehmet Akif Ersoy Üniversitesi — 2026-2027’de ilk öğrenci alımı",
+    "url": "https://tip.mehmetakif.edu.tr/content/29234/1/maku-tip-fakultesi-egitime-basliyor",
+    "verified": true
+  },
+  {
+    "id": "12",
+    "label": "Adıyaman Üniversitesi Tıp Fakültesi — fakülte/hastane bilgisi",
+    "url": "https://tipfakultesi.adiyaman.edu.tr/tr/fakultemiz/hakkinda",
+    "verified": true
+  },
+  {
+    "id": "13",
+    "label": "Giresun Üniversitesi Tıp Fakültesi — bağlı eğitim ve araştırma hastaneleri",
+    "url": "https://tip.giresun.edu.tr/",
+    "verified": true
+  },
+  {
+    "id": "V1",
+    "label": "Acıbadem Mehmet Ali Aydınlar Üniversitesi (İstanbul) — tercih indirimi, akademik başarı bursu ve ek faydalar (2026 resmî sayfa; özel burs başvuru ve mülakatlı)",
+    "url": "https://www.acibadem.edu.tr/aday/ogrenci/egitim/burs/burs-olanaklari",
+    "verified": true
+  },
+  {
+    "id": "V2",
+    "label": "Altınbaş Üniversitesi (İstanbul) — tercih indirimi, akademik başarı bursu ve ek faydalar (Oran dinamik; 2026 Tıp teklifi yazılı alınmalı)",
+    "url": "https://aday.altinbas.edu.tr/ucret-hesaplama-modulu/",
+    "verified": true
+  },
+  {
+    "id": "V3",
+    "label": "Ankara Medipol Üniversitesi — tercih indirimi, akademik başarı bursu ve ek faydalar (2026 resmî sayfa; Tıp program tablosu teyit edilmeli)",
+    "url": "https://ankaramedipol.edu.tr/ogrenci/burslar/",
+    "verified": true
+  },
+  {
+    "id": "V4",
+    "label": "Atılım Üniversitesi (Ankara) — tercih indirimi, akademik başarı bursu ve ek faydalar (9 Haziran 2026 tarihli resmî yönetmelik)",
+    "url": "https://www.atilim.edu.tr/uploads/sites/atilim-universitesi/Atilim%20Universitesi%20Burs%20Yonetmeligi%2009_06_2026.pdf",
+    "verified": true
+  },
+  {
+    "id": "V5",
+    "label": "Bahçeşehir Üniversitesi (İstanbul) — tercih indirimi, akademik başarı bursu ve ek faydalar (2026 resmî SSS + 2025/2026 burs yönergesi)",
+    "url": "https://aday.bau.edu.tr/burslar-ve-ucretler/",
+    "verified": true
+  },
+  {
+    "id": "V6",
+    "label": "Başkent Üniversitesi (Ankara) — tercih indirimi, akademik başarı bursu ve ek faydalar (Resmî burs yönergesi; başarı tutarı yıllık kararla)",
+    "url": "https://www.baskent.edu.tr/belgeler/mevzuat/yonerge/ogrenim-ucreti-ve-burs-yonergesi.pdf",
+    "verified": true
+  },
+  {
+    "id": "V7",
+    "label": "Bezm-İ Âlem Vakıf Üniversitesi (İstanbul) — tercih indirimi, akademik başarı bursu ve ek faydalar (2026 resmî aday sayfası)",
+    "url": "https://aday.bezmialem.edu.tr/burslar-ve-indirimler.html",
+    "verified": true
+  },
+  {
+    "id": "V8",
+    "label": "Biruni Üniversitesi (İstanbul) — tercih indirimi, akademik başarı bursu ve ek faydalar (2026 resmî tercih ve tanıtım kılavuzu)",
+    "url": "https://aday.biruni.edu.tr/2026/kontenjan-ve-ucretler/",
+    "verified": true
+  },
+  {
+    "id": "V9",
+    "label": "Demiroğlu Bilim Üniversitesi (İstanbul) — tercih indirimi, akademik başarı bursu ve ek faydalar (2026 giriş programı + resmî burs yönergesi)",
+    "url": "https://demiroglu.bilim.edu.tr/aday-ogrenci/gelecegin-tip-liderleri-arasina-katil",
+    "verified": true
+  },
+  {
+    "id": "V10",
+    "label": "Haliç Üniversitesi (İstanbul) — tercih indirimi, akademik başarı bursu ve ek faydalar (2026 resmî aday sayfası; başarı oranı yıllık teyit)",
+    "url": "https://aday.halic.edu.tr/burslar-ve-indirimler/",
+    "verified": true
+  },
+  {
+    "id": "V11",
+    "label": "İstanbul Arel Üniversitesi — tercih indirimi, akademik başarı bursu ve ek faydalar (2026 resmî aday sayfası; tercih oranı dinamik)",
+    "url": "https://aday.arel.edu.tr/ucretlerburslar/",
+    "verified": false
+  },
+  {
+    "id": "V12",
+    "label": "İstanbul Atlas Üniversitesi — tercih indirimi, akademik başarı bursu ve ek faydalar (2026 resmî aday sayfası)",
+    "url": "https://tercih.atlas.edu.tr/burslar",
+    "verified": true
+  },
+  {
+    "id": "V13",
+    "label": "İstanbul Aydın Üniversitesi — tercih indirimi, akademik başarı bursu ve ek faydalar (2026 resmî aday sayfası; Tıp tercih indirimi yok)",
+    "url": "https://aday.aydin.edu.tr/burs-imkanlari/",
+    "verified": true
+  },
+  {
+    "id": "V14",
+    "label": "İstanbul Beykent Üniversitesi — tercih indirimi, akademik başarı bursu ve ek faydalar (2026 resmî burs sayfası)",
+    "url": "https://www.beykent.edu.tr/aday-ogrenci/kayit-kabul/burs-olanaklari",
+    "verified": true
+  },
+  {
+    "id": "V15",
+    "label": "İstanbul Medipol Üniversitesi — tercih indirimi, akademik başarı bursu ve ek faydalar (2026 resmî burs sayfası; Tıp tablosu teyit)",
+    "url": "https://www.medipol.edu.tr/ogrenci/aday-ogrenci/egitim-firsatlari/burs-firsatlari",
+    "verified": true
+  },
+  {
+    "id": "V16",
+    "label": "İstanbul Nişantaşı Üniversitesi — tercih indirimi, akademik başarı bursu ve ek faydalar (2026 resmî aday sayfası; birleşme hesabı yazılı teyit)",
+    "url": "https://ats.nisantasi.edu.tr/bolum-tablosu",
+    "verified": true
+  },
+  {
+    "id": "V17",
+    "label": "İstanbul Okan Üniversitesi — tercih indirimi, akademik başarı bursu ve ek faydalar (Başarı oranı resmî; 2026 tercih oranı henüz yayımlanmamış)",
+    "url": "https://aday.okan.edu.tr/burslar/",
+    "verified": true
+  },
+  {
+    "id": "V18",
+    "label": "İstanbul Sağlık ve Teknoloji Üniversitesi — tercih indirimi, akademik başarı bursu ve ek faydalar (2026 resmî sayfa; tercih oranı yıllık/dinamik)",
+    "url": "https://www.istun.edu.tr/tr/burslar-ve-indirimler-aday",
+    "verified": true
+  },
+  {
+    "id": "V19",
+    "label": "İstanbul Yeni Yüzyıl Üniversitesi — tercih indirimi, akademik başarı bursu ve ek faydalar (2026 resmî aday sayfası; Tıp birleşme koşulu teyit)",
+    "url": "https://aday.yeniyuzyil.edu.tr/",
+    "verified": true
+  },
+  {
+    "id": "V20",
+    "label": "İstinye Üniversitesi (İstanbul) — tercih indirimi, akademik başarı bursu ve ek faydalar (2026 tercih istisnası kesin; başarı kuralı güncel teyit)",
+    "url": "https://aday.istinye.edu.tr/burslar",
+    "verified": true
+  },
+  {
+    "id": "V21",
+    "label": "İzmir Ekonomi Üniversitesi — tercih indirimi, akademik başarı bursu ve ek faydalar (2026 resmî burs sayfası)",
+    "url": "https://www.ieu.edu.tr/aday/tr/burslar.php",
+    "verified": true
+  },
+  {
+    "id": "V22",
+    "label": "İzmir Tınaztepe Üniversitesi — tercih indirimi, akademik başarı bursu ve ek faydalar (Resmî burs yönergesi; oran yıllık kararla)",
+    "url": "https://tinaztepe.edu.tr/uploads/unuversite_dosyalar/burs-yonergesi.pdf",
+    "verified": true
+  },
+  {
+    "id": "V23",
+    "label": "Koç Üniversitesi (İstanbul) — tercih indirimi, akademik başarı bursu ve ek faydalar (Resmî aday sayfası + Tıp Fakültesi yönergesi)",
+    "url": "https://www.ku.edu.tr/adaylar/aday-ogrencilerimiz/",
+    "verified": true
+  },
+  {
+    "id": "V24",
+    "label": "KTO Karatay Üniversitesi (Konya) — tercih indirimi, akademik başarı bursu ve ek faydalar (2026 resmî aday sayfası/yönerge)",
+    "url": "https://aday.karatay.edu.tr/burslar.html",
+    "verified": true
+  },
+  {
+    "id": "V25",
+    "label": "Lokman Hekim Üniversitesi (Ankara) — tercih indirimi, akademik başarı bursu ve ek faydalar (Resmî yönerge; 2026 Tıp oranı yazılı teyit)",
+    "url": "https://www.lokmanhekim.edu.tr/aday-ogrenci/sikca-sorulan-sorular-sss",
+    "verified": true
+  },
+  {
+    "id": "V26",
+    "label": "Maltepe Üniversitesi (İstanbul) — tercih indirimi, akademik başarı bursu ve ek faydalar (2026 ücret sayfası + resmî burs yönergesi)",
+    "url": "https://aday.maltepe.edu.tr/burslar-ve-ucretler/",
+    "verified": true
+  },
+  {
+    "id": "V27",
+    "label": "Sanko Üniversitesi (Gaziantep) — tercih indirimi, akademik başarı bursu ve ek faydalar (2026 resmî burs sayfası)",
+    "url": "https://www.sanko.edu.tr/ogrenci/burslar/",
+    "verified": true
+  },
+  {
+    "id": "V28",
+    "label": "TOBB Ekonomi ve Teknoloji Üniversitesi (Ankara) — tercih indirimi, akademik başarı bursu ve ek faydalar (2026 resmî burs sayfası + lisans burs yönergesi)",
+    "url": "https://www.etu.edu.tr/tr/aday-ogrenci/burslar",
+    "verified": true
+  },
+  {
+    "id": "V29",
+    "label": "Ufuk Üniversitesi (Ankara) — tercih indirimi, akademik başarı bursu ve ek faydalar (2026 resmî burs sayfası)",
+    "url": "https://www.ufuk.edu.tr/aday-ogrenci/burslar",
+    "verified": true
+  },
+  {
+    "id": "V30",
+    "label": "Üsküdar Üniversitesi (İstanbul) — tercih indirimi, akademik başarı bursu ve ek faydalar (2026 resmî burs sayfası)",
+    "url": "https://uskudar.edu.tr/burslar",
+    "verified": true
+  },
+  {
+    "id": "V31",
+    "label": "Yeditepe Üniversitesi (İstanbul) — tercih indirimi, akademik başarı bursu ve ek faydalar (2026 resmî aday/SSS sayfası)",
+    "url": "https://yeditepe.edu.tr/tr/aday-ogrenci/burs-olanaklari",
+    "verified": true
+  },
+  {
+    "id": "V32",
+    "label": "Yüksek İhtisas Üniversitesi (Ankara) — tercih indirimi, akademik başarı bursu ve ek faydalar (2026 resmî aday sayfası/yönerge)",
+    "url": "https://yuksekihtisasuniversitesi.edu.tr/landing",
+    "verified": true
+  }
+]

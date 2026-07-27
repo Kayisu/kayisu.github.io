@@ -1,0 +1,150 @@
+---
+/**
+ * Unlisted decision-support page for the 2026 YKS medicine preference research.
+ *
+ * Reachable only by direct URL: it carries `noindex, nofollow, noarchive`, it is
+ * not referenced from any navigation or discovery surface, and no sitemap is
+ * generated for this site. Do not add a link to it from the portfolio pages.
+ */
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import YksApp from '../../../components/yks/YksApp';
+import { excluded, guidance, reportMeta, sources, validateYksDataset } from '../../../data/yks';
+import '../../../styles/yks.css';
+
+// Runs during `astro build`: a dataset that breaks an invariant fails the build
+// rather than shipping a wrong number to someone making a real decision.
+validateYksDataset();
+
+const { counts } = reportMeta;
+const numberFormat = new Intl.NumberFormat('tr-TR');
+
+const summary = [
+  { value: counts.programs, label: 'incelenen tıp programı' },
+  { value: counts.state, label: 'devlet programı' },
+  { value: counts.foundation, label: 'vakıf programı' },
+  { value: counts.international, label: 'KKTC / yurt dışı programı' },
+  { value: counts.bands.strong, label: 'güçlü tarihsel marjlı program' },
+  { value: counts.sources, label: 'kaynak bağlantısı' },
+];
+
+const title = '2026 YKS tıp tercih rehberi — 26.000 sıralaması';
+const description =
+  '26.000 civarı bir sayısal sıralama için 2026 YKS tıp tercih seçeneklerini '
+  + 'karşılaştıran, filtrelenebilir bir çalışma aracı.';
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  locale="tr"
+  noindex
+  robots="noindex, nofollow, noarchive"
+>
+  <main class="yks-shell">
+    <header class="yks-header">
+      <p class="yks-eyebrow">2026 YKS • Tıp tercih araştırması</p>
+      <h1 class="yks-title">26.000 sıralaması için tıp tercih rehberi</h1>
+      <p class="yks-lede">
+        Bu sayfa, sayısal alanda yaklaşık <strong>26.000</strong> sıralamaya sahip bir aday için
+        hazırlanmış bir araştırma raporunu gezilebilir hâle getirir. Rapordaki bütün programlar,
+        senaryolar ve vakıf burs koşulları aşağıda filtrelenebilir biçimde yer alır.
+      </p>
+    </header>
+
+    <div class="yks-notice">
+      <p>
+        <strong>Bu bir tahmin aracıdır, garanti değildir.</strong> Bütün olasılık etiketleri
+        2025 kapanış sıralamalarına dayanır. 2026’da kontenjanlar, tercih davranışı ve sınav
+        zorluğu değiştiği için geçmiş veriler yalnızca bir fikir verir.
+      </p>
+      <p style="margin-bottom: 0">
+        Ücret ve burs rakamları {reportMeta.guideVersion} ile üniversitelerin kendi yayımladığı
+        belgelerden derlenmiştir; kesin tutarlar <strong>kod bazlı yazılı teklifle</strong>
+        doğrulanmalıdır. Tercih dönemi: {reportMeta.preferencePeriod}.
+      </p>
+    </div>
+
+    <ul class="yks-summary">
+      {
+        summary.map((item) => (
+          <li class="yks-summary-item">
+            <span class="yks-summary-value">{numberFormat.format(item.value)}</span>
+            <span class="yks-summary-label">{item.label}</span>
+          </li>
+        ))
+      }
+    </ul>
+
+    <YksApp client:only="react" />
+
+    <section class="yks-section">
+      <h2>Tercih göndermeden önce son kontrol</h2>
+      <dl class="yks-note-list">
+        {
+          guidance.finalChecks.map((check) => (
+            <div>
+              <dt>{check.order}. adım</dt>
+              <dd>{check.text}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </section>
+
+    <section class="yks-section">
+      <h2>Olasılık etiketleri ne anlama geliyor?</h2>
+      <dl class="yks-note-list">
+        {
+          guidance.probabilityLabels.map((note) => (
+            <div>
+              <dt>{note.label}</dt>
+              <dd>{note.detail}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </section>
+
+    <section class="yks-section">
+      <h2>Havuz dışında bırakılan programlar</h2>
+      <p class="yks-lede">
+        Aşağıdaki {excluded.length} program, sivil genel kontenjan dışında kaldığı için
+        karşılaştırmaya dâhil edilmedi.
+      </p>
+      <dl class="yks-note-list">
+        {
+          excluded.map((item) => (
+            <div>
+              <dt>Kod {item.code}</dt>
+              <dd>{item.reason}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </section>
+
+    <section class="yks-section">
+      <h2>Kaynaklar</h2>
+      <ul class="yks-source-list">
+        {
+          sources.map((source) => (
+            <li>
+              <span aria-hidden="true">[{source.id}]</span> {source.label}{' '}
+              {
+                source.verified ? (
+                  <a href={source.url} rel="nofollow noopener noreferrer" target="_blank">
+                    Bağlantı
+                  </a>
+                ) : (
+                  <span class="yks-source-unverified">
+                    Bağlantı doğrulanmadı (kaynak metninde satır kayması var): {source.url}
+                  </span>
+                )
+              }
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+  </main>
+</BaseLayout>
