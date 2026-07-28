@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { programsByCode, scenarios } from '../../data/yks';
+import { BAND_LABELS, HISTORY_LABELS, programsByCode, scenarios } from '../../data/yks';
 import { MAX_SHORTLIST_SIZE, useYksStore } from '../../store/yksStore';
 
 export default function ScenarioView() {
@@ -38,6 +38,13 @@ export default function ScenarioView() {
       <div className="yks-section">
         <h2>{scenario.title}</h2>
         {scenario.intro && <p className="yks-lede">{scenario.intro}</p>}
+        <dl className="yks-note-list yks-scenario-notes">
+          <div><dt>İstek / erişim bölümü</dt><dd>{scenario.reachSummary}</dd></div>
+          <div><dt>Gerçekçi çekirdek</dt><dd>{scenario.coreSummary}</dd></div>
+          <div><dt>Yedek bölümü</dt><dd>{scenario.safetySummary}</dd></div>
+          <div><dt>Finansal varsayım</dt><dd>{scenario.financialAssumptions}</dd></div>
+          <div><dt>24 dışında bırakılanlar</dt><dd>{scenario.omissions}</dd></div>
+        </dl>
         <div className="yks-filter-actions" style={{ marginTop: '1rem' }}>
           <button type="button" className="yks-button yks-button--primary" onClick={applyScenario}>
             Bu sıralamayı listeme aktar
@@ -66,17 +73,23 @@ export default function ScenarioView() {
               </div>
 
               {entry.data && <p className="yks-card-sub">{entry.data}</p>}
-              {entry.reasoning && (
+              {(program?.placementAssessment.reason ?? entry.reasoning) && (
                 <p className="yks-detail-section" style={{ margin: 0 }}>
-                  {entry.reasoning}
+                  {program?.placementAssessment.reason ?? entry.reasoning}
                 </p>
               )}
 
               <dl className="yks-facts">
                 {entry.probability && (
                   <div>
-                    <dt>Olasılık</dt>
-                    <dd>{entry.probability}</dd>
+                    <dt>Şans değerlendirmesi</dt>
+                    <dd>{program ? BAND_LABELS[program.band] : entry.probability}</dd>
+                  </div>
+                )}
+                {program && (
+                  <div>
+                    <dt>Geçmiş eşleşmesi</dt>
+                    <dd>{HISTORY_LABELS[program.history.status]}</dd>
                   </div>
                 )}
                 {entry.cost && (

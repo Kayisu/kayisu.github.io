@@ -1,8 +1,8 @@
 {
   "candidateRank": 26000,
-  "reportDate": "2026-07-27",
-  "guideVersion": "21 Temmuz 2026 tarihli ÖSYM ön bilgi kılavuzu",
-  "preferencePeriod": "29 Temmuz – 10 Ağustos 2026",
+  "reportDate": "2026-07-28",
+  "guideVersion": "21 Temmuz 2026 tarihli ÖSYM ön bilgi kılavuzu (28 Temmuz 2026 itibarıyla daha yeni nihai/düzeltme sürümü bulunamadı)",
+  "preferencePeriod": "ÖSYM'nin nihai kılavuzu ve tercih duyurusu yayımlandığında tekrar kontrol edilmeli",
   "counts": {
     "programs": 225,
     "state": 100,
@@ -11,366 +11,33 @@
     "stateGroups": 89,
     "foundationGroups": 33,
     "internationalGroups": 5,
-    "sources": 45,
-    "unverifiedSources": 4,
-    "excluded": 5,
-    "scenarioEntries": [
-      24,
-      24,
-      24
-    ],
+    "sources": 55,
+    "unverifiedSources": 3,
+    "excluded": 17,
+    "eligibilityOmissions": 12,
+    "scenarioEntries": [24, 24, 24, 24],
     "bands": {
-      "strong": 38,
-      "borderline": 7,
-      "weak": 153,
-      "unmeasured": 27
+      "strong": 45,
+      "realistic": 12,
+      "borderline": 17,
+      "reach": 147,
+      "speculative": 4
     },
-    "bandsFromReport": 99
+    "history": {
+      "exact_code_match": 211,
+      "comparable_predecessor": 9,
+      "older_reopened_history": 0,
+      "analogous_program_only": 3,
+      "genuinely_new": 2,
+      "no_reliable_history": 0
+    },
+    "currentCodeMigrations": 14,
+    "historicalCategoryMigrations": 26
   },
-  "repairs": [
-    {
-      "rule": "öğretm -> öğretim",
-      "count": 144
-    },
-    {
-      "rule": "url:htps -> https",
-      "count": 45
-    },
-    {
-      "rule": "tp -> tıp",
-      "count": 44
-    },
-    {
-      "rule": "ayrınt -> ayrıntı",
-      "count": 21
-    },
-    {
-      "rule": "garant -> garanti",
-      "count": 17
-    },
-    {
-      "rule": "satrlarda -> satırlarda",
-      "count": 16
-    },
-    {
-      "rule": "ihtmal -> ihtimal",
-      "count": 15
-    },
-    {
-      "rule": "Eğitm -> Eğitim",
-      "count": 11
-    },
-    {
-      "rule": "eğitm -> eğitim",
-      "count": 9
-    },
-    {
-      "rule": "Kafas -> Kafkas",
-      "count": 8
-    },
-    {
-      "rule": "çif -> çift",
-      "count": 8
-    },
-    {
-      "rule": "url:tp -> tip",
-      "count": 8
-    },
-    {
-      "rule": "Araştrma -> Araştırma",
-      "count": 6
-    },
-    {
-      "rule": "İstnye -> İstinye",
-      "count": 6
-    },
-    {
-      "rule": "Hitt -> Hitit",
-      "count": 6
-    },
-    {
-      "rule": "araştrma -> araştırma",
-      "count": 5
-    },
-    {
-      "rule": "İhtsas -> İhtisas",
-      "count": 5
-    },
-    {
-      "rule": "sınıfa -> sınıfta",
-      "count": 5
-    },
-    {
-      "rule": "ihtyaç -> ihtiyaç",
-      "count": 4
-    },
-    {
-      "rule": "Atlım -> Atılım",
-      "count": 4
-    },
-    {
-      "rule": "statk -> statik",
-      "count": 4
-    },
-    {
-      "rule": "satrındaki -> satırındaki",
-      "count": 3
-    },
-    {
-      "rule": "Altnbaş -> Altınbaş",
-      "count": 3
-    },
-    {
-      "rule": "afliye -> afiliye",
-      "count": 3
-    },
-    {
-      "rule": "Bat -> Batı",
-      "count": 3
-    },
-    {
-      "rule": "url:egitm -> egitim",
-      "count": 3
-    },
-    {
-      "rule": "tarafndan -> tarafından",
-      "count": 2
-    },
-    {
-      "rule": "sınıfarda -> sınıflarda",
-      "count": 2
-    },
-    {
-      "rule": "ücretnin -> ücretinin",
-      "count": 2
-    },
-    {
-      "rule": "itbaren -> itibaren",
-      "count": 2
-    },
-    {
-      "rule": "sınıfar -> sınıflar",
-      "count": 2
-    },
-    {
-      "rule": "eğitmi -> eğitimi",
-      "count": 2
-    },
-    {
-      "rule": "metnde -> metinde",
-      "count": 2
-    },
-    {
-      "rule": "Etket -> Etiket",
-      "count": 2
-    },
-    {
-      "rule": "kritk -> kritik",
-      "count": 2
-    },
-    {
-      "rule": "fyat -> fiyat",
-      "count": 2
-    },
-    {
-      "rule": "url:atlim -> atilim",
-      "count": 2
-    },
-    {
-      "rule": "url:frsatlari -> firsatlari",
-      "count": 2
-    },
-    {
-      "rule": "sıkılaştrabilir -> sıkılaştırabilir",
-      "count": 1
-    },
-    {
-      "rule": "belirtlmiyor -> belirtilmiyor",
-      "count": 1
-    },
-    {
-      "rule": "Nightngale -> Nightingale",
-      "count": 1
-    },
-    {
-      "rule": "alternatf -> alternatif",
-      "count": 1
-    },
-    {
-      "rule": "Alternatf -> Alternatif",
-      "count": 1
-    },
-    {
-      "rule": "fnansmanı -> finansmanı",
-      "count": 1
-    },
-    {
-      "rule": "bağlantsı -> bağlantısı",
-      "count": 1
-    },
-    {
-      "rule": "ücretnden -> ücretinden",
-      "count": 1
-    },
-    {
-      "rule": "Hacetepe -> Hacettepe",
-      "count": 1
-    },
-    {
-      "rule": "garantsi -> garantisi",
-      "count": 1
-    },
-    {
-      "rule": "istsnası -> istisnası",
-      "count": 1
-    },
-    {
-      "rule": "tarafnda -> tarafında",
-      "count": 1
-    },
-    {
-      "rule": "satrında -> satırında",
-      "count": 1
-    },
-    {
-      "rule": "satrları -> satırları",
-      "count": 1
-    },
-    {
-      "rule": "sınıfnda -> sınıfında",
-      "count": 1
-    },
-    {
-      "rule": "Sınıfnda -> Sınıfında",
-      "count": 1
-    },
-    {
-      "rule": "Necmetn -> Necmettin",
-      "count": 1
-    },
-    {
-      "rule": "ihtmali -> ihtimali",
-      "count": 1
-    },
-    {
-      "rule": "muafyet -> muafiyet",
-      "count": 1
-    },
-    {
-      "rule": "Kayıtan -> Kayıttan",
-      "count": 1
-    },
-    {
-      "rule": "sınıfan -> sınıftan",
-      "count": 1
-    },
-    {
-      "rule": "Lefoşa -> Lefkoşa",
-      "count": 1
-    },
-    {
-      "rule": "ihtsas -> ihtisas",
-      "count": 1
-    },
-    {
-      "rule": "İhtyaç -> İhtiyaç",
-      "count": 1
-    },
-    {
-      "rule": "kapatr -> kapatır",
-      "count": 1
-    },
-    {
-      "rule": "coğraf -> coğrafi",
-      "count": 1
-    },
-    {
-      "rule": "sınıfn -> sınıfın",
-      "count": 1
-    },
-    {
-      "rule": "ücretn -> ücretin",
-      "count": 1
-    },
-    {
-      "rule": "pratk -> pratik",
-      "count": 1
-    },
-    {
-      "rule": "altya -> altıya",
-      "count": 1
-    },
-    {
-      "rule": "Katp -> Kâtip",
-      "count": 1
-    },
-    {
-      "rule": "satr -> satır",
-      "count": 1
-    },
-    {
-      "rule": "Çif -> Çift",
-      "count": 1
-    },
-    {
-      "rule": "url:yuksekogretm -> yuksekogretim",
-      "count": 1
-    },
-    {
-      "rule": "url:istatstk -> istatistik",
-      "count": 1
-    },
-    {
-      "rule": "url:tanitm -> tanitim",
-      "count": 1
-    },
-    {
-      "rule": "url:kafas -> kafkas",
-      "count": 1
-    },
-    {
-      "rule": "url:tanitmi -> tanitimi",
-      "count": 1
-    },
-    {
-      "rule": "url:gerceklestrildi -> gerceklestirildi",
-      "count": 1
-    },
-    {
-      "rule": "url:katlimla -> katilimla",
-      "count": 1
-    },
-    {
-      "rule": "url:egitme -> egitime",
-      "count": 1
-    },
-    {
-      "rule": "url:tpfakultesi -> tipfakultesi",
-      "count": 1
-    },
-    {
-      "rule": "url:altnbas -> altinbas",
-      "count": 1
-    },
-    {
-      "rule": "url:Atlim -> Atilim",
-      "count": 1
-    },
-    {
-      "rule": "url:katl -> katil",
-      "count": 1
-    },
-    {
-      "rule": "url:istnye -> istinye",
-      "count": 1
-    },
-    {
-      "rule": "url:tnaztepe -> tinaztepe",
-      "count": 1
-    },
-    {
-      "rule": "url:yuksekihtsasuniversitesi -> yuksekihtisasuniversitesi",
-      "count": 1
-    }
-  ]
+  "officialGuideRows": {
+    "medicine": 242,
+    "eligible": 225,
+    "military": 5,
+    "nationalityRestricted": 12
+  }
 }

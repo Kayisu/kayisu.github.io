@@ -2,14 +2,14 @@
   {
     "id": "1",
     "label": "ÖSYM 2026-YKS Yükseköğretim Programları ve Kontenjanları Kılavuzu — 21 Temmuz 2026 ön bilgi sürümü",
-    "url": "https://cdn.osym.gov.tr/pdfdokuman/2026/YKS/TERCIH/kontkilavuz_yktd21072026.pdf",
+    "url": "https://dokuman.osym.gov.tr/pdfdokuman/2026/YKS/TERCIH/kontkilavuz_yktd21072026.pdf",
     "verified": true
   },
   {
     "id": "2",
     "label": "ÖSYM — ön bilgi kılavuzunun yayımlanması ve nihai sürüm uyarısı",
-    "url": "https://www.osym.gov.tr/2026yks-yuksekogretim-programlari-ve-kontenjanlari-kilavuzununyayimlanmasi",
-    "verified": false
+    "url": "https://www.osym.gov.tr/2026yks-yuksekogretim-programlari-ve-kontenjanlari-kilavuzunun-yayimlanmasi",
+    "verified": true
   },
   {
     "id": "3",
@@ -268,5 +268,115 @@
     "label": "Yüksek İhtisas Üniversitesi (Ankara) — tercih indirimi, akademik başarı bursu ve ek faydalar (2026 resmî aday sayfası/yönerge)",
     "url": "https://yuksekihtisasuniversitesi.edu.tr/landing",
     "verified": true
+  },
+  {
+    "id": "OSYM-2026-GUIDE",
+    "label": "ÖSYM 2026-YKS Yükseköğretim Programları ve Kontenjanları Kılavuzu — ön bilgi sürümü",
+    "url": "https://dokuman.osym.gov.tr/pdfdokuman/2026/YKS/TERCIH/kontkilavuz_yktd21072026.pdf",
+    "verified": true,
+    "sourceTitle": "2026-YKS Yükseköğretim Programları ve Kontenjanları Kılavuzu",
+    "sourceDate": "2026-07-21",
+    "sourceType": "official-guide",
+    "verificationStatus": "verified",
+    "note": "2026 kod, program, dil, burs kategorisi, genel kontenjan, özel koşul ve kılavuz ücretleri için birincil kaynak; ön bilgi sürümüdür."
+  },
+  {
+    "id": "OSYM-2026-NOTICE",
+    "label": "ÖSYM — 2026 ön bilgi kılavuzu yayımlama duyurusu ve nihai sürüm uyarısı",
+    "url": "https://www.osym.gov.tr/2026yks-yuksekogretim-programlari-ve-kontenjanlari-kilavuzunun-yayimlanmasi",
+    "verified": true,
+    "sourceTitle": "2026-YKS Yükseköğretim Programları ve Kontenjanları Kılavuzunun Yayımlanması",
+    "sourceDate": "2026-07-21",
+    "sourceType": "official-guide",
+    "verificationStatus": "verified",
+    "note": "ÖSYM, yayımlanan metnin ön bilgi amaçlı olduğunu ve tercih döneminde nihai kılavuzun kontrol edilmesi gerektiğini açıkça belirtiyor."
+  },
+  {
+    "id": "OSYM-2025-GUIDE",
+    "label": "ÖSYM 2025-YKS Tablo 4 — merkezi yerleştirme ile öğrenci alan lisans programları",
+    "url": "https://dokuman.osym.gov.tr/pdfdokuman/2025/YKS/TERC%C4%B0H/tablo4_01082025d.xls",
+    "verified": true,
+    "sourceTitle": "2025-YKS Kılavuzu Tablo 4",
+    "sourceDate": "2025-08-01",
+    "sourceType": "official-guide",
+    "verificationStatus": "verified",
+    "note": "2025 program kodu, burs/dil kategorisi, kontenjan ve taban puan için birincil makine-okunur tablo."
+  },
+  {
+    "id": "OSYM-2025-RESULTS",
+    "label": "ÖSYM 2025-YKS yerleştirme sonuçları Tablo 4",
+    "url": "https://dokuman.osym.gov.tr/pdfdokuman/2025/YKS/YERLEST%C4%B0RME/tablo4_ykd25082025.xlsx",
+    "verified": true,
+    "sourceTitle": "2025-YKS Yerleştirme Sonuçlarına İlişkin Sayısal Bilgiler — Tablo 4",
+    "sourceDate": "2025-08-25",
+    "sourceType": "official-results",
+    "verificationStatus": "verified",
+    "note": "Yerleşen aday sayısı, boş/dolu durumu ve taban puan için birincil sonuç tablosu."
+  },
+  {
+    "id": "OSYM-2024-GUIDE",
+    "label": "ÖSYM 2024-YKS Tablo 4",
+    "url": "https://dokuman.osym.gov.tr/pdfdokuman/2024/YKS/TERCIH/tablo4_25072024d.xls",
+    "verified": true,
+    "sourceTitle": "2024-YKS Kılavuzu Tablo 4",
+    "sourceDate": "2024-07-25",
+    "sourceType": "official-guide",
+    "verificationStatus": "verified",
+    "note": "2024 program kodu, kategori ve kontenjan geçmişi için birincil kaynak."
+  },
+  {
+    "id": "OSYM-2023-GUIDE",
+    "label": "ÖSYM 2023-YKS Tablo 4",
+    "url": "https://dokuman.osym.gov.tr/pdfdokuman/2023/YKS/TERCIH/tablo4_27072023io.xls",
+    "verified": true,
+    "sourceTitle": "2023-YKS Kılavuzu Tablo 4",
+    "sourceDate": "2023-07-27",
+    "sourceType": "official-guide",
+    "verificationStatus": "verified",
+    "note": "2023 program kodu, kategori ve kontenjan geçmişi için birincil kaynak."
+  },
+  {
+    "id": "YOK-ATLAS-2026",
+    "label": "YÖK Atlas — 2026 tercih kılavuzu program araması",
+    "url": "https://yokatlas.yok.gov.tr/tercih-sihirbazi-t4-tablo.php",
+    "verified": true,
+    "sourceTitle": "YÖK Lisans Atlası 2026 Tercih Sihirbazı",
+    "sourceDate": "2026-07-28",
+    "sourceType": "yok-atlas",
+    "verificationStatus": "verified",
+    "note": "ÖSYM kılavuz inventeriyle program türü ve kod çapraz kontrolü; Kırgızistan ortak programı sonuç setinde görünmediğinden ÖSYM kılavuzu esas alındı."
+  },
+  {
+    "id": "SECONDARY-ANKARA-MEDIPOL-2025",
+    "label": "Ankara Medipol Türkçe Tıp 2025 başarı sırası — ikincil doğrulama",
+    "url": "https://www.epey.com/universite-tercih/ankara-medipol-universitesi-tip-209210054.html",
+    "verified": true,
+    "sourceTitle": "Ankara Medipol Üniversitesi Tıp 209210054",
+    "sourceDate": "2025",
+    "sourceType": "secondary",
+    "verificationStatus": "partial",
+    "note": "33.458 başarı sırası için kullanıldı; kod, kontenjan, yerleşen ve taban puan ÖSYM tablolarıyla ayrıca doğrulandı."
+  },
+  {
+    "id": "SECONDARY-ISTANBUL-MEDIPOL-2025",
+    "label": "İstanbul Medipol 2025 başarı sıraları — ikincil doğrulama",
+    "url": "https://www.epey.com/universite-tercih/istanbul-medipol-universitesi-tip-203110292.html",
+    "verified": true,
+    "sourceTitle": "İstanbul Medipol Üniversitesi Tıp 203110292",
+    "sourceDate": "2025",
+    "sourceType": "secondary",
+    "verificationStatus": "partial",
+    "note": "Türkçe 47.837, İngilizce 49.259 ve Uluslararası Tıp 38 başarı sıraları; resmi kod/kontenjan/yerleşme/puan satırları ÖSYM ile doğrulandı."
+  },
+  {
+    "id": "SECONDARY-ALTINBAS-2025",
+    "label": "Altınbaş Tıp 2025 başarı sırası — ikincil doğrulama",
+    "url": "https://www.epey.com/universite-tercih/altinbas-universitesi-tip-202910763.html",
+    "verified": true,
+    "sourceTitle": "Altınbaş Üniversitesi Tıp 202910763",
+    "sourceDate": "2025",
+    "sourceType": "secondary",
+    "verificationStatus": "partial",
+    "note": "18.493 başarı sırası için kullanıldı; resmi program satırı ve doluluk ÖSYM tablolarıyla doğrulandı."
   }
 ]

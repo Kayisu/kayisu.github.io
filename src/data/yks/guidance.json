@@ -61,24 +61,24 @@
   ],
   "probabilityLabels": [
     {
-      "label": "Sınırda gerçekçi",
-      "detail": "2025 kapanışına en çok 1.000 sıra uzakta; yine de garanti değil."
+      "label": "Güçlü",
+      "detail": "Karşılaştırılabilir geçmiş havuz adayın belirgin gerisinde kapanmış veya dolmamış; ücret ve 2026 talep değişimi yine belirleyicidir."
     },
     {
-      "label": "Zayıf ama anlamlı",
-      "detail": "Yaklaşık 1.001–2.000 sıra geride veya yeni/ölçülemeyen program."
+      "label": "Gerçekçi",
+      "detail": "Aday sırasına yakın, yapısal eşleşmesi güçlü bir geçmiş var; garanti değildir."
     },
     {
-      "label": "Düşük",
-      "detail": "Yaklaşık 2.001–4.000 sıra geride."
+      "label": "Sınırda",
+      "detail": "Marj dar veya 2026 kategori/kontenjan değişimi iki yöne de çevirebilir."
     },
     {
-      "label": "Çok düşük",
-      "detail": "4.000’den fazla sıra geride."
+      "label": "Zayıf / erişim",
+      "detail": "Geçmiş kapanış 26.000’in önünde; istek değeri yüksekse yine üst sıralara yazılabilir."
     },
     {
-      "label": "Geçmiş veriye göre güçlü",
-      "detail": "Aday, ilgili 2025 kapanışının önünde; ücret/koşul ayrıca uygun olmalı."
+      "label": "Çok spekülatif",
+      "detail": "Yeni/analog yapı veya düşük karşılaştırılabilirlik nedeniyle geçmişin tahmin gücü düşüktür."
     }
   ],
   "rankHistory": [

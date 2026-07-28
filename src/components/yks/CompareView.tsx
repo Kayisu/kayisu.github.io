@@ -1,11 +1,12 @@
 import {
   BAND_LABELS,
+  HISTORY_LABELS,
   SCHOLARSHIP_LABELS,
   TYPE_LABELS,
   programsByCode,
 } from '../../data/yks';
 import { useYksStore } from '../../store/yksStore';
-import { formatMoney, formatNumber, formatRank, formatRankDistance } from './lib/format';
+import { formatMoney, formatNumber, formatRank } from './lib/format';
 
 export default function CompareView() {
   const shortlist = useYksStore((state) => state.shortlist);
@@ -67,8 +68,8 @@ export default function CompareView() {
               <th scope="col">Sıra</th>
               <th scope="col">Program</th>
               <th scope="col">Şans</th>
-              <th scope="col">2025 kapanış</th>
-              <th scope="col">26.000’e uzaklık</th>
+              <th scope="col">Karşılaştırılan kapanış</th>
+              <th scope="col">Geçmiş türü</th>
               <th scope="col">Kontenjan</th>
               <th scope="col">Yıllık ödeme</th>
               <th scope="col">İşlem</th>
@@ -77,10 +78,10 @@ export default function CompareView() {
           <tbody>
             {rows.map((program, index) => (
               <tr key={program.code}>
-                <td>
+                <td data-label="Sıra">
                   <span className="yks-position">{index + 1}</span>
                 </td>
-                <td>
+                <td data-label="Program">
                   <strong>{program.university}</strong>
                   <br />
                   {program.programName}
@@ -92,12 +93,12 @@ export default function CompareView() {
                     Kod {program.code}
                   </span>
                 </td>
-                <td>{BAND_LABELS[program.band]}</td>
-                <td>{formatRank(program.closingRank2025)}</td>
-                <td>{formatRankDistance(program.rankDistance)}</td>
-                <td>{formatNumber(program.quota2026)}</td>
-                <td>{formatMoney(program.estimatedPayment)}</td>
-                <td>
+                <td data-label="Şans">{BAND_LABELS[program.band]}</td>
+                <td data-label="Karşılaştırılan kapanış">{formatRank(program.closingRank2025)}</td>
+                <td data-label="Geçmiş türü">{HISTORY_LABELS[program.history.status]}</td>
+                <td data-label="Kontenjan">{formatNumber(program.quota2026)}</td>
+                <td data-label="Yıllık ödeme">{formatMoney(program.estimatedPayment)}</td>
+                <td data-label="İşlem">
                   <div className="yks-order-controls">
                     <button
                       type="button"

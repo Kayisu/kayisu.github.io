@@ -18,11 +18,22 @@ export default function YksApp() {
   const shortlist = useYksStore((state) => state.shortlist);
   const detail = useYksStore((state) => state.detail);
   const closeDetail = useYksStore((state) => state.closeDetail);
+  const moveTabFocus = (currentIndex: number, key: string) => {
+    let nextIndex = currentIndex;
+    if (key === 'ArrowRight') nextIndex = (currentIndex + 1) % TABS.length;
+    else if (key === 'ArrowLeft') nextIndex = (currentIndex - 1 + TABS.length) % TABS.length;
+    else if (key === 'Home') nextIndex = 0;
+    else if (key === 'End') nextIndex = TABS.length - 1;
+    else return;
+    const next = TABS[nextIndex];
+    setTab(next.id);
+    requestAnimationFrame(() => document.getElementById(`yks-tab-${next.id}`)?.focus());
+  };
 
   return (
     <>
       <div className="yks-tabs" role="tablist" aria-label="Bölümler">
-        {TABS.map((item) => (
+        {TABS.map((item, index) => (
           <button
             key={item.id}
             type="button"
@@ -31,7 +42,14 @@ export default function YksApp() {
             className="yks-tab"
             aria-selected={tab === item.id}
             aria-controls={`yks-panel-${item.id}`}
+            tabIndex={tab === item.id ? 0 : -1}
             onClick={() => setTab(item.id)}
+            onKeyDown={(event) => {
+              if (['ArrowRight', 'ArrowLeft', 'Home', 'End'].includes(event.key)) {
+                event.preventDefault();
+                moveTabFocus(index, event.key);
+              }
+            }}
           >
             {item.label}
             {item.id === 'compare' && shortlist.length > 0 ? ` (${shortlist.length})` : ''}

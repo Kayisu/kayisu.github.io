@@ -23,8 +23,9 @@ const summary = [
   { value: counts.state, label: 'devlet programı' },
   { value: counts.foundation, label: 'vakıf programı' },
   { value: counts.international, label: 'KKTC / yurt dışı programı' },
-  { value: counts.bands.strong, label: 'güçlü tarihsel marjlı program' },
-  { value: counts.sources, label: 'kaynak bağlantısı' },
+  { value: counts.history.exact_code_match, label: 'aynı kodla tarihsel eşleşme' },
+  { value: counts.history.comparable_predecessor, label: 'karşılaştırılabilir öncül eşleşmesi' },
+  { value: counts.history.genuinely_new, label: 'gerçekten yeni program' },
 ];
 
 const title = '2026 YKS tıp tercih rehberi — 26.000 sıralaması';
@@ -46,21 +47,21 @@ const description =
       <h1 class="yks-title">26.000 sıralaması için tıp tercih rehberi</h1>
       <p class="yks-lede">
         Bu sayfa, sayısal alanda yaklaşık <strong>26.000</strong> sıralamaya sahip bir aday için
-        hazırlanmış bir araştırma raporunu gezilebilir hâle getirir. Rapordaki bütün programlar,
-        senaryolar ve vakıf burs koşulları aşağıda filtrelenebilir biçimde yer alır.
+        hazırlanmış, resmî kılavuz satırları ve program soy ağacıyla denetlenmiş bir karar
+        aracıdır. Uygun 225 programın tamamı; aynı-kod ve karşılaştırılabilir geçmişleriyle yer alır.
       </p>
     </header>
 
     <div class="yks-notice">
       <p>
-        <strong>Bu bir tahmin aracıdır, garanti değildir.</strong> Bütün olasılık etiketleri
-        2025 kapanış sıralamalarına dayanır. 2026’da kontenjanlar, tercih davranışı ve sınav
-        zorluğu değiştiği için geçmiş veriler yalnızca bir fikir verir.
+        <strong>Bu bir tahmin aracıdır, garanti değildir.</strong> Etiketler yalnız mevcut
+        2026 koduna bakmaz; aynı-kod sonuçları, karşılaştırılabilir önceki burs/kontenjan havuzu,
+        doluluk, çok yıllı yapı ve 2026 değişimi birlikte değerlendirilir. Yüzde olasılık verilmez.
       </p>
       <p style="margin-bottom: 0">
-        Ücret ve burs rakamları {reportMeta.guideVersion} ile üniversitelerin kendi yayımladığı
-        belgelerden derlenmiştir; kesin tutarlar <strong>kod bazlı yazılı teklifle</strong>
-        doğrulanmalıdır. Tercih dönemi: {reportMeta.preferencePeriod}.
+        <strong>Kılavuz uyarısı:</strong> {reportMeta.guideVersion}. ÖSYM, tercih döneminde
+        nihai kılavuzun yeniden kontrol edilmesini istiyor. Ücret/indirim koşulları da kayıt
+        öncesi <strong>kod bazlı yazılı teklifle</strong> doğrulanmalıdır.
       </p>
     </div>
 
@@ -76,6 +77,22 @@ const description =
     </ul>
 
     <YksApp client:only="react" />
+
+    <section class="yks-section">
+      <h2>Araştırma kapsamı ve yöntem</h2>
+      <p class="yks-lede">
+        ÖSYM envanteri {reportMeta.officialGuideRows.medicine} Medicine satırına uzanıyor:
+        {reportMeta.officialGuideRows.eligible} uygun program, {reportMeta.officialGuideRows.military}
+        askerî/bakanlık kontenjanı ve yalnız KKTC uyruklulara ayrılmış
+        {reportMeta.officialGuideRows.nationalityRestricted} satır. 2023–2026 taramasında
+        {counts.historicalCategoryMigrations} burs/kontenjan kategori değişimi tespit edildi.
+      </p>
+      <p>
+        Her programın ayrıntı penceresinde aynı-kod geçmişi, seçilen karşılaştırılabilir öncül,
+        dönüşüm gerekçesi, güven düzeyi, iyimser/temel/kötümser değerlendirme ve kaynak bağlantıları
+        birlikte gösterilir.
+      </p>
+    </section>
 
     <section class="yks-section">
       <h2>Tercih göndermeden önce son kontrol</h2>
@@ -108,8 +125,8 @@ const description =
     <section class="yks-section">
       <h2>Havuz dışında bırakılan programlar</h2>
       <p class="yks-lede">
-        Aşağıdaki {excluded.length} program, sivil genel kontenjan dışında kaldığı için
-        karşılaştırmaya dâhil edilmedi.
+        Aşağıdaki {excluded.length} satır aday için uygun değildir: 5’i askerî/bakanlık
+        yükümlülüklü, 12’si yalnız KKTC uyruklu aday kontenjanıdır.
       </p>
       <dl class="yks-note-list">
         {
@@ -129,7 +146,7 @@ const description =
         {
           sources.map((source) => (
             <li>
-              <span aria-hidden="true">[{source.id}]</span> {source.label}{' '}
+              <span aria-hidden="true">[{source.id}]</span> {source.sourceTitle ?? source.label}{' '}
               {
                 source.verified ? (
                   <a href={source.url} rel="nofollow noopener noreferrer" target="_blank">
@@ -141,6 +158,9 @@ const description =
                   </span>
                 )
               }
+              {source.sourceDate ? ` • ${source.sourceDate}` : ''}
+              {source.verificationStatus ? ` • ${source.verificationStatus}` : ''}
+              {source.note ? <span class="yks-source-note"> — {source.note}</span> : null}
             </li>
           ))
         }

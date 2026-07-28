@@ -1,10 +1,11 @@
 import {
   BAND_LABELS,
+  HISTORY_LABELS,
   SCHOLARSHIP_LABELS,
   TYPE_LABELS,
   type Program,
 } from '../../data/yks';
-import { formatMoney, formatNumber, formatRank, formatRankDistance } from './lib/format';
+import { formatMoney, formatNumber, formatRank } from './lib/format';
 
 interface Props {
   program: Program;
@@ -23,6 +24,9 @@ export default function ProgramCard({
 }: Props) {
   const disabled = !shortlisted && shortlistFull;
   const location = program.city ? `${program.city} • ` : '';
+  const predecessor = program.history.comparablePredecessor
+    ?? program.history.exactCodeRows.find((row) => row.year === 2025)
+    ?? null;
 
   return (
     <li className="yks-card">
@@ -48,12 +52,18 @@ export default function ProgramCard({
 
       <dl className="yks-facts">
         <div>
-          <dt>2025 kapanış</dt>
-          <dd>{formatRank(program.closingRank2025)}</dd>
+          <dt>{predecessor?.code === program.code ? '2025 aynı kod' : 'Karşılaştırılan geçmiş'}</dt>
+          <dd>
+            {predecessor
+              ? predecessor.closingRank === null
+                ? `${predecessor.placed ?? '—'}/${predecessor.quota ?? '—'} yerleşti`
+                : `${predecessor.year}: ${formatRank(predecessor.closingRank)}`
+              : 'Güvenilir sonuç yok'}
+          </dd>
         </div>
         <div>
-          <dt>26.000’e uzaklık</dt>
-          <dd>{formatRankDistance(program.rankDistance)}</dd>
+          <dt>Geçmiş türü</dt>
+          <dd>{HISTORY_LABELS[program.history.status]}</dd>
         </div>
         <div>
           <dt>2026 kontenjan</dt>
@@ -64,6 +74,8 @@ export default function ProgramCard({
           <dd>{formatMoney(program.estimatedPayment)}</dd>
         </div>
       </dl>
+
+      <p className="yks-assessment-reason">{program.placementAssessment.reason}</p>
 
       <div className="yks-card-actions">
         <button
