@@ -1,100 +1,47 @@
-import {
-  BAND_LABELS,
-  HISTORY_LABELS,
-  SCHOLARSHIP_LABELS,
-  TYPE_LABELS,
-  type Program,
-} from '../../data/yks';
-import { formatMoney, formatNumber, formatRank } from './lib/format';
+import { candidateAdvantage, LANGUAGE_LABELS, scholarshipLabel, UNIVERSITY_TYPE_LABELS, type MedicineProgram } from '../../data/yks';
+import { formatAdvantage, formatNumber, formatRank } from './lib/format';
 
 interface Props {
-  program: Program;
-  shortlisted: boolean;
-  shortlistFull: boolean;
-  onToggleShortlist: (code: string) => void;
-  onOpenDetail: (program: Program) => void;
+  program: MedicineProgram;
+  candidateRank: number;
+  preferred: boolean;
+  favourite: boolean;
+  preferenceFull: boolean;
+  onTogglePreference: (code: string) => void;
+  onToggleFavourite: (code: string) => void;
+  onOpen: (program: MedicineProgram) => void;
 }
 
-export default function ProgramCard({
-  program,
-  shortlisted,
-  shortlistFull,
-  onToggleShortlist,
-  onOpenDetail,
-}: Props) {
-  const disabled = !shortlisted && shortlistFull;
-  const location = program.city ? `${program.city} • ` : '';
-  const predecessor = program.history.comparablePredecessor
-    ?? program.history.exactCodeRows.find((row) => row.year === 2025)
-    ?? null;
-
+export default function ProgramCard(props: Props) {
+  const { program } = props;
+  const advantage = candidateAdvantage(program, props.candidateRank);
   return (
-    <li className="yks-card">
+    <li className="yks-program-card">
       <div className="yks-card-head">
         <div>
-          <h3 className="yks-card-title">{program.university}</h3>
-          <p className="yks-card-sub">
-            {location}
-            {program.programName}
-          </p>
+          <p className="yks-code">{program.programCode} · {program.city ?? 'Şehir verisi yok'}</p>
+          <h3>{program.universityName}</h3>
+          <p>{program.faculty} · {program.program}</p>
         </div>
-        <div className="yks-badges">
-          <span className={`yks-badge yks-badge--${program.band}`}>
-            {BAND_LABELS[program.band]}
-          </span>
-          <span className="yks-badge">{TYPE_LABELS[program.type]}</span>
-          {program.scholarship && (
-            <span className="yks-badge">{SCHOLARSHIP_LABELS[program.scholarship]}</span>
-          )}
-          {program.language === 'en' && <span className="yks-badge">İngilizce</span>}
-        </div>
+        <button className="yks-icon-button" type="button" aria-label={props.favourite ? 'Favorilerden çıkar' : 'Favorilere ekle'} aria-pressed={props.favourite} onClick={() => props.onToggleFavourite(program.programCode)}>
+          {props.favourite ? '★' : '☆'}
+        </button>
       </div>
-
-      <dl className="yks-facts">
-        <div>
-          <dt>{predecessor?.code === program.code ? '2025 aynı kod' : 'Karşılaştırılan geçmiş'}</dt>
-          <dd>
-            {predecessor
-              ? predecessor.closingRank === null
-                ? `${predecessor.placed ?? '—'}/${predecessor.quota ?? '—'} yerleşti`
-                : `${predecessor.year}: ${formatRank(predecessor.closingRank)}`
-              : 'Güvenilir sonuç yok'}
-          </dd>
-        </div>
-        <div>
-          <dt>Geçmiş türü</dt>
-          <dd>{HISTORY_LABELS[program.history.status]}</dd>
-        </div>
-        <div>
-          <dt>2026 kontenjan</dt>
-          <dd>{formatNumber(program.quota2026)}</dd>
-        </div>
-        <div>
-          <dt>Yıllık ödeme</dt>
-          <dd>{formatMoney(program.estimatedPayment)}</dd>
-        </div>
+      <div className="yks-tags">
+        <span>{UNIVERSITY_TYPE_LABELS[program.universityType]}</span><span>{LANGUAGE_LABELS[program.language]}</span><span>{scholarshipLabel(program)}</span>
+        {program.accreditation && <span>{program.accreditation}</span>}
+      </div>
+      <dl className="yks-metrics">
+        <div><dt>2025 kapanış</dt><dd>{formatRank(program.closingRank2025)}</dd></div>
+        <div><dt>Aday farkı</dt><dd className={advantage === null ? '' : advantage >= 0 ? 'is-positive' : 'is-negative'}>{formatAdvantage(advantage)}</dd></div>
+        <div><dt>Genel kont.</dt><dd>{program.quotas.general === null ? 'Veri yok' : formatNumber(program.quotas.general)}</dd></div>
       </dl>
-
-      <p className="yks-assessment-reason">{program.placementAssessment.reason}</p>
-
       <div className="yks-card-actions">
-        <button
-          type="button"
-          className={shortlisted ? 'yks-button yks-button--primary' : 'yks-button'}
-          aria-pressed={shortlisted}
-          disabled={disabled}
-          onClick={() => onToggleShortlist(program.code)}
-        >
-          {shortlisted ? 'Listemden çıkar' : 'Listeme ekle'}
+        <button type="button" className="yks-button" onClick={() => props.onOpen(program)}>Ayrıntı</button>
+        <button type="button" className="yks-button yks-button--primary" disabled={!props.preferred && props.preferenceFull} onClick={() => props.onTogglePreference(program.programCode)}>
+          {props.preferred ? 'Listeden çıkar' : 'Tercihe ekle'}
         </button>
-        <button type="button" className="yks-button" onClick={() => onOpenDetail(program)}>
-          Ayrıntılar
-        </button>
-        <span className="yks-card-sub">Kod {program.code}</span>
       </div>
-      {disabled && (
-        <p className="yks-card-sub">Tercih listesi 24 programla dolu.</p>
-      )}
     </li>
   );
 }

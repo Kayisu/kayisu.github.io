@@ -2,6 +2,7 @@
 
 const integerFormat = new Intl.NumberFormat('tr-TR', { maximumFractionDigits: 0 });
 const moneyFormat = new Intl.NumberFormat('tr-TR', { maximumFractionDigits: 0 });
+const decimalFormat = new Intl.NumberFormat('tr-TR', { maximumFractionDigits: 6 });
 
 export function formatRank(value: number | null): string {
   return value === null ? 'veri yok' : integerFormat.format(value);
@@ -16,9 +17,20 @@ export function formatNumber(value: number): string {
  * `0` is "a full scholarship covers it". They must never render the same way.
  */
 export function formatMoney(value: number | null): string {
-  if (value === null) return 'belirtilmemiş';
+  if (value === null) return 'Veri yok';
   if (value === 0) return 'Ücret yok (burslu)';
   return `${moneyFormat.format(value)} TL`;
+}
+
+export function formatDecimal(value: number | null): string {
+  return value === null ? 'Veri yok' : decimalFormat.format(value);
+}
+
+export function formatAdvantage(value: number | null): string {
+  if (value === null) return 'Veri yok';
+  if (value === 0) return '0 · aynı sıra';
+  const sign = value > 0 ? '+' : '−';
+  return `${sign}${integerFormat.format(Math.abs(value))} · ${value > 0 ? 'aday önde' : 'aday geride'}`;
 }
 
 /** Describes the gap between the candidate rank and a closing rank. */

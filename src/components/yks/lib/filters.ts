@@ -1,109 +1,105 @@
-import {
-  BAND_ORDER,
-  type ProbabilityBand,
-  type Program,
-  type ScholarshipTier,
-} from '../../../data/yks';
-import { compareTurkish, matchesQuery } from './turkish';
+import { candidateAdvantage, type MedicineProgram, type ProgramLanguage, type Scholarship, type UniversityType } from '../../../data/yks';
+import { foldForSearch } from './turkish';
 
-export type SortKey = 'rank' | 'name' | 'cost' | 'quota';
+export type SortKey = 'advantage' | 'closingRank' | 'quota' | 'tuition' | 'name' | 'city';
+export type RankRelation = 'all' | 'ahead' | 'behind';
 
 export interface FilterState {
+  candidateRank: number;
   query: string;
-  types: Program['type'][];
-  bands: ProbabilityBand[];
-  scholarships: Exclude<ScholarshipTier, null>[];
-  languages: Program['language'][];
-  /** Upper bound on annual payment in TL; `null` means no limit. */
-  maxPayment: number | null;
+  types: UniversityType[];
+  cities: string[];
+  languages: ProgramLanguage[];
+  scholarships: Scholarship[];
+  accreditedOnly: boolean;
+  rankMin: number | null;
+  rankMax: number | null;
+  quotaMin: number | null;
+  quotaMax: number | null;
+  tuitionMin: number | null;
+  tuitionMax: number | null;
+  relation: RankRelation;
+  withoutHistoryOnly: boolean;
   sort: SortKey;
 }
 
 export const DEFAULT_FILTERS: FilterState = {
+  candidateRank: 26_000,
   query: '',
   types: [],
-  bands: [],
-  scholarships: [],
+  cities: [],
   languages: [],
-  maxPayment: null,
-  sort: 'rank',
-};
-
-function searchableText(program: Program): string {
-  return [program.university, program.programName, program.city, program.code]
-    .filter(Boolean)
-    .join(' ');
-}
-
-/**
- * Programmes with no published figure are kept under a payment cap: hiding them
- * would silently imply they cost more than the cap, which is not known.
- */
-function withinPayment(program: Program, maxPayment: number | null): boolean {
-  if (maxPayment === null || program.estimatedPayment === null) return true;
-  return program.estimatedPayment <= maxPayment;
-}
-
-export function filterPrograms(programs: Program[], filters: FilterState): Program[] {
-  const result = programs.filter((program) => {
-    if (filters.types.length > 0 && !filters.types.includes(program.type)) return false;
-    if (filters.bands.length > 0 && !filters.bands.includes(program.band)) return false;
-    if (filters.languages.length > 0 && !filters.languages.includes(program.language)) return false;
-    if (filters.scholarships.length > 0) {
-      if (program.scholarship === null) return false;
-      if (!filters.scholarships.includes(program.scholarship)) return false;
-    }
-    if (!withinPayment(program, filters.maxPayment)) return false;
-    if (filters.query.trim() && !matchesQuery(searchableText(program), filters.query)) return false;
-    return true;
-  });
-
-  return result.sort(comparators[filters.sort]);
-}
-
-const comparators: Record<SortKey, (a: Program, b: Program) => number> = {
-  // Best chance first: programmes without history sort last rather than as 0.
-  rank: (a, b) => {
-    if (a.closingRank2025 === null && b.closingRank2025 === null) {
-      return compareTurkish(a.university, b.university);
-    }
-    if (a.closingRank2025 === null) return 1;
-    if (b.closingRank2025 === null) return -1;
-    return b.closingRank2025 - a.closingRank2025;
-  },
-  name: (a, b) => compareTurkish(a.university, b.university)
-    || compareTurkish(a.programName, b.programName),
-  cost: (a, b) => {
-    if (a.estimatedPayment === null && b.estimatedPayment === null) {
-      return compareTurkish(a.university, b.university);
-    }
-    if (a.estimatedPayment === null) return 1;
-    if (b.estimatedPayment === null) return -1;
-    return a.estimatedPayment - b.estimatedPayment;
-  },
-  quota: (a, b) => b.quota2026 - a.quota2026,
+  scholarships: [],
+  accreditedOnly: false,
+  rankMin: null,
+  rankMax: null,
+  quotaMin: null,
+  quotaMax: null,
+  tuitionMin: null,
+  tuitionMax: null,
+  relation: 'all',
+  withoutHistoryOnly: false,
+  sort: 'advantage',
 };
 
 export const SORT_LABELS: Record<SortKey, string> = {
-  rank: 'Şansa göre (en yüksek önce)',
-  name: 'Üniversite adına göre',
-  cost: 'Ücrete göre (en düşük önce)',
-  quota: 'Kontenjana göre (en yüksek önce)',
+  advantage: 'Aday sırasına en yakın fark',
+  closingRank: '2025 kapanış sırası',
+  quota: 'Genel kontenjan',
+  tuition: 'Yıllık ücret',
+  name: 'Üniversite adı',
+  city: 'Şehir',
 };
 
-export function countByBand(programs: Program[]): Record<ProbabilityBand, number> {
-  const counts = Object.fromEntries(
-    BAND_ORDER.map((band) => [band, 0]),
-  ) as Record<ProbabilityBand, number>;
-  for (const program of programs) counts[program.band] += 1;
-  return counts;
+const within = (value: number | null, min: number | null, max: number | null) => {
+  if (min === null && max === null) return true;
+  if (value === null) return false;
+  return (min === null || value >= min) && (max === null || value <= max);
+};
+
+export function filterPrograms(source: MedicineProgram[], filters: FilterState): MedicineProgram[] {
+  const query = foldForSearch(filters.query.trim());
+  return source.filter((program) => {
+    const haystack = foldForSearch([program.universityName, program.city, program.faculty, program.program, program.programCode].filter(Boolean).join(' '));
+    const advantage = candidateAdvantage(program, filters.candidateRank);
+    return (!query || haystack.includes(query))
+      && (!filters.types.length || filters.types.includes(program.universityType))
+      && (!filters.cities.length || (program.city !== null && filters.cities.includes(program.city)))
+      && (!filters.languages.length || filters.languages.includes(program.language))
+      && (!filters.scholarships.length || filters.scholarships.includes(program.scholarship))
+      && (!filters.accreditedOnly || program.accreditation !== null)
+      && within(program.closingRank2025, filters.rankMin, filters.rankMax)
+      && within(program.quotas.general, filters.quotaMin, filters.quotaMax)
+      && within(program.annualTuition, filters.tuitionMin, filters.tuitionMax)
+      && (filters.relation === 'all' || (filters.relation === 'ahead' ? advantage !== null && advantage >= 0 : advantage !== null && advantage < 0))
+      && (!filters.withoutHistoryOnly || program.closingRank2025 === null);
+  }).sort((a, b) => comparePrograms(a, b, filters.sort, filters.candidateRank));
+}
+
+function nullableNumber(a: number | null, b: number | null, direction = 1): number {
+  if (a === null && b === null) return 0;
+  if (a === null) return 1;
+  if (b === null) return -1;
+  return (a - b) * direction;
+}
+
+export function comparePrograms(a: MedicineProgram, b: MedicineProgram, sort: SortKey, rank: number): number {
+  if (sort === 'advantage') {
+    const aa = candidateAdvantage(a, rank), ba = candidateAdvantage(b, rank);
+    if (aa === null && ba === null) return a.universityName.localeCompare(b.universityName, 'tr');
+    if (aa === null) return 1;
+    if (ba === null) return -1;
+    return Math.abs(aa) - Math.abs(ba) || aa - ba;
+  }
+  if (sort === 'closingRank') return nullableNumber(a.closingRank2025, b.closingRank2025);
+  if (sort === 'quota') return nullableNumber(a.quotas.general, b.quotas.general, -1);
+  if (sort === 'tuition') return nullableNumber(a.annualTuition, b.annualTuition);
+  if (sort === 'city') return (a.city ?? 'ZZZ').localeCompare(b.city ?? 'ZZZ', 'tr');
+  return a.universityName.localeCompare(b.universityName, 'tr');
 }
 
 export function activeFilterCount(filters: FilterState): number {
-  return filters.types.length
-    + filters.bands.length
-    + filters.scholarships.length
-    + filters.languages.length
-    + (filters.maxPayment === null ? 0 : 1)
-    + (filters.query.trim() ? 1 : 0);
+  return [filters.query, filters.types.length, filters.cities.length, filters.languages.length, filters.scholarships.length,
+    filters.accreditedOnly, filters.rankMin, filters.rankMax, filters.quotaMin, filters.quotaMax,
+    filters.tuitionMin, filters.tuitionMax, filters.relation !== 'all', filters.withoutHistoryOnly].filter(Boolean).length;
 }

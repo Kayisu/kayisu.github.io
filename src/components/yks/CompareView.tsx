@@ -1,138 +1,30 @@
-import {
-  BAND_LABELS,
-  HISTORY_LABELS,
-  SCHOLARSHIP_LABELS,
-  TYPE_LABELS,
-  programsByCode,
-} from '../../data/yks';
-import { useYksStore } from '../../store/yksStore';
-import { formatMoney, formatNumber, formatRank } from './lib/format';
+import { useState } from 'react';
+
+import { candidateAdvantage, programsByCode, type MedicineProgram } from '../../data/yks';
+import { MAX_PREFERENCES, useYksStore } from '../../store/yksStore';
+import { formatAdvantage, formatRank } from './lib/format';
+
+const csvCell = (value: unknown) => `"${String(value ?? '').replaceAll('"', '""')}"`;
+const download = (name: string, contents: string, type: string) => { const url = URL.createObjectURL(new Blob([contents], { type })); const anchor = document.createElement('a'); anchor.href = url; anchor.download = name; anchor.click(); URL.revokeObjectURL(url); };
 
 export default function CompareView() {
-  const shortlist = useYksStore((state) => state.shortlist);
-  const moveShortlist = useYksStore((state) => state.moveShortlist);
-  const toggleShortlist = useYksStore((state) => state.toggleShortlist);
-  const clearShortlist = useYksStore((state) => state.clearShortlist);
-  const setTab = useYksStore((state) => state.setTab);
+  const store = useYksStore(); const [dragged, setDragged] = useState<string | null>(null);
+  const selected = store.preferences.map((code) => programsByCode.get(code)).filter((program): program is MedicineProgram => Boolean(program));
+  const copy = async () => navigator.clipboard.writeText(selected.map((program, index) => `${index + 1}. ${program.programCode} — ${program.universityName} — ${program.program}`).join('\n'));
+  const exportJson = () => download('yks-2026-tip-tercih-listem.json', JSON.stringify({ candidateRank: store.filters.candidateRank, programs: selected }, null, 2), 'application/json');
+  const exportCsv = () => download('yks-2026-tip-tercih-listem.csv', ['Sıra,Kod,Üniversite,Program,Şehir,2025 Kapanış,Aday Farkı', ...selected.map((program, index) => [index + 1, program.programCode, program.universityName, program.program, program.city, program.closingRank2025, candidateAdvantage(program, store.filters.candidateRank)].map(csvCell).join(','))].join('\n'), 'text/csv;charset=utf-8');
 
-  const rows = shortlist
-    .map((code) => programsByCode.get(code))
-    .filter((program): program is NonNullable<typeof program> => program !== undefined);
-
-  if (rows.length === 0) {
-    return (
-      <p className="yks-empty">
-        Tercih listeniz boş. Programları keşfedip “Listeme ekle” ile buraya taşıyın,
-        ya da bir senaryoyu olduğu gibi aktarın.
-        <br />
-        <button
-          type="button"
-          className="yks-button"
-          style={{ marginTop: '1rem' }}
-          onClick={() => setTab('explore')}
-        >
-          Programlara git
-        </button>
-      </p>
-    );
-  }
-
-  const copyList = () => {
-    const text = rows
-      .map((program, index) => `${index + 1}. ${program.code} — ${program.university} — ${program.programName}`)
-      .join('\n');
-    void navigator.clipboard?.writeText(text);
-  };
-
-  return (
-    <div>
-      <div className="yks-filter-actions" style={{ marginBottom: '1rem' }}>
-        <span className="yks-result-count" role="status">
-          {formatNumber(rows.length)} tercih sıralandı (en fazla 24)
-        </span>
-        <button type="button" className="yks-button" onClick={copyList}>
-          Listeyi kopyala
-        </button>
-        <button type="button" className="yks-button" onClick={clearShortlist}>
-          Listeyi temizle
-        </button>
-      </div>
-
-      <div className="yks-table-scroll">
-        <table className="yks-table">
-          <caption className="yks-visually-hidden">
-            Seçtiğiniz programların tercih sırasına göre karşılaştırması
-          </caption>
-          <thead>
-            <tr>
-              <th scope="col">Sıra</th>
-              <th scope="col">Program</th>
-              <th scope="col">Şans</th>
-              <th scope="col">Karşılaştırılan kapanış</th>
-              <th scope="col">Geçmiş türü</th>
-              <th scope="col">Kontenjan</th>
-              <th scope="col">Yıllık ödeme</th>
-              <th scope="col">İşlem</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((program, index) => (
-              <tr key={program.code}>
-                <td data-label="Sıra">
-                  <span className="yks-position">{index + 1}</span>
-                </td>
-                <td data-label="Program">
-                  <strong>{program.university}</strong>
-                  <br />
-                  {program.programName}
-                  <br />
-                  <span className="yks-card-sub">
-                    {TYPE_LABELS[program.type]}
-                    {program.scholarship ? ` • ${SCHOLARSHIP_LABELS[program.scholarship]}` : ''}
-                    {' • '}
-                    Kod {program.code}
-                  </span>
-                </td>
-                <td data-label="Şans">{BAND_LABELS[program.band]}</td>
-                <td data-label="Karşılaştırılan kapanış">{formatRank(program.closingRank2025)}</td>
-                <td data-label="Geçmiş türü">{HISTORY_LABELS[program.history.status]}</td>
-                <td data-label="Kontenjan">{formatNumber(program.quota2026)}</td>
-                <td data-label="Yıllık ödeme">{formatMoney(program.estimatedPayment)}</td>
-                <td data-label="İşlem">
-                  <div className="yks-order-controls">
-                    <button
-                      type="button"
-                      className="yks-icon-button"
-                      disabled={index === 0}
-                      aria-label={`${program.university} programını yukarı taşı`}
-                      onClick={() => moveShortlist(program.code, -1)}
-                    >
-                      ↑
-                    </button>
-                    <button
-                      type="button"
-                      className="yks-icon-button"
-                      disabled={index === rows.length - 1}
-                      aria-label={`${program.university} programını aşağı taşı`}
-                      onClick={() => moveShortlist(program.code, 1)}
-                    >
-                      ↓
-                    </button>
-                    <button
-                      type="button"
-                      className="yks-icon-button"
-                      aria-label={`${program.university} programını listeden çıkar`}
-                      onClick={() => toggleShortlist(program.code)}
-                    >
-                      ×
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
+  if (!selected.length) return <section className="yks-empty"><h2>Tercih listeniz boş</h2><p>Programlar ekranından en fazla 24 program ekleyebilirsiniz.</p><button className="yks-button yks-button--primary" type="button" onClick={() => store.setTab('explore')}>Programlara dön</button></section>;
+  const known = selected.filter((program) => program.closingRank2025 !== null);
+  return <section className="yks-preferences">
+    <div className="yks-section-head"><div><h2>Tercih listem</h2><p>{selected.length} / {MAX_PREFERENCES} program · {known.length} kapanış verili · {selected.length - known.length} geçmişsiz</p></div><div className="yks-export-actions"><button type="button" className="yks-button" onClick={copy}>Kopyala</button><button type="button" className="yks-button" onClick={() => print()}>Yazdır</button><button type="button" className="yks-button" onClick={exportJson}>JSON</button><button type="button" className="yks-button" onClick={exportCsv}>CSV</button><button type="button" className="yks-button yks-button--danger" onClick={() => confirm('Tercih listesinin tamamı silinsin mi?') && store.clearPreferences()}>Temizle</button></div></div>
+    <p className="yks-warning"><strong>Önemli:</strong> Bu sıra bir yerleşme olasılığı önerisi değildir. Tercihleri yalnızca gerçek istek sıranıza göre düzenleyin.</p>
+    <ol className="yks-preference-list">{selected.map((program, index) => {
+      const advantage = candidateAdvantage(program, store.filters.candidateRank);
+      return <li key={program.programCode} data-preference-code={program.programCode} draggable onDragStart={() => setDragged(program.programCode)} onDragOver={(event) => event.preventDefault()} onDrop={() => { if (dragged) store.reorderPreference(dragged, program.programCode); setDragged(null); }}>
+        <span className="yks-drag" aria-label="Sürükleyerek taşı" role="button" tabIndex={0} onPointerDown={(event) => { if (event.pointerType !== 'mouse') { setDragged(program.programCode); event.currentTarget.setPointerCapture(event.pointerId); } }} onPointerUp={(event) => { if (dragged) { const target = document.elementFromPoint(event.clientX, event.clientY)?.closest('[data-preference-code]')?.getAttribute('data-preference-code'); if (target) store.reorderPreference(dragged, target); } setDragged(null); }} onPointerCancel={() => setDragged(null)}>⠿</span><span className="yks-position">{index + 1}</span><div className="yks-preference-main"><strong>{program.universityName}</strong><span>{program.programCode} · {program.city ?? 'Şehir verisi yok'} · 2025: {formatRank(program.closingRank2025)} · {formatAdvantage(advantage)}</span></div>
+        <div className="yks-order-actions"><button type="button" aria-label="Yukarı taşı" disabled={index === 0} onClick={() => store.movePreference(program.programCode, -1)}>↑</button><button type="button" aria-label="Aşağı taşı" disabled={index === selected.length - 1} onClick={() => store.movePreference(program.programCode, 1)}>↓</button><button type="button" aria-label="Listeden çıkar" onClick={() => store.togglePreference(program.programCode)}>×</button></div>
+      </li>;
+    })}</ol>
+  </section>;
 }

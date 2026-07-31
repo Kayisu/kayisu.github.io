@@ -384,9 +384,9 @@ for (const [route, html] of nonYksHtml) {
 
 // The dataset totals are rendered server-side, so they prove the data layer ran.
 for (const expected of [
-  '225</span>',
-  '<span class="yks-summary-label">devlet programı</span>',
-  '<span class="yks-summary-label">vakıf programı</span>',
+  '<strong>225</strong><span>uygun Tıp programı</span>',
+  '<strong>104</strong><span>devlet programı</span>',
+  '<strong>112</strong><span>vakıf programı</span>',
 ]) {
   if (!yksHtml.includes(expected)) fail(`${yksRoute} is missing rendered summary data: ${expected}`);
 }

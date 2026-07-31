@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "datasetVersion": "2026.07.31-final-guide",
+  "generatedAt": "2026-07-31T00:00:00.000+03:00",
+  "primarySource": {
+    "file": "tablo-4-hohu0j-30164357.xls",
+    "sha256": "5654a5bafe92d03968b13d59d707b1837e7ee3f24b80d0af78ed685c3188d6b4",
+    "sheet": "sayfa",
+    "range": "A1:X14536"
+  },
+  "validationSource": {
+    "file": "2026-yuksekogretim-kurumlari-sinavi-yks-yuksekogretim-programlari-ve-kontenjanlari-kilavuzu-h5q8kv-30170002.pdf",
+    "sha256": "b63a5cf7914a1bbe7af9ff8c8ee87917d00aabb9abc65e1b34c1ab88bb3e18ea",
+    "pages": 775
+  },
+  "counts": {
+    "table4MedicineRows": 242,
+    "eligiblePrograms": 225,
+    "excludedPrograms": 17,
+    "excludedKktcCitizenOnly": 12,
+    "excludedMilitaryMinistry": 5,
+    "public": 104,
+    "foundation": 112,
+    "trnc": 9,
+    "withClosingRank": 199,
+    "newWithoutHistory": 14,
+    "unfilled2025": 12,
+    "accredited": 85
+  },
+  "formulas": {
+    "candidateAdvantage": "closingRank2025 - candidateRank"
+  },
+  "conditionCodes": [
+    18,
+    19,
+    21,
+    22,
+    23,
+    24,
+    25,
+    34,
+    64,
+    132,
+    155,
+    164,
+    233,
+    234,
+    235,
+    236,
+    237,
+    238,
+    242,
+    251,
+    275,
+    291,
+    336,
+    337,
+    342,
+    343
+  ]
+}

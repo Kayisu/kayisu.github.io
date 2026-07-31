@@ -1,0 +1,202 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-07-31T00:00:00.000+03:00",
+  "valid": true,
+  "counts": {
+    "table4MedicineRows": 242,
+    "eligiblePrograms": 225,
+    "excludedPrograms": 17,
+    "excludedKktcCitizenOnly": 12,
+    "excludedMilitaryMinistry": 5,
+    "public": 104,
+    "foundation": 112,
+    "trnc": 9,
+    "withClosingRank": 199,
+    "newWithoutHistory": 14,
+    "unfilled2025": 12,
+    "accredited": 85
+  },
+  "invariants": {
+    "uniqueProgramCodes": true,
+    "allMedicineSixYearSay": true,
+    "excludedRestrictedRows": true,
+    "allProgramCodesFoundInPdf": true,
+    "allUsedConditionCodesExplained": true,
+    "nullsAreNotZero": true
+  },
+  "skipped": [
+    {
+      "programCode": "110010271",
+      "universityName": "ANKARA YILDIRIM BEYAZIT ÜNİVERSİTESİ (Devlet Üniversitesi)",
+      "faculty": "TIP FAKÜLTESİ",
+      "program": "Tıp (KKTC Uyruklu)",
+      "reasonCode": "kktc-citizen-only",
+      "reason": "Yalnızca koşul 5 kapsamındaki KKTC uyruklu/KKTC eğitim geçmişi uygun aday kontenjanı.",
+      "xlsRow": 987,
+      "pdfPage": 167
+    },
+    {
+      "programCode": "110090144",
+      "universityName": "ANKARA YILDIRIM BEYAZIT ÜNİVERSİTESİ (Devlet Üniversitesi)",
+      "faculty": "TIP FAKÜLTESİ",
+      "program": "Tıp (İngilizce) (KKTC Uyruklu)",
+      "reasonCode": "kktc-citizen-only",
+      "reason": "Yalnızca koşul 5 kapsamındaki KKTC uyruklu/KKTC eğitim geçmişi uygun aday kontenjanı.",
+      "xlsRow": 989,
+      "pdfPage": 168
+    },
+    {
+      "programCode": "101411213",
+      "universityName": "ATATÜRK ÜNİVERSİTESİ (ERZURUM) (Devlet Üniversitesi)",
+      "faculty": "TIP FAKÜLTESİ",
+      "program": "Tıp (KKTC Uyruklu)",
+      "reasonCode": "kktc-citizen-only",
+      "reason": "Yalnızca koşul 5 kapsamındaki KKTC uyruklu/KKTC eğitim geçmişi uygun aday kontenjanı.",
+      "xlsRow": 1184,
+      "pdfPage": 172
+    },
+    {
+      "programCode": "109790388",
+      "universityName": "BURSA ULUDAĞ ÜNİVERSİTESİ (Devlet Üniversitesi)",
+      "faculty": "TIP FAKÜLTESİ",
+      "program": "Tıp (KKTC Uyruklu)",
+      "reasonCode": "kktc-citizen-only",
+      "reason": "Yalnızca koşul 5 kapsamındaki KKTC uyruklu/KKTC eğitim geçmişi uygun aday kontenjanı.",
+      "xlsRow": 2001,
+      "pdfPage": 189
+    },
+    {
+      "programCode": "102910888",
+      "universityName": "ÇUKUROVA ÜNİVERSİTESİ (ADANA) (Devlet Üniversitesi)",
+      "faculty": "TIP FAKÜLTESİ",
+      "program": "Tıp (KKTC Uyruklu)",
+      "reasonCode": "kktc-citizen-only",
+      "reason": "Yalnızca koşul 5 kapsamındaki KKTC uyruklu/KKTC eğitim geçmişi uygun aday kontenjanı.",
+      "xlsRow": 2277,
+      "pdfPage": 195
+    },
+    {
+      "programCode": "104890264",
+      "universityName": "HACETTEPE ÜNİVERSİTESİ (ANKARA) (Devlet Üniversitesi)",
+      "faculty": "TIP FAKÜLTESİ",
+      "program": "Tıp (İngilizce) (KKTC Uyruklu)",
+      "reasonCode": "kktc-citizen-only",
+      "reason": "Yalnızca koşul 5 kapsamındaki KKTC uyruklu/KKTC eğitim geçmişi uygun aday kontenjanı.",
+      "xlsRow": 3493,
+      "pdfPage": 223
+    },
+    {
+      "programCode": "105690477",
+      "universityName": "İSTANBUL ÜNİVERSİTESİ (Devlet Üniversitesi)",
+      "faculty": "İSTANBUL TIP FAKÜLTESİ",
+      "program": "Tıp (İngilizce) (KKTC Uyruklu)",
+      "reasonCode": "kktc-citizen-only",
+      "reason": "Yalnızca koşul 5 kapsamındaki KKTC uyruklu/KKTC eğitim geçmişi uygun aday kontenjanı.",
+      "xlsRow": 4191,
+      "pdfPage": 241
+    },
+    {
+      "programCode": "105710245",
+      "universityName": "İZMİR KATİP ÇELEBİ ÜNİVERSİTESİ (Devlet Üniversitesi)",
+      "faculty": "TIP FAKÜLTESİ",
+      "program": "Tıp (KKTC Uyruklu)",
+      "reasonCode": "kktc-citizen-only",
+      "reason": "Yalnızca koşul 5 kapsamındaki KKTC uyruklu/KKTC eğitim geçmişi uygun aday kontenjanı.",
+      "xlsRow": 4407,
+      "pdfPage": 246
+    },
+    {
+      "programCode": "102510529",
+      "universityName": "MANİSA CELÂL BAYAR ÜNİVERSİTESİ (Devlet Üniversitesi)",
+      "faculty": "TIP FAKÜLTESİ",
+      "program": "Tıp (KKTC Uyruklu)",
+      "reasonCode": "kktc-citizen-only",
+      "reason": "Yalnızca koşul 5 kapsamındaki KKTC uyruklu/KKTC eğitim geçmişi uygun aday kontenjanı.",
+      "xlsRow": 5389,
+      "pdfPage": 267
+    },
+    {
+      "programCode": "107211145",
+      "universityName": "MARMARA ÜNİVERSİTESİ (İSTANBUL) (Devlet Üniversitesi)",
+      "faculty": "TIP FAKÜLTESİ",
+      "program": "Tıp (İngilizce) (KKTC Uyruklu)",
+      "reasonCode": "kktc-citizen-only",
+      "reason": "Yalnızca koşul 5 kapsamındaki KKTC uyruklu/KKTC eğitim geçmişi uygun aday kontenjanı.",
+      "xlsRow": 5581,
+      "pdfPage": 271
+    },
+    {
+      "programCode": "108290390",
+      "universityName": "ONDOKUZ MAYIS ÜNİVERSİTESİ (SAMSUN) (Devlet Üniversitesi)",
+      "faculty": "TIP FAKÜLTESİ",
+      "program": "Tıp (İngilizce) (KKTC Uyruklu)",
+      "reasonCode": "kktc-citizen-only",
+      "reason": "Yalnızca koşul 5 kapsamındaki KKTC uyruklu/KKTC eğitim geçmişi uygun aday kontenjanı.",
+      "xlsRow": 6221,
+      "pdfPage": 285
+    },
+    {
+      "programCode": "108610767",
+      "universityName": "PAMUKKALE ÜNİVERSİTESİ (DENİZLİ) (Devlet Üniversitesi)",
+      "faculty": "TIP FAKÜLTESİ",
+      "program": "Tıp (KKTC Uyruklu)",
+      "reasonCode": "kktc-citizen-only",
+      "reason": "Yalnızca koşul 5 kapsamındaki KKTC uyruklu/KKTC eğitim geçmişi uygun aday kontenjanı.",
+      "xlsRow": 6512,
+      "pdfPage": 294
+    },
+    {
+      "programCode": "111091430",
+      "universityName": "İÇİŞLERİ BAKANLIĞI VE MİLLİ SAVUNMA BAKANLIĞI ADINA SAĞLIK BİLİMLERİ ÜNİVERSİTESİNDE EĞİTİM ALACAKLAR (Devlet Üniversitesi)",
+      "faculty": "GÜLHANE TIP FAKÜLTESİ",
+      "program": "Tıp (Ankara) (Kız) (İçişleri Bakanlığı Adına)",
+      "reasonCode": "military-ministry-intake",
+      "reason": "İçişleri veya Millî Savunma Bakanlığı adına askerî/bakanlık öğrenci alımı.",
+      "xlsRow": 7987,
+      "pdfPage": 325
+    },
+    {
+      "programCode": "111010259",
+      "universityName": "İÇİŞLERİ BAKANLIĞI VE MİLLİ SAVUNMA BAKANLIĞI ADINA SAĞLIK BİLİMLERİ ÜNİVERSİTESİNDE EĞİTİM ALACAKLAR (Devlet Üniversitesi)",
+      "faculty": "GÜLHANE TIP FAKÜLTESİ",
+      "program": "Tıp (Ankara) (Erkek) (İçişleri Bakanlığı Adına)",
+      "reasonCode": "military-ministry-intake",
+      "reason": "İçişleri veya Millî Savunma Bakanlığı adına askerî/bakanlık öğrenci alımı.",
+      "xlsRow": 7988,
+      "pdfPage": 325
+    },
+    {
+      "programCode": "111010241",
+      "universityName": "İÇİŞLERİ BAKANLIĞI VE MİLLİ SAVUNMA BAKANLIĞI ADINA SAĞLIK BİLİMLERİ ÜNİVERSİTESİNDE EĞİTİM ALACAKLAR (Devlet Üniversitesi)",
+      "faculty": "GÜLHANE TIP FAKÜLTESİ",
+      "program": "Tıp (Ankara) (Kız) (Milli Savunma Bakanlığı Adına)",
+      "reasonCode": "military-ministry-intake",
+      "reason": "İçişleri veya Millî Savunma Bakanlığı adına askerî/bakanlık öğrenci alımı.",
+      "xlsRow": 7989,
+      "pdfPage": 325
+    },
+    {
+      "programCode": "111010232",
+      "universityName": "İÇİŞLERİ BAKANLIĞI VE MİLLİ SAVUNMA BAKANLIĞI ADINA SAĞLIK BİLİMLERİ ÜNİVERSİTESİNDE EĞİTİM ALACAKLAR (Devlet Üniversitesi)",
+      "faculty": "GÜLHANE TIP FAKÜLTESİ",
+      "program": "Tıp (Ankara) (Erkek) (Milli Savunma Bakanlığı Adına)",
+      "reasonCode": "military-ministry-intake",
+      "reason": "İçişleri veya Millî Savunma Bakanlığı adına askerî/bakanlık öğrenci alımı.",
+      "xlsRow": 7990,
+      "pdfPage": 325
+    },
+    {
+      "programCode": "111091169",
+      "universityName": "İÇİŞLERİ BAKANLIĞI VE MİLLİ SAVUNMA BAKANLIĞI ADINA SAĞLIK BİLİMLERİ ÜNİVERSİTESİNDE EĞİTİM ALACAKLAR (Devlet Üniversitesi)",
+      "faculty": "HAMİDİYE TIP FAKÜLTESİ",
+      "program": "Tıp (İstanbul) (Erkek) (Milli Savunma Bakanlığı Adına)",
+      "reasonCode": "military-ministry-intake",
+      "reason": "İçişleri veya Millî Savunma Bakanlığı adına askerî/bakanlık öğrenci alımı.",
+      "xlsRow": 7992,
+      "pdfPage": 325
+    }
+  ],
+  "suspicious": [],
+  "missingConditionCodes": [],
+  "pdfMisses": []
+}

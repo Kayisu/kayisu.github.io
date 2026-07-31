@@ -1,170 +1,52 @@
 ---
-/**
- * Unlisted decision-support page for the 2026 YKS medicine preference research.
- *
- * Reachable only by direct URL: it carries `noindex, nofollow, noarchive`, it is
- * not referenced from any navigation or discovery surface, and no sitemap is
- * generated for this site. Do not add a link to it from the portfolio pages.
- */
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import YksApp from '../../../components/yks/YksApp';
-import { excluded, guidance, reportMeta, sources, validateYksDataset } from '../../../data/yks';
+import { excluded, manifest, validation, validateYksDataset } from '../../../data/yks';
 import '../../../styles/yks.css';
 
-// Runs during `astro build`: a dataset that breaks an invariant fails the build
-// rather than shipping a wrong number to someone making a real decision.
 validateYksDataset();
-
-const { counts } = reportMeta;
-const numberFormat = new Intl.NumberFormat('tr-TR');
-
+const { counts } = manifest;
+const number = new Intl.NumberFormat('tr-TR');
+const title = '2026 YKS Tıp Tercih Sihirbazı';
+const description = 'ÖSYM 2026 Tablo 4 verilerinden üretilmiş, aday sırasına göre nesnel fark hesaplayan Tıp tercih listesi aracı.';
 const summary = [
-  { value: counts.programs, label: 'incelenen tıp programı' },
-  { value: counts.state, label: 'devlet programı' },
-  { value: counts.foundation, label: 'vakıf programı' },
-  { value: counts.international, label: 'KKTC / yurt dışı programı' },
-  { value: counts.history.exact_code_match, label: 'aynı kodla tarihsel eşleşme' },
-  { value: counts.history.comparable_predecessor, label: 'karşılaştırılabilir öncül eşleşmesi' },
-  { value: counts.history.genuinely_new, label: 'gerçekten yeni program' },
+  [counts.eligiblePrograms, 'uygun Tıp programı'],
+  [counts.public, 'devlet programı'],
+  [counts.foundation, 'vakıf programı'],
+  [counts.trnc, 'KKTC programı'],
+  [counts.withClosingRank, '2025 kapanışı bulunan'],
+  [counts.newWithoutHistory + counts.unfilled2025, 'kapanış hesabına katılmayan'],
 ];
-
-const title = '2026 YKS tıp tercih rehberi — 26.000 sıralaması';
-const description =
-  '26.000 civarı bir sayısal sıralama için 2026 YKS tıp tercih seçeneklerini '
-  + 'karşılaştıran, filtrelenebilir bir çalışma aracı.';
 ---
 
-<BaseLayout
-  title={title}
-  description={description}
-  locale="tr"
-  noindex
-  robots="noindex, nofollow, noarchive"
->
+<BaseLayout title={title} description={description} locale="tr" noindex robots="noindex, nofollow, noarchive">
   <main class="yks-shell">
     <header class="yks-header">
-      <p class="yks-eyebrow">2026 YKS • Tıp tercih araştırması</p>
-      <h1 class="yks-title">26.000 sıralaması için tıp tercih rehberi</h1>
-      <p class="yks-lede">
-        Bu sayfa, sayısal alanda yaklaşık <strong>26.000</strong> sıralamaya sahip bir aday için
-        hazırlanmış, resmî kılavuz satırları ve program soy ağacıyla denetlenmiş bir karar
-        aracıdır. Uygun 225 programın tamamı; aynı-kod ve karşılaştırılabilir geçmişleriyle yer alır.
-      </p>
+      <p class="yks-eyebrow">2026 YKS · Resmî Tablo 4 verisi</p>
+      <h1>2026 Tıp Tercih Sihirbazı</h1>
+      <p class="yks-lede">Aday sıralamanızı girin, uygun sivil Tıp programlarını filtreleyin ve en fazla 24 tercihlik listenizi gerçek istek sıranıza göre oluşturun.</p>
     </header>
 
-    <div class="yks-notice">
-      <p>
-        <strong>Bu bir tahmin aracıdır, garanti değildir.</strong> Etiketler yalnız mevcut
-        2026 koduna bakmaz; aynı-kod sonuçları, karşılaştırılabilir önceki burs/kontenjan havuzu,
-        doluluk, çok yıllı yapı ve 2026 değişimi birlikte değerlendirilir. Yüzde olasılık verilmez.
-      </p>
-      <p style="margin-bottom: 0">
-        <strong>Kılavuz uyarısı:</strong> {reportMeta.guideVersion}. ÖSYM, tercih döneminde
-        nihai kılavuzun yeniden kontrol edilmesini istiyor. Ücret/indirim koşulları da kayıt
-        öncesi <strong>kod bazlı yazılı teklifle</strong> doğrulanmalıdır.
-      </p>
+    <div class="yks-warning">
+      <strong>Bu araç tahmin, olasılık veya yerleşme garantisi üretmez.</strong>
+      <p>Gösterilen tek karşılaştırma <code>2025 kapanış sırası − aday sırası</code> farkıdır. Pozitif fark adayın geçen yılki kapanışın önünde, negatif fark gerisinde olduğunu anlatır. Yeni veya 2025’te dolmayan programlar bu hesaba katılmaz.</p>
+      <p>Tercih göndermeden önce program kodunu, özel koşulları, ücreti ve burs devam şartlarını ÖSYM AİS ile üniversitenin güncel duyurusundan yeniden doğrulayın.</p>
     </div>
 
-    <ul class="yks-summary">
-      {
-        summary.map((item) => (
-          <li class="yks-summary-item">
-            <span class="yks-summary-value">{numberFormat.format(item.value)}</span>
-            <span class="yks-summary-label">{item.label}</span>
-          </li>
-        ))
-      }
-    </ul>
+    <ul class="yks-summary">{summary.map(([value, label]) => <li><strong>{number.format(Number(value))}</strong><span>{label}</span></li>)}</ul>
 
     <YksApp client:only="react" />
 
-    <section class="yks-section">
-      <h2>Araştırma kapsamı ve yöntem</h2>
-      <p class="yks-lede">
-        ÖSYM envanteri {reportMeta.officialGuideRows.medicine} Medicine satırına uzanıyor:
-        {reportMeta.officialGuideRows.eligible} uygun program, {reportMeta.officialGuideRows.military}
-        askerî/bakanlık kontenjanı ve yalnız KKTC uyruklulara ayrılmış
-        {reportMeta.officialGuideRows.nationalityRestricted} satır. 2023–2026 taramasında
-        {counts.historicalCategoryMigrations} burs/kontenjan kategori değişimi tespit edildi.
-      </p>
-      <p>
-        Her programın ayrıntı penceresinde aynı-kod geçmişi, seçilen karşılaştırılabilir öncül,
-        dönüşüm gerekçesi, güven düzeyi, iyimser/temel/kötümser değerlendirme ve kaynak bağlantıları
-        birlikte gösterilir.
-      </p>
+    <section class="yks-method">
+      <h2>Veri kapsamı ve doğrulama</h2>
+      <p>Birincil veri, ÖSYM Tablo 4 XLS dosyasındaki {counts.table4MedicineRows} Tıp satırından üretilmiştir. Koşul 5 kapsamındaki {counts.excludedKktcCitizenOnly} yalnız-KKTC-uyruklu kontenjan ile {counts.excludedMilitaryMinistry} askerî/bakanlık alımı çıkarılmış; sivil Gülhane ve diğer sivil SBÜ programları korunmuştur.</p>
+      <p>{validation.invariants.allProgramCodesFoundInPdf ? '225 program kodunun tamamı PDF metin katmanında bulundu.' : 'PDF kod eşleştirmesinde eksik var.'} Kullanılan tüm özel koşullar PDF’nin “Koşul ve Açıklamalar” bölümünden programa bağlanmıştır. Boş hücre, <code>...</code>, <code>----</code> ve gerçek sıfır birbirine dönüştürülmez.</p>
+      <details><summary>Dışarıda bırakılan 17 satırı göster</summary><ul class="yks-excluded-list">{excluded.map((item) => <li><strong>{item.programCode}</strong> · {item.universityName} · {item.program}<br />{item.reason}</li>)}</ul></details>
     </section>
 
-    <section class="yks-section">
-      <h2>Tercih göndermeden önce son kontrol</h2>
-      <dl class="yks-note-list">
-        {
-          guidance.finalChecks.map((check) => (
-            <div>
-              <dt>{check.order}. adım</dt>
-              <dd>{check.text}</dd>
-            </div>
-          ))
-        }
-      </dl>
-    </section>
-
-    <section class="yks-section">
-      <h2>Olasılık etiketleri ne anlama geliyor?</h2>
-      <dl class="yks-note-list">
-        {
-          guidance.probabilityLabels.map((note) => (
-            <div>
-              <dt>{note.label}</dt>
-              <dd>{note.detail}</dd>
-            </div>
-          ))
-        }
-      </dl>
-    </section>
-
-    <section class="yks-section">
-      <h2>Havuz dışında bırakılan programlar</h2>
-      <p class="yks-lede">
-        Aşağıdaki {excluded.length} satır aday için uygun değildir: 5’i askerî/bakanlık
-        yükümlülüklü, 12’si yalnız KKTC uyruklu aday kontenjanıdır.
-      </p>
-      <dl class="yks-note-list">
-        {
-          excluded.map((item) => (
-            <div>
-              <dt>Kod {item.code}</dt>
-              <dd>{item.reason}</dd>
-            </div>
-          ))
-        }
-      </dl>
-    </section>
-
-    <section class="yks-section">
-      <h2>Kaynaklar</h2>
-      <ul class="yks-source-list">
-        {
-          sources.map((source) => (
-            <li>
-              <span aria-hidden="true">[{source.id}]</span> {source.sourceTitle ?? source.label}{' '}
-              {
-                source.verified ? (
-                  <a href={source.url} rel="nofollow noopener noreferrer" target="_blank">
-                    Bağlantı
-                  </a>
-                ) : (
-                  <span class="yks-source-unverified">
-                    Bağlantı doğrulanmadı (kaynak metninde satır kayması var): {source.url}
-                  </span>
-                )
-              }
-              {source.sourceDate ? ` • ${source.sourceDate}` : ''}
-              {source.verificationStatus ? ` • ${source.verificationStatus}` : ''}
-              {source.note ? <span class="yks-source-note"> — {source.note}</span> : null}
-            </li>
-          ))
-        }
-      </ul>
+    <section class="yks-source-panel">
+      <h2>Kaynak kaydı</h2>
+      <dl><div><dt>Veri sürümü</dt><dd>{manifest.datasetVersion}</dd></div><div><dt>Birincil kaynak</dt><dd>{manifest.primarySource.file} · {manifest.primarySource.sheet}!{manifest.primarySource.range}</dd></div><div><dt>XLS SHA-256</dt><dd><code>{manifest.primarySource.sha256}</code></dd></div><div><dt>PDF doğrulama kaynağı</dt><dd>{manifest.validationSource.file} · {manifest.validationSource.pages} sayfa</dd></div><div><dt>PDF SHA-256</dt><dd><code>{manifest.validationSource.sha256}</code></dd></div></dl>
     </section>
   </main>
 </BaseLayout>
