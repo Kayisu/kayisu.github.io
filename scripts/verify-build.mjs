@@ -297,15 +297,14 @@ const turkishHome = read('tr/index.html');
 if (!/<a\b[^>]*href="\/tr\/star\/sun\/"/.test(turkishHome)) {
   fail('/tr/ must link to /tr/star/sun/');
 }
-if (!englishHome.includes('[[KAAN]]')) {
-  fail('English landing copy is missing the profile statement placeholder');
-}
-if (!turkishHome.includes('[[KAAN]]')) {
-  fail('Turkish landing copy is missing the profile statement placeholder');
+// The identity statement placeholder must never reach the published site;
+// components render nothing while `profile.statement` is still the placeholder.
+for (const route of ['/', '/tr/', '/star/sun/', '/tr/star/sun/']) {
+  if (read(htmlPath(route)).includes('[[KAAN]]')) fail(`${route} leaks the profile statement placeholder`);
 }
 for (const route of ['/star/sun/', '/tr/star/sun/']) {
   const html = read(htmlPath(route));
-  for (const expected of ['Sera', 'CogniSpace', '[[KAAN]]']) {
+  for (const expected of ['Sera', 'CogniSpace']) {
     if (!html.includes(expected)) fail(`${route} is missing profile content: ${expected}`);
   }
 }

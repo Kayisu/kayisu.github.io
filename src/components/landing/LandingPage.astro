@@ -6,7 +6,7 @@ import HeroSection from './HeroSection.astro';
 import ProjectCollection from './ProjectCollection.astro';
 import PlanetCategories from './PlanetCategories.astro';
 import { SITE } from '../../data/site';
-import { PROFILE } from '../../data/profile';
+import { PROFILE, hasStatement } from '../../data/profile';
 import {
   getAlternatePaths,
   getDictionary,
@@ -69,7 +69,7 @@ const { bodies, copy } = createSolarPresentation(locale, dictionary);
       <div class="editorial-section__inner site-container">
         <p class="section-eyebrow">{dictionary.sections.aboutEyebrow}</p>
         <h2 id="about-title">{dictionary.sections.aboutTitle}</h2>
-        <p>{profile.statement}</p>
+        {hasStatement(profile.statement) && <p>{profile.statement}</p>}
       </div>
     </section>
 

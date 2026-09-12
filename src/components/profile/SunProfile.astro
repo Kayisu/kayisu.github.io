@@ -1,5 +1,5 @@
 ---
-import { PROFILE, type ProfileLocale } from '../../data/profile';
+import { PROFILE, hasStatement, type ProfileLocale } from '../../data/profile';
 import { SUN } from '../../data/planets';
 import {
   getAlternatePaths,
@@ -41,7 +41,7 @@ const canonicalPath = locale === 'en' ? '/star/sun/' : '/tr/star/sun/';
     <article>
       <p class="core-eyebrow">{bodyCopy.category}</p>
       <h1>Emre Kaan Ataş</h1>
-      <p class="core-summary">{profile.statement}</p>
+      {hasStatement(profile.statement) && <p class="core-summary">{profile.statement}</p>}
 
       <div class="prose core-prose">
         <section aria-labelledby="now-title">

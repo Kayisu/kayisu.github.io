@@ -2,7 +2,7 @@
 import SolarApp from '../solar/SolarApp';
 import type { SolarBody, SolarCopy } from '../solar/SolarApp';
 import { SITE } from '../../data/site';
-import { PROFILE } from '../../data/profile';
+import { PROFILE, hasStatement } from '../../data/profile';
 import {
   explorePath,
   getDictionary,
@@ -25,7 +25,7 @@ const profile = PROFILE[locale];
   <div class="landing-hero__copy">
     <p class="section-eyebrow">{dictionary.hero.eyebrow}</p>
     <h1 id="landing-title">{SITE.name}</h1>
-    <p class="landing-hero__statement">{profile.statement}</p>
+    {hasStatement(profile.statement) && <p class="landing-hero__statement">{profile.statement}</p>}
     <p class="landing-hero__introduction">{dictionary.hero.introduction}</p>
 
     <div class="landing-hero__actions">

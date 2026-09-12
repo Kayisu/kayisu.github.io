@@ -20,6 +20,12 @@ export interface ProfileLocale {
   aim: string;
 }
 
+/** Identity sentence not written yet; components render nothing while it stands. */
+export const STATEMENT_PLACEHOLDER = '[[KAAN]]';
+export function hasStatement(statement: string): boolean {
+  return statement.trim() !== '' && statement.trim() !== STATEMENT_PLACEHOLDER;
+}
+
 export const PROFILE = {
   en: {
     statement: '[[KAAN]]',
