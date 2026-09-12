@@ -294,6 +294,9 @@ for (const [locale, test] of Object.entries(localePayloads)) {
 
 const englishHome = read('index.html');
 const turkishHome = read('tr/index.html');
+if (!/<a\b[^>]*href="\/tr\/star\/sun\/"/.test(turkishHome)) {
+  fail('/tr/ must link to /tr/star/sun/');
+}
 if (!englishHome.includes('[[KAAN]]')) {
   fail('English landing copy is missing the profile statement placeholder');
 }

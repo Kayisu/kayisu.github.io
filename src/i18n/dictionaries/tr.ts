@@ -61,7 +61,7 @@ export const tr = {
       'Her gök cismi portfolyonun farklı bir bölümünü temsil eder. Doğrudan bir kategori seçin veya sistemi üç boyutlu olarak keşfedin.',
     allCategories: 'Tüm kategorileri keşfet',
     aboutEyebrow: 'Hakkımda',
-    aboutTitle: 'Hakkımda',
+    aboutTitle: 'Emre Kaan Ataş',
     contactEyebrow: 'İletişim',
     contactTitle: 'Konuşalım.',
     contactBody:

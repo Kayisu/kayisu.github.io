@@ -61,7 +61,7 @@ export const en = {
       'Every celestial body represents a different part of the portfolio. Choose a category directly or explore it in 3D.',
     allCategories: 'Explore all categories',
     aboutEyebrow: 'About',
-    aboutTitle: 'About',
+    aboutTitle: 'Emre Kaan Ataş',
     contactEyebrow: 'Contact',
     contactTitle: 'Let’s talk.',
     contactBody:

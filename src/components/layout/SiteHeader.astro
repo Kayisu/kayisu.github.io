@@ -5,6 +5,7 @@ import {
   getDictionary,
   homePath,
   sectionPath,
+  sunPath,
   type Locale,
   type LocalisedRoute,
 } from '../../i18n';
@@ -24,7 +25,7 @@ const { locale, languageHref, languageRoute, active } = Astro.props;
 const dictionary = getDictionary(locale);
 const links = [
   { key: 'projects', label: dictionary.nav.projects, href: sectionPath(locale, 'projects') },
-  { key: 'about', label: dictionary.nav.about, href: sectionPath(locale, 'about') },
+  { key: 'about', label: dictionary.nav.about, href: sunPath(locale) },
   { key: 'contact', label: dictionary.nav.contact, href: sectionPath(locale, 'contact') },
   { key: 'explore', label: dictionary.nav.explore, href: explorePath(locale) },
 ] as const;

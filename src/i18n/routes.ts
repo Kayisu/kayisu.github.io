@@ -44,6 +44,10 @@ export function earthGamesPath(locale: Locale): AbsolutePath {
     : '/tr/planet/earth/games/';
 }
 
+export function sunPath(locale: Locale): AbsolutePath {
+  return locale === DEFAULT_LOCALE ? '/star/sun/' : '/tr/star/sun/';
+}
+
 export function sectionPath(
   locale: Locale,
   section: 'projects' | 'about' | 'contact',
@@ -64,7 +68,7 @@ function exactPath(route: LocalisedRoute, locale: Locale): AbsolutePath | undefi
       return slug ? projectPath(locale, slug) : undefined;
     }
     case 'sun':
-      return locale === DEFAULT_LOCALE ? '/star/sun/' : '/tr/star/sun/';
+      return sunPath(locale);
     case 'earth-games':
       return earthGamesPath(locale);
     case 'sandbox':

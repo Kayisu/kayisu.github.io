@@ -14,3 +14,8 @@
 ## 2026-09-12 — K03 gunes-profil-kaynagi
 
 - Varsayım: Profildeki iki proje bağlantısını tek bir güncel durum satırında erişilebilir biçimde göstermek için `now` alanı düz metin yerine metin ve isteğe bağlı bağlantı içeren öğeler kullanır; tüm profil içeriği yine tek kaynakta tutulur.
+
+## 2026-09-12 — K04 kapi-duzeltmeleri
+
+- Varsayım: Başlık ve alt bilgideki About bağlantısı, landing içi ankordan ziyade Sun profil sayfasını açmalıdır; landing içindeki `#about` kimliği bölüm için korunur.
+- Karar: YKS sayfası herkese açık olduğundan sitemap üretilmemesine yönelik bir koruma eklenmedi; sitemap kabul edilebilir.

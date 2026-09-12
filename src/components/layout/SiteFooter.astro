@@ -1,6 +1,6 @@
 ---
 import { SITE } from '../../data/site';
-import { getDictionary, homePath, sectionPath, type Locale } from '../../i18n';
+import { getDictionary, homePath, sectionPath, sunPath, type Locale } from '../../i18n';
 
 interface Props {
   locale: Locale;
@@ -20,7 +20,7 @@ const year = new Date().getFullYear();
 
     <nav aria-label={dictionary.footer.navigationLabel}>
       <a href={sectionPath(locale, 'projects')}>{dictionary.nav.projects}</a>
-      <a href={sectionPath(locale, 'about')}>{dictionary.nav.about}</a>
+      <a href={sunPath(locale)}>{dictionary.nav.about}</a>
       <a href={`mailto:${SITE.email}`}>{dictionary.contact.email}</a>
       <a href={SITE.github} target="_blank" rel="noopener noreferrer">
         {dictionary.contact.github}

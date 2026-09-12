@@ -20,6 +20,7 @@ export {
   projectPath,
   resolveEquivalentPath,
   sectionPath,
+  sunPath,
 } from './routes';
 export type { AbsolutePath, LocalisedRoute } from './routes';
 

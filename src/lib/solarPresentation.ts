@@ -1,7 +1,7 @@
 import { BODIES } from '../data/planets';
 import {
   planetPath,
-  sectionPath,
+  sunPath,
   type CelestialBodyId,
   type Dictionary,
   type Locale,
@@ -10,7 +10,7 @@ import type { SolarBody, SolarCopy } from '../components/solar/SolarApp';
 
 function bodyHref(locale: Locale, name: CelestialBodyId): string {
   if (name === 'sun') {
-    return locale === 'en' ? '/star/sun/' : sectionPath('tr', 'about');
+    return sunPath(locale);
   }
   return planetPath(locale, name);
 }
