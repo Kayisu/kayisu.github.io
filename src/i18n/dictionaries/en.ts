@@ -43,8 +43,6 @@ export const en = {
   },
   hero: {
     eyebrow: 'Personal portfolio',
-    statement:
-      'I build practical systems across sustainability, applied AI, research, and interactive software.',
     introduction:
       'A selection of projects, experiments, and ideas organised as an explorable solar system.',
     viewProjects: 'View projects',
@@ -63,13 +61,15 @@ export const en = {
       'Every celestial body represents a different part of the portfolio. Choose a category directly or explore it in 3D.',
     allCategories: 'Explore all categories',
     aboutEyebrow: 'About',
-    aboutTitle: 'Building by learning, testing, and refining.',
-    aboutBody:
-      'I am Emre Kaan Ataş. This portfolio brings together software, research, sustainability, and interactive experiments without separating the process from the result.',
+    aboutTitle: 'About',
     contactEyebrow: 'Contact',
     contactTitle: 'Let’s talk.',
     contactBody:
       'For projects, technical conversations, or collaboration, use any of the verified channels below.',
+  },
+  profile: {
+    now: 'Now',
+    path: 'Path',
   },
   project: {
     projects: 'Projects',

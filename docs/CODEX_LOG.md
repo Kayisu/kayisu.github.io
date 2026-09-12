@@ -10,3 +10,7 @@
 
 - Varsayım: CogniSpace Earth’e taşındığı için Earth oyun keşfi, proje listesi dolu olsa da görünmeye devam eder ve iki dilde sözlük üzerinden yerelleştirilir.
 - Varsayım: Mevcut YKS Tercih Sihirbazı girişinin türü, mevcut açıklamasına uygun olarak `tool` olarak işaretlenir.
+
+## 2026-09-12 — K03 gunes-profil-kaynagi
+
+- Varsayım: Profildeki iki proje bağlantısını tek bir güncel durum satırında erişilebilir biçimde göstermek için `now` alanı düz metin yerine metin ve isteğe bağlı bağlantı içeren öğeler kullanır; tüm profil içeriği yine tek kaynakta tutulur.

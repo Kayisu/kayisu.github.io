@@ -43,8 +43,6 @@ export const tr = {
   },
   hero: {
     eyebrow: 'Kişisel portfolyo',
-    statement:
-      'Sürdürülebilirlik, uygulamalı yapay zekâ, araştırma ve etkileşimli yazılım alanlarında pratik sistemler geliştiriyorum.',
     introduction:
       'Keşfedilebilir bir güneş sistemi içinde düzenlenmiş projeler, deneyler ve fikirlerden bir seçki.',
     viewProjects: 'Projeleri incele',
@@ -63,13 +61,15 @@ export const tr = {
       'Her gök cismi portfolyonun farklı bir bölümünü temsil eder. Doğrudan bir kategori seçin veya sistemi üç boyutlu olarak keşfedin.',
     allCategories: 'Tüm kategorileri keşfet',
     aboutEyebrow: 'Hakkımda',
-    aboutTitle: 'Öğrenerek, deneyerek ve geliştirerek üretiyorum.',
-    aboutBody:
-      'Ben Emre Kaan Ataş. Bu portfolyo; yazılım, araştırma, sürdürülebilirlik ve etkileşimli deneyleri, süreci sonuçtan ayırmadan bir araya getiriyor.',
+    aboutTitle: 'Hakkımda',
     contactEyebrow: 'İletişim',
     contactTitle: 'Konuşalım.',
     contactBody:
       'Projeler, teknik konular veya iş birliği için aşağıdaki doğrulanmış kanallardan bana ulaşabilirsiniz.',
+  },
+  profile: {
+    now: 'Şimdi',
+    path: 'Yolculuk',
   },
   project: {
     projects: 'Projeler',

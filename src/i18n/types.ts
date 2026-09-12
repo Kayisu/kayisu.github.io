@@ -62,7 +62,6 @@ export interface Dictionary {
   };
   hero: {
     eyebrow: string;
-    statement: string;
     introduction: string;
     viewProjects: string;
     exploreSystem: string;
@@ -80,10 +79,13 @@ export interface Dictionary {
     allCategories: string;
     aboutEyebrow: string;
     aboutTitle: string;
-    aboutBody: string;
     contactEyebrow: string;
     contactTitle: string;
     contactBody: string;
+  };
+  profile: {
+    now: string;
+    path: string;
   };
   project: {
     projects: string;

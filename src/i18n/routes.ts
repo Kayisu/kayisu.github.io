@@ -64,7 +64,7 @@ function exactPath(route: LocalisedRoute, locale: Locale): AbsolutePath | undefi
       return slug ? projectPath(locale, slug) : undefined;
     }
     case 'sun':
-      return locale === DEFAULT_LOCALE ? '/star/sun/' : undefined;
+      return locale === DEFAULT_LOCALE ? '/star/sun/' : '/tr/star/sun/';
     case 'earth-games':
       return earthGamesPath(locale);
     case 'sandbox':
@@ -74,7 +74,7 @@ function exactPath(route: LocalisedRoute, locale: Locale): AbsolutePath | undefi
 
 /**
  * Resolve the language switch destination. Routes without a translated page
- * return the target landing page; the English Core page maps to Turkish About.
+ * return the target landing page.
  */
 export function resolveEquivalentPath(
   route: LocalisedRoute,
@@ -82,7 +82,6 @@ export function resolveEquivalentPath(
 ): AbsolutePath | `${AbsolutePath}#${string}` {
   const equivalent = exactPath(route, targetLocale);
   if (equivalent) return equivalent;
-  if (route.kind === 'sun' && targetLocale === 'tr') return sectionPath('tr', 'about');
   return homePath(targetLocale);
 }
 

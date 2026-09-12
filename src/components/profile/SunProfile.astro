@@ -1,0 +1,167 @@
+---
+import { PROFILE, type ProfileLocale } from '../../data/profile';
+import { SUN } from '../../data/planets';
+import {
+  getAlternatePaths,
+  getDictionary,
+  resolveEquivalentPath,
+  type Locale,
+  type LocalisedRoute,
+} from '../../i18n';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SiteFooter from '../layout/SiteFooter.astro';
+import SiteHeader from '../layout/SiteHeader.astro';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const dictionary = getDictionary(locale);
+const profile: ProfileLocale = PROFILE[locale];
+const bodyCopy = dictionary.solar.bodies.sun;
+const accent = `#${SUN.color.toString(16).padStart(6, '0')}`;
+const route = { kind: 'sun' } satisfies LocalisedRoute;
+const canonicalPath = locale === 'en' ? '/star/sun/' : '/tr/star/sun/';
+---
+
+<BaseLayout
+  title={`${bodyCopy.category} | Kayisu`}
+  description={profile.aim}
+  locale={locale}
+  canonicalPath={canonicalPath}
+  alternatePaths={getAlternatePaths(route)}
+>
+  <SiteHeader
+    locale={locale}
+    languageHref={resolveEquivalentPath(route, locale === 'en' ? 'tr' : 'en')}
+    active="about"
+  />
+  <main id="main-content" class="core-page" style={`--accent: ${accent};`}>
+    <article>
+      <p class="core-eyebrow">{bodyCopy.category}</p>
+      <h1>Emre Kaan Ataş</h1>
+      <p class="core-summary">{profile.statement}</p>
+
+      <div class="prose core-prose">
+        <section aria-labelledby="now-title">
+          <h2 id="now-title">{dictionary.profile.now}</h2>
+          <ul class="core-list">
+            {
+              profile.now.map((entry) => (
+                <li>{entry.href ? <a href={entry.href}>{entry.text}</a> : entry.text}</li>
+              ))
+            }
+          </ul>
+        </section>
+
+        <section aria-labelledby="path-title">
+          <h2 id="path-title">{dictionary.profile.path}</h2>
+          <ol class="core-timeline">
+            {
+              profile.path.map((milestone) => (
+                <li>
+                  <p class="core-timeline__period">{milestone.period}</p>
+                  <p class="core-timeline__title">{milestone.title}</p>
+                  {
+                    milestone.detail && (
+                      <p class="core-timeline__detail">
+                        {milestone.href ? <a href={milestone.href}>{milestone.detail}</a> : milestone.detail}
+                      </p>
+                    )
+                  }
+                  {!milestone.detail && milestone.href && <a href={milestone.href}>{dictionary.common.readMore}</a>}
+                </li>
+              ))
+            }
+          </ol>
+        </section>
+
+        <p class="core-aim">{profile.aim}</p>
+      </div>
+    </article>
+  </main>
+  <SiteFooter locale={locale} />
+</BaseLayout>
+
+<style>
+  .core-page {
+    min-height: 100vh;
+    padding: clamp(6rem, 10vw, 8rem) 1.25rem 5rem;
+    background: var(--color-page, var(--bg-color));
+  }
+
+  article {
+    width: min(100%, 48rem);
+    margin: 0 auto;
+  }
+
+  .core-eyebrow {
+    margin-bottom: 0.75rem;
+    color: var(--color-accent, var(--accent));
+    font-size: 0.78rem;
+    font-weight: 650;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    font-size: clamp(2.6rem, 8vw, 5.5rem);
+    line-height: 1;
+  }
+
+  .core-summary {
+    max-width: 42rem;
+    margin-top: 1rem;
+    color: var(--color-text-secondary, var(--text-secondary));
+    font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+    line-height: 1.65;
+  }
+
+  .core-prose {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-border-subtle, var(--card-border));
+  }
+
+  .core-prose section + section {
+    margin-top: 2.5rem;
+  }
+
+  .core-list,
+  .core-timeline {
+    display: grid;
+    gap: 1rem;
+    padding: 0;
+    margin-top: 1rem;
+    list-style: none;
+  }
+
+  .core-list li,
+  .core-timeline li {
+    padding-left: 1rem;
+    border-left: 2px solid var(--color-border-subtle, var(--card-border));
+  }
+
+  .core-timeline__period {
+    color: var(--color-accent, var(--accent));
+    font-size: 0.82rem;
+    font-weight: 700;
+  }
+
+  .core-timeline__title,
+  .core-timeline__detail {
+    margin-top: 0.2rem;
+  }
+
+  .core-timeline__detail {
+    color: var(--color-text-secondary, var(--text-secondary));
+  }
+
+  .core-aim {
+    margin-top: 2.5rem;
+    color: var(--color-text-secondary, var(--text-secondary));
+    font-size: 1.1rem;
+    font-weight: 650;
+  }
+</style>

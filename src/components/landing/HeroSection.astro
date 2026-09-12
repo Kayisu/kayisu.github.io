@@ -2,6 +2,7 @@
 import SolarApp from '../solar/SolarApp';
 import type { SolarBody, SolarCopy } from '../solar/SolarApp';
 import { SITE } from '../../data/site';
+import { PROFILE } from '../../data/profile';
 import {
   explorePath,
   getDictionary,
@@ -17,13 +18,14 @@ interface Props {
 
 const { locale, bodies, copy } = Astro.props;
 const dictionary = getDictionary(locale);
+const profile = PROFILE[locale];
 ---
 
 <section class="landing-hero site-container" aria-labelledby="landing-title">
   <div class="landing-hero__copy">
     <p class="section-eyebrow">{dictionary.hero.eyebrow}</p>
     <h1 id="landing-title">{SITE.name}</h1>
-    <p class="landing-hero__statement">{dictionary.hero.statement}</p>
+    <p class="landing-hero__statement">{profile.statement}</p>
     <p class="landing-hero__introduction">{dictionary.hero.introduction}</p>
 
     <div class="landing-hero__actions">

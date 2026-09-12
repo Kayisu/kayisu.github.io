@@ -6,6 +6,7 @@ import HeroSection from './HeroSection.astro';
 import ProjectCollection from './ProjectCollection.astro';
 import PlanetCategories from './PlanetCategories.astro';
 import { SITE } from '../../data/site';
+import { PROFILE } from '../../data/profile';
 import {
   getAlternatePaths,
   getDictionary,
@@ -20,6 +21,7 @@ interface Props {
 
 const { locale } = Astro.props;
 const dictionary = getDictionary(locale);
+const profile = PROFILE[locale];
 const route = { kind: 'landing' } as const;
 const projectIndex = await getProjectIndex();
 const projects = projectIndex.forLocale(locale);
@@ -67,7 +69,7 @@ const { bodies, copy } = createSolarPresentation(locale, dictionary);
       <div class="editorial-section__inner site-container">
         <p class="section-eyebrow">{dictionary.sections.aboutEyebrow}</p>
         <h2 id="about-title">{dictionary.sections.aboutTitle}</h2>
-        <p>{dictionary.sections.aboutBody}</p>
+        <p>{profile.statement}</p>
       </div>
     </section>
 

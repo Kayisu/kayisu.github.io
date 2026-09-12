@@ -5,6 +5,7 @@ import test from 'node:test';
 import { candidateAdvantage, programs } from '../src/data/yks';
 import { DEFAULT_FILTERS, filterPrograms } from '../src/components/yks/lib/filters';
 import { MAX_PREFERENCES, parseStoredWizard } from '../src/store/yksStore';
+import { resolveEquivalentPath } from '../src/i18n/routes';
 
 test('dataset is unique, Medicine-only, and excludes restricted rows', () => {
   assert.equal(programs.length, 225);
@@ -53,4 +54,9 @@ test('mobile CSS prevents page overflow and collapses tables', () => {
   assert.match(css, /overflow-x:hidden/);
   assert.match(css, /@media \(max-width:640px\)/);
   assert.match(css, /\.yks-program-table[^}]*display:block/);
+});
+
+test('the Sun route has a Turkish page equivalent', () => {
+  assert.equal(resolveEquivalentPath({ kind: 'sun' }, 'tr'), '/tr/star/sun/');
+  assert.equal(resolveEquivalentPath({ kind: 'sun' }, 'en'), '/star/sun/');
 });

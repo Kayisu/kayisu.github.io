@@ -209,7 +209,7 @@ for (const slug of projectSlugs) {
   requireFile(htmlPath(`/projects/${slug}/`));
   requireFile(htmlPath(`/tr/projects/${slug}/`));
 }
-for (const route of ['/planet/earth/games/', '/tr/planet/earth/games/', sandboxRoute, '/star/sun/']) {
+for (const route of ['/planet/earth/games/', '/tr/planet/earth/games/', sandboxRoute, '/star/sun/', '/tr/star/sun/']) {
   requireFile(htmlPath(route));
 }
 requireFile('404.html');
@@ -255,6 +255,16 @@ assertMetadata('/planet/earth/games/', 'en', '/planet/earth/games/', {
   tr: '/tr/planet/earth/games/',
   'x-default': '/planet/earth/games/',
 });
+assertMetadata('/star/sun/', 'en', '/star/sun/', {
+  en: '/star/sun/',
+  tr: '/tr/star/sun/',
+  'x-default': '/star/sun/',
+});
+assertMetadata('/tr/star/sun/', 'tr', '/tr/star/sun/', {
+  en: '/star/sun/',
+  tr: '/tr/star/sun/',
+  'x-default': '/star/sun/',
+});
 assertMetadata('/tr/planet/earth/games/', 'tr', '/tr/planet/earth/games/', {
   en: '/planet/earth/games/',
   tr: '/tr/planet/earth/games/',
@@ -284,13 +294,17 @@ for (const [locale, test] of Object.entries(localePayloads)) {
 
 const englishHome = read('index.html');
 const turkishHome = read('tr/index.html');
-const englishHero = 'I build practical systems across sustainability';
-const turkishHero = 'Sürdürülebilirlik, uygulamalı yapay zekâ';
-if (!englishHome.includes(englishHero) || englishHome.includes(turkishHero)) {
-  fail('English landing copy is missing or contains the Turkish hero copy');
+if (!englishHome.includes('[[KAAN]]')) {
+  fail('English landing copy is missing the profile statement placeholder');
 }
-if (!turkishHome.includes(turkishHero) || turkishHome.includes(englishHero)) {
-  fail('Turkish landing copy is missing or contains the English hero copy');
+if (!turkishHome.includes('[[KAAN]]')) {
+  fail('Turkish landing copy is missing the profile statement placeholder');
+}
+for (const route of ['/star/sun/', '/tr/star/sun/']) {
+  const html = read(htmlPath(route));
+  for (const expected of ['Sera', 'CogniSpace', '[[KAAN]]']) {
+    if (!html.includes(expected)) fail(`${route} is missing profile content: ${expected}`);
+  }
 }
 
 for (const absent of [
@@ -298,7 +312,6 @@ for (const absent of [
   'projects/unknown/index.html',
   'tr/projects/unknown/index.html',
   'planet/earth/games/unknown/index.html',
-  'tr/star/sun/index.html',
 ]) {
   if (existsSync(join(dist, absent))) fail(`Unexpected route was generated: ${absent}`);
 }
