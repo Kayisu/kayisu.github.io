@@ -1,6 +1,8 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import YksApp from '../../../components/yks/YksApp';
+import SiteFooter from '../../../components/layout/SiteFooter.astro';
+import SiteHeader from '../../../components/layout/SiteHeader.astro';
 import { excluded, manifest, validation, validateYksDataset } from '../../../data/yks';
 import '../../../styles/yks.css';
 
@@ -19,8 +21,9 @@ const summary = [
 ];
 ---
 
-<BaseLayout title={title} description={description} locale="tr" noindex robots="noindex, nofollow, noarchive">
-  <main class="yks-shell">
+<BaseLayout title={title} description={description} locale="tr">
+  <SiteHeader locale="tr" languageHref="/" />
+  <main id="main-content" class="yks-shell">
     <header class="yks-header">
       <p class="yks-eyebrow">2026 YKS · Resmî Tablo 4 verisi</p>
       <h1>2026 Tıp Tercih Sihirbazı</h1>
@@ -49,4 +52,11 @@ const summary = [
       <dl><div><dt>Veri sürümü</dt><dd>{manifest.datasetVersion}</dd></div><div><dt>Birincil kaynak</dt><dd>{manifest.primarySource.file} · {manifest.primarySource.sheet}!{manifest.primarySource.range}</dd></div><div><dt>XLS SHA-256</dt><dd><code>{manifest.primarySource.sha256}</code></dd></div><div><dt>PDF doğrulama kaynağı</dt><dd>{manifest.validationSource.file} · {manifest.validationSource.pages} sayfa</dd></div><div><dt>PDF SHA-256</dt><dd><code>{manifest.validationSource.sha256}</code></dd></div></dl>
     </section>
   </main>
+  <SiteFooter locale="tr" />
 </BaseLayout>
+
+<style is:global>
+  .yks-tabs {
+    top: 5rem;
+  }
+</style>

@@ -11,6 +11,7 @@ export type {
   ProjectStatus,
 } from './types';
 export {
+  earthGamesPath,
   explorePath,
   getAlternatePaths,
   homePath,

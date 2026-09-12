@@ -1,11 +1,11 @@
 ---
-import SiteFooter from '../../../../components/layout/SiteFooter.astro';
-import SiteHeader from '../../../../components/layout/SiteHeader.astro';
-import { EARTH_GAMES } from '../../../../data/games';
-import { getAlternatePaths, getDictionary, type LocalisedRoute } from '../../../../i18n';
-import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import SiteFooter from '../../../../../components/layout/SiteFooter.astro';
+import SiteHeader from '../../../../../components/layout/SiteHeader.astro';
+import { EARTH_GAMES } from '../../../../../data/games';
+import { getAlternatePaths, getDictionary, type LocalisedRoute } from '../../../../../i18n';
+import BaseLayout from '../../../../../layouts/BaseLayout.astro';
 
-const locale = 'en' as const;
+const locale = 'tr' as const;
 const route = { kind: 'earth-games' } satisfies LocalisedRoute;
 const dictionary = getDictionary(locale);
 ---
@@ -14,13 +14,13 @@ const dictionary = getDictionary(locale);
   title={`${dictionary.planet.gamesTitle} | Kayisu`}
   description={dictionary.planet.gamesDescription}
   locale={locale}
-  canonicalPath="/planet/earth/games/"
+  canonicalPath="/tr/planet/earth/games/"
   alternatePaths={getAlternatePaths(route)}
 >
   <SiteHeader locale={locale} languageRoute={route} />
   <main id="main-content" class="games-page">
-    <nav class="games-page__navigation" aria-label="Games navigation">
-      <a href="/planet/earth/"><span aria-hidden="true">←</span> {dictionary.planet.gamesBackToEarth}</a>
+    <nav class="games-page__navigation" aria-label={dictionary.planet.gamesTitle}>
+      <a href="/tr/planet/earth/"><span aria-hidden="true">←</span> {dictionary.planet.gamesBackToEarth}</a>
     </nav>
 
     <header class="games-page__header">

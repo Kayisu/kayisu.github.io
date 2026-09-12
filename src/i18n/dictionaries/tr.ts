@@ -105,6 +105,8 @@ export const tr = {
     gamesDescription: 'Kendine ait bağımsız sayfalarda çalışan küçük tarayıcı deneyleri.',
     exploreGames: 'Dünya oyunlarını keşfet',
     earthEmptyWithGames: 'Burada henüz yazılı bir proje yok; ancak Dünya’nın deney alanı açık.',
+    gamesBackToEarth: 'Dünya’ya dön',
+    gamesControls: 'Oyun kontrolleri',
   },
   solar: {
     canvasLabel: 'Etkileşimli portfolyo güneş sistemi',

@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance for work in this repository.
 
 ## What this is
 
@@ -19,9 +19,12 @@ npm run dev        # dev server (http://localhost:4321)
 npm run build      # static build to dist/
 npm run preview    # serve the built dist/ locally
 npx astro check    # type-check .astro/.tsx
+npm run verify:build # validate the generated static site
+npm run test:yks   # run YKS data and wizard tests
 ```
 
-There is no test suite. Deployment is automatic: pushing to `main` triggers
+The test suite consists of `tests/` run by `npm run test:yks`; `npm run verify:build`
+also checks generated routes, metadata, and asset boundaries. Deployment is automatic: pushing to `main` triggers
 `.github/workflows/deploy.yml` (withastro/action → deploy-pages). The repo's
 **Pages source must be set to "GitHub Actions"** in Settings → Pages (one-time,
 done in the GitHub UI, not in code).
@@ -29,7 +32,7 @@ done in the GitHub UI, not in code).
 ## Architecture
 
 ### The island boundary (this is the whole point of the Astro choice)
-- `src/pages/index.astro` renders a static `ProfileCard.astro` plus
+- `src/pages/index.astro` renders static landing components from `src/components/landing/` plus
   `<SolarApp client:only="react" />`. **`client:only` is required** — the scene
   is WebGL and cannot be server-rendered. Everything interactive lives inside
   that one island; everything else is static HTML.
@@ -64,6 +67,14 @@ done in the GitHub UI, not in code).
   renders each project as its own static page from the markdown body.
 - The Sun (`/star/sun`) is the **Core / about-me** page — static prose, **not**
   project-driven (it never lists projects).
+
+### Localisation and standalone tools
+- The site is bilingual. Locale copy is in `src/i18n/`; `en.ts` and `tr.ts` both
+  satisfy the shared `Dictionary` type, and Turkish static routes live under `/tr/`.
+- The YKS wizard is the Turkish page `src/pages/yks/2026/tip-tercih.astro`; its
+  React interface is in `src/components/yks/` and its data is in `src/data/yks/`.
+- The sandbox game is implemented in `src/components/sandbox/` and served at
+  `/planet/earth/games/sandbox/`.
 
 ### Shared state
 - `src/store/solarStore.ts` (zustand) is the bridge between the WebGL canvas and

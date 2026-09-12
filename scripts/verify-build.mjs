@@ -199,7 +199,7 @@ const planetNames = [
   'neptune',
   'pluto',
 ];
-const projectSlugs = ['cognitive-comfort', 'ecoreport', 'example-tool'];
+const projectSlugs = ['cognitive-comfort', 'ecoreport', 'yks-tercih-sihirbazi'];
 
 for (const planet of planetNames) {
   requireFile(htmlPath(`/planet/${planet}/`));
@@ -209,7 +209,7 @@ for (const slug of projectSlugs) {
   requireFile(htmlPath(`/projects/${slug}/`));
   requireFile(htmlPath(`/tr/projects/${slug}/`));
 }
-for (const route of ['/planet/earth/games/', sandboxRoute, '/star/sun/']) {
+for (const route of ['/planet/earth/games/', '/tr/planet/earth/games/', sandboxRoute, '/star/sun/']) {
   requireFile(htmlPath(route));
 }
 requireFile('404.html');
@@ -250,6 +250,16 @@ for (const slug of projectSlugs) {
     'x-default': `/projects/${slug}/`,
   });
 }
+assertMetadata('/planet/earth/games/', 'en', '/planet/earth/games/', {
+  en: '/planet/earth/games/',
+  tr: '/tr/planet/earth/games/',
+  'x-default': '/planet/earth/games/',
+});
+assertMetadata('/tr/planet/earth/games/', 'tr', '/tr/planet/earth/games/', {
+  en: '/planet/earth/games/',
+  tr: '/tr/planet/earth/games/',
+  'x-default': '/planet/earth/games/',
+});
 
 const localePayloads = {
   en: {
@@ -288,7 +298,6 @@ for (const absent of [
   'projects/unknown/index.html',
   'tr/projects/unknown/index.html',
   'planet/earth/games/unknown/index.html',
-  'tr/planet/earth/games/index.html',
   'tr/star/sun/index.html',
 ]) {
   if (existsSync(join(dist, absent))) fail(`Unexpected route was generated: ${absent}`);
@@ -329,25 +338,10 @@ for (const [route, html] of htmlByRoute) {
   }
 }
 
-// --- Unlisted YKS explorer -------------------------------------------------
-// The page must stay reachable only by direct URL, and its CSS/JS must not load
-// anywhere else on the site.
+// --- YKS explorer ----------------------------------------------------------
+// The published page owns its CSS/JS; those assets must not load elsewhere.
 const yksHtml = read(htmlPath(yksRoute));
 const nonYksHtml = [...htmlByRoute.entries()].filter(([route]) => route !== yksRoute);
-
-if (!yksHtml.includes('<meta name="robots" content="noindex, nofollow, noarchive">')) {
-  fail(`${yksRoute} must carry a noindex, nofollow, noarchive robots directive`);
-}
-
-for (const [route, html] of nonYksHtml) {
-  if (/href="(?:\/yks|https:\/\/kayisu\.github\.io\/yks)/.test(html)) {
-    fail(`${route} links to the unlisted YKS page; it must not be discoverable`);
-  }
-}
-
-if (existsSync(join(dist, 'sitemap-index.xml')) || existsSync(join(dist, 'sitemap-0.xml'))) {
-  fail('A sitemap was generated; it would list the unlisted YKS page');
-}
 
 const yksStyles = [...stylesheetHrefs(yksHtml)].filter((href) =>
   read(href.replace(/^\//, '')).includes('.yks-shell'),

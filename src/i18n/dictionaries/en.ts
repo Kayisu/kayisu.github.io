@@ -105,6 +105,8 @@ export const en = {
     gamesDescription: 'Small browser experiments with their own independent pages.',
     exploreGames: 'Explore Earth games',
     earthEmptyWithGames: 'No written projects here yet, but Earth’s playground is open.',
+    gamesBackToEarth: 'Back to Earth',
+    gamesControls: 'Game controls',
   },
   solar: {
     canvasLabel: 'Interactive portfolio solar system',

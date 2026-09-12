@@ -112,6 +112,8 @@ export interface Dictionary {
     gamesDescription: string;
     exploreGames: string;
     earthEmptyWithGames: string;
+    gamesBackToEarth: string;
+    gamesControls: string;
   };
   solar: {
     canvasLabel: string;

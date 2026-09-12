@@ -18,3 +18,5 @@ CODEX_RELEVANT_FILES.txt
 CODEX_PORTFOLIO_IMPLEMENTATION_REPORT.md
 CLAUDE.md
 .claude/
+.codex/
+.qa-preview-out.log
