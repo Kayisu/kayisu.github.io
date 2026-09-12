@@ -9,10 +9,11 @@ interface Props {
   categoryLabel?: string;
   ctaLabel?: string;
   tagsLabel?: string;
+  kindLabel?: string;
 }
 
-const { entry, statusLabel, categoryLabel, ctaLabel, tagsLabel } = Astro.props;
-const { cover, period, role, tags, title, summary, status, year } = entry.data;
+const { entry, statusLabel, categoryLabel, ctaLabel, tagsLabel, kindLabel } = Astro.props;
+const { cover, kind, period, role, tags, title, summary, status, year } = entry.data;
 ---
 
 <article class="project-card-item">
@@ -34,6 +35,8 @@ const { cover, period, role, tags, title, summary, status, year } = entry.data;
       </div>
 
       <p class="project-card-summary">{summary}</p>
+
+      {kind && kindLabel && <span class="project-kind-chip">{kindLabel}</span>}
 
       {(period || year || role) && (
         <p class="project-card-context">
@@ -139,6 +142,19 @@ const { cover, period, role, tags, title, summary, status, year } = entry.data;
 
   .project-card-context {
     font-size: 0.82rem;
+  }
+
+  .project-kind-chip {
+    width: fit-content;
+    padding: 0.25rem 0.55rem;
+    color: var(--color-text-secondary, var(--text-secondary));
+    font-size: 0.72rem;
+    font-weight: 650;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    background: var(--color-surface-muted, var(--card-bg));
+    border: 1px solid var(--color-border-subtle, var(--card-border));
+    border-radius: 999px;
   }
 
   .project-card-cta {

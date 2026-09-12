@@ -1,16 +1,24 @@
 ---
 import { EARTH_GAMES } from '../../data/games';
+import { earthGamesPath, getDictionary, type Locale } from '../../i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const dictionary = getDictionary(locale);
 ---
 
 <section class="earth-games" aria-labelledby="earth-games-title">
   <div class="earth-games__heading">
     <div>
-      <p class="earth-games__eyebrow">Playground</p>
-      <h2 id="earth-games-title">Games on Earth</h2>
-      <p>Small interactive experiments that open on their own dedicated pages.</p>
+      <p class="earth-games__eyebrow">{dictionary.planet.gamesTitle}</p>
+      <h2 id="earth-games-title">{dictionary.planet.gamesTitle}</h2>
+      <p>{dictionary.planet.gamesDescription}</p>
     </div>
-    <a class="earth-games__index-link" href="/planet/earth/games/">
-      View all games <span aria-hidden="true">&rarr;</span>
+    <a class="earth-games__index-link" href={earthGamesPath(locale)}>
+      {dictionary.planet.exploreGames} <span aria-hidden="true">&rarr;</span>
     </a>
   </div>
 
@@ -25,7 +33,7 @@ import { EARTH_GAMES } from '../../data/games';
             </div>
             <p>{game.summary}</p>
             <span class="earth-games__play">
-              Open game <span aria-hidden="true">&rarr;</span>
+              {dictionary.common.open} <span aria-hidden="true">&rarr;</span>
             </span>
           </a>
         </li>

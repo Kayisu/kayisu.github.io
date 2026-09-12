@@ -6,12 +6,12 @@ locale: en
 planet: jupiter
 summary: A SaaS for TSRS/ESRS sustainability reporting with LLM-powered report generation, incubated at Erciyes Teknopark's Sera programme.
 status: active
+year: 2026
+kind: product
 role: Co-founder & CTO
 tags: [SaaS, LLM, Sustainability]
 featured: true
 ---
-
-> _Draft — this case study is still in progress._
 
 ## Overview
 
@@ -31,3 +31,4 @@ develops.
 
 The product is active and in development through the Sera incubation programme.
 Milestones and technical details will be documented here as they become firm.
+It was accepted to stage 1 of the TÜBİTAK BİGG programme in 2026.

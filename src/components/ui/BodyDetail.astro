@@ -2,7 +2,6 @@
 import type { Body } from '../../data/planets';
 import {
   getDictionary,
-  earthGamesPath,
   type CelestialBodyId,
   type Locale,
 } from '../../i18n';
@@ -23,10 +22,6 @@ const dictionary = getDictionary(locale);
 const bodyCopy = dictionary.solar.bodies[body.name as CelestialBodyId];
 const accent = `#${body.color.toString(16).padStart(6, '0')}`;
 const projects = (await getProjectIndex()).forPlanet(locale, body.name as ProjectPlanet);
-const countLabel = projects.length === 1
-  ? dictionary.planet.projectCount
-  : dictionary.planet.projectCountPlural;
-const earthGamesHref = earthGamesPath(locale);
 ---
 
 <SiteHeader locale={locale} languageHref={languageHref} />
@@ -37,7 +32,7 @@ const earthGamesHref = earthGamesPath(locale);
       <h1>{bodyCopy.name}</h1>
       <p class="planet-page-description">{bodyCopy.description}</p>
       {projects.length > 0 && (
-        <p class="planet-project-count">{projects.length} {countLabel}</p>
+        <p class="planet-project-count">{projects.length} {projects.length === 1 ? dictionary.planet.projectCount : dictionary.planet.projectCountPlural}</p>
       )}
     </header>
 
@@ -54,29 +49,18 @@ const earthGamesHref = earthGamesPath(locale);
                   categoryLabel={bodyCopy.category}
                   ctaLabel={dictionary.common.readMore}
                   tagsLabel={dictionary.project.technologies}
+                  kindLabel={entry.data.kind ? dictionary.project.kind[entry.data.kind] : undefined}
                 />
               </li>
             ))}
           </ul>
         </section>
-      ) : body.name === 'earth' && locale === 'tr' ? (
-        <section class="earth-games-discovery" aria-labelledby="earth-games-discovery-title">
-          <p class="planet-page-eyebrow">{dictionary.planet.gamesTitle}</p>
-          <h2 id="earth-games-discovery-title">{dictionary.planet.earthEmptyWithGames}</h2>
-          <p>{dictionary.planet.gamesDescription}</p>
-          <a href={earthGamesHref}>
-            {dictionary.planet.exploreGames} <span aria-hidden="true">→</span>
-          </a>
-        </section>
-      ) : body.name !== 'earth' ? (
-        <section class="planet-empty-state" aria-labelledby="empty-state-title">
-          <h2 id="empty-state-title">{dictionary.project.noProjectsTitle}</h2>
-          <p>{dictionary.project.noProjectsDescription}</p>
-        </section>
-      ) : null
+      ) : (
+        <p class="planet-empty-state">{dictionary.project.emptyQuiet}</p>
+      )
     }
 
-    {body.name === 'earth' && locale === 'en' && <EarthGamesSection />}
+    {body.name === 'earth' && <EarthGamesSection locale={locale} />}
   </div>
 </main>
 <SiteFooter locale={locale} />
@@ -139,39 +123,16 @@ const earthGamesHref = earthGamesPath(locale);
     list-style: none;
   }
 
-  .planet-empty-state,
-  .earth-games-discovery {
+  .planet-empty-state {
     padding: clamp(1.4rem, 4vw, 2rem);
     background: var(--color-surface, var(--card-bg));
     border: 1px solid var(--color-border-subtle, var(--card-border));
     border-radius: 1rem;
   }
 
-  .planet-empty-state h2,
-  .earth-games-discovery h2 {
-    font-size: clamp(1.25rem, 3vw, 1.6rem);
-  }
-
-  .planet-empty-state p,
-  .earth-games-discovery > p:not(.planet-page-eyebrow) {
+  .planet-empty-state {
     max-width: 40rem;
-    margin-top: 0.6rem;
     color: var(--color-text-secondary, var(--text-secondary));
     line-height: 1.6;
-  }
-
-  .earth-games-discovery a {
-    display: inline-flex;
-    min-height: 2.75rem;
-    align-items: center;
-    margin-top: 1.2rem;
-    color: var(--color-accent, var(--accent));
-    font-weight: 650;
-    text-decoration: none;
-  }
-
-  .earth-games-discovery a:focus-visible {
-    outline: 3px solid var(--color-focus, var(--accent));
-    outline-offset: 3px;
   }
 </style>

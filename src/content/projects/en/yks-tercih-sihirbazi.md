@@ -7,6 +7,7 @@ planet: mercury
 summary: A browser tool that filters and compares programmes from the official 2026 YKS placement guide; the first release covers medicine programmes only and will be extended to all programmes.
 status: prototype
 year: 2026
+kind: tool
 tags: [Tool, Education, Data]
 demo: https://kayisu.github.io/yks/2026/tip-tercih/
 ---

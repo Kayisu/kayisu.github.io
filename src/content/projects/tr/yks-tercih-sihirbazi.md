@@ -7,6 +7,7 @@ planet: mercury
 summary: Resmî 2026 YKS yerleştirme kılavuzundaki programları filtreleyen ve karşılaştıran bir tarayıcı aracı; ilk sürüm yalnızca tıp programlarını kapsar ve tüm programlara genişletilecektir.
 status: prototype
 year: 2026
+kind: tool
 tags: [Tool, Education, Data]
 demo: https://kayisu.github.io/yks/2026/tip-tercih/
 ---

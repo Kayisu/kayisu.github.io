@@ -14,6 +14,7 @@ const projectPlanets = [
   'pluto',
 ] as const;
 const projectStatuses = ['active', 'shipped', 'prototype', 'wip', 'archived'] as const;
+const projectKinds = ['product', 'research', 'experiment', 'writing', 'tool', 'game'] as const;
 
 const nonEmptyText = z.string().trim().min(1);
 const httpUrl = z
@@ -50,6 +51,7 @@ const projects = defineCollection({
       planet: z.enum(projectPlanets),
       summary: nonEmptyText,
       status: z.enum(projectStatuses),
+      kind: z.enum(projectKinds).optional(),
       year: z.number().int().min(1900).max(2100).optional(),
       period: nonEmptyText.optional(),
       role: nonEmptyText.optional(),

@@ -6,12 +6,12 @@ locale: tr
 planet: jupiter
 summary: Erciyes Teknopark Sera programında geliştirilen, LLM destekli rapor üretimiyle TSRS/ESRS sürdürülebilirlik raporlamasını kolaylaştıran bir SaaS ürünü.
 status: active
+year: 2026
+kind: product
 role: Kurucu Ortak ve CTO
 tags: [SaaS, LLM, Sürdürülebilirlik]
 featured: true
 ---
-
-> _Taslak — bu vaka çalışması hâlen hazırlanıyor._
 
 ## Genel bakış
 
@@ -30,3 +30,4 @@ teknik yönü yönetiyorum. Çalışma ilerledikçe daha fazla ayrıntı eklenec
 
 Ürün, Sera programı kapsamında aktif olarak geliştiriliyor. Kilometre taşları ve
 teknik ayrıntılar netleştikçe burada belgelenecek.
+TÜBİTAK BİGG programının 1. aşamasına 2026'da kabul edildi.

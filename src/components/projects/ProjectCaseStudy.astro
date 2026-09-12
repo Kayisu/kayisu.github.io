@@ -29,7 +29,7 @@ const dictionary = getDictionary(locale);
 const bodyCopy = dictionary.solar.bodies[body.name as CelestialBodyId];
 const categoryHref = planetPath(locale, body.name as Exclude<CelestialBodyId, 'sun'>);
 const { Content } = await render(entry);
-const { cover, demo, gallery, highlights, period, repo, role, status, tags, team, title, year } =
+const { cover, demo, gallery, highlights, kind, period, repo, role, status, tags, team, title, year } =
   entry.data;
 ---
 
@@ -74,6 +74,8 @@ const { cover, demo, gallery, highlights, period, repo, role, status, tags, team
             </div>
           )}
         </dl>
+
+        {kind && <span class="project-kind-chip">{dictionary.project.kind[kind]}</span>}
 
         {tags && tags.length > 0 && (
           <ul class="tag-list" aria-label={dictionary.project.technologies}>
@@ -234,6 +236,19 @@ const { cover, demo, gallery, highlights, period, repo, role, status, tags, team
     margin: 0;
     color: var(--color-text-primary, var(--text-primary));
     line-height: 1.45;
+  }
+
+  .project-kind-chip {
+    display: inline-flex;
+    padding: 0.25rem 0.55rem;
+    color: var(--color-text-secondary, var(--text-secondary));
+    font-size: 0.72rem;
+    font-weight: 650;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    background: var(--color-surface-muted, var(--card-bg));
+    border: 1px solid var(--color-border-subtle, var(--card-border));
+    border-radius: 999px;
   }
 
   .tag-list {

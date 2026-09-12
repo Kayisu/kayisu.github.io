@@ -35,12 +35,13 @@ const dictionary = getDictionary(locale);
                 categoryLabel={dictionary.solar.bodies[entry.data.planet].category}
                 ctaLabel={dictionary.common.readMore}
                 tagsLabel={dictionary.project.technologies}
+                kindLabel={entry.data.kind ? dictionary.project.kind[entry.data.kind] : undefined}
               />
             </li>
           ))}
         </ul>
       ) : (
-        <p class="project-collection__empty">{dictionary.project.noProjectsDescription}</p>
+        <p class="project-collection__empty">{dictionary.project.emptyQuiet}</p>
       )
     }
   </div>

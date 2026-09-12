@@ -199,7 +199,7 @@ const planetNames = [
   'neptune',
   'pluto',
 ];
-const projectSlugs = ['cognitive-comfort', 'ecoreport', 'yks-tercih-sihirbazi'];
+const projectSlugs = ['cognispace', 'ecoreport', 'sandcastle-sandbox', 'sorudepo', 'yks-tercih-sihirbazi'];
 
 for (const planet of planetNames) {
   requireFile(htmlPath(`/planet/${planet}/`));

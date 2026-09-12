@@ -13,6 +13,7 @@ export type CelestialBodyId =
   | 'pluto';
 
 export type ProjectStatus = 'active' | 'shipped' | 'prototype' | 'wip' | 'archived';
+export type ProjectKind = 'product' | 'research' | 'experiment' | 'writing' | 'tool' | 'game';
 
 export interface BodyCopy {
   name: string;
@@ -100,8 +101,8 @@ export interface Dictionary {
     next: string;
     backToProjects: string;
     backToCategory: string;
-    noProjectsTitle: string;
-    noProjectsDescription: string;
+    emptyQuiet: string;
+    kind: Record<ProjectKind, string>;
   };
   status: Record<ProjectStatus, string>;
   planet: {
@@ -111,7 +112,6 @@ export interface Dictionary {
     gamesTitle: string;
     gamesDescription: string;
     exploreGames: string;
-    earthEmptyWithGames: string;
     gamesBackToEarth: string;
     gamesControls: string;
   };
