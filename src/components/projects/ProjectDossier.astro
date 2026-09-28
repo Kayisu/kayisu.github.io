@@ -2,6 +2,7 @@
 import { render, type CollectionEntry } from 'astro:content';
 import { SITE } from '../../data/site';
 import { getDictionary, homePath, type Locale } from '../../i18n';
+import ConstructionToy from '../construction/ConstructionToy';
 import SiteFooter from '../layout/SiteFooter.astro';
 
 interface Props {
@@ -48,6 +49,9 @@ const links = [
 
   {entry.data.status === 'building' && <aside class="construction-band">
     <p>{dictionary.project.construction}</p>
+    <div class="construction-band__toy">
+      <ConstructionToy client:visible label={dictionary.toy.label} hints={[{ lang: locale, text: dictionary.toy.hint }]} />
+    </div>
   </aside>}
 
   <div class="project-copy"><Content /></div>
@@ -109,6 +113,10 @@ const links = [
     border-radius: var(--page-radius);
     font-size: 14px;
   }
+
+  /* The toy spans the band edge to edge, i.e. the full dossier column. */
+  .construction-band__toy { margin: 12px -18px 0; }
+  .construction-band__toy :global(.construction-toy__hint) { padding-inline: 18px; }
 
   .project-copy { margin-top: 28px; color: var(--page-text); font-size: 16px; line-height: 1.6; }
   .project-copy > :global(* + *) { margin-top: 1.1em; }

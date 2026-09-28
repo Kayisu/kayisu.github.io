@@ -36,6 +36,7 @@ export const tr = {
     orbitComet: 'Kuyruklu yıldızlar',
     externalLink: 'Yeni sekmede açılır',
   },
+  toy: { label: 'Oyuncak şantiye: kum alanında bir buldozer', hint: 'WASD / oklar ya da dokun: sür · çift dokun: kum yığ' },
   notFound: { message: 'Sayfa bulunamadı.', home: 'Ana sayfa' },
   contact: { email: 'E-posta', github: 'GitHub', linkedin: 'LinkedIn' },
 } satisfies Dictionary;
