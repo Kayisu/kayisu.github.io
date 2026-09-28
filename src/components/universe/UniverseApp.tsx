@@ -4,6 +4,9 @@ import { Html, Line, OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
 import { orbitForStatus } from '../../lib/projects';
 import type { ProjectStatus } from '../../i18n/types';
+import type { ChatScript } from '../../data/chat';
+import ChatBeacon from '../chat/ChatBeacon';
+import ChatPanel from '../chat/ChatPanel';
 import './universe.css';
 
 type Orbit = 'inner' | 'middle' | 'outer' | 'comet';
@@ -45,6 +48,7 @@ interface Props {
   listLabel: string;
   orbitLabels: Record<Orbit, string>;
   contacts: ContactLink[];
+  chat: ChatScript;
 }
 
 const SHELL_BG = '#0b0b0d';
@@ -481,7 +485,7 @@ class CanvasBoundary extends Component<BoundaryProps, { failed: boolean }> {
 }
 
 export default function UniverseApp(props: Props) {
-  const { projects, systems, owner, locale, homeHref, aboutHref, aboutLabel, languageHref, languageLabel, listLabel, orbitLabels, contacts } = props;
+  const { projects, systems, owner, locale, homeHref, aboutHref, aboutLabel, languageHref, languageLabel, listLabel, orbitLabels, contacts, chat } = props;
   const [visit] = useState(readVisitSettings);
   const [introSkipped, setIntroSkipped] = useState(visit.reduced);
   const [reducedMotion, setReducedMotion] = useState(visit.reduced);
@@ -489,6 +493,10 @@ export default function UniverseApp(props: Props) {
   const [selection, setSelection] = useState<Selection>();
   const [overlayOpen, setOverlayOpen] = useState(false);
   const [canvasFailed, setCanvasFailed] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
+  const [chatHint, setChatHint] = useState(false);
+  const chatTrigger = useRef<HTMLButtonElement>(null);
+  const openChat = () => { setIntroSkipped(true); setChatOpen(true); };
   // Remounting the canvas resets the camera after a dive.
   const [sceneKey, setSceneKey] = useState(0);
   useEffect(() => {
@@ -543,10 +551,13 @@ export default function UniverseApp(props: Props) {
     <CanvasBoundary fallback={fallback} onFail={() => setCanvasFailed(true)}>
       <Canvas key={sceneKey} className="universe-canvas" camera={{ position: [0, 14, 26], fov: 45 }} dpr={[1, lowDetail ? 1.5 : 2]}>
         <UniverseScene projects={projects} lowDetail={lowDetail} reducedMotion={reducedMotion} shortIntro={visit.short} introSkipped={introSkipped} systems={systems} onSelect={onSelect} targetId={selection?.id} />
+        <ChatBeacon bubble={chat.ui.bubble} reducedMotion={reducedMotion} hinted={chatHint} muted={chatOpen} onOpen={openChat} />
       </Canvas>
     </CanvasBoundary>
     <header className="universe-header">
       <a href={homeHref}>{owner}</a>
+      <button ref={chatTrigger} type="button" className="chat-trigger" aria-expanded={chatOpen} onClick={() => (chatOpen ? setChatOpen(false) : openChat())}
+        onFocus={() => setChatHint(true)} onBlur={() => setChatHint(false)} onMouseEnter={() => setChatHint(true)} onMouseLeave={() => setChatHint(false)}>{chat.ui.trigger}</button>
       <a href={languageHref} lang={locale === 'tr' ? 'en' : 'tr'}>{languageLabel}</a>
     </header>
     <footer className="universe-footer">
@@ -555,6 +566,7 @@ export default function UniverseApp(props: Props) {
         <a href={contact.href} {...(contact.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>{contact.label}</a>
       </span>)}
     </footer>
+    {chatOpen && <ChatPanel script={chat} triggerRef={chatTrigger} onClose={() => setChatOpen(false)} />}
     {!canvasFailed && <ProjectList projects={projects} aboutHref={aboutHref} aboutLabel={aboutLabel} listLabel={listLabel} orbitLabels={orbitLabels} />}
     {selection && <div className={`universe-takeover${overlayOpen ? ' is-open' : ''}`} aria-hidden="true" style={{
       backgroundColor: selection.pageBg,
