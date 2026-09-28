@@ -1,0 +1,11 @@
+.construction-toy { display: grid; gap: 8px; }
+.construction-toy__stage { position: relative; height: 260px; overflow: hidden; background: var(--page-bg); border-radius: var(--page-radius); cursor: crosshair; }
+.construction-toy__stage:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+/* Press-and-drag drives the dozer, so touches on the lot are not page pans. The wheel still scrolls. */
+.construction-toy__stage canvas { display: block; touch-action: none; }
+.construction-toy__hint { margin: 0; color: color-mix(in srgb, currentColor 62%, transparent); font-size: 12px; line-height: 1.5; }
+.construction-toy__hint span { display: block; }
+
+@media (max-width: 699px) {
+  .construction-toy__stage { height: 200px; }
+}

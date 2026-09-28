@@ -40,6 +40,10 @@ export interface Dictionary {
     orbitComet: string;
     externalLink: string;
   };
+  toy: {
+    label: string;
+    hint: string;
+  };
   notFound: {
     message: string;
     home: string;

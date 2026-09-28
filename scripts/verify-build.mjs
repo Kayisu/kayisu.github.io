@@ -163,11 +163,30 @@ const sandboxRoute = '/sandbox/';
 const yksRoute = '/yks/2026/tip-tercih/';
 const projectSlugs = ['cognispace', 'ecoreport', 'sorudepo', 'sandcastle-sandbox', 'yks-tercih-sihirbazi'];
 
+/** Project routes whose content entry has `status: building`, read from the source frontmatter. */
+function buildingProjectRoutes() {
+  return listFiles(join(root, 'src/content/projects')).filter((file) => /\.mdx?$/.test(file)).flatMap((file) => {
+    const frontmatter = readFileSync(file, 'utf8').split(/^---\r?$/m)[1] ?? '';
+    const field = (name) => frontmatter.match(new RegExp(`^${name}:\\s*(\\S+)`, 'm'))?.[1];
+    if (field('status') !== 'building') return [];
+    return [`${field('locale') === 'en' ? '/en' : ''}/projects/${field('slug')}/`];
+  });
+}
+
 for (const route of universeRoutes) assertIsland(route, 'UniverseApp');
 assertIsland(sandboxRoute, 'SandboxApp');
 assertIsland(yksRoute, 'YksApp');
 
-const interactiveRoutes = [...universeRoutes, sandboxRoute, yksRoute];
+// --- Construction toy: every building project page (both locales) and the 404, nowhere else ---
+const constructionRoutes = ['/404.html', ...buildingProjectRoutes()];
+if (!constructionRoutes.some((route) => route.startsWith('/en/'))) fail('No English building project route was found');
+if (!constructionRoutes.some((route) => route.startsWith('/projects/'))) fail('No Turkish building project route was found');
+for (const route of constructionRoutes) assertIsland(route, 'ConstructionToy');
+for (const [route, html] of htmlByRoute) {
+  if (!constructionRoutes.includes(route) && html.includes('ConstructionToy')) fail(`${route} unexpectedly references ConstructionToy`);
+}
+
+const interactiveRoutes = [...universeRoutes, sandboxRoute, yksRoute, ...constructionRoutes];
 for (const route of htmlByRoute.keys()) if (!interactiveRoutes.includes(route)) assertStatic(route);
 
 assertMetadata('/', 'tr', '/', { tr: '/', en: '/en/', 'x-default': '/' });

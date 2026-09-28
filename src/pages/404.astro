@@ -1,10 +1,13 @@
 ---
+import ConstructionToy from '../components/construction/ConstructionToy';
 import SiteFooter from '../components/layout/SiteFooter.astro';
 import { getDictionary } from '../i18n';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
 const trCopy = getDictionary('tr').notFound;
 const enCopy = getDictionary('en').notFound;
+const trToy = getDictionary('tr').toy;
+const enToy = getDictionary('en').toy;
 ---
 
 <BaseLayout title="Sayfa bulunamadı | Page not found" canonicalPath="/404.html" noindex>
@@ -12,6 +15,9 @@ const enCopy = getDictionary('en').notFound;
     <p lang="tr">{trCopy.message}</p>
     <p lang="en">{enCopy.message}</p>
     <a href="/">← {trCopy.home} / {enCopy.home}</a>
+    <div class="not-found-page__toy">
+      <ConstructionToy client:visible label={trToy.label} hints={[{ lang: 'tr', text: trToy.hint }, { lang: 'en', text: enToy.hint }]} />
+    </div>
   </main>
   <SiteFooter locale="tr" />
 </BaseLayout>
@@ -20,4 +26,5 @@ const enCopy = getDictionary('en').notFound;
   .not-found-page { display: grid; place-content: center; gap: 10px; min-height: 70vh; padding: 2rem; text-align: center; }
   .not-found-page p { font-size: clamp(18px, 4vw, 24px); }
   .not-found-page a { justify-self: center; margin-top: 10px; color: var(--page-muted); font-size: 14px; text-underline-offset: 3px; }
+  .not-found-page__toy { width: min(608px, calc(100vw - 4rem)); margin-top: 24px; }
 </style>
