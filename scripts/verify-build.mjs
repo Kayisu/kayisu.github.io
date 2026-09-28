@@ -161,7 +161,7 @@ const htmlByRoute = new Map(htmlFiles.map((file) => [routeForHtml(file), readFil
 const universeRoutes = ['/', '/en/'];
 const sandboxRoute = '/sandstruction/';
 const yksRoute = '/yks/2026/tip-tercih/';
-const projectSlugs = ['cognispace', 'ecoreport', 'sorudepo', 'sandstruction', 'yks-tercih-sihirbazi'];
+const projectSlugs = ['cognispace', 'ecoreport', 'sorudepo', 'sandstruction', 'yks-tercih-sihirbazi', 'wordloom', 'statsview'];
 
 for (const route of universeRoutes) assertIsland(route, 'UniverseApp');
 assertIsland(sandboxRoute, 'SandboxApp');
@@ -199,7 +199,7 @@ const redirects = [
   ['/projects/sandcastle-sandbox/', '/projects/sandstruction/'], ['/tr/projects/sandcastle-sandbox/', '/projects/sandstruction/'],
   ['/en/projects/sandcastle-sandbox/', '/en/projects/sandstruction/'],
   ...oldPlanets.flatMap((planet) => [[`/planet/${planet}/`, '/en/'], [`/tr/planet/${planet}/`, '/']]),
-  ...projectSlugs.filter((slug) => slug !== 'sandstruction').map((slug) => [`/tr/projects/${slug}/`, `/projects/${slug}/`]),
+  ...projectSlugs.filter((slug) => !['sandstruction', 'wordloom', 'statsview'].includes(slug)).map((slug) => [`/tr/projects/${slug}/`, `/projects/${slug}/`]),
 ];
 for (const [route, destination] of redirects) assertRedirect(route, destination);
 

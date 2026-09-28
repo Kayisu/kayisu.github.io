@@ -29,6 +29,14 @@ export const PROJECT_PALETTES = {
     bg: '#f4ecdc', surface: '#fffaf0', text: '#2b2317', muted: '#6b5d45', accent: '#b7852f',
     font: { family: 'Fredoka', googleSpec: 'Fredoka:wght@400;600' }, radius: 16,
   },
+  wordloom: {
+    bg: '#f4f5fa', surface: '#ffffff', text: '#1b2333', muted: '#56607a', accent: '#3f5b8b',
+    font: { family: 'Literata', googleSpec: 'Literata:wght@400;600' }, radius: 12,
+  },
+  statsview: {
+    bg: '#f8f8f5', surface: '#ffffff', text: '#1c2622', muted: '#56645e', accent: '#356859',
+    font: { family: 'Figtree', googleSpec: 'Figtree:wght@400;600' }, radius: 20,
+  },
 } satisfies Record<string, ProjectPalette>;
 
 export type ProjectTranslationKey = keyof typeof PROJECT_PALETTES;
