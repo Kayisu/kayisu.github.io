@@ -29,10 +29,10 @@ interface ChatCopy {
 const COPY = {
   tr: {
     ui: {
-      trigger: 'Asistan', title: 'Asistan · yapay zekâ', close: 'Kapat', bubble: 'buradayım',
+      trigger: 'Asistan', title: 'Asistan', close: 'Kapat', bubble: 'buradayım',
       options: 'Seçenekler', inputLabel: 'Serbest soru', placeholder: 'Serbest soru yakında',
     },
-    greeting: "Merhaba. Emre Kaan'ın çalışmaları hakkında bilgi veren bir yapay zekâ asistanıyım. Ne öğrenmek istersiniz?",
+    greeting: "Merhaba. Emre Kaan'ın çalışmaları hakkında bilgi veren bir asistanım. Ne öğrenmek istersiniz?",
     home: 'Başa dön',
     moreProjects: 'Diğer projeler',
     ask: { now: 'Şu an ne üzerinde çalışıyor?', projects: 'Projeler', path: 'Geçmişi', contact: 'İletişim' },
@@ -46,10 +46,10 @@ const COPY = {
   },
   en: {
     ui: {
-      trigger: 'Assistant', title: 'Assistant · AI', close: 'Close', bubble: 'here',
+      trigger: 'Assistant', title: 'Assistant', close: 'Close', bubble: 'here',
       options: 'Options', inputLabel: 'Free question', placeholder: 'Free questions coming soon',
     },
-    greeting: "Hello. I am an AI assistant that provides information about Emre Kaan's work. What would you like to know?",
+    greeting: "Hello. I am an assistant that provides information about Emre Kaan's work. What would you like to know?",
     home: 'Back to start',
     moreProjects: 'Other projects',
     ask: { now: 'What is he working on now?', projects: 'Projects', path: 'Background', contact: 'Contact' },
