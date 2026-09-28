@@ -3,9 +3,8 @@ title: YKS Tercih Sihirbazı
 slug: yks-tercih-sihirbazi
 translationKey: yks-tercih-sihirbazi
 locale: tr
-planet: mercury
 summary: Resmî 2026 YKS yerleştirme kılavuzundaki programları filtreleyen ve karşılaştıran bir tarayıcı aracı; ilk sürüm yalnızca tıp programlarını kapsar ve tüm programlara genişletilecektir.
-status: prototype
+status: oneshot
 year: 2026
 kind: tool
 tags: [Tool, Education, Data]

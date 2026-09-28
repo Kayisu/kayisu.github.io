@@ -4,27 +4,19 @@ import type { Locale } from './config';
 
 export { DEFAULT_LOCALE, LOCALES, isLocale, localeMeta, otherLocale } from './config';
 export type { Locale, LocaleMetadata } from './config';
-export type {
-  BodyCopy,
-  CelestialBodyId,
-  Dictionary,
-  ProjectStatus,
-} from './types';
+export type { Dictionary, ProjectStatus } from './types';
 export {
-  earthGamesPath,
-  explorePath,
+  aboutPath,
   getAlternatePaths,
   homePath,
   languageSwitchPath,
-  planetPath,
   projectPath,
   resolveEquivalentPath,
-  sectionPath,
-  sunPath,
+  sandboxPath,
 } from './routes';
 export type { AbsolutePath, LocalisedRoute } from './routes';
 
-export const dictionaries = { en, tr } as const;
+export const dictionaries = { tr, en } as const;
 
 export function getDictionary(locale: Locale) {
   return dictionaries[locale];

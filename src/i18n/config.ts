@@ -8,10 +8,10 @@ export interface LocaleMetadata {
   htmlLang: string;
   formatLocale: string;
   ogLocale: string;
-  prefix: '' | '/tr';
+  prefix: '' | '/en';
 }
 
-export const DEFAULT_LOCALE: Locale = 'en';
+export const DEFAULT_LOCALE: Locale = 'tr';
 
 export const localeMeta = {
   en: {
@@ -20,7 +20,7 @@ export const localeMeta = {
     htmlLang: 'en',
     formatLocale: 'en-US',
     ogLocale: 'en_US',
-    prefix: '',
+    prefix: '/en',
   },
   tr: {
     label: 'Turkish',
@@ -28,7 +28,7 @@ export const localeMeta = {
     htmlLang: 'tr',
     formatLocale: 'tr-TR',
     ogLocale: 'tr_TR',
-    prefix: '/tr',
+    prefix: '',
   },
 } as const satisfies Record<Locale, LocaleMetadata>;
 

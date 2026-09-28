@@ -1,19 +1,9 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
+import { DEFAULT_SYSTEM, SYSTEM_IDS } from './data/systems';
 
 const projectLocales = ['en', 'tr'] as const;
-const projectPlanets = [
-  'mercury',
-  'venus',
-  'earth',
-  'mars',
-  'jupiter',
-  'saturn',
-  'uranus',
-  'neptune',
-  'pluto',
-] as const;
-const projectStatuses = ['active', 'shipped', 'prototype', 'wip', 'archived'] as const;
+const projectStatuses = ['done', 'live', 'building', 'parked', 'archived', 'oneshot'] as const;
 const projectKinds = ['product', 'research', 'experiment', 'writing', 'tool', 'game'] as const;
 
 const nonEmptyText = z.string().trim().min(1);
@@ -48,9 +38,14 @@ const projects = defineCollection({
         .string()
         .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Use a lowercase URL-safe translation key.'),
       locale: z.enum(projectLocales),
-      planet: z.enum(projectPlanets),
       summary: nonEmptyText,
       status: z.enum(projectStatuses),
+      /** Star system the project orbits; one system today, a galaxy of them later. */
+      system: z.enum(SYSTEM_IDS).default(DEFAULT_SYSTEM),
+      parent: z
+        .string()
+        .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Use a project translation key.')
+        .optional(),
       kind: z.enum(projectKinds).optional(),
       year: z.number().int().min(1900).max(2100).optional(),
       period: nonEmptyText.optional(),

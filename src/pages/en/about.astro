@@ -1,0 +1,19 @@
+---
+import AboutDossier from '../../components/profile/AboutDossier.astro';
+import { PROFILE } from '../../data/profile';
+import { getDictionary, getAlternatePaths, aboutPath } from '../../i18n';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const locale = 'en' as const;
+const dictionary = getDictionary(locale);
+---
+
+<BaseLayout
+  title={dictionary.metadata.aboutTitle}
+  description={PROFILE[locale].aim}
+  locale={locale}
+  canonicalPath={aboutPath(locale)}
+  alternatePaths={getAlternatePaths({ kind: 'about' })}
+>
+  <AboutDossier locale={locale} languageHref={aboutPath('tr')} />
+</BaseLayout>

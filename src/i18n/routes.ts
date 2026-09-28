@@ -1,105 +1,70 @@
 import { DEFAULT_LOCALE, type Locale, otherLocale } from './config';
-import type { CelestialBodyId } from './types';
 
 export type AbsolutePath = `/${string}`;
 
 export type LocalisedRoute =
   | { kind: 'landing' }
-  | { kind: 'explore' }
-  | { kind: 'planet'; name: Exclude<CelestialBodyId, 'sun'> }
   | { kind: 'project'; slugs: Partial<Record<Locale, string>> }
-  | { kind: 'sun' }
-  | { kind: 'earth-games' }
+  | { kind: 'about' }
   | { kind: 'sandbox' };
+
+type LegacySunRoute = { kind: 'sun' };
 
 function encodeSegment(segment: string): string {
   return encodeURIComponent(segment.trim());
 }
 
 export function homePath(locale: Locale): AbsolutePath {
-  return locale === DEFAULT_LOCALE ? '/' : '/tr/';
-}
-
-export function explorePath(locale: Locale): AbsolutePath {
-  return locale === DEFAULT_LOCALE ? '/explore/' : '/tr/explore/';
-}
-
-export function planetPath(locale: Locale, name: Exclude<CelestialBodyId, 'sun'>): AbsolutePath {
-  const segment = encodeSegment(name);
-  return locale === DEFAULT_LOCALE
-    ? `/planet/${segment}/`
-    : `/tr/planet/${segment}/`;
+  return locale === DEFAULT_LOCALE ? '/' : '/en/';
 }
 
 export function projectPath(locale: Locale, slug: string): AbsolutePath {
   const segment = encodeSegment(slug);
   return locale === DEFAULT_LOCALE
     ? `/projects/${segment}/`
-    : `/tr/projects/${segment}/`;
+    : `/en/projects/${segment}/`;
 }
 
-export function earthGamesPath(locale: Locale): AbsolutePath {
-  return locale === DEFAULT_LOCALE
-    ? '/planet/earth/games/'
-    : '/tr/planet/earth/games/';
+export function aboutPath(locale: Locale): AbsolutePath {
+  return locale === DEFAULT_LOCALE ? '/about/' : '/en/about/';
 }
 
-export function sunPath(locale: Locale): AbsolutePath {
-  return locale === DEFAULT_LOCALE ? '/star/sun/' : '/tr/star/sun/';
+export function sandboxPath(): AbsolutePath {
+  return '/sandbox/';
 }
 
-export function sectionPath(
-  locale: Locale,
-  section: 'projects' | 'about' | 'contact',
-): `${AbsolutePath}#${string}` {
-  return `${homePath(locale)}#${section}`;
-}
-
-function exactPath(route: LocalisedRoute, locale: Locale): AbsolutePath | undefined {
+function exactPath(route: LocalisedRoute | LegacySunRoute, locale: Locale): AbsolutePath | undefined {
   switch (route.kind) {
     case 'landing':
       return homePath(locale);
-    case 'explore':
-      return explorePath(locale);
-    case 'planet':
-      return planetPath(locale, route.name);
     case 'project': {
       const slug = route.slugs[locale];
       return slug ? projectPath(locale, slug) : undefined;
     }
-    case 'sun':
-      return sunPath(locale);
-    case 'earth-games':
-      return earthGamesPath(locale);
+    case 'about':
+      return aboutPath(locale);
     case 'sandbox':
-      return locale === DEFAULT_LOCALE ? '/planet/earth/games/sandbox/' : undefined;
+      return locale === 'tr' ? sandboxPath() : undefined;
+    case 'sun':
+      return locale === 'tr' ? '/tr/star/sun/' : '/star/sun/';
   }
 }
 
-/**
- * Resolve the language switch destination. Routes without a translated page
- * return the target landing page.
- */
 export function resolveEquivalentPath(
-  route: LocalisedRoute,
+  route: LocalisedRoute | LegacySunRoute,
   targetLocale: Locale,
-): AbsolutePath | `${AbsolutePath}#${string}` {
-  const equivalent = exactPath(route, targetLocale);
-  if (equivalent) return equivalent;
-  return homePath(targetLocale);
+): AbsolutePath {
+  return exactPath(route, targetLocale) ?? homePath(targetLocale);
 }
 
-/** Only genuine page equivalents are returned; fallbacks never become hreflang links. */
 export function getAlternatePaths(
   route: LocalisedRoute,
 ): Partial<Record<Locale, AbsolutePath>> {
   const paths: Partial<Record<Locale, AbsolutePath>> = {};
-
-  for (const locale of ['en', 'tr'] as const) {
+  for (const locale of ['tr', 'en'] as const) {
     const path = exactPath(route, locale);
     if (path) paths[locale] = path;
   }
-
   return paths;
 }
 

@@ -3,9 +3,8 @@ title: CogniSpace
 slug: cognispace
 translationKey: cognispace
 locale: en
-planet: earth
 summary: A 2026 Kayseri University Computer Engineering senior thesis for an IoT cognitive-comfort monitoring system.
-status: shipped
+status: done
 year: 2026
 kind: research
 tags: [IoT, Computer Vision, FastAPI, Senior Thesis]

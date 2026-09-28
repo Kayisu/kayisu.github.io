@@ -3,9 +3,8 @@ title: EcoReport
 slug: ecoreport
 translationKey: ecoreport
 locale: en
-planet: jupiter
 summary: A SaaS for TSRS/ESRS sustainability reporting with LLM-powered report generation, incubated at Erciyes Teknopark's Sera programme.
-status: active
+status: building
 year: 2026
 kind: product
 role: Co-founder & CTO

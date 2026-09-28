@@ -1,0 +1,40 @@
+---
+import { getCollection } from 'astro:content';
+import ProjectDossier from '../../../components/projects/ProjectDossier.astro';
+import { getProjectPalette } from '../../../data/palettes';
+import { getAlternatePaths, otherLocale, projectPath, resolveEquivalentPath, type LocalisedRoute } from '../../../i18n';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { validateProjects, type ProjectEntry } from '../../../lib/projects';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('projects');
+  validateProjects(entries);
+  return entries.filter((entry) => entry.data.locale === 'en').map((entry) => ({
+    params: { slug: entry.data.slug },
+    props: { entry },
+  }));
+}
+
+const { entry }: { entry: ProjectEntry } = Astro.props;
+const locale = 'en' as const;
+const entries = await getCollection('projects');
+validateProjects(entries);
+const translation = entries.find((item) => item.data.translationKey === entry.data.translationKey && item.data.locale === 'tr');
+const route = {
+  kind: 'project',
+  slugs: { en: entry.data.slug, ...(translation ? { tr: translation.data.slug } : {}) },
+} satisfies LocalisedRoute;
+const palette = getProjectPalette(entry.data.translationKey);
+---
+
+<BaseLayout
+  title={`${entry.data.title} | Kayisu`}
+  description={entry.data.summary}
+  locale={locale}
+  canonicalPath={projectPath(locale, entry.data.slug)}
+  alternatePaths={getAlternatePaths(route)}
+  ogType="article"
+  skin={palette}
+>
+  <ProjectDossier entry={entry} locale={locale} languageHref={resolveEquivalentPath(route, otherLocale(locale))} />
+</BaseLayout>

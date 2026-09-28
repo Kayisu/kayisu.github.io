@@ -3,9 +3,8 @@ title: SoruDepo
 slug: sorudepo
 translationKey: sorudepo
 locale: en
-planet: jupiter
 summary: A web application that lets teachers turn exam and workbook PDFs into reusable question libraries and test papers.
-status: active
+status: building
 year: 2026
 kind: product
 tags: [SaaS, Education, PDF, OCR]

@@ -3,9 +3,8 @@ title: SoruDepo
 slug: sorudepo
 translationKey: sorudepo
 locale: tr
-planet: jupiter
 summary: Öğretmenlerin sınav ve çalışma kitabı PDF'lerini yeniden kullanılabilir soru kütüphanelerine ve sınav kâğıtlarına dönüştürmesini sağlayan web uygulaması.
-status: active
+status: building
 year: 2026
 kind: product
 tags: [SaaS, Education, PDF, OCR]

@@ -3,13 +3,12 @@ title: Sandcastle Sandbox
 slug: sandcastle-sandbox
 translationKey: sandcastle-sandbox
 locale: en
-planet: venus
 summary: Sculpt a small coastal landscape, guide the water, and place towers and decorations.
-status: prototype
+status: oneshot
 year: 2026
 kind: game
 tags: [Three.js, React, WebGL]
-demo: https://kayisu.github.io/planet/earth/games/sandbox/
+demo: https://kayisu.github.io/sandbox/
 role: Solo build
 ---
 

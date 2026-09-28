@@ -1,0 +1,126 @@
+---
+import { render, type CollectionEntry } from 'astro:content';
+import { SITE } from '../../data/site';
+import { getDictionary, homePath, type Locale } from '../../i18n';
+import SiteFooter from '../layout/SiteFooter.astro';
+
+interface Props {
+  entry: CollectionEntry<'projects'>;
+  locale: Locale;
+  languageHref: string;
+}
+
+const { entry, locale, languageHref } = Astro.props;
+const dictionary = getDictionary(locale);
+const { Content } = await render(entry);
+const links = [
+  entry.data.demo ? { href: entry.data.demo, label: dictionary.project.demo } : undefined,
+  entry.data.repo ? { href: entry.data.repo, label: dictionary.project.code } : undefined,
+].filter((link): link is { href: string; label: string } => Boolean(link));
+---
+
+<main class="project-page">
+  <div class="project-page__top">
+    <a class="project-page__back" href={homePath(locale)}>← {dictionary.project.back}</a>
+    <a class="project-page__language" href={languageHref} lang={locale === 'tr' ? 'en' : 'tr'}>{locale === 'tr' ? 'EN' : 'TR'}</a>
+  </div>
+
+  <article class="project-dossier">
+    <header class="project-dossier__header">
+      <h1>{entry.data.title}</h1>
+      <p class="project-dossier__status"><i aria-hidden="true"></i>{dictionary.status[entry.data.status]}</p>
+    </header>
+    <dl>
+      <dt>{dictionary.project.what}</dt><dd>{entry.data.summary}</dd>
+      {entry.data.role && <><dt>{dictionary.project.role}</dt><dd>{entry.data.role}</dd></>}
+      {entry.data.year && <><dt>{dictionary.project.year}</dt><dd>{entry.data.year}</dd></>}
+      {links.length > 0 && <>
+        <dt>{dictionary.project.links}</dt>
+        <dd class="project-dossier__links">
+          {links.map((link, index) => <>
+            {index > 0 && <span aria-hidden="true"> · </span>}
+            <a href={link.href} target="_blank" rel="noopener noreferrer">{link.label}<span class="visually-hidden"> — {SITE.name}</span></a>
+          </>)}
+        </dd>
+      </>}
+    </dl>
+  </article>
+
+  {entry.data.status === 'building' && <aside class="construction-band">
+    <p>{dictionary.project.construction}</p>
+  </aside>}
+
+  <div class="project-copy"><Content /></div>
+  <SiteFooter locale={locale} />
+</main>
+
+<style>
+  .project-page {
+    width: min(100%, 640px);
+    min-height: 100vh;
+    padding: 48px 16px 96px;
+    margin-inline: auto;
+    color: var(--page-text);
+    font-family: var(--page-font);
+    animation: dossier-enter 0.4s ease-out both;
+  }
+
+  @keyframes dossier-enter {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .project-page__top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+  .project-page__back, .project-page__language { color: var(--page-muted); font-size: 14px; text-decoration: none; }
+  .project-page__back:hover, .project-page__language:hover { color: var(--page-text); }
+
+  .project-dossier {
+    padding: 20px 22px;
+    background: var(--page-surface);
+    border: 1px solid color-mix(in srgb, var(--page-muted) 20%, transparent);
+    border-radius: var(--page-radius);
+  }
+
+  .project-dossier__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid color-mix(in srgb, var(--page-text) 15%, transparent);
+  }
+
+  h1 { margin: 0; font-size: clamp(24px, 5vw, 34px); letter-spacing: -0.02em; }
+  .project-dossier__status { display: inline-flex; flex-shrink: 0; align-items: center; gap: 6px; font-size: 13px; }
+  .project-dossier__status i { width: 8px; height: 8px; flex: none; border-radius: 50%; background: var(--page-accent); }
+  dl { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 8px 12px; margin: 14px 0 0; font-size: 15px; }
+  dt { color: var(--page-muted); }
+  dd { min-width: 0; margin: 0; overflow-wrap: anywhere; }
+  .project-dossier__links a { color: var(--page-text); text-decoration-color: var(--page-accent); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+
+  .construction-band {
+    margin-top: 16px;
+    padding: 14px 18px;
+    color: #1c1a14;
+    background-color: #efe6c9;
+    background-image: repeating-linear-gradient(45deg, #e8c547 0 7px, #1c1a14 7px 14px);
+    background-size: 100% 6px;
+    background-repeat: no-repeat;
+    border-radius: var(--page-radius);
+    font-size: 14px;
+  }
+
+  .project-copy { margin-top: 28px; color: var(--page-text); font-size: 16px; line-height: 1.6; }
+  .project-copy > :global(* + *) { margin-top: 1.1em; }
+  .project-copy :global(h2), .project-copy :global(h3) { margin-top: 2em; font-family: var(--page-font); }
+  .project-copy :global(a) { color: var(--page-text); text-decoration-color: var(--page-accent); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+  .project-copy :global(ul), .project-copy :global(ol) { padding-left: 1.3em; }
+  .project-page :global(.site-footer) { padding-inline: 0; margin-top: 40px; }
+
+  @media (max-width: 480px) {
+    .project-dossier { padding: 18px 16px; }
+    .project-dossier__header { align-items: flex-start; flex-direction: column; gap: 8px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) { .project-page { animation: none; } }
+</style>

@@ -1,0 +1,58 @@
+---
+import { SITE } from '../../data/site';
+import { PROFILE, hasStatement, type ProfileLocale } from '../../data/profile';
+import { getDictionary, homePath, type Locale } from '../../i18n';
+import SiteFooter from '../layout/SiteFooter.astro';
+
+interface Props { locale: Locale; languageHref: string }
+const { locale, languageHref } = Astro.props;
+const dictionary = getDictionary(locale);
+const profile: ProfileLocale = PROFILE[locale];
+---
+
+<main class="about-page">
+  <div class="about-page__top">
+    <a href={homePath(locale)}>← {dictionary.project.back}</a>
+    <a href={languageHref} lang={locale === 'tr' ? 'en' : 'tr'}>{locale === 'tr' ? 'EN' : 'TR'}</a>
+  </div>
+  <article class="about-dossier">
+    <header><h1>{SITE.name}</h1>{hasStatement(profile.statement) && <p class="about-dossier__statement">{profile.statement}</p>}</header>
+    <dl>
+      <dt>{dictionary.profile.now}</dt>
+      <dd><ul>{profile.now.map((item) => <li>{item.href ? <a href={item.href}>{item.text}</a> : item.text}</li>)}</ul></dd>
+      <dt>{dictionary.profile.path}</dt>
+      <dd><ol>{profile.path.map((item) => <li>
+        <span>{item.period}</span> {item.href ? <a href={item.href}>{item.title}</a> : item.title}
+        {item.detail && <p>{item.detail}</p>}
+      </li>)}</ol></dd>
+      <dt>{dictionary.profile.aim}</dt><dd>{profile.aim}</dd>
+      <dt>{dictionary.contact.email}</dt>
+      <dd class="about-dossier__contacts">
+        <a href={`mailto:${SITE.email}`}>{SITE.email}</a><span aria-hidden="true"> · </span>
+        <a href={SITE.github} target="_blank" rel="noopener noreferrer">{dictionary.contact.github}</a><span aria-hidden="true"> · </span>
+        <a href={SITE.linkedin} target="_blank" rel="noopener noreferrer">{dictionary.contact.linkedin}</a>
+      </dd>
+    </dl>
+  </article>
+  <SiteFooter locale={locale} />
+</main>
+
+<style>
+  .about-page { width: min(100%, 640px); min-height: 100vh; padding: 48px 16px 96px; margin-inline: auto; }
+  .about-page__top { display: flex; justify-content: space-between; margin-bottom: 24px; font-size: 14px; }
+  .about-page__top a { color: var(--page-muted); text-decoration: none; }
+  .about-page__top a:hover { color: var(--page-text); }
+  .about-dossier { padding: 20px 22px; background: var(--page-surface); border: 1px solid rgb(233 230 223 / 20%); border-radius: 12px; }
+  .about-dossier header { padding-bottom: 14px; border-bottom: 1px solid rgb(233 230 223 / 15%); }
+  h1 { font-size: clamp(24px, 5vw, 34px); letter-spacing: -0.02em; }
+  dl { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 12px; margin-top: 14px; font-size: 15px; }
+  dt { color: var(--page-muted); }
+  dd { min-width: 0; margin: 0; overflow-wrap: anywhere; }
+  dd ul, dd ol { display: grid; gap: 8px; padding-left: 16px; }
+  dd li span { color: var(--page-muted); }
+  dd a { color: var(--page-text); text-underline-offset: 3px; }
+  dd p { margin-top: 4px; color: var(--page-muted); }
+  .about-dossier__contacts a { color: var(--page-accent); }
+  .about-page :global(.site-footer) { padding-inline: 0; margin-top: 40px; }
+  @media (max-width: 480px) { .about-dossier { padding: 18px 16px; } }
+</style>

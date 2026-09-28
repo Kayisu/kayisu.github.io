@@ -5,27 +5,12 @@ const root = resolve(import.meta.dirname, '..');
 const dist = join(root, 'dist');
 const origin = 'https://kayisu.github.io';
 const errors = [];
-
-function fail(message) {
-  errors.push(message);
-}
-
-function requireFile(relativePath) {
-  const absolutePath = join(dist, relativePath);
-  if (!existsSync(absolutePath)) fail(`Missing generated file: ${relativePath}`);
-  return absolutePath;
-}
-
-function read(relativePath) {
-  const absolutePath = requireFile(relativePath);
-  return existsSync(absolutePath) ? readFileSync(absolutePath, 'utf8') : '';
-}
+const fail = (message) => errors.push(message);
 
 function htmlPath(route) {
   if (route === '/') return 'index.html';
   if (route === '/404.html') return '404.html';
-  const clean = route.replace(/^\//, '').replace(/\/$/, '');
-  return `${clean}/index.html`;
+  return `${route.replace(/^\//, '').replace(/\/$/, '')}/index.html`;
 }
 
 function routeForHtml(file) {
@@ -33,6 +18,15 @@ function routeForHtml(file) {
   if (path === 'index.html') return '/';
   if (path === '404.html') return '/404.html';
   return `/${path.replace(/index\.html$/, '')}`;
+}
+
+function read(route) {
+  const file = join(dist, htmlPath(route));
+  if (!existsSync(file)) {
+    fail(`Missing generated file: ${htmlPath(route)}`);
+    return '';
+  }
+  return readFileSync(file, 'utf8');
 }
 
 function listFiles(directory) {
@@ -44,10 +38,7 @@ function listFiles(directory) {
 }
 
 function decodeAttribute(value) {
-  return value
-    .replaceAll('&quot;', '"')
-    .replaceAll('&#39;', "'")
-    .replaceAll('&amp;', '&');
+  return value.replaceAll('&quot;', '"').replaceAll('&#39;', "'").replaceAll('&amp;', '&');
 }
 
 function islandTags(html) {
@@ -60,41 +51,40 @@ function islandName(tag) {
     try {
       const parsed = JSON.parse(decodeAttribute(options));
       if (typeof parsed.name === 'string') return parsed.name;
-    } catch {
-      // The generic island count remains authoritative if Astro changes this payload.
-    }
+    } catch { /* Fall through to the component URL. */ }
   }
-
-  const componentUrl = tag.match(/\bcomponent-url="([^"]+)"/)?.[1];
-  return componentUrl?.split('/').pop()?.split('.')[0] ?? 'unknown';
+  return tag.match(/\bcomponent-url="([^"]+)"/)?.[1]?.split('/').pop()?.split('.')[0] ?? 'unknown';
 }
 
 function assertIsland(route, expectedName) {
-  const tags = islandTags(read(htmlPath(route)));
-  const names = tags.map(islandName);
-  if (tags.length !== 1 || names[0] !== expectedName) {
+  const names = islandTags(read(route)).map(islandName);
+  if (names.length !== 1 || names[0] !== expectedName) {
     fail(`${route} expected one ${expectedName} island; found ${JSON.stringify(names)}`);
   }
 }
 
 function assertStatic(route) {
-  const tags = islandTags(read(htmlPath(route)));
-  if (tags.length > 0) {
-    fail(`${route} must be static; found ${tags.length} island(s): ${tags.map(islandName).join(', ')}`);
+  const names = islandTags(read(route)).map(islandName);
+  if (names.length) fail(`${route} must be static; found ${names.join(', ')}`);
+}
+
+function assertMetadata(route, locale, canonical, alternates = {}) {
+  const html = read(route);
+  if (!new RegExp(`<html[^>]+lang="${locale}"`).test(html)) fail(`${route} does not declare lang=${locale}`);
+  if (!html.includes(`<link rel="canonical" href="${origin}${canonical}">`)) fail(`${route} has an incorrect or missing canonical URL`);
+  for (const [language, href] of Object.entries(alternates)) {
+    if (!html.includes(`<link rel="alternate" hreflang="${language}" href="${origin}${href}">`)) {
+      fail(`${route} is missing alternate ${language} -> ${href}`);
+    }
   }
 }
 
-function assertMetadata(route, locale, canonical, alternates) {
-  const html = read(htmlPath(route));
-  if (!new RegExp(`<html[^>]+lang="${locale}"`).test(html)) {
-    fail(`${route} does not declare lang=${locale}`);
-  }
-  if (!html.includes(`<link rel="canonical" href="${origin}${canonical}">`)) {
-    fail(`${route} has an incorrect or missing canonical URL`);
-  }
-  for (const [lang, href] of Object.entries(alternates ?? {})) {
-    const tag = `<link rel="alternate" hreflang="${lang}" href="${origin}${href}">`;
-    if (!html.includes(tag)) fail(`${route} is missing alternate ${lang} -> ${href}`);
+function assertRedirect(route, destination) {
+  const html = read(route);
+  const content = html.match(/<meta\s+http-equiv="refresh"\s+content="([^"]+)"/i)?.[1];
+  const redirect = decodeAttribute(content ?? '');
+  if (!content || !redirect.includes(`url=${destination}`)) {
+    fail(`${route} is missing its redirect to ${destination}`);
   }
 }
 
@@ -104,19 +94,15 @@ function attributeValues(html, attribute) {
 }
 
 function assetReferences(html) {
-  return new Set(
-    ['href', 'src', 'component-url', 'renderer-url', 'before-hydration-url']
-      .flatMap((attribute) => attributeValues(html, attribute))
-      .filter((value) => value.startsWith('/_astro/')),
-  );
+  return new Set(['href', 'src', 'component-url', 'renderer-url', 'before-hydration-url']
+    .flatMap((attribute) => attributeValues(html, attribute))
+    .filter((value) => value.startsWith('/_astro/')));
 }
 
 function stylesheetHrefs(html) {
-  return new Set(
-    [...html.matchAll(/<link\b[^>]*rel="stylesheet"[^>]*href="([^"]+)"[^>]*>/g)].map(
-      (match) => decodeAttribute(match[1]),
-    ),
-  );
+  return new Set([...html.matchAll(/<link\b[^>]*rel="stylesheet"[^>]*href="([^"]+)"[^>]*>/g)]
+    .map((match) => decodeAttribute(match[1]))
+    .filter((href) => href.startsWith('/')));
 }
 
 function javascriptImports(asset) {
@@ -134,13 +120,11 @@ function javascriptImports(asset) {
 function javascriptGraph(initialAssets) {
   const graph = new Set();
   const queue = [...initialAssets].filter((asset) => asset.endsWith('.js'));
-  while (queue.length > 0) {
+  while (queue.length) {
     const asset = queue.shift();
     if (graph.has(asset)) continue;
     graph.add(asset);
-    for (const imported of javascriptImports(asset)) {
-      if (!graph.has(imported)) queue.push(imported);
-    }
+    for (const imported of javascriptImports(asset)) if (!graph.has(imported)) queue.push(imported);
   }
   return graph;
 }
@@ -153,16 +137,14 @@ function targetFile(pathname) {
   return join(direct, 'index.html');
 }
 
-function targetExists(fromHtmlFile, href) {
+function targetExists(fromFile, href) {
   if (/^(?:https?:|mailto:|tel:|\/\/)/i.test(href)) return true;
   if (/^[a-z][a-z\d+.-]*:/i.test(href)) return false;
-
-  const base = new URL(routeForHtml(fromHtmlFile), origin);
+  const base = new URL(routeForHtml(fromFile), origin);
   const url = new URL(href, base);
   const file = targetFile(url.pathname);
   if (!existsSync(file)) return false;
   if (!url.hash) return true;
-
   const id = decodeURIComponent(url.hash.slice(1));
   const html = readFileSync(file, 'utf8');
   const escaped = id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -176,249 +158,122 @@ if (!existsSync(dist)) {
 
 const htmlFiles = listFiles(dist).filter((file) => file.endsWith('.html'));
 const htmlByRoute = new Map(htmlFiles.map((file) => [routeForHtml(file), readFileSync(file, 'utf8')]));
-const interactiveRoutes = ['/', '/tr/', '/explore/', '/tr/explore/'];
-const sandboxRoute = '/planet/earth/games/sandbox/';
+const universeRoutes = ['/', '/en/'];
+const sandboxRoute = '/sandbox/';
 const yksRoute = '/yks/2026/tip-tercih/';
+const projectSlugs = ['cognispace', 'ecoreport', 'sorudepo', 'sandcastle-sandbox', 'yks-tercih-sihirbazi'];
 
-for (const route of interactiveRoutes) assertIsland(route, 'SolarApp');
+for (const route of universeRoutes) assertIsland(route, 'UniverseApp');
 assertIsland(sandboxRoute, 'SandboxApp');
 assertIsland(yksRoute, 'YksApp');
 
-for (const [route] of htmlByRoute) {
-  if (![...interactiveRoutes, sandboxRoute, yksRoute].includes(route)) assertStatic(route);
-}
+const interactiveRoutes = [...universeRoutes, sandboxRoute, yksRoute];
+for (const route of htmlByRoute.keys()) if (!interactiveRoutes.includes(route)) assertStatic(route);
 
-const planetNames = [
-  'mercury',
-  'venus',
-  'earth',
-  'mars',
-  'jupiter',
-  'saturn',
-  'uranus',
-  'neptune',
-  'pluto',
+assertMetadata('/', 'tr', '/', { tr: '/', en: '/en/', 'x-default': '/' });
+assertMetadata('/en/', 'en', '/en/', { tr: '/', en: '/en/', 'x-default': '/' });
+assertMetadata('/about/', 'tr', '/about/', { tr: '/about/', en: '/en/about/', 'x-default': '/about/' });
+assertMetadata('/en/about/', 'en', '/en/about/', { tr: '/about/', en: '/en/about/', 'x-default': '/about/' });
+for (const slug of projectSlugs) {
+  assertMetadata(`/projects/${slug}/`, 'tr', `/projects/${slug}/`, {
+    tr: `/projects/${slug}/`, en: `/en/projects/${slug}/`, 'x-default': `/projects/${slug}/`,
+  });
+  assertMetadata(`/en/projects/${slug}/`, 'en', `/en/projects/${slug}/`, {
+    tr: `/projects/${slug}/`, en: `/en/projects/${slug}/`, 'x-default': `/projects/${slug}/`,
+  });
+  for (const route of [`/projects/${slug}/`, `/en/projects/${slug}/`]) {
+    const html = read(route);
+    if (html.includes('UniverseApp')) fail(`${route} unexpectedly references UniverseApp`);
+  }
+}
+assertMetadata(sandboxRoute, 'tr', sandboxRoute);
+assertMetadata(yksRoute, 'tr', yksRoute);
+assertMetadata('/404.html', 'tr', '/404.html');
+
+const oldPlanets = ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto'];
+const redirects = [
+  ['/tr/', '/'], ['/explore/', '/'], ['/tr/explore/', '/'],
+  ['/star/sun/', '/en/about/'], ['/tr/star/sun/', '/about/'],
+  ['/planet/earth/games/', '/sandbox/'], ['/planet/earth/games/sandbox/', '/sandbox/'],
+  ['/tr/planet/earth/games/', '/sandbox/'],
+  ...oldPlanets.flatMap((planet) => [[`/planet/${planet}/`, '/en/'], [`/tr/planet/${planet}/`, '/']]),
+  ...projectSlugs.map((slug) => [`/tr/projects/${slug}/`, `/projects/${slug}/`]),
 ];
-const projectSlugs = ['cognispace', 'ecoreport', 'sandcastle-sandbox', 'sorudepo', 'yks-tercih-sihirbazi'];
+for (const [route, destination] of redirects) assertRedirect(route, destination);
 
-for (const planet of planetNames) {
-  requireFile(htmlPath(`/planet/${planet}/`));
-  requireFile(htmlPath(`/tr/planet/${planet}/`));
+const trHome = read('/');
+const enHome = read('/en/');
+for (const route of ['/', '/en/', '/about/', '/en/about/']) {
+  if (read(route).includes('[[KAAN]]')) fail(`${route} leaks the profile statement placeholder`);
 }
-for (const slug of projectSlugs) {
-  requireFile(htmlPath(`/projects/${slug}/`));
-  requireFile(htmlPath(`/tr/projects/${slug}/`));
+for (const [route, html] of [['/about/', read('/about/')], ['/en/about/', read('/en/about/')]]) {
+  for (const expected of ['Sera', 'CogniSpace']) if (!html.includes(expected)) fail(`${route} is missing profile content: ${expected}`);
 }
-for (const route of ['/planet/earth/games/', '/tr/planet/earth/games/', sandboxRoute, '/star/sun/', '/tr/star/sun/']) {
-  requireFile(htmlPath(route));
-}
-requireFile('404.html');
-
-assertMetadata('/', 'en', '/', { en: '/', tr: '/tr/', 'x-default': '/' });
-assertMetadata('/tr/', 'tr', '/tr/', { en: '/', tr: '/tr/', 'x-default': '/' });
-assertMetadata('/explore/', 'en', '/explore/', {
-  en: '/explore/',
-  tr: '/tr/explore/',
-  'x-default': '/explore/',
-});
-assertMetadata('/tr/explore/', 'tr', '/tr/explore/', {
-  en: '/explore/',
-  tr: '/tr/explore/',
-  'x-default': '/explore/',
-});
-for (const planet of planetNames) {
-  assertMetadata(`/planet/${planet}/`, 'en', `/planet/${planet}/`, {
-    en: `/planet/${planet}/`,
-    tr: `/tr/planet/${planet}/`,
-    'x-default': `/planet/${planet}/`,
-  });
-  assertMetadata(`/tr/planet/${planet}/`, 'tr', `/tr/planet/${planet}/`, {
-    en: `/planet/${planet}/`,
-    tr: `/tr/planet/${planet}/`,
-    'x-default': `/planet/${planet}/`,
-  });
-}
-for (const slug of projectSlugs) {
-  assertMetadata(`/projects/${slug}/`, 'en', `/projects/${slug}/`, {
-    en: `/projects/${slug}/`,
-    tr: `/tr/projects/${slug}/`,
-    'x-default': `/projects/${slug}/`,
-  });
-  assertMetadata(`/tr/projects/${slug}/`, 'tr', `/tr/projects/${slug}/`, {
-    en: `/projects/${slug}/`,
-    tr: `/tr/projects/${slug}/`,
-    'x-default': `/projects/${slug}/`,
-  });
-}
-assertMetadata('/planet/earth/games/', 'en', '/planet/earth/games/', {
-  en: '/planet/earth/games/',
-  tr: '/tr/planet/earth/games/',
-  'x-default': '/planet/earth/games/',
-});
-assertMetadata('/star/sun/', 'en', '/star/sun/', {
-  en: '/star/sun/',
-  tr: '/tr/star/sun/',
-  'x-default': '/star/sun/',
-});
-assertMetadata('/tr/star/sun/', 'tr', '/tr/star/sun/', {
-  en: '/star/sun/',
-  tr: '/tr/star/sun/',
-  'x-default': '/star/sun/',
-});
-assertMetadata('/tr/planet/earth/games/', 'tr', '/tr/planet/earth/games/', {
-  en: '/planet/earth/games/',
-  tr: '/tr/planet/earth/games/',
-  'x-default': '/planet/earth/games/',
-});
-
-const localePayloads = {
-  en: {
-    routes: ['/', '/explore/'],
-    required: 'Search portfolio categories',
-    forbidden: 'Portföy kategorilerinde ara',
-  },
-  tr: {
-    routes: ['/tr/', '/tr/explore/'],
-    required: 'Portfolyo kategorilerinde ara',
-    forbidden: 'Search portfolio categories',
-  },
-};
-for (const [locale, test] of Object.entries(localePayloads)) {
-  for (const route of test.routes) {
-    const html = read(htmlPath(route));
-    if (!html.includes(test.required) || html.includes(test.forbidden)) {
-      fail(`${route} does not serialise only the ${locale} solar copy`);
-    }
-  }
-}
-
-const englishHome = read('index.html');
-const turkishHome = read('tr/index.html');
-if (!/<a\b[^>]*href="\/tr\/star\/sun\/"/.test(turkishHome)) {
-  fail('/tr/ must link to /tr/star/sun/');
-}
-// The identity statement placeholder must never reach the published site;
-// components render nothing while `profile.statement` is still the placeholder.
-for (const route of ['/', '/tr/', '/star/sun/', '/tr/star/sun/']) {
-  if (read(htmlPath(route)).includes('[[KAAN]]')) fail(`${route} leaks the profile statement placeholder`);
-}
-for (const route of ['/star/sun/', '/tr/star/sun/']) {
-  const html = read(htmlPath(route));
-  for (const expected of ['Sera', 'CogniSpace']) {
-    if (!html.includes(expected)) fail(`${route} is missing profile content: ${expected}`);
-  }
+if (!trHome.includes('Emre Kaan Ataş') || !enHome.includes('Emre Kaan Ataş')) fail('A universe route is missing the owner name.');
+if (!read('/404.html').includes('Page not found.') || !read('/404.html').includes('Sayfa bulunamadı.')) {
+  fail('/404.html must include one not-found line for each language.');
 }
 
 for (const absent of [
+  'projects/unknown/index.html', 'en/projects/unknown/index.html',
   'planet/unknown/index.html',
-  'projects/unknown/index.html',
-  'tr/projects/unknown/index.html',
-  'planet/earth/games/unknown/index.html',
-]) {
-  if (existsSync(join(dist, absent))) fail(`Unexpected route was generated: ${absent}`);
-}
+]) if (existsSync(join(dist, absent))) fail(`Unexpected route was generated: ${absent}`);
 
-const sandboxHtml = read(htmlPath(sandboxRoute));
+// --- Sandbox asset boundary ------------------------------------------------
+const sandboxHtml = read(sandboxRoute);
 const sandboxStyles = [...stylesheetHrefs(sandboxHtml)].filter((href) => /sandbox/i.test(href));
-if (sandboxStyles.length === 0) fail('Sandbox has no identifiable route stylesheet');
+if (!sandboxStyles.length) fail('Sandbox has no identifiable route stylesheet');
 const nonSandboxHtml = [...htmlByRoute.entries()].filter(([route]) => route !== sandboxRoute);
 for (const style of sandboxStyles) {
-  if (!read(style.replace(/^\//, '')).includes('.sandbox-shell')) {
+  if (!readFileSync(join(dist, style.replace(/^\//, '')), 'utf8').includes('.sandbox-shell')) {
     fail(`Sandbox stylesheet does not contain the sandbox namespace: ${style}`);
   }
-  for (const [route, html] of nonSandboxHtml) {
-    if (assetReferences(html).has(style)) fail(`${route} unexpectedly loads sandbox CSS ${style}`);
-  }
+  for (const [route, html] of nonSandboxHtml) if (assetReferences(html).has(style)) fail(`${route} unexpectedly loads sandbox CSS ${style}`);
 }
-
 const sandboxAssets = assetReferences(sandboxHtml);
 const sandboxGraph = javascriptGraph(sandboxAssets);
-const nonSandboxGraph = javascriptGraph(
-  nonSandboxHtml.flatMap(([, html]) => [...assetReferences(html)]),
-);
+const nonSandboxGraph = javascriptGraph(nonSandboxHtml.flatMap(([, html]) => [...assetReferences(html)]));
 const sandboxEntries = [...sandboxAssets].filter((asset) => /SandboxApp/i.test(asset));
-if (sandboxEntries.length !== 1) {
-  fail(`Sandbox expected one SandboxApp entry; found ${JSON.stringify(sandboxEntries)}`);
-}
-for (const asset of sandboxEntries) {
-  if (nonSandboxGraph.has(asset)) fail(`Sandbox entry leaks into a non-sandbox graph: ${asset}`);
-}
-if (![...sandboxGraph].some((asset) => /SandboxApp/i.test(asset))) {
-  fail('Sandbox JavaScript graph does not contain its SandboxApp entry');
-}
-
-for (const [route, html] of htmlByRoute) {
-  if (route !== sandboxRoute && html.includes('SandboxApp')) {
-    fail(`${route} unexpectedly references SandboxApp`);
-  }
-}
+if (sandboxEntries.length !== 1) fail(`Sandbox expected one SandboxApp entry; found ${JSON.stringify(sandboxEntries)}`);
+for (const asset of sandboxEntries) if (nonSandboxGraph.has(asset)) fail(`Sandbox entry leaks into another route's graph: ${asset}`);
+if (![...sandboxGraph].some((asset) => /SandboxApp/i.test(asset))) fail('Sandbox JavaScript graph does not contain its SandboxApp entry');
+for (const [route, html] of htmlByRoute) if (route !== sandboxRoute && html.includes('SandboxApp')) fail(`${route} unexpectedly references SandboxApp`);
 
 // --- YKS explorer ----------------------------------------------------------
-// The published page owns its CSS/JS; those assets must not load elsewhere.
-const yksHtml = read(htmlPath(yksRoute));
+const yksHtml = read(yksRoute);
 const nonYksHtml = [...htmlByRoute.entries()].filter(([route]) => route !== yksRoute);
-
-const yksStyles = [...stylesheetHrefs(yksHtml)].filter((href) =>
-  read(href.replace(/^\//, '')).includes('.yks-shell'),
-);
-if (yksStyles.length !== 1) {
-  fail(`YKS expected exactly one namespaced stylesheet; found ${JSON.stringify(yksStyles)}`);
+const yksStyles = [...stylesheetHrefs(yksHtml)].filter((href) => readFileSync(join(dist, href.replace(/^\//, '')), 'utf8').includes('.yks-shell'));
+if (yksStyles.length !== 1) fail(`YKS expected exactly one namespaced stylesheet; found ${JSON.stringify(yksStyles)}`);
+for (const style of yksStyles) for (const [route, html] of nonYksHtml) {
+  if (assetReferences(html).has(style)) fail(`${route} unexpectedly loads YKS CSS ${style}`);
 }
-for (const style of yksStyles) {
-  for (const [route, html] of nonYksHtml) {
-    if (assetReferences(html).has(style)) fail(`${route} unexpectedly loads YKS CSS ${style}`);
-  }
-}
-
 const yksAssets = assetReferences(yksHtml);
 const yksGraph = javascriptGraph(yksAssets);
 const nonYksGraph = javascriptGraph(nonYksHtml.flatMap(([, html]) => [...assetReferences(html)]));
 const yksEntries = [...yksAssets].filter((asset) => /YksApp/i.test(asset));
-if (yksEntries.length !== 1) {
-  fail(`YKS expected one YksApp entry; found ${JSON.stringify(yksEntries)}`);
-}
-for (const asset of yksEntries) {
-  if (nonYksGraph.has(asset)) fail(`YKS entry leaks into another route's graph: ${asset}`);
-}
-if (![...yksGraph].some((asset) => /YksApp/i.test(asset))) {
-  fail('YKS JavaScript graph does not contain its YksApp entry');
-}
-if ([...yksGraph].some((asset) => /three|SolarApp|SandboxApp/i.test(asset))) {
-  fail('YKS page must not ship the solar-system or sandbox bundles');
-}
-
-for (const [route, html] of nonYksHtml) {
-  if (html.includes('YksApp')) fail(`${route} unexpectedly references YksApp`);
-}
-
-// The dataset totals are rendered server-side, so they prove the data layer ran.
+if (yksEntries.length !== 1) fail(`YKS expected one YksApp entry; found ${JSON.stringify(yksEntries)}`);
+for (const asset of yksEntries) if (nonYksGraph.has(asset)) fail(`YKS entry leaks into another route's graph: ${asset}`);
+if (![...yksGraph].some((asset) => /YksApp/i.test(asset))) fail('YKS JavaScript graph does not contain its YksApp entry');
+if ([...yksGraph].some((asset) => /three|SolarApp|SandboxApp/i.test(asset))) fail('YKS page must not ship the solar-system or sandbox bundles');
+for (const [route, html] of nonYksHtml) if (html.includes('YksApp')) fail(`${route} unexpectedly references YksApp`);
 for (const expected of [
   '<strong>225</strong><span>uygun Tıp programı</span>',
   '<strong>104</strong><span>devlet programı</span>',
   '<strong>112</strong><span>vakıf programı</span>',
-]) {
-  if (!yksHtml.includes(expected)) fail(`${yksRoute} is missing rendered summary data: ${expected}`);
-}
+]) if (!yksHtml.includes(expected)) fail(`${yksRoute} is missing rendered summary data: ${expected}`);
 
 for (const file of htmlFiles) {
   const html = readFileSync(file, 'utf8');
   for (const match of html.matchAll(/<a\b[^>]*href="([^"]+)"/g)) {
     const href = decodeAttribute(match[1]);
-    if (!targetExists(file, href)) {
-      fail(`${relative(dist, file)} contains an unresolved internal link: ${href}`);
-    }
+    if (!targetExists(file, href)) fail(`${relative(dist, file)} contains an unresolved internal link: ${href}`);
   }
 }
+if (!read('/404.html').includes('<meta name="robots" content="noindex, nofollow">')) fail('/404.html must be noindex');
 
-const notFound = read('404.html');
-if (!notFound.includes('<meta name="robots" content="noindex, nofollow">')) {
-  fail('/404.html must be noindex');
-}
-
-if (errors.length > 0) {
+if (errors.length) {
   console.error(`Build verification failed with ${errors.length} problem(s):`);
   for (const error of errors) console.error(`- ${error}`);
   process.exit(1);
 }
-
 console.log(`Build verification passed for ${htmlFiles.length} generated HTML files.`);

@@ -1,112 +1,49 @@
-# CLAUDE.md
-
-This file provides guidance for work in this repository.
+# Repository guidance
 
 ## What this is
 
-Personal portfolio for Emre Kaan Ataş, deployed as a GitHub Pages **user site**
-(`kayisu.github.io`, served from root). It's an **Astro** static site whose
-centerpiece is an interactive **React Three Fiber** solar system where the Sun +
-9 bodies orbit and clicking one opens an info panel and zooms the camera. Static
-content (profile, planet detail pages) ships **zero framework JS**; only the
-solar-system island loads React + Three.js.
+An Astro static portfolio for Emre Kaan Ataş, deployed as the GitHub Pages user site `kayisu.github.io`. The home page is a dark, interactive universe: each planet is a project and its orbit is derived from project status. Turkish is the default locale.
 
 ## Commands
 
 ```bash
-npm install        # install deps
-npm run dev        # dev server (http://localhost:4321)
-npm run build      # static build to dist/
-npm run preview    # serve the built dist/ locally
-npx astro check    # type-check .astro/.tsx
-npm run verify:build # validate the generated static site
-npm run test:yks   # run YKS data and wizard tests
+npm run dev
+npx astro check
+npm run build
+npm run verify:build
+npm run test:yks
 ```
 
-The test suite consists of `tests/` run by `npm run test:yks`; `npm run verify:build`
-also checks generated routes, metadata, and asset boundaries. Deployment is automatic: pushing to `main` triggers
-`.github/workflows/deploy.yml` (withastro/action → deploy-pages). The repo's
-**Pages source must be set to "GitHub Actions"** in Settings → Pages (one-time,
-done in the GitHub UI, not in code).
+Deployment is handled by `.github/workflows/deploy.yml`; GitHub Pages must use the GitHub Actions source.
 
 ## Architecture
 
-### The island boundary (this is the whole point of the Astro choice)
-- `src/pages/index.astro` renders static landing components from `src/components/landing/` plus
-  `<SolarApp client:only="react" />`. **`client:only` is required** — the scene
-  is WebGL and cannot be server-rendered. Everything interactive lives inside
-  that one island; everything else is static HTML.
-- The detail pages (`src/pages/planet/[name].astro`, `src/pages/star/sun.astro`,
-  `src/pages/404.astro`) are pure static — **never** import the R3F components
-  into them or you'll ship Three.js on pages that don't need it.
+### Universe island
 
-### Single source of truth
-- `src/data/planets.ts` holds every body (`SUN`, `PLANETS`, `BODIES`) with
-  radius/distance/color/texture/type/desc/href, plus `orbitalSpeed(distance)`
-  (Kepler approximation `1/sqrt(distance)*0.015`) and `getBody(name)`. The scene,
-  the info panel, the search box, and `getStaticPaths` for the per-planet pages
-  all read from here. Add or change a body in this one file.
-- The bodies are an **identity map**, not astronomy: each body's `type` is its
-  **category label** (Core, Tools, Creative, Roots, Research, Ventures, Systems,
-  Lab, Mind, Archive) and `desc` is its **identity tagline**. These two content
-  fields are the only ones safe to edit — radius/distance/color/texture/name/
-  hasRing/isStar are load-bearing for the R3F scene.
+- `/` and `/en/` render the `UniverseApp` React Three Fiber island with `client:only="react"`. The canvas is decorative and interactive; the grouped project links remain keyboard accessible, and the page includes a visible no-script and canvas-error fallback.
+- A project is a planet. Status determines its orbit: `done` and `live` are inner, `building` is middle, `parked` and `archived` are outer, and `oneshot` is a comet. Do not store an orbit or category in project frontmatter.
+- `src/content/projects/{tr,en}/` is the project source. `src/content.config.ts` owns the schema and `src/lib/projects.ts` validates palette coverage and parent references.
+- `src/data/palettes.ts` owns each project's colors, font, and corner radius. Every project translation key must resolve to a palette or the build fails.
+- The scene receives serializable project props from the Astro page. Keep all canvas-only behavior in `src/components/universe/`; keep that directory within its line budget.
 
-### Content model (projects)
-- Projects live as plain markdown in `src/content/projects/*.md`, loaded by a
-  `projects` content collection (Astro Content Layer `glob` loader) defined in
-  `src/content.config.ts`. The collection is the easy-to-extend core: **adding a
-  project = dropping one markdown file — no code changes.**
-- Each file's frontmatter `planet` field assigns its **category** (which body it
-  shows up under); the markdown body is the full write-up. Schema fields: `title`,
-  `planet`, `summary` (required); `status`, `year`, `tags`, `role`, `repo`,
-  `demo`, `featured` (optional).
-- `BodyDetail.astro` queries the collection, filters by the current body's name,
-  and renders project cards (sorted featured → year desc → title), or a tasteful
-  empty state when a category has none. `src/pages/projects/[...slug].astro`
-  renders each project as its own static page from the markdown body.
-- The Sun (`/star/sun`) is the **Core / about-me** page — static prose, **not**
-  project-driven (it never lists projects).
+### Pages and localization
 
-### Localisation and standalone tools
-- The site is bilingual. Locale copy is in `src/i18n/`; `en.ts` and `tr.ts` both
-  satisfy the shared `Dictionary` type, and Turkish static routes live under `/tr/`.
-- The YKS wizard is the Turkish page `src/pages/yks/2026/tip-tercih.astro`; its
-  React interface is in `src/components/yks/` and its data is in `src/data/yks/`.
-- The sandbox game is implemented in `src/components/sandbox/` and served at
-  `/planet/earth/games/sandbox/`.
+- `/` and `/en/` are the universe; `/projects/<slug>/` and `/en/projects/<slug>/` are static project dossiers; `/about/` and `/en/about/` are static profile pages.
+- `/sandbox/` is the existing sandbox game page. `/yks/2026/tip-tercih/` is the standalone YKS tool. Keep their implementation directories and YKS data files isolated from universe changes.
+- `src/i18n/config.ts` defines Turkish as the default with no prefix and English under `/en/`. `src/i18n/routes.ts` owns route construction, language equivalents, canonical paths, and alternate-language links.
+- `src/layouts/BaseLayout.astro` owns shell metadata and typography. Project pages pass their palette to the layout so the skin covers the dossier and footer.
+- Legacy URLs are generated from `redirects` in `astro.config.mjs`; keep those redirects covered by `scripts/verify-build.mjs`.
 
-### Shared state
-- `src/store/solarStore.ts` (zustand) is the bridge between the WebGL canvas and
-  the DOM overlay UI (they're in one React tree but don't prop-drill):
-  `speedMultiplier`, `selected` (info panel), `followTarget` + `isAnimating`
-  (camera). `select(name)` opens the panel and starts the zoom; `close()` clears
-  both. **In `useFrame`, read the store via `useSolarStore.getState()`** (not the
-  hook) so per-frame reads don't trigger React re-renders.
+### Boundaries
 
-### Solar-system components (`src/components/solar/`)
-- `SolarApp.tsx` — island root: `<Canvas>` + `CameraRig` + the DOM overlay
-  (`SimControls`, `InfoPanel`).
-- `Scene.tsx` — lights + a tilted, slowly-spinning "universe" `<group>` holding
-  `Stars`, `Sun`, and a `Planet` per entry in `PLANETS`.
-- `Planet.tsx` — orbit `<group>` (revolves) wrapping the mesh (spins); faint
-  orbit-line; optional Saturn ring. Each mesh gets `name={body.name}`.
-- `CameraRig.tsx` — drei `OrbitControls` (`makeDefault`) + smooth follow/zoom +
-  WASD, ported from the original `animate()` loop. It locates the focused body
-  with `scene.getObjectByName(followTarget)` — **that name tag is load-bearing**;
-  removing `name` from a mesh breaks camera follow.
-- `Stars.tsx` — shader-based twinkling starfield (shaders copied verbatim from
-  the pre-migration `script.js`).
+- The YKS implementation is in `src/components/yks/`, `src/data/yks/`, `src/store/yksStore.ts`, `src/styles/yks.css`, `src/pages/yks/`, `tests/`, and `scripts/yks/`.
+- Sandbox behavior is in `src/components/sandbox/`, `src/lib/sandbox/`, `src/store/sandboxStore.ts`, and `src/styles/sandbox.css`.
+- `zustand` remains required by the YKS and sandbox stores.
 
-### Routing
-- Per-body pages are real pre-rendered static routes (`getStaticPaths` over
-  `PLANETS`). Deep links and refresh work natively — there is **no** SPA redirect
-  hack (the old `404.html`/`index.html` redirects were deleted in the migration).
-  `InfoPanel`'s "Explore" is a plain `<a href={body.href}>`.
+Every code identifier, file, folder, script and enum value is English; Turkish only in user-facing text.
 
-### Gotchas
-- TSX uses `className`; `.astro` files use `class`. Don't mix them up.
-- `astro.config.mjs` sets `site` but no `base` (user page at root). If this ever
-  becomes a project page, a `base` would be needed and all root-absolute paths
-  (`/textures/...`, `href="/"`) would have to account for it.
-- Textures live in `public/textures/` and are referenced as `/textures/*.jpg`.
+## Gotchas
+
+- TSX uses `className`; Astro templates use `class`.
+- Keep the root deployment base unset: this is a GitHub Pages user site.
+- Content and metadata must remain static on project and profile pages; only the universe, YKS, and sandbox pages load React islands.

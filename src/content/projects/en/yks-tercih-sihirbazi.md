@@ -3,9 +3,8 @@ title: YKS Preference Wizard
 slug: yks-tercih-sihirbazi
 translationKey: yks-tercih-sihirbazi
 locale: en
-planet: mercury
 summary: A browser tool that filters and compares programmes from the official 2026 YKS placement guide; the first release covers medicine programmes only and will be extended to all programmes.
-status: prototype
+status: oneshot
 year: 2026
 kind: tool
 tags: [Tool, Education, Data]

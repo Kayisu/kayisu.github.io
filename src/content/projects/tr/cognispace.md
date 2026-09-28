@@ -3,9 +3,8 @@ title: CogniSpace
 slug: cognispace
 translationKey: cognispace
 locale: tr
-planet: earth
 summary: Kayseri Üniversitesi Bilgisayar Mühendisliğinde 2026 tarihli, IoT tabanlı bilişsel konfor izleme sistemi üzerine bitirme tezi.
-status: shipped
+status: done
 year: 2026
 kind: research
 tags: [IoT, Computer Vision, FastAPI, Senior Thesis]

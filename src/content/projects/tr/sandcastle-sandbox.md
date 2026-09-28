@@ -3,13 +3,12 @@ title: Sandcastle Sandbox
 slug: sandcastle-sandbox
 translationKey: sandcastle-sandbox
 locale: tr
-planet: venus
 summary: Küçük bir kıyı arazisini şekillendirin, suyu yönlendirin, kuleler ve süslemeler yerleştirin.
-status: prototype
+status: oneshot
 year: 2026
 kind: game
 tags: [Three.js, React, WebGL]
-demo: https://kayisu.github.io/planet/earth/games/sandbox/
+demo: https://kayisu.github.io/sandbox/
 role: Tek kişilik
 ---
 

@@ -1,0 +1,78 @@
+---
+import { getCollection } from 'astro:content';
+import UniverseApp from './UniverseApp';
+import UniverseFallback from './UniverseFallback.astro';
+import './universe.css';
+import { SITE } from '../../data/site';
+import { getProjectPalette } from '../../data/palettes';
+import { SYSTEM_IDS, SYSTEMS } from '../../data/systems';
+import { getDictionary, getAlternatePaths, homePath, aboutPath, projectPath, type Locale } from '../../i18n';
+import { otherLocale } from '../../i18n/config';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { validateProjects } from '../../lib/projects';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const dictionary = getDictionary(locale);
+const allProjects = await getCollection('projects');
+validateProjects(allProjects);
+const projects = allProjects
+  .filter((entry) => entry.data.locale === locale)
+  .map((entry) => {
+    const palette = getProjectPalette(entry.data.translationKey);
+    return {
+      id: entry.data.translationKey,
+      name: entry.data.title,
+      system: entry.data.system,
+      status: entry.data.status,
+      statusLabel: dictionary.status[entry.data.status],
+      accent: palette.accent,
+      pageBg: palette.bg,
+      href: projectPath(locale, entry.data.slug),
+      ...(entry.data.parent ? { parent: entry.data.parent } : {}),
+    };
+  });
+const aboutHref = aboutPath(locale);
+// The home system's star is the owner; further systems will name their own star.
+const systems = SYSTEM_IDS.map((id) => ({
+  ...SYSTEMS[id],
+  label: SITE.name,
+  sublabel: dictionary.nav.about,
+  href: aboutHref,
+}));
+const orbitLabels = {
+  inner: dictionary.accessibility.orbitInner,
+  middle: dictionary.accessibility.orbitMiddle,
+  outer: dictionary.accessibility.orbitOuter,
+  comet: dictionary.accessibility.orbitComet,
+};
+const islandProps = {
+  projects,
+  systems,
+  owner: SITE.name,
+  locale,
+  homeHref: homePath(locale),
+  aboutHref,
+  aboutLabel: dictionary.nav.about,
+  languageHref: homePath(otherLocale(locale)),
+  languageLabel: dictionary.language.shortTarget,
+  listLabel: dictionary.accessibility.projectList,
+  orbitLabels,
+  contacts: [
+    { href: `mailto:${SITE.email}`, label: SITE.email },
+    { href: SITE.github, label: dictionary.contact.github, external: true },
+    { href: SITE.linkedin, label: dictionary.contact.linkedin, external: true },
+  ],
+};
+---
+
+<BaseLayout
+  title={dictionary.metadata.landingTitle}
+  description={dictionary.metadata.landingDescription}
+  locale={locale}
+  canonicalPath={homePath(locale)}
+  alternatePaths={getAlternatePaths({ kind: 'landing' })}
+>
+  <UniverseApp client:only="react" {...islandProps} />
+  <UniverseFallback projects={projects} aboutHref={aboutHref} aboutLabel={dictionary.nav.about} listLabel={dictionary.accessibility.projectList} orbitLabels={orbitLabels} />
+</BaseLayout>

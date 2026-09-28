@@ -1,12 +1,8 @@
 ---
 import '../styles/global.css';
 import { SITE } from '../data/site';
-import {
-  LOCALES,
-  getDictionary,
-  localeMeta,
-  type Locale,
-} from '../i18n';
+import type { ProjectPalette } from '../data/palettes';
+import { LOCALES, getDictionary, localeMeta, type Locale } from '../i18n';
 
 export interface Props {
   title?: string;
@@ -15,20 +11,21 @@ export interface Props {
   canonicalPath?: string;
   alternatePaths?: Partial<Record<Locale, string>>;
   noindex?: boolean;
-  /** Robots directive emitted when `noindex` is set. */
   robots?: string;
   ogType?: 'website' | 'article';
   bodyClass?: string;
+  skin?: ProjectPalette;
 }
 
 const {
-  locale = 'en',
+  locale = 'tr',
   canonicalPath = Astro.url.pathname,
   alternatePaths,
   noindex = false,
   robots = 'noindex, nofollow',
   ogType = 'website',
   bodyClass,
+  skin,
 } = Astro.props;
 
 const dictionary = getDictionary(locale);
@@ -39,120 +36,49 @@ const canonicalUrl = new URL(canonicalPath, siteUrl);
 const completeAlternates = alternatePaths
   ? LOCALES.map((alternateLocale) => {
       const path = alternatePaths[alternateLocale];
-      return path
-        ? {
-            locale: alternateLocale,
-            href: new URL(path, siteUrl).toString(),
-          }
-        : undefined;
+      return path ? { locale: alternateLocale, href: new URL(path, siteUrl).toString() } : undefined;
     }).filter((entry): entry is { locale: Locale; href: string } => Boolean(entry))
   : [];
 const hasTrueLanguagePair = completeAlternates.length === LOCALES.length;
-const englishAlternate = completeAlternates.find((entry) => entry.locale === 'en');
+const defaultAlternate = completeAlternates.find((entry) => entry.locale === 'tr');
+const fontSpec = skin?.font.googleSpec ?? 'Rubik:wght@400;500';
+const bodyStyle = skin
+  ? `--page-bg:${skin.bg};--page-surface:${skin.surface};--page-text:${skin.text};--page-muted:${skin.muted};--page-accent:${skin.accent};--page-radius:${skin.radius}px;--page-font:'${skin.font.family}',sans-serif;`
+  : undefined;
 ---
 
-<!DOCTYPE html>
-<html lang={localeMeta[locale].htmlLang} data-theme-mode="system">
+<!doctype html>
+<html lang={localeMeta[locale].htmlLang} data-skin={skin ? 'project' : 'shell'}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script is:inline>
-      (() => {
-        const key = 'kayisu-theme';
-        const validModes = new Set(['system', 'light', 'dark']);
-        const root = document.documentElement;
-        const media = window.matchMedia('(prefers-color-scheme: dark)');
-        let mode = 'system';
-
-        try {
-          const storedMode = window.localStorage.getItem(key);
-          if (storedMode && validModes.has(storedMode)) mode = storedMode;
-        } catch {
-          mode = 'system';
-        }
-
-        const resolveTheme = () => (mode === 'system' ? (media.matches ? 'dark' : 'light') : mode);
-        const applyTheme = (announce = false) => {
-          const theme = resolveTheme();
-          root.dataset.themeMode = mode;
-          root.dataset.theme = theme;
-          root.style.colorScheme = theme;
-
-          document.querySelectorAll('[data-theme-select]').forEach((control) => {
-            if (control instanceof HTMLSelectElement) control.value = mode;
-          });
-
-          if (announce) {
-            window.dispatchEvent(
-              new CustomEvent('kayisu:theme-change', { detail: { mode, theme } }),
-            );
-          }
-        };
-
-        applyTheme();
-
-        media.addEventListener('change', () => {
-          if (mode === 'system') applyTheme(true);
-        });
-
-        document.addEventListener('DOMContentLoaded', () => {
-          document.querySelectorAll('[data-theme-select]').forEach((control) => {
-            if (!(control instanceof HTMLSelectElement)) return;
-            control.value = mode;
-            control.addEventListener('change', () => {
-              if (!validModes.has(control.value)) return;
-              mode = control.value;
-
-              try {
-                window.localStorage.setItem(key, mode);
-              } catch {
-                // The selected theme still applies for this page when storage is unavailable.
-              }
-
-              applyTheme(true);
-            });
-          });
-        });
-      })();
-    </script>
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalUrl.toString()} />
-    {
-      noindex && <meta name="robots" content={robots} />
-    }
-    {
-      hasTrueLanguagePair && completeAlternates.map(({ locale: alternateLocale, href }) => (
-        <link
-          rel="alternate"
-          hreflang={localeMeta[alternateLocale].htmlLang}
-          href={href}
-        />
-      ))
-    }
-    {
-      hasTrueLanguagePair && englishAlternate && (
-        <link rel="alternate" hreflang="x-default" href={englishAlternate.href} />
-      )
-    }
+    {noindex && <meta name="robots" content={robots} />}
+    {hasTrueLanguagePair && completeAlternates.map(({ locale: alternateLocale, href }) => (
+      <link rel="alternate" hreflang={localeMeta[alternateLocale].htmlLang} href={href} />
+    ))}
+    {hasTrueLanguagePair && defaultAlternate && (
+      <link rel="alternate" hreflang="x-default" href={defaultAlternate.href} />
+    )}
     <meta property="og:type" content={ogType} />
     <meta property="og:site_name" content={SITE.shortName} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl.toString()} />
     <meta property="og:locale" content={localeMeta[locale].ogLocale} />
-    {
-      hasTrueLanguagePair && completeAlternates
-        .filter(({ locale: alternateLocale }) => alternateLocale !== locale)
-        .map(({ locale: alternateLocale }) => (
-          <meta property="og:locale:alternate" content={localeMeta[alternateLocale].ogLocale} />
-        ))
-    }
+    {hasTrueLanguagePair && completeAlternates.filter(({ locale: other }) => other !== locale).map(({ locale: other }) => (
+      <meta property="og:locale:alternate" content={localeMeta[other].ogLocale} />
+    ))}
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+    <link rel="stylesheet" href={`https://fonts.googleapis.com/css2?family=${fontSpec}&display=swap`} />
   </head>
-  <body class={bodyClass}>
+  <body class:list={[bodyClass, skin ? 'project-body' : 'shell-body']} style={bodyStyle}>
     <slot />
   </body>
 </html>

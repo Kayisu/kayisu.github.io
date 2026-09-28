@@ -1,0 +1,20 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import GameShell from '../components/games/GameShell.astro';
+import SandboxApp from '../components/sandbox/SandboxApp';
+import SiteFooter from '../components/layout/SiteFooter.astro';
+import '../styles/sandbox.css';
+---
+
+<BaseLayout
+  title="Sandcastle Sandbox | Kayisu"
+  description="Sculpt terrain, guide water, and build a small coastal scene in the browser."
+  canonicalPath="/sandbox/"
+>
+  <GameShell title="Sandcastle Sandbox" backHref="/" backLabel="Evrene dön">
+    <SandboxApp client:only="react">
+      <div slot="fallback" class="sandbox-shell__status" role="status">Loading sandbox&hellip;</div>
+    </SandboxApp>
+  </GameShell>
+  <SiteFooter locale="tr" />
+</BaseLayout>

@@ -1,0 +1,42 @@
+---
+import type { UniverseProject } from './UniverseApp';
+import { orbitForStatus } from '../../lib/projects';
+
+interface OrbitLabels {
+  inner: string;
+  middle: string;
+  outer: string;
+  comet: string;
+}
+
+interface Props {
+  projects: UniverseProject[];
+  aboutHref: string;
+  aboutLabel: string;
+  listLabel: string;
+  orbitLabels: OrbitLabels;
+}
+
+const { projects, aboutHref, aboutLabel, listLabel, orbitLabels } = Astro.props;
+const groups = (['inner', 'middle', 'outer', 'comet'] as const).map((orbit) => ({
+  orbit,
+  entries: projects.filter((project) => orbitForStatus(project.status) === orbit),
+})).filter((group) => group.entries.length > 0);
+---
+
+<noscript>
+  <section class="universe-static-fallback">
+    <nav aria-label={listLabel}>
+      <h1>{listLabel}</h1>
+      <ul><li><a href={aboutHref}>{aboutLabel}</a></li></ul>
+      {groups.map(({ orbit, entries }) => (
+        <section>
+          <h2>{orbitLabels[orbit]}</h2>
+          <ul>
+            {entries.map((project) => <li><a href={project.href}>{project.name} · {project.statusLabel}</a></li>)}
+          </ul>
+        </section>
+      ))}
+    </nav>
+  </section>
+</noscript>
