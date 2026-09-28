@@ -84,6 +84,8 @@ function Bulldozer({ group }: { group: RefObject<THREE.Group> }) {
 
 function Scene({ stage }: { stage: RefObject<HTMLDivElement> }) {
   const { camera, gl, invalidate } = useThree();
+  // Looking slightly past the centre keeps the whole lot in frame, near corner included.
+  useEffect(() => { camera.lookAt(0.6, 0, 0.6); invalidate(); }, [camera, invalidate]);
   const lot = useMemo(() => createLot(7), []);
   const terrain = useMemo(() => buildTerrain(lot), [lot]);
   useEffect(() => () => terrain.geometry.dispose(), [terrain]);
@@ -101,7 +103,10 @@ function Scene({ stage }: { stage: RefObject<HTMLDivElement> }) {
     const s = state.current;
     const raycaster = new THREE.Raycaster();
     const pointer = new THREE.Vector2();
-    let press: { id: number; x: number; y: number; time: number; dragging: boolean } | null = null;
+    // A tap drives the dozer to the point, a double tap piles sand there. Drags stay with the page,
+    // so the lot never traps scrolling on touch screens.
+    let press: { id: number; x: number; y: number; time: number } | null = null;
+    let lastTap: { x: number; y: number; time: number } | null = null;
     const hit = (event: PointerEvent) => {
       const rect = canvas.getBoundingClientRect();
       pointer.set(((event.clientX - rect.left) / rect.width) * 2 - 1, -((event.clientY - rect.top) / rect.height) * 2 + 1);
@@ -111,25 +116,26 @@ function Scene({ stage }: { stage: RefObject<HTMLDivElement> }) {
     };
     const onDown = (event: PointerEvent) => {
       if (event.button !== 0 || press) return;
-      canvas.setPointerCapture(event.pointerId);
-      press = { id: event.pointerId, x: event.clientX, y: event.clientY, time: performance.now(), dragging: false };
-    };
-    const onMove = (event: PointerEvent) => {
-      if (!press || event.pointerId !== press.id) return;
-      if (!press.dragging && Math.hypot(event.clientX - press.x, event.clientY - press.y) < 6 && performance.now() - press.time < 200) return;
-      press.dragging = true;
-      s.target = hit(event) ?? s.target;
-      invalidate();
+      press = { id: event.pointerId, x: event.clientX, y: event.clientY, time: performance.now() };
     };
     const onUp = (event: PointerEvent) => {
       if (!press || event.pointerId !== press.id) return;
-      const point = press.dragging ? null : hit(event);
-      if (point && performance.now() - press.time < 200) {
+      const now = performance.now();
+      const isTap = Math.hypot(event.clientX - press.x, event.clientY - press.y) < 6 && now - press.time < 400;
+      press = null;
+      const point = isTap ? hit(event) : null;
+      if (!point) return;
+      const isDouble = lastTap && now - lastTap.time < 320 && Math.hypot(event.clientX - lastTap.x, event.clientY - lastTap.y) < 24;
+      if (isDouble) {
         pile(lot, point.x, point.z);
+        s.target = null;
         s.settled = false;
         s.dirty = true;
-      } else if (point) s.target = point;
-      press = null;
+        lastTap = null;
+      } else {
+        s.target = point;
+        lastTap = { x: event.clientX, y: event.clientY, time: now };
+      }
       invalidate();
     };
     const onCancel = () => { press = null; };
@@ -143,7 +149,6 @@ function Scene({ stage }: { stage: RefObject<HTMLDivElement> }) {
     };
     const onBlur = () => s.keys.clear();
     canvas.addEventListener('pointerdown', onDown);
-    canvas.addEventListener('pointermove', onMove);
     canvas.addEventListener('pointerup', onUp);
     canvas.addEventListener('pointercancel', onCancel);
     wrapper.addEventListener('keydown', onKey);
@@ -151,7 +156,6 @@ function Scene({ stage }: { stage: RefObject<HTMLDivElement> }) {
     wrapper.addEventListener('blur', onBlur);
     return () => {
       canvas.removeEventListener('pointerdown', onDown);
-      canvas.removeEventListener('pointermove', onMove);
       canvas.removeEventListener('pointerup', onUp);
       canvas.removeEventListener('pointercancel', onCancel);
       wrapper.removeEventListener('keydown', onKey);

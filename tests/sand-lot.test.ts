@@ -75,6 +75,7 @@ test('relaxation conserves volume and settles below the repose angle', () => {
   assert.ok(steps < 2000, 'lot settles');
   for (let index = 0; index < lot.heights.length - 1; index++) {
     if ((index + 1) % GRID) assert.ok(Math.abs(lot.heights[index] - lot.heights[index + 1]) < 0.18 + 1e-3);
+    if (index + GRID < lot.heights.length) assert.ok(Math.abs(lot.heights[index] - lot.heights[index + GRID]) < 0.18 + 1e-3);
   }
 });
 

@@ -36,7 +36,7 @@ export const en = {
     orbitComet: 'Comets',
     externalLink: 'Opens in a new tab',
   },
-  toy: { label: 'Toy construction site: a bulldozer on a sand lot', hint: 'WASD / arrows: drive · tap: pile sand' },
+  toy: { label: 'Toy construction site: a bulldozer on a sand lot', hint: 'WASD / arrows or tap: drive · double-tap: pile sand' },
   notFound: { message: 'Page not found.', home: 'Home' },
   contact: { email: 'Email', github: 'GitHub', linkedin: 'LinkedIn' },
 } satisfies Dictionary;
