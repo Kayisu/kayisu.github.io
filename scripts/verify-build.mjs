@@ -167,6 +167,22 @@ for (const route of universeRoutes) assertIsland(route, 'UniverseApp');
 assertIsland(sandboxRoute, 'SandboxApp');
 assertIsland(yksRoute, 'YksApp');
 
+// --- Chat assistant: ships inside the universe island only ------------------
+const chatPlaceholders = { '/': 'Serbest soru yakında', '/en/': 'Free questions coming soon' };
+for (const [route, placeholder] of Object.entries(chatPlaceholders)) {
+  if (!read(route).includes(placeholder)) fail(`${route} is missing the chat script in its UniverseApp props`);
+}
+for (const [route, html] of htmlByRoute) {
+  if (universeRoutes.includes(route)) continue;
+  if (/chat-panel|ChatPanel|ChatBeacon/.test(html) || Object.values(chatPlaceholders).some((text) => html.includes(text))) {
+    fail(`${route} unexpectedly references chat code`);
+  }
+  for (const asset of [...javascriptGraph(assetReferences(html)), ...stylesheetHrefs(html)]) {
+    const file = join(dist, asset.replace(/^\//, ''));
+    if (existsSync(file) && readFileSync(file, 'utf8').includes('chat-panel')) fail(`${route} loads chat code through ${asset}`);
+  }
+}
+
 const interactiveRoutes = [...universeRoutes, sandboxRoute, yksRoute];
 for (const route of htmlByRoute.keys()) if (!interactiveRoutes.includes(route)) assertStatic(route);
 

@@ -3,7 +3,9 @@ import { getCollection } from 'astro:content';
 import UniverseApp from './UniverseApp';
 import UniverseFallback from './UniverseFallback.astro';
 import './universe.css';
+import '../chat/chat.css';
 import { SITE } from '../../data/site';
+import { buildChatScript } from '../../data/chat';
 import { getProjectPalette } from '../../data/palettes';
 import { SYSTEM_IDS, SYSTEMS } from '../../data/systems';
 import { getDictionary, getAlternatePaths, homePath, aboutPath, projectPath, type Locale } from '../../i18n';
@@ -16,8 +18,8 @@ const { locale } = Astro.props;
 const dictionary = getDictionary(locale);
 const allProjects = await getCollection('projects');
 validateProjects(allProjects);
-const projects = allProjects
-  .filter((entry) => entry.data.locale === locale)
+const localized = allProjects.filter((entry) => entry.data.locale === locale);
+const projects = localized
   .map((entry) => {
     const palette = getProjectPalette(entry.data.translationKey);
     return {
@@ -58,6 +60,17 @@ const islandProps = {
   languageLabel: dictionary.language.shortTarget,
   listLabel: dictionary.accessibility.projectList,
   orbitLabels,
+  chat: buildChatScript(locale, localized.map(({ data }) => ({
+    id: data.translationKey,
+    title: data.title,
+    summary: data.summary,
+    statusLabel: dictionary.status[data.status],
+    href: projectPath(locale, data.slug),
+    role: data.role,
+    year: data.year,
+    demo: data.demo,
+    repo: data.repo,
+  }))),
   contacts: [
     { href: `mailto:${SITE.email}`, label: SITE.email },
     { href: SITE.github, label: dictionary.contact.github, external: true },
