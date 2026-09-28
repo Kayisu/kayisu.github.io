@@ -29,4 +29,11 @@ export default defineConfig({
   site: 'https://kayisu.github.io',
   integrations: [react()],
   redirects: legacyRedirects,
+  // Pre-bundle the client:only scene deps at dev start; discovering them at runtime
+  // re-optimises mid-session and leaves open pages with two React copies.
+  vite: {
+    optimizeDeps: {
+      include: ['react', 'react-dom/client', 'three', '@react-three/fiber', '@react-three/drei'],
+    },
+  },
 });

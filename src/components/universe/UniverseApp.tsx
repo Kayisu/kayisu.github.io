@@ -206,10 +206,12 @@ interface SceneProps {
   onSelect: (id: string, href: string, pageBg: string, point: { x: number; y: number }) => void;
 }
 
-function Planet({ project, projects, projectIndices, index, lowDetail, reducedMotion, shortIntro, introSkipped, onSelect }: {
+function Planet({ project, projects, projectIndices, index, slot, lowDetail, reducedMotion, shortIntro, introSkipped, onSelect }: {
   project: UniverseProject;
   projects: UniverseProject[];
   projectIndices: Map<string, number>;
+  /** Evenly spaced start angle within the orbit, so planets sharing an orbit never overlap. */
+  slot: number;
   index: number;
   lowDetail: boolean;
   reducedMotion: boolean;
@@ -225,7 +227,7 @@ function Planet({ project, projects, projectIndices, index, lowDetail, reducedMo
   const radius = RADII[orbit as keyof typeof RADII];
   const planetSize = orbit === 'inner' ? 0.85 : orbit === 'middle' ? 1 : 0.7;
   const geometry = useToyGeometry(planetSize, lowDetail ? 1 : 2, 0.04, hash(project.id));
-  const phase = (hash(project.id) / 0xffffffff) * Math.PI * 2;
+  const phase = slot * Math.PI * 2 + (hash(project.id) / 0xffffffff) * 0.4;
   const delay = shortIntro ? index * 0.06 : 0.35 + index * 0.22;
 
   useFrame(({ clock }) => {
@@ -404,7 +406,10 @@ function StarSystemView({ system, projects, ...body }: BodyProps & { system: Uni
   return <group position={[...system.position]}>
     <OrbitRings />
     <Star system={system} lowDetail={body.lowDetail} onSelect={body.onSelect} />
-    {planets.map((project) => <Planet key={project.id} project={project} projects={projects} projectIndices={indices} index={indices.get(project.id) ?? 0} {...body} />)}
+    {planets.map((project) => {
+      const peers = planets.filter((peer) => orbitForStatus(peer.status) === orbitForStatus(project.status));
+      return <Planet key={project.id} project={project} projects={projects} projectIndices={indices} index={indices.get(project.id) ?? 0} slot={peers.indexOf(project) / peers.length} {...body} />;
+    })}
     {comets.map((project) => <Comet key={project.id} project={project} index={indices.get(project.id) ?? 0} {...body} />)}
   </group>;
 }
