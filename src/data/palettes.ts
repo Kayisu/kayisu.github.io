@@ -25,7 +25,7 @@ export const PROJECT_PALETTES = {
     bg: '#fbf7f4', surface: '#ffffff', text: '#2a1714', muted: '#6d5550', accent: '#b4232a',
     font: { family: 'Atkinson Hyperlegible', googleSpec: 'Atkinson+Hyperlegible:wght@400;700' }, radius: 6,
   },
-  'sandcastle-sandbox': {
+  sandstruction: {
     bg: '#f4ecdc', surface: '#fffaf0', text: '#2b2317', muted: '#6b5d45', accent: '#b7852f',
     font: { family: 'Fredoka', googleSpec: 'Fredoka:wght@400;600' }, radius: 16,
   },

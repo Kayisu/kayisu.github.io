@@ -159,9 +159,9 @@ if (!existsSync(dist)) {
 const htmlFiles = listFiles(dist).filter((file) => file.endsWith('.html'));
 const htmlByRoute = new Map(htmlFiles.map((file) => [routeForHtml(file), readFileSync(file, 'utf8')]));
 const universeRoutes = ['/', '/en/'];
-const sandboxRoute = '/sandbox/';
+const sandboxRoute = '/sandstruction/';
 const yksRoute = '/yks/2026/tip-tercih/';
-const projectSlugs = ['cognispace', 'ecoreport', 'sorudepo', 'sandcastle-sandbox', 'yks-tercih-sihirbazi'];
+const projectSlugs = ['cognispace', 'ecoreport', 'sorudepo', 'sandstruction', 'yks-tercih-sihirbazi'];
 
 for (const route of universeRoutes) assertIsland(route, 'UniverseApp');
 assertIsland(sandboxRoute, 'SandboxApp');
@@ -194,10 +194,12 @@ const oldPlanets = ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'u
 const redirects = [
   ['/tr/', '/'], ['/explore/', '/'], ['/tr/explore/', '/'],
   ['/star/sun/', '/en/about/'], ['/tr/star/sun/', '/about/'],
-  ['/planet/earth/games/', '/sandbox/'], ['/planet/earth/games/sandbox/', '/sandbox/'],
-  ['/tr/planet/earth/games/', '/sandbox/'],
+  ['/planet/earth/games/', '/sandstruction/'], ['/planet/earth/games/sandbox/', '/sandstruction/'],
+  ['/tr/planet/earth/games/', '/sandstruction/'],
+  ['/projects/sandcastle-sandbox/', '/projects/sandstruction/'], ['/tr/projects/sandcastle-sandbox/', '/projects/sandstruction/'],
+  ['/en/projects/sandcastle-sandbox/', '/en/projects/sandstruction/'],
   ...oldPlanets.flatMap((planet) => [[`/planet/${planet}/`, '/en/'], [`/tr/planet/${planet}/`, '/']]),
-  ...projectSlugs.map((slug) => [`/tr/projects/${slug}/`, `/projects/${slug}/`]),
+  ...projectSlugs.filter((slug) => slug !== 'sandstruction').map((slug) => [`/tr/projects/${slug}/`, `/projects/${slug}/`]),
 ];
 for (const [route, destination] of redirects) assertRedirect(route, destination);
 
@@ -221,7 +223,7 @@ for (const absent of [
 
 // --- Sandbox asset boundary ------------------------------------------------
 const sandboxHtml = read(sandboxRoute);
-const sandboxStyles = [...stylesheetHrefs(sandboxHtml)].filter((href) => /sandbox/i.test(href));
+const sandboxStyles = [...stylesheetHrefs(sandboxHtml)].filter((href) => /sandbox|sandstruction/i.test(href));
 if (!sandboxStyles.length) fail('Sandbox has no identifiable route stylesheet');
 const nonSandboxHtml = [...htmlByRoute.entries()].filter(([route]) => route !== sandboxRoute);
 for (const style of sandboxStyles) {

@@ -1,20 +1,20 @@
 ---
-title: Sandcastle Sandbox
-slug: sandcastle-sandbox
-translationKey: sandcastle-sandbox
+title: Sandstruction
+slug: sandstruction
+translationKey: sandstruction
 locale: en
 summary: Sculpt a small coastal landscape, guide the water, and place towers and decorations.
 status: oneshot
 year: 2026
 kind: game
 tags: [Three.js, React, WebGL]
-demo: https://kayisu.github.io/sandbox/
+demo: https://kayisu.github.io/sandstruction/
 role: Solo build
 ---
 
 ## Problem
 
-The sandbox gives a browser player a small coastal terrain to shape, with water,
+Sandstruction gives a browser player a small coastal terrain to shape, with water,
 towers, and decorations that can be placed in the scene.
 
 ## Approach
@@ -25,4 +25,4 @@ the browser.
 
 ## Status
 
-The 2026 prototype is playable at the Earth games route.
+The 2026 prototype is playable on the site.

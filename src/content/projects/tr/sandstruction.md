@@ -1,20 +1,20 @@
 ---
-title: Sandcastle Sandbox
-slug: sandcastle-sandbox
-translationKey: sandcastle-sandbox
+title: Sandstruction
+slug: sandstruction
+translationKey: sandstruction
 locale: tr
 summary: Küçük bir kıyı arazisini şekillendirin, suyu yönlendirin, kuleler ve süslemeler yerleştirin.
 status: oneshot
 year: 2026
 kind: game
 tags: [Three.js, React, WebGL]
-demo: https://kayisu.github.io/sandbox/
+demo: https://kayisu.github.io/sandstruction/
 role: Tek kişilik
 ---
 
 ## Problem
 
-Sandbox, tarayıcıdaki oyuncuya şekillendirebileceği küçük bir kıyı arazisi ile
+Sandstruction, tarayıcıdaki oyuncuya şekillendirebileceği küçük bir kıyı arazisi ile
 sahneye yerleştirebileceği su, kuleler ve süslemeler sunar.
 
 ## Yaklaşım
@@ -25,4 +25,4 @@ olarak saklanır.
 
 ## Durum
 
-2026 prototipi Earth oyunları rotasında oynanabilir.
+2026 prototipi sitede oynanabilir.

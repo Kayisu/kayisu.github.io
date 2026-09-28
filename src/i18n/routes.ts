@@ -30,7 +30,7 @@ export function aboutPath(locale: Locale): AbsolutePath {
 }
 
 export function sandboxPath(): AbsolutePath {
-  return '/sandbox/';
+  return '/sandstruction/';
 }
 
 function exactPath(route: LocalisedRoute | LegacySunRoute, locale: Locale): AbsolutePath | undefined {

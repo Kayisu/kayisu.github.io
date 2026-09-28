@@ -9,9 +9,9 @@ const legacyRedirects = {
   '/tr/explore/': '/',
   '/star/sun/': '/en/about/',
   '/tr/star/sun/': '/about/',
-  '/planet/earth/games/': '/sandbox/',
-  '/planet/earth/games/sandbox/': '/sandbox/',
-  '/tr/planet/earth/games/': '/sandbox/',
+  '/planet/earth/games/': '/sandstruction/',
+  '/planet/earth/games/sandbox/': '/sandstruction/',
+  '/tr/planet/earth/games/': '/sandstruction/',
 };
 
 const oldPlanets = ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto'];
@@ -20,8 +20,12 @@ for (const planet of oldPlanets) {
   legacyRedirects[`/tr/planet/${planet}/`] = '/';
 }
 
-const projectSlugs = ['cognispace', 'ecoreport', 'sorudepo', 'sandcastle-sandbox', 'yks-tercih-sihirbazi'];
+const projectSlugs = ['cognispace', 'ecoreport', 'sorudepo', 'yks-tercih-sihirbazi'];
 for (const slug of projectSlugs) legacyRedirects[`/tr/projects/${slug}/`] = `/projects/${slug}/`;
+// Sandcastle Sandbox was renamed Sandstruction.
+legacyRedirects['/tr/projects/sandcastle-sandbox/'] = '/projects/sandstruction/';
+legacyRedirects['/projects/sandcastle-sandbox/'] = '/projects/sandstruction/';
+legacyRedirects['/en/projects/sandcastle-sandbox/'] = '/en/projects/sandstruction/';
 
 // User page served from root (kayisu.github.io) → no `base` needed.
 // Default `output: 'static'` exports a fully static site for GitHub Pages.

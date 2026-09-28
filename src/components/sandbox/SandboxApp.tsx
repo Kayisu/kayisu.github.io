@@ -46,7 +46,7 @@ export default function SandboxApp() {
         <SandboxErrorBoundary>
           <Canvas
             className="sandbox-app__canvas"
-            aria-label="Interactive sandcastle terrain sandbox"
+            aria-label="Sandstruction: interactive sand terrain"
             style={{
               position: 'absolute',
               inset: 0,
