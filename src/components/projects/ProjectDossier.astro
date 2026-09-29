@@ -77,6 +77,8 @@ const links = [
   .project-page__top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
   .project-page__back, .project-page__language { color: var(--page-muted); font-size: 14px; text-decoration: none; }
   .project-page__back:hover, .project-page__language:hover { color: var(--page-text); }
+  .project-page__back { display: inline-block; transition: transform 0.15s ease-out; }
+  .project-page__back:hover { transform: translateX(-2px); }
 
   .project-dossier {
     padding: 20px 22px;
@@ -121,6 +123,9 @@ const links = [
   .project-copy { margin-top: 28px; color: var(--page-text); font-size: 16px; line-height: 1.6; }
   .project-copy > :global(* + *) { margin-top: 1.1em; }
   .project-copy :global(h2), .project-copy :global(h3) { margin-top: 2em; color: var(--page-secondary); font-family: var(--page-heading-font); }
+  .project-copy :global(h2) { margin-top: 2.2em; font-size: 1.25rem; }
+  .project-copy :global(li + li) { margin-top: 0.35em; }
+  .project-copy :global(strong) { color: var(--page-text); }
   .project-copy :global(a) { color: var(--page-text); text-decoration-color: var(--page-accent); text-decoration-thickness: 2px; text-underline-offset: 3px; }
   .project-copy :global(ul), .project-copy :global(ol) { padding-left: 1.3em; }
   .project-page :global(.site-footer) { padding-inline: 0; margin-top: 40px; }
@@ -130,5 +135,9 @@ const links = [
     .project-dossier__header { align-items: flex-start; flex-direction: column; gap: 8px; }
   }
 
-  @media (prefers-reduced-motion: reduce) { .project-page { animation: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    .project-page { animation: none; }
+    .project-page__back { transition: none; }
+    .project-page__back:hover { transform: none; }
+  }
 </style>

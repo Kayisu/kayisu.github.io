@@ -15,6 +15,10 @@
   height: 100% !important;
 }
 
+/* The canvas fades in once its first frame has rendered instead of popping out of black. */
+.universe-canvas { opacity: 0; transition: opacity 0.6s ease-out; }
+.universe-canvas.is-ready { opacity: 1; }
+
 .universe-header,
 .universe-footer {
   position: absolute;
@@ -138,5 +142,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .universe-takeover { transition: none; }
+  .universe-takeover,
+  .universe-canvas { transition: none; }
 }
