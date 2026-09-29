@@ -1,32 +1,43 @@
 ---
-title: EcoReport
+title: EcoReport AI
 slug: ecoreport
 translationKey: ecoreport
 locale: tr
-summary: Erciyes Teknopark Sera programında geliştirilen, LLM destekli rapor üretimiyle TSRS/ESRS sürdürülebilirlik raporlamasını kolaylaştıran bir SaaS ürünü.
+summary: Karbon ayak izi hesaplama, raporlama ve azaltım önerisi platformu.
 status: building
 year: 2026
 kind: product
-role: Kurucu Ortak ve CTO
-tags: [SaaS, LLM, Sürdürülebilirlik]
+role: Kurucu, ürün ve teknoloji
+tags: [Karbon muhasebesi, KOBİ, Sürdürülebilirlik]
 featured: true
 ---
 
-## Genel bakış
+## Yaklaşım
 
-EcoReport, şirketlerin TSRS ve ESRS çerçeveleriyle uyumlu sürdürülebilirlik
-raporları hazırlamasına yardımcı olan bir SaaS platformudur. LLM destekli taslak
-üretimiyle manuel raporlama sürecini hızlandırmayı, ekiplerin açıklamaları
-hazırlamaya daha az, içeriğin niteliğine daha fazla zaman ayırmasını amaçlar.
-Proje, Erciyes Teknopark'ın Sera programında geliştirilmektedir.
+Karbon raporu bugün çoğunlukla uzman saatiyle hazırlanır; veri dağınıktır ve iş bir toplamda
+biter. EcoReport AI, daha az girdiden izlenebilir bir envanter ve işletmenin ölçeğine göre öneri
+çıkarmak üzere tasarlanıyor.
 
-## Rolüm
+- **Az girdi.** Veri, işletmenin faturasındaki dille istenir.
+- **İzlenebilir envanter.** Birim dönüşümü ve faktör seçimi sistemde yapılır; her sayı faktörü,
+  satırı ve sürümüyle raporda yer alır.
+- **Ölçeğe göre öneri.** Öneriler işletmenin profiline göre süzülür; her aksiyonda tahmini
+  maliyet ve azaltım görünür, kabul edilen aksiyon yıllık plana dönüşür.
 
-Kurucu ortak ve CTO olarak mimari, LLM işlem hattı ve ürün mühendisliği dâhil
-teknik yönü yönetiyorum. Çalışma ilerledikçe daha fazla ayrıntı eklenecek.
+## Nasıl çalışır
 
-## Güncel durum
+1. **Yükle.** İşletme faturalarını ve kayıtlarını kendi dilinde yükler.
+2. **Sor.** Carbon AI eksik kalan bilgiyi sohbetle sorar.
+3. **Hesapla.** Hesap motoru envanteri çıkarır; her sayının kaynağı raporda durur.
+4. **Öner ve planla.** İşletmenin ölçeğine uygun öneriler ve yıllık karbon planı.
 
-Ürün, Sera programı kapsamında aktif olarak geliştiriliyor. Kilometre taşları ve
-teknik ayrıntılar netleştikçe burada belgelenecek.
-TÜBİTAK BİGG programının 1. aşamasına 2026'da kabul edildi.
+Sayıyı her zaman hesap motoru üretir; Carbon AI sorar ve açıklar.
+
+## Durum
+
+Mart 2026'dan bu yana Erciyes Teknopark Sera Kuluçka Programı'nda geliştiriliyor. Emisyon
+faktörü veri seti (v1.3.1), KOBİ hesap çekirdeği prototipi ve saha çalışması hazır. Proje,
+TÜBİTAK BİGG programının 1. aşamasına kabul edildi.
+
+Business v1'in pilot işletmelerle kullanıma girmesi 06/2027, Carbon AI v1 ve öneri katmanı
+12/2027, kurumsal tedarikçi portalı 06/2028 için planlanıyor.

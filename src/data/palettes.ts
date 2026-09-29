@@ -6,6 +6,10 @@ export interface ProjectPalette {
   accent: string;
   font: { family: string; googleSpec: string };
   radius: number;
+  /** Optional second brand colour, used for section headings. */
+  secondary?: string;
+  /** Optional heading face when the product pairs two fonts. */
+  headingFont?: { family: string; googleSpec: string };
 }
 
 export const PROJECT_PALETTES = {
@@ -13,9 +17,13 @@ export const PROJECT_PALETTES = {
     bg: '#f8f7f4', surface: '#ffffff', text: '#1f1f1f', muted: '#5b5b5b', accent: '#1d9e75',
     font: { family: 'DM Sans', googleSpec: 'DM+Sans:wght@400;600' }, radius: 12,
   },
+  // From the EcoReport AI BİGG deck (27 Sep 2026): Lora headings, Inter body, olive and earth.
+  // Muted is darkened from the deck's #8c8478 to pass AA for small text on the page background.
   ecoreport: {
-    bg: '#eef4ec', surface: '#ffffff', text: '#12301e', muted: '#4b6353', accent: '#166534',
-    font: { family: 'Public Sans', googleSpec: 'Public+Sans:wght@400;600' }, radius: 12,
+    bg: '#fbf7ef', surface: '#ebe6de', text: '#2f211a', muted: '#6b6358', accent: '#6f8544',
+    secondary: '#8a664a',
+    font: { family: 'Inter', googleSpec: 'Inter:wght@400;600' },
+    headingFont: { family: 'Lora', googleSpec: 'Lora:wght@500;600' }, radius: 10,
   },
   sorudepo: {
     bg: '#fbfbf9', surface: '#ffffff', text: '#17181c', muted: '#5d6068', accent: '#c2410c',

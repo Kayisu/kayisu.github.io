@@ -41,9 +41,11 @@ const completeAlternates = alternatePaths
   : [];
 const hasTrueLanguagePair = completeAlternates.length === LOCALES.length;
 const defaultAlternate = completeAlternates.find((entry) => entry.locale === 'tr');
-const fontSpec = skin?.font.googleSpec ?? 'Rubik:wght@400;500';
+const fontSpecs = skin ? [skin.font.googleSpec, skin.headingFont?.googleSpec].filter(Boolean) : ['Rubik:wght@400;500'];
+const fontHref = `https://fonts.googleapis.com/css2?${fontSpecs.map((spec) => `family=${spec}`).join('&')}&display=swap`;
 const bodyStyle = skin
   ? `--page-bg:${skin.bg};--page-surface:${skin.surface};--page-text:${skin.text};--page-muted:${skin.muted};--page-accent:${skin.accent};--page-radius:${skin.radius}px;--page-font:'${skin.font.family}',sans-serif;`
+    + `--page-secondary:${skin.secondary ?? skin.text};--page-heading-font:'${(skin.headingFont ?? skin.font).family}',${skin.headingFont ? 'serif' : 'sans-serif'};`
   : undefined;
 ---
 
@@ -76,7 +78,7 @@ const bodyStyle = skin
     <meta name="twitter:description" content={description} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
-    <link rel="stylesheet" href={`https://fonts.googleapis.com/css2?family=${fontSpec}&display=swap`} />
+    <link rel="stylesheet" href={fontHref} />
   </head>
   <body class:list={[bodyClass, skin ? 'project-body' : 'shell-body']} style={bodyStyle}>
     <slot />

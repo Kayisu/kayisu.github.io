@@ -94,7 +94,7 @@ const links = [
     border-bottom: 1px solid color-mix(in srgb, var(--page-text) 15%, transparent);
   }
 
-  h1 { margin: 0; font-size: clamp(24px, 5vw, 34px); letter-spacing: -0.02em; }
+  h1 { margin: 0; font-family: var(--page-heading-font); font-size: clamp(24px, 5vw, 34px); letter-spacing: -0.02em; }
   .project-dossier__status { display: inline-flex; flex-shrink: 0; align-items: center; gap: 6px; font-size: 13px; }
   .project-dossier__status i { width: 8px; height: 8px; flex: none; border-radius: 50%; background: var(--page-accent); }
   dl { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 8px 12px; margin: 14px 0 0; font-size: 15px; }
@@ -120,7 +120,7 @@ const links = [
 
   .project-copy { margin-top: 28px; color: var(--page-text); font-size: 16px; line-height: 1.6; }
   .project-copy > :global(* + *) { margin-top: 1.1em; }
-  .project-copy :global(h2), .project-copy :global(h3) { margin-top: 2em; font-family: var(--page-font); }
+  .project-copy :global(h2), .project-copy :global(h3) { margin-top: 2em; color: var(--page-secondary); font-family: var(--page-heading-font); }
   .project-copy :global(a) { color: var(--page-text); text-decoration-color: var(--page-accent); text-decoration-thickness: 2px; text-underline-offset: 3px; }
   .project-copy :global(ul), .project-copy :global(ol) { padding-left: 1.3em; }
   .project-page :global(.site-footer) { padding-inline: 0; margin-top: 40px; }
