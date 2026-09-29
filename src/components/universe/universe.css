@@ -68,7 +68,9 @@
   user-select: none;
 }
 
-.universe-label small { font-size: 10px; font-weight: 500; opacity: 0.55; }
+.universe-label small { font-size: 10px; font-weight: 500; opacity: 0; transition: opacity 0.2s; }
+.universe-label small.is-visible { opacity: 0.55; }
+@media (prefers-reduced-motion: reduce) { .universe-label small { transition: none; } }
 
 .universe-project-list {
   position: fixed;

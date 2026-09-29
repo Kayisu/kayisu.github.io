@@ -135,12 +135,13 @@ function toyMaterial(color: string, opacity = 1) {
   );
 }
 
-function Label({ name, status }: { name: string; status: string }) {
+/** Name always shows; the status line appears only while the body is hovered, keeping the sky nearly textless. */
+function Label({ name, status, active }: { name: string; status: string; active: boolean }) {
   return (
     <Html center zIndexRange={[4, 0]} position={[0, -1.6, 0]} style={{ pointerEvents: 'none' }}>
       <div className="universe-label">
         <span>{name}</span>
-        <small>{status}</small>
+        <small className={active ? 'is-visible' : undefined}>{status}</small>
       </div>
     </Html>
   );
@@ -266,7 +267,7 @@ function Planet({ project, projects, projectIndices, index, slot, lowDetail, red
     </mesh>
     {orbit === 'middle' && <Scaffold size={planetSize} />}
     {moons.map((moon) => <Moon key={moon.id} project={moon} index={projectIndices.get(moon.id) ?? 0} reducedMotion={reducedMotion} shortIntro={shortIntro} introSkipped={introSkipped} onSelect={onSelect} />)}
-    <Label name={project.name} status={project.statusLabel} />
+    <Label name={project.name} status={project.statusLabel} active={hovered} />
   </group>;
 }
 
@@ -302,7 +303,7 @@ function Moon({ project, index, reducedMotion, shortIntro, introSkipped, onSelec
       onSelect(project.id, project.href, project.pageBg, { x: ((world.x + 1) / 2) * size.width, y: ((1 - world.y) / 2) * size.height });
     }}>
     {toyMaterial(project.accent)}
-    <Label name={project.name} status={project.statusLabel} />
+    <Label name={project.name} status={project.statusLabel} active={hovered} />
   </mesh>;
 }
 
@@ -356,7 +357,7 @@ function Comet({ project, index, reducedMotion, shortIntro, introSkipped, onSele
         {toyMaterial('#d8cfc4', 0.55 - 0.09 * tailIndex)}
       </mesh>)}
     </group>
-    <Label name={project.name} status={project.statusLabel} />
+    <Label name={project.name} status={project.statusLabel} active={hovered} />
   </group>;
 }
 
@@ -366,6 +367,7 @@ function Star({ system, lowDetail, onSelect }: {
   onSelect: SceneProps['onSelect'];
 }) {
   const group = useRef<THREE.Group>(null);
+  const [hovered, setHovered] = useState(false);
   const { camera, size } = useThree();
   const geometry = useToyGeometry(1.7, lowDetail ? 2 : 3, 0.024, hash(system.id));
   return <group ref={group} userData={{ projectId: `star:${system.id}` }}>
@@ -373,11 +375,11 @@ function Star({ system, lowDetail, onSelect }: {
       event.stopPropagation();
       const world = (group.current?.getWorldPosition(new THREE.Vector3()) ?? new THREE.Vector3()).project(camera);
       onSelect(`star:${system.id}`, system.href, SHELL_BG, { x: ((world.x + 1) / 2) * size.width, y: ((1 - world.y) / 2) * size.height });
-    }} onPointerOver={() => { document.body.style.cursor = 'pointer'; }} onPointerOut={() => { document.body.style.cursor = ''; }}>
+    }} onPointerOver={() => { setHovered(true); document.body.style.cursor = 'pointer'; }} onPointerOut={() => { setHovered(false); document.body.style.cursor = ''; }}>
       <meshPhysicalMaterial color={system.starColor} emissive={system.starColor} emissiveIntensity={0.55} roughness={0.9} metalness={0} clearcoat={0} />
     </mesh>
     <pointLight intensity={120} distance={60} decay={1.6} color="#fff1dc" />
-    <Label name={system.label} status={system.sublabel} />
+    <Label name={system.label} status={system.sublabel} active={hovered} />
   </group>;
 }
 
