@@ -261,7 +261,7 @@ function Planet({ project, projects, projectIndices, index, slot, lowDetail, red
   const planetSize = orbit === 'inner' ? 0.85 : orbit === 'middle' ? 1 : 0.7;
   const geometry = useToyGeometry(planetSize, lowDetail ? 1 : 2, 0.04, hash(project.id));
   const phase = slot * Math.PI * 2 + (hash(project.id) / 0xffffffff) * 0.4;
-  const delay = shortIntro ? index * 0.06 : 0.35 + index * 0.22;
+  const delay = shortIntro ? 0.3 + index * 0.06 : 0.35 + index * 0.22;
 
   useFrame(({ clock }) => {
     const time = clock.elapsedTime;
@@ -311,7 +311,7 @@ function Moon({ project, index, reducedMotion, shortIntro, introSkipped, onSelec
   const [hovered, setHovered] = useState(false);
   const { camera, size } = useThree();
   const geometry = useToyGeometry(0.32, 1, 0.04, hash(project.id));
-  const delay = shortIntro ? index * 0.06 : 0.35 + index * 0.22;
+  const delay = shortIntro ? 0.3 + index * 0.06 : 0.35 + index * 0.22;
   useFrame(({ clock }) => {
     const time = clock.elapsedTime;
     const angle = reducedMotion ? 0 : time * 0.6;
@@ -350,7 +350,7 @@ function Comet({ project, index, reducedMotion, shortIntro, introSkipped, onSele
   const { camera, size } = useThree();
   const geometry = useToyGeometry(0.4, 1, 0.08, hash(project.id));
   const offset = (hash(project.id) / 0xffffffff) * Math.PI * 2;
-  const delay = shortIntro ? index * 0.06 : 0.35 + index * 0.22;
+  const delay = shortIntro ? 0.3 + index * 0.06 : 0.35 + index * 0.22;
   const path = (time: number) => {
     const angle = time * 0.12 + offset;
     return new THREE.Vector3(Math.cos(angle) * 22 + 6, Math.sin(angle * 0.7) * 2.5, Math.sin(angle) * 12);
