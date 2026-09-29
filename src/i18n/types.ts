@@ -43,6 +43,7 @@ export interface Dictionary {
   toy: {
     label: string;
     hint: string;
+    reset: string;
   };
   notFound: {
     message: string;

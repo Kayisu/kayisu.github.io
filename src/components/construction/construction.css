@@ -5,6 +5,11 @@
 .construction-toy__stage canvas { display: block; touch-action: manipulation; }
 .construction-toy__hint { margin: 0; color: color-mix(in srgb, currentColor 62%, transparent); font-size: 12px; line-height: 1.5; }
 .construction-toy__hint span { display: block; }
+.construction-toy__foot { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.construction-toy__foot .construction-toy__hint { flex: 1; }
+.construction-toy__reset { flex: none; margin: 0; padding: 0 2px; border: 0; background: none; color: color-mix(in srgb, currentColor 62%, transparent); font: inherit; font-size: 12px; line-height: 1.5; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+.construction-toy__reset:hover { color: currentColor; }
+.construction-toy__reset:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; border-radius: 2px; }
 
 @media (max-width: 699px) {
   .construction-toy__stage { height: 200px; }
