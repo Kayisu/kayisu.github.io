@@ -50,7 +50,7 @@ const links = [
   {entry.data.status === 'building' && <aside class="construction-band">
     <p>{dictionary.project.construction}</p>
     <div class="construction-band__toy">
-      <ConstructionToy client:visible label={dictionary.toy.label} hints={[{ lang: locale, text: dictionary.toy.hint }]} />
+      <ConstructionToy client:visible label={dictionary.toy.label} hints={[{ lang: locale, text: dictionary.toy.hint }]} resetLabels={[{ lang: locale, text: dictionary.toy.reset }]} />
     </div>
   </aside>}
 

@@ -16,7 +16,7 @@ const enToy = getDictionary('en').toy;
     <p lang="en">{enCopy.message}</p>
     <a href="/">← {trCopy.home} / {enCopy.home}</a>
     <div class="not-found-page__toy">
-      <ConstructionToy client:visible label={trToy.label} hints={[{ lang: 'tr', text: trToy.hint }, { lang: 'en', text: enToy.hint }]} />
+      <ConstructionToy client:visible label={trToy.label} hints={[{ lang: 'tr', text: trToy.hint }, { lang: 'en', text: enToy.hint }]} resetLabels={[{ lang: 'tr', text: trToy.reset }, { lang: 'en', text: enToy.reset }]} />
     </div>
   </main>
   <SiteFooter locale="tr" />
