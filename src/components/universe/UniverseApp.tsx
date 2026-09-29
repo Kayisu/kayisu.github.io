@@ -109,8 +109,8 @@ function useToyGeometry(radius: number, detail: number, jitter: number, seed: nu
   return geometry;
 }
 
-/** Intro pop (easeOutBack) until the body has appeared, then an eased hover scale. */
-function stepScale(mesh: THREE.Object3D, time: number, delay: number, introSkipped: boolean, hovered: boolean) {
+/** Intro pop (easeOutBack) until the body has appeared, then an eased hover scale and emissive lift. */
+function stepScale(mesh: THREE.Mesh, time: number, delay: number, introSkipped: boolean, hovered: boolean) {
   const progress = introSkipped ? 1 : Math.max(0, Math.min(1, (time - delay) / 0.55));
   if (progress < 1) {
     const c1 = 1.70158;
@@ -119,12 +119,33 @@ function stepScale(mesh: THREE.Object3D, time: number, delay: number, introSkipp
   }
   const target = hovered ? 1.12 : 1;
   mesh.scale.setScalar(mesh.scale.x + (target - mesh.scale.x) * 0.15);
+  const material = mesh.material as THREE.MeshPhysicalMaterial;
+  material.emissiveIntensity += ((hovered ? 0.08 : 0) - material.emissiveIntensity) * 0.15;
+}
+
+/** White disc with a radial alpha falloff; the sprite material tints it. */
+function createHaloTexture() {
+  const size = 128;
+  const canvas = document.createElement('canvas');
+  canvas.width = canvas.height = size;
+  const context = canvas.getContext('2d');
+  if (context) {
+    const image = context.createImageData(size, size);
+    for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
+      const falloff = Math.max(0, 1 - Math.hypot(x + 0.5 - size / 2, y + 0.5 - size / 2) / (size / 2));
+      image.data.set([255, 255, 255, Math.round(falloff ** 1.5 * 255)], (y * size + x) * 4);
+    }
+    context.putImageData(image, 0, 0);
+  }
+  return new THREE.CanvasTexture(canvas);
 }
 
 function toyMaterial(color: string, opacity = 1) {
   return (
     <meshPhysicalMaterial
       color={color}
+      emissive={color}
+      emissiveIntensity={0}
       roughness={0.92}
       metalness={0}
       clearcoat={0}
@@ -147,41 +168,48 @@ function Label({ name, status, active }: { name: string; status: string; active:
   );
 }
 
+/** Solid rings for the inner and middle orbits; the parked/archived outer orbit is dashed. */
 function OrbitRings() {
   return <>
-    {Object.values(RADII).map((radius) => {
+    {Object.entries(RADII).map(([orbit, radius]) => {
       const points = Array.from({ length: 129 }, (_, index) => {
         const angle = (index / 128) * Math.PI * 2;
         return new THREE.Vector3(Math.cos(angle) * radius, 0, Math.sin(angle) * radius);
       });
-      return <Line key={radius} points={points} color="#6d6a64" lineWidth={1} transparent opacity={0.28} />;
+      const outer = orbit === 'outer';
+      return <Line key={radius} points={points} color="#6d6a64" lineWidth={1} transparent opacity={outer ? 0.22 : 0.28}
+        dashed={outer} dashSize={0.6} gapSize={0.4} />;
     })}
   </>;
 }
 
-function Stars({ lowDetail }: { lowDetail: boolean }) {
-  const geometry = useMemo(() => {
+/** Two alternating star layers whose opacities breathe in opposite phase (0.55 to 0.85, 4 s period). */
+function Stars({ lowDetail, reducedMotion }: { lowDetail: boolean; reducedMotion: boolean }) {
+  const layers = useMemo(() => {
     const random = seeded(7);
     const count = lowDetail ? 53 : 160;
-    const positions = new Float32Array(count * 3);
+    const positions: [number[], number[]] = [[], []];
     for (let i = 0; i < count; i++) {
       const radius = 60 + random() * 60;
       const theta = random() * Math.PI * 2;
       const phi = Math.acos(2 * random() - 1);
-      positions.set([
+      positions[i % 2].push(
         radius * Math.sin(phi) * Math.cos(theta),
         radius * Math.cos(phi),
         radius * Math.sin(phi) * Math.sin(theta),
-      ], i * 3);
+      );
     }
-    const result = new THREE.BufferGeometry();
-    result.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    return result;
+    return positions.map((layer) => new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(layer, 3)));
   }, [lowDetail]);
-  useEffect(() => () => geometry.dispose(), [geometry]);
-  return <points geometry={geometry}>
-    <pointsMaterial color="#d9d6cf" size={0.315} sizeAttenuation transparent opacity={0.75} />
-  </points>;
+  useEffect(() => () => layers.forEach((layer) => layer.dispose()), [layers]);
+  const materials = useRef<(THREE.PointsMaterial | null)[]>([]);
+  useFrame(({ clock }) => {
+    const wave = reducedMotion ? 0 : 0.15 * Math.sin((clock.elapsedTime / 4) * Math.PI * 2);
+    materials.current.forEach((material, index) => { if (material) material.opacity = 0.7 + (index === 0 ? wave : -wave); });
+  });
+  return <>{layers.map((layer, index) => <points key={index} geometry={layer}>
+    <pointsMaterial ref={(material) => { materials.current[index] = material; }} color="#d9d6cf" size={0.315} sizeAttenuation transparent opacity={0.7} />
+  </points>)}</>;
 }
 
 function Scaffold({ size }: { size: number }) {
@@ -233,7 +261,7 @@ function Planet({ project, projects, projectIndices, index, slot, lowDetail, red
   const planetSize = orbit === 'inner' ? 0.85 : orbit === 'middle' ? 1 : 0.7;
   const geometry = useToyGeometry(planetSize, lowDetail ? 1 : 2, 0.04, hash(project.id));
   const phase = slot * Math.PI * 2 + (hash(project.id) / 0xffffffff) * 0.4;
-  const delay = shortIntro ? index * 0.06 : 0.35 + index * 0.22;
+  const delay = shortIntro ? 0.3 + index * 0.06 : 0.35 + index * 0.22;
 
   useFrame(({ clock }) => {
     const time = clock.elapsedTime;
@@ -283,7 +311,7 @@ function Moon({ project, index, reducedMotion, shortIntro, introSkipped, onSelec
   const [hovered, setHovered] = useState(false);
   const { camera, size } = useThree();
   const geometry = useToyGeometry(0.32, 1, 0.04, hash(project.id));
-  const delay = shortIntro ? index * 0.06 : 0.35 + index * 0.22;
+  const delay = shortIntro ? 0.3 + index * 0.06 : 0.35 + index * 0.22;
   useFrame(({ clock }) => {
     const time = clock.elapsedTime;
     const angle = reducedMotion ? 0 : time * 0.6;
@@ -322,7 +350,7 @@ function Comet({ project, index, reducedMotion, shortIntro, introSkipped, onSele
   const { camera, size } = useThree();
   const geometry = useToyGeometry(0.4, 1, 0.08, hash(project.id));
   const offset = (hash(project.id) / 0xffffffff) * Math.PI * 2;
-  const delay = shortIntro ? index * 0.06 : 0.35 + index * 0.22;
+  const delay = shortIntro ? 0.3 + index * 0.06 : 0.35 + index * 0.22;
   const path = (time: number) => {
     const angle = time * 0.12 + offset;
     return new THREE.Vector3(Math.cos(angle) * 22 + 6, Math.sin(angle * 0.7) * 2.5, Math.sin(angle) * 12);
@@ -361,8 +389,9 @@ function Comet({ project, index, reducedMotion, shortIntro, introSkipped, onSele
   </group>;
 }
 
-function Star({ system, lowDetail, onSelect }: {
+function Star({ system, halo, lowDetail, onSelect }: {
   system: UniverseSystem;
+  halo: THREE.Texture;
   lowDetail: boolean;
   onSelect: SceneProps['onSelect'];
 }) {
@@ -378,6 +407,9 @@ function Star({ system, lowDetail, onSelect }: {
     }} onPointerOver={() => { setHovered(true); document.body.style.cursor = 'pointer'; }} onPointerOut={() => { setHovered(false); document.body.style.cursor = ''; }}>
       <meshPhysicalMaterial color={system.starColor} emissive={system.starColor} emissiveIntensity={0.55} roughness={0.9} metalness={0} clearcoat={0} />
     </mesh>
+    <sprite scale={[7.5, 7.5, 1]}>
+      <spriteMaterial map={halo} color="#f1c27d" transparent opacity={0.28} blending={THREE.NormalBlending} depthWrite={false} />
+    </sprite>
     <pointLight intensity={120} distance={60} decay={1.6} color="#fff1dc" />
     <Label name={system.label} status={system.sublabel} active={hovered} />
   </group>;
@@ -403,7 +435,7 @@ function DiveRig({ targetId }: { targetId?: string }) {
 type BodyProps = Pick<SceneProps, 'lowDetail' | 'reducedMotion' | 'shortIntro' | 'introSkipped' | 'onSelect'>;
 
 /** One star with its orbits, planets, moons and comets, drawn around the system's position. */
-function StarSystemView({ system, projects, ...body }: BodyProps & { system: UniverseSystem; projects: UniverseProject[] }) {
+function StarSystemView({ system, projects, halo, ...body }: BodyProps & { system: UniverseSystem; projects: UniverseProject[]; halo: THREE.Texture }) {
   const ordered = useMemo(() => projects.slice().sort((a, b) => ORBIT_ORDER[orbitForStatus(a.status)] - ORBIT_ORDER[orbitForStatus(b.status)]), [projects]);
   const roots = ordered.filter((project) => !project.parent);
   const comets = roots.filter((project) => orbitForStatus(project.status) === 'comet');
@@ -411,7 +443,7 @@ function StarSystemView({ system, projects, ...body }: BodyProps & { system: Uni
   const indices = new Map(ordered.map((project, index) => [project.id, index]));
   return <group position={[...system.position]}>
     <OrbitRings />
-    <Star system={system} lowDetail={body.lowDetail} onSelect={body.onSelect} />
+    <Star system={system} halo={halo} lowDetail={body.lowDetail} onSelect={body.onSelect} />
     {planets.map((project) => {
       const peers = planets.filter((peer) => orbitForStatus(peer.status) === orbitForStatus(project.status));
       return <Planet key={project.id} project={project} projects={projects} projectIndices={indices} index={indices.get(project.id) ?? 0} slot={peers.indexOf(project) / peers.length} {...body} />;
@@ -420,13 +452,22 @@ function StarSystemView({ system, projects, ...body }: BodyProps & { system: Uni
   </group>;
 }
 
-function UniverseScene({ projects, systems, targetId, ...body }: SceneProps & { targetId?: string }) {
+function UniverseScene({ projects, systems, targetId, onFirstFrame, ...body }: SceneProps & { targetId?: string; onFirstFrame: () => void }) {
+  const halo = useMemo(createHaloTexture, []);
+  useEffect(() => () => halo.dispose(), [halo]);
+  const firstFrame = useRef(true);
+  useFrame(() => {
+    if (firstFrame.current) onFirstFrame();
+    firstFrame.current = false;
+  });
   return <>
     <color attach="background" args={[SHELL_BG]} />
     <hemisphereLight args={['#f4efe6', '#1a1a22', 1.1]} />
     <directionalLight position={[0, 18, 30]} intensity={0.9} />
-    <Stars lowDetail={body.lowDetail} />
-    {systems.map((system) => <StarSystemView key={system.id} system={system} projects={projects.filter((project) => project.system === system.id)} {...body} />)}
+    {/* Rim light from behind: bodies catch a cool edge like toy plastic. */}
+    <directionalLight position={[0, 4, -20]} color="#cfd6e0" intensity={0.5} />
+    <Stars lowDetail={body.lowDetail} reducedMotion={body.reducedMotion} />
+    {systems.map((system) => <StarSystemView key={system.id} system={system} halo={halo} projects={projects.filter((project) => project.system === system.id)} {...body} />)}
     <OrbitControls makeDefault enabled={!targetId} enablePan={false} minDistance={8} maxDistance={48} />
     <DiveRig targetId={targetId} />
   </>;
@@ -497,6 +538,7 @@ export default function UniverseApp(props: Props) {
   const [canvasFailed, setCanvasFailed] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
   const [chatHint, setChatHint] = useState(false);
+  const [canvasReady, setCanvasReady] = useState(false);
   const chatTrigger = useRef<HTMLButtonElement>(null);
   const openChat = () => { setIntroSkipped(true); setChatOpen(true); };
   // Remounting the canvas resets the camera after a dive.
@@ -551,8 +593,9 @@ export default function UniverseApp(props: Props) {
   const fallback = <ProjectList projects={projects} aboutHref={aboutHref} aboutLabel={aboutLabel} listLabel={listLabel} orbitLabels={orbitLabels} visible />;
   return <div className="universe-root" onPointerDown={() => setIntroSkipped(true)}>
     <CanvasBoundary fallback={fallback} onFail={() => setCanvasFailed(true)}>
-      <Canvas key={sceneKey} className="universe-canvas" camera={{ position: [0, 14, 26], fov: 45 }} dpr={[1, lowDetail ? 1.5 : 2]}>
-        <UniverseScene projects={projects} lowDetail={lowDetail} reducedMotion={reducedMotion} shortIntro={visit.short} introSkipped={introSkipped} systems={systems} onSelect={onSelect} targetId={selection?.id} />
+      <Canvas key={sceneKey} className={canvasReady ? 'universe-canvas is-ready' : 'universe-canvas'} camera={{ position: [0, 14, 26], fov: 45 }} dpr={[1, lowDetail ? 1.5 : 2]}>
+        <UniverseScene projects={projects} lowDetail={lowDetail} reducedMotion={reducedMotion} shortIntro={visit.short} introSkipped={introSkipped} systems={systems} onSelect={onSelect} targetId={selection?.id}
+          onFirstFrame={() => setCanvasReady(true)} />
         <ChatBeacon bubble={chat.ui.bubble} reducedMotion={reducedMotion} hinted={chatHint} muted={chatOpen} onOpen={openChat} />
       </Canvas>
     </CanvasBoundary>
