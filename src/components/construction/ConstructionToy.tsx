@@ -6,7 +6,7 @@ import { GRID, STEP, bladePush, createLot, pile, relaxStep, sampleHeight, vertex
 import './construction.css';
 
 interface Hint { lang: string; text: string }
-interface Props { label: string; hints: Hint[]; resetLabel: string }
+interface Props { label: string; hints: Hint[]; resetLabels: Hint[] }
 
 const DRIVE_SPEED = 1.6;
 const ACCEL = 4;
@@ -207,6 +207,8 @@ function Scene({ stage, resetTick }: { stage: RefObject<HTMLDivElement>; resetTi
     const onDown = (event: PointerEvent) => {
       if (event.button !== 0 || press) return;
       s.invite = false;
+      // Under reduced motion no loop is running, so ask for the frame that hides the static ring.
+      invalidate();
       press = { id: event.pointerId, x: event.clientX, y: event.clientY, time: performance.now() };
     };
     const onUp = (event: PointerEvent) => {
@@ -400,7 +402,7 @@ class CanvasBoundary extends Component<{ children: ReactNode }, { failed: boolea
   render() { return this.state.failed ? null : this.props.children; }
 }
 
-export default function ConstructionToy({ label, hints, resetLabel }: Props) {
+export default function ConstructionToy({ label, hints, resetLabels }: Props) {
   const stage = useRef<HTMLDivElement>(null);
   const hintId = useId();
   // WebGL only exists in the browser; the server renders the empty stage and the hint.
@@ -419,7 +421,9 @@ export default function ConstructionToy({ label, hints, resetLabel }: Props) {
       <p id={hintId} className="construction-toy__hint">
         {hints.map((hint) => <span key={hint.lang} lang={hint.lang}>{hint.text}</span>)}
       </p>
-      {mounted && <button type="button" className="construction-toy__reset" onClick={() => setResetTick((tick) => tick + 1)}>{resetLabel}</button>}
+      {mounted && <button type="button" className="construction-toy__reset" onClick={() => setResetTick((tick) => tick + 1)}>
+        {resetLabels.map((reset, index) => <span key={reset.lang} lang={reset.lang}>{index > 0 && <span aria-hidden="true"> / </span>}{reset.text}</span>)}
+      </button>}
     </div>
   </div>;
 }
