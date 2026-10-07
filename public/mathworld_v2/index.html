@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="tr">
+<head>
+ <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+ <meta name="theme-color" content="#122b29"><meta name="description" content="Mathworld V2: canının matematiksel bedenin olduğu, sıra tabanlı bir matematik macerası.">
+ <title>Mathworld II · Reel Kal</title><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%231d4037'/%3E%3Ctext x='32' y='46' font-size='44' text-anchor='middle' fill='%23e4d7b0'%3Eℝ%3C/text%3E%3C/svg%3E">
+ <link rel="stylesheet" href="./style.css?v=1"><script type="module" src="./game.js?v=1"></script>
+</head>
+<body>
+ <main id="app">
+  <header class="topbar"><a class="wordmark" href="./" aria-label="Mathworld II ana ekran"><span class="logo">ℝ</span><span>MATHWORLD <b>II</b><small>REEL KAL</small></span></a><nav><button id="help-button" class="quiet">Nasıl oynanır?</button><button id="pause-button" class="quiet">Duraklat</button><a href="../mathworld/" class="quiet">İlk oyun ↗</a></nav></header>
+  <div class="journey" id="journey" aria-label="Bölümler"></div>
+  <section class="arena" aria-label="Savaş alanı">
+   <canvas id="scene" width="1100" height="430" aria-label="Matematik ormanında kahraman ve seçili düşmanlar"></canvas>
+   <div class="chapter-heading"><span id="chapter-tag">SIRA TABANLI MACERA</span><h1 id="chapter-title">Reel kal.</h1></div>
+   <div class="turn-badge" id="turn-badge">Yeni bir beden. Yeni bir macera.</div>
+   <div class="arena-caption" id="arena-caption">Canın, denklemin.</div>
+   <div class="timing" id="timing" hidden><span class="eyebrow" id="timing-label"></span><h2 id="timing-title"></h2><div class="meter"><div class="safe-zone"></div><div class="perfect-zone"></div><div id="needle"></div></div><button id="timing-hit">Şimdi! <kbd>Space</kbd></button><small id="timing-note">Sarı bölge: mükemmel · yeşil bölge: iyi</small></div>
+  </section>
+  <section class="battle" id="battle" hidden>
+   <div class="targets"><button class="body-card" id="self-target" aria-pressed="false"><span class="eyebrow">SENİN BEDENİN <span id="scar-count"></span></span><strong id="body-form">5</strong><span id="body-domain"></span><span class="body-foot" id="repair-hint"></span></button><div id="enemies" class="enemies"></div></div>
+   <div class="command-grid"><section class="commands"><div class="command-heading"><span class="eyebrow" id="target-label">HEDEF SEÇ</span><div id="resources"></div></div><div class="operations" id="operations"></div><div class="operand-row"><label>Sayı <input id="operand" type="number" min="1" max="9" value="3" inputmode="numeric" aria-label="İşlem sayısı"></label><label id="term-label" hidden>Terim <select id="term" aria-label="İşlem terimi"><option value="">sabit</option><option value="x">x</option><option value="x²">x²</option></select></label><span id="special-operand"></span><button class="quiet hint-button" id="hint-button">İpucu</button></div><div class="preview" id="preview">Bir hedef ve işlem seç.</div><div class="actions"><button class="primary" id="cast-button">Hamleyi uygula <kbd>Enter</kbd></button><button id="rebuild-button" hidden>Yapıyı geri kur</button><button id="guard-button">Korun <span>1 odak</span></button><button class="end-turn" id="end-turn">Turu bitir →</button></div><p id="feedback" aria-live="polite">Düşman kartına tıkla; işlemin yalnızca o hedefe gider.</p></section><aside class="journal"><div class="command-heading"><span class="eyebrow">SAVAŞ DEFTERİ</span><span id="ward-count"></span></div><ol id="log"></ol><label class="assist"><input id="assist" type="checkbox"> Rahat tempo <span>Zamanlamalar otomatik “iyi” olur.</span></label></aside></div>
+  </section>
+  <footer><span>Bir işlem. Bir yara. Bir karşı hamle.</span><span>Kararlar süresiz · vuruşlar kısa · yaralar kalıcı</span></footer>
+ </main>
+ <dialog id="panel"><div id="panel-content"></div></dialog>
+ <dialog id="help"><button id="close-help" class="dialog-close" aria-label="Yardımı kapat">×</button><span class="eyebrow">KISA REHBER</span><h2>Can barın, bedenindeki ifade.</h2><div class="help-grid"><p><b>1. Hedefi seç.</b> Düşman kartı saldırı; kendi bedenin onarım. Seçili hedef sarı çizgiyle görünür. Düşmanlara işlemler iki tarafta uygulanır.</p><p><b>2. İşlem ve sayı seç.</b> Düşmanın dış katmanını sök. Kendi yaranı son saldırının ters işlemiyle geri al. İpucu doğru işlemi açıklar.</p><p><b>3. Vuruşu zamanla.</b> Space veya “Şimdi” ile yeşil bölgeyi yakala. Doğru işlem kötü zamanlamada da çalışır; iyi vuruş niyeti keser, mükemmel vuruş sonraki turu da aksatır.</p><p><b>4. Niyetleri oku.</b> Her tur 3 hamle. Turu bitirince düşmanlar soldan sağa saldırır. Yeşilde kaçın, sarıda savuştur. Korun, sıradaki bir saldırıyı kesin engeller.</p><p><b>5. Hasar taşınır.</b> Karşılaşma bittiğinde otomatik iyileşmezsin. Bölüm arası hazırlıkta onarabilirsin. İrrasyonel kök reel olabilir; Δ&lt;0 ve sıfıra bölme ölümcüldür.</p><p><b>6. Tempo senin.</b> “Rahat tempo” refleks gerektirmez, otomatik iyi zamanlama sağlar. Odak mükemmel hamlelerden ve çözülen düşmanlardan gelir. Duraklat, her sayacı dondurur.</p></div><p class="help-note">Türev onarımı hasar öncesi f(0) değerini kullanır. İntegralde C korunur. Düşmanlar eşitliği bozabilen saldırılar yapar; beden onarımı bu değişimi geri kurar.</p><button id="help-ok" class="primary">Anladım</button></dialog>
+</body></html>
