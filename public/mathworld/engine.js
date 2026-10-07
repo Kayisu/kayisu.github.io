@@ -53,7 +53,7 @@ const str=a=>a.d===1?String(a.n):`${a.n}/${a.d}`;
 const total=terms=>terms.reduce(plus,fraction(0));
 export function equationForm(m){let s=m.a.n===m.a.d?'x':m.a.d===1?`${m.a.n}x`:`(${str(m.a)})x`;for(const t of m.terms){if(t.n)s+=` ${t.n<0?'−':'+'} ${str(fraction(Math.abs(t.n),t.d))}`;}return `${s} = ${str(m.r)}`;}
 export function equationSolution(e){if(!e.algebra)return null;const m=e.algebra,b=total(m.terms);return times(plus(m.r,fraction(-b.n,b.d)),fraction(m.a.d,m.a.n));}
-export function armorLayers(e){if(!e.algebra)return Math.max(0,(FORMS[e.kind]?.steps.length??1)-e.stage);return e.algebra.terms.filter(t=>t.n).length+(e.algebra.a.n!==e.algebra.a.d?1:0);}
+export function armorLayers(e){if(!e.algebra)return Math.max(0,(FORMS[e.kind]?.steps.length??1)-(e.stage??0));return e.algebra.terms.filter(t=>t.n).length+(e.algebra.a.n!==e.algebra.a.d?1:0);}
 function transformEquation(e,op,value){
  if(!['add','sub','mul','div'].includes(op))return {ok:false,reason:'resisted'};
  if(!Number.isInteger(value)||value<1||value>9)return {ok:false,reason:'operand'};
