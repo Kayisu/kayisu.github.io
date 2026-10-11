@@ -12,6 +12,7 @@ for(const root of [1,4]){b=M.createBody();M.executeIntent(M.planIntent('unreal',
 b=M.createBody();M.executeIntent(M.planIntent('unreal',b,1),b);const fixed=M.planIntent('unreal',b,1);M.transformBody(b,'mul',2);M.executeIntent(fixed,b);assert.equal(M.discriminant(b.equation),4);assert.equal(b.failure,null);
 for(const op of ['mul','balance']){b=M.createBody();M.executeIntent(M.planIntent('undefined',b,2),b);const locked=M.planIntent('undefined',b,2);M.transformBody(b,op,2);assert(M.executeIntent(locked,b).avoided);assert.equal(b.denominator,null);assert.match(b.domains[0],/d ≠ 0/);assert.equal(b.failure,null);}
 b=M.createBody();M.executeIntent(M.planIntent('undefined',b,2),b);M.executeIntent(M.planIntent('undefined',b,2),b);assert.match(b.failure,/Tanımsız/);assert(!/Reel/.test(b.failure));
+b=M.createBody();M.executeIntent(M.planIntent('unreal',b,1),b);M.executeIntent(M.planIntent('undefined',b,2),b);assert(M.bodyForm(b).includes('d = 2'));assert(M.bodyForm(b).includes('x²'));M.transformBody(b,'balance',1);M.transformBody(b,'mul',2);assert.equal(M.bodyForm(b),'5');
 // Real polynomial calculations, two boss routes, noncanonical coefficients and constant C.
 for(const root of [1,4]){const p={p:[4,5,1]};assert(M.polynomialAction(p,'factor',1).ok);assert(!M.polynomialAction(p,'balance',2).ok);assert(M.polynomialAction(p,'balance',root).complete);}
 let p={p:[4,5,1]};M.polynomialAction(p,'der',1);assert.equal(p.form,'2x + 5');M.polynomialAction(p,'der',1);assert.equal(p.form,'2');assert(M.polynomialAction(p,'balance',1).complete);

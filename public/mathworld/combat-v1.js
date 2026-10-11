@@ -7,9 +7,9 @@ const equal=(a,b)=>a.n===b.n&&a.d===b.d;
 function arithmetic(a,op,v){return op==='add'?rational(a.n+v*a.d,a.d):op==='sub'?rational(a.n-v*a.d,a.d):op==='mul'?rational(a.n*v,a.d):rational(a.n,a.d*v);}
 export function createBody(capacity=8){return {core:5,value:rational(5),form:'5',scars:[],capacity,charge:6,recharge:0,equation:null,denominator:null,domains:[],failure:null,serial:0};}
 export function integrity(b){return Math.max(0,b.capacity-b.scars.length-(b.equation?2:0)-(b.denominator?1:0));}
-export function bodyForm(b){return b.equation?equationText(b.equation):b.denominator?`(${b.form}) / d · d = ${b.denominator.value}`:b.form;}
+export function bodyForm(b){return b.equation?equationText(b.equation)+(b.denominator?` · beden: (${b.form}) / d; d = ${b.denominator.value}`:''):b.denominator?`(${b.form}) / d · d = ${b.denominator.value}`:b.form;}
 export function discriminant(q){return q.b*q.b-4*q.a*(q.c-q.r);}
-export function equationText(q){const sign=(n)=>`${n<0?'−':'+'} ${Math.abs(n)}`;return q.factored&&q.a===1&&q.b===5&&q.c-q.r===4?'(x + 4)(x + 1) = 0':`${q.a}x² ${sign(q.b)}x ${sign(q.c)} = ${q.r}`;}
+export function equationText(q){const sign=(n)=>`${n<0?'−':'+'} ${Math.abs(n)}`;return q.factored&&q.a===1&&q.b===5&&q.c-q.r===4?'(x + 4)(x + 1) = 0':`${q.a===1?'':q.a}x² ${sign(q.b)}x ${sign(q.c)} = ${q.r}`;}
 export function checkBody(b){b.failure=null;if(b.denominator?.value===0)b.failure='Tanımsız: payda sıfır oldu.';else if(b.equation&&discriminant(b.equation)<0)b.failure='Reel çözüm kalmadı: Δ < 0.';else if(integrity(b)===0)b.failure='Bedenin bütün bozulma yuvaları doldu.';return b.failure;}
 export function transformBody(b,op,v,{hostile=false,free=false}={}){
  if(!['add','sub','mul','div','factor','balance'].includes(op)||!Number.isInteger(v)||v<1||v>9)return {ok:false,note:'Bedende dört işlem, çarpan ve denge kullanılır.'};
@@ -29,7 +29,7 @@ export function transformBody(b,op,v,{hostile=false,free=false}={}){
  b.scars.push({value:clone(b.value),form:b.form,op,v});b.value=next;b.form=b.scars.length===1?`5 ${symbols[op]} ${v}`:`(${b.form}) ${symbols[op]} ${v}`;
  if(!hostile&&!free)b.charge--;checkBody(b);return {ok:true,healed:false,note:hostile?'Bedenine kalıcı bir işlem eklendi.':'İşlem doğru uygulandı ama yeni bir bozulma ekledi. Tersini kullanabilirsin.'};
 }
-export function repairHint(b){if(b.equation)return 'Reel kökü seç: =1 veya =4 (x = −katsayı). Çarpan aracı kökleri gösterir.';if(b.denominator)return `×${b.denominator.value} ya da =${b.denominator.value}: payda tuzağını çöz.`;const s=b.scars.at(-1);return s?`${({add:'−',sub:'+',mul:'÷',div:'×'})[s.op]}${s.v}: son yara için ters işlem.`:'Bedenin dengede: 5. Onarıma gerek yok.';}
+export function repairHint(b){if(b.equation)return 'Reel kökü seç: =1 veya =4 (x = −katsayı).'+(b.denominator?' Sonra ×2 / =2 ile payda tuzağını çöz.':' Çarpan aracı kökleri gösterir.');if(b.denominator)return `×${b.denominator.value} ya da =${b.denominator.value}: payda tuzağını çöz.`;const s=b.scars.at(-1);return s?`${({add:'−',sub:'+',mul:'÷',div:'×'})[s.op]}${s.v}: son yara için ters işlem.`:'Bedenin dengede: 5. Onarıma gerek yok.';}
 export const ROLES={clutter:{name:'Yığmacı',color:'#ffbc72'},unreal:{name:'İrreelci',color:'#c6adff'},undefined:{name:'Tanımsızcı',color:'#ff92c0'}};
 export function planIntent(role,b,id){
  if(role==='clutter')return Object.freeze({kind:'clutter',owner:id,op:b.scars.length%2?'mul':'add',value:b.scars.length%2?2:3,label:b.scars.length%2?'Bedenini ×2 katlayacak':'Bedenine +3 ekleyecek',lethal:integrity(b)<=1});

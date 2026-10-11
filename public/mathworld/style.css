@@ -123,3 +123,6 @@
 @media(max-width:900px){#game[data-battle=true] .hint{left:12px;max-width:170px}}
 @media(max-width:600px){#game[data-battle=true] .hint{left:10px;bottom:385px;max-width:160px;padding:8px 10px;font-size:11px}.intentforecast{font-size:10px}}
 @media(max-height:600px) and (min-width:601px){#game[data-battle=true] .hint{left:12px;bottom:112px;max-width:170px;padding:7px;font-size:11px}}
+.turnpanel{bottom:var(--battle-bottom,190px)}#game[data-battle=true] .hint{bottom:var(--battle-bottom,190px)}#game[data-battle=true] .touch{display:none}
+#turnparry{background:#aad8c0;color:#17352a;border:1px solid #dbefcb;border-radius:3px;padding:12px;font:11px monospace;cursor:pointer}#turnparry:disabled{opacity:.4;cursor:default}#turnparry:focus-visible{outline:2px solid #ead6a5;outline-offset:3px}#game[data-battle=true] .turnpanel:has(#turnparry:not(.hidden)) #endturn{display:none}
+@media(max-width:600px){#game[data-battle=true] .hint{bottom:calc(var(--battle-bottom,140px) + 120px)}.turnpanel #turnparry{max-width:105px;padding:10px 8px}}
