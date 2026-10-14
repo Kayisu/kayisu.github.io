@@ -50,6 +50,7 @@ async function runKendinceTests(engine,catalog,appSource,preview){
  click('preview-mode',null,'mannequin');check(html('#app').includes('class="mannequin-svg"'),"mannequin view");
  check(app.getOutfits().map(engine.fingerprint).join(';')===before,"view changed outfits");
  const modelLook=app.getOutfits()[0];click('mannequin',modelLook.id);check(html('#modal-content').includes('mannequin-modal')&&html('#modal-content').includes('Gerçek fotoğraf'),"model modal");
+ click('save',modelLook.id);check(html('#modal-content').includes('mannequin-modal')&&app.getState().saved.length===1,"save left mannequin view");click('save',modelLook.id);
  const openMarkup=html('#modal-content');click('preview-layer');check(html('#modal-content')!==openMarkup&&app.getState().preview.layerOpen===false,"layer view");
  events.change({target:{dataset:{previewBuild:''},value:'broad'}});check(app.getState().preview.build==='broad'&&html('#modal-content').includes('scale(1.12 1)'),"build view");click('close');
  const incomplete={items:[]};check(preview.renderMannequin(incomplete)==='',"incomplete preview");
@@ -63,6 +64,8 @@ async function runKendinceTests(engine,catalog,appSource,preview){
  change('catalog-kind','sneaker');check(app.catalogList().every(p=>p.kind==='sneaker'),"kind filter");change('catalog-kind','all');change('catalog-max','500');check(app.catalogList().every(p=>app.latestPrice(p)<=500),"max filter");change('catalog-max','');
  const o=app.getOutfits()[0],p=o.items[0];click('detail',o.id);check(html('#modal-content').includes('Parçayı değiştir')&&html('#modal-content').includes('Stok görüldü'),"detail");click('save',o.id);check(app.getState().saved.length===1,"save");click('like',o.id);check(Object.values(app.getState().feedback).length===1,"like");click('like',o.id);check(Object.values(app.getState().feedback).length===0,"like toggle");
  click('alternatives',p.id);check(html('#modal-content').includes('Bir parçayı değiştir'),"alternatives modal");
+ const swapId=html('#modal-content').match(/data-action="swap" data-id="([^"]+)"/)?.[1];check(swapId,"missing swap");click('swap',swapId);
+ const swapped=app.getOutfits().find(look=>look.items.some(item=>item.id===swapId));check(swapped,"swap did not change outfit");click('mannequin',swapped.id);check(html('#modal-content').includes(app.find(swapId).name),"mannequin not updated after swap");
  app.productModal(unknown);check(html('#modal-content').includes('Yeniden doğrulanmamış')&&!html('#modal-content').includes('class="size-chip '),"unknown false stock chips");app.productModal(out);check(html('#modal-content').includes('Tükendi'),"out modal");
  click('price-note',p.id);submit('price-note-form',{price:'321.50'},{id:p.id});check(app.latestPrice(p)===321.5,"manual note");check(html('#modal-content').includes('Senin notun'),"note label");click('clear-price',p.id);check(!app.getState().priceNotes[p.id],"note reset");
  submit('profile-form',{age:'25',height:'178',weight:'75',fit:'any',chest:'',waist:'',shoe:'42',size:'M',bottomSize:'32'});check(app.getState().profile.bottomSize==='32'&&app.getState().profile.shoe===42,"profile save");check(html('#modal-content').includes('Pantolon bedenim'),"profile field");
@@ -70,6 +73,20 @@ async function runKendinceTests(engine,catalog,appSource,preview){
  app.navigate('atelier');change('available-only','',false);check(app.getState().filters.availableOnly===false,"stock toggle");
  submit('custom-form',{name:'<img src=x onerror=evil()>',category:'top',family:'navy',fit:'regular',pattern:'plain',warmth:'1',formality:'1'});check(app.getState().custom.length===1,"custom save");app.navigate('wardrobe');check(html('#app').includes('&lt;img')&&!html('#app').includes('<img src=x'),"custom escaping");
  const persisted=JSON.parse(storage.get('kendince-v1'));check(persisted.saved.length===1&&persisted.custom.length===1&&persisted.profile.bottomSize==='32'&&persisted.preview.mode==='mannequin'&&persisted.preview.build==='broad',"state persisted");
+ preview.setTextures(null);
+ await new AF('engine','preview','document','localStorage','location','window','fetch','FormData','crypto','console','setTimeout','clearTimeout',source)(engine,preview,document,localStorage,location,window,async url=>{if(url.includes('textures'))throw Error('offline texture');return{ok:true,json:async()=>catalog};},MockFormData,{randomUUID:()=> 'test-custom'},{error:e=>errors.push(String(e))},()=>0,()=>{});
+ check(!html('#app').includes('Atölyeyi açamadık')&&html('#app').includes('class="mannequin-svg"'),"texture failure broke catalog");
  return{assertions,scenarios,defaultSpend:engine.cost(baseOutfit,initial()),catalog:catalog.products.length,flows:'pass'};
 }
 console.log('Kendince verification:',await runKendinceTests(engine,catalog,appSource));
+
+const textureManifest=JSON.parse(await readFile(new URL('../../public/kendince/mannequin-textures.json',import.meta.url),'utf8'));
+preview.setTextures(textureManifest);
+let swatches=0;
+for(const [id,swatch] of Object.entries(textureManifest.products)){
+ const product=catalog.products.find(p=>p.id===id);
+ if(!product||!/^#[a-f0-9]{6}$/i.test(swatch.color))throw Error('Invalid swatch '+id);
+ if(swatch.texture){swatches++;if(swatch.sourceImage!==product.image||!/^data:image\/jpeg;base64,[a-zA-Z0-9+/=]+$/.test(swatch.texture))throw Error('Invalid texture source '+id);}
+}
+if(swatches<catalog.stats.stockAvailable)throw Error('Insufficient texture coverage');
+console.log('Mannequin source swatches:',swatches);
