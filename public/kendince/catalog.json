@@ -1,0 +1,4836 @@
+{
+  "checkedAt": "2026-10-14",
+  "live": false,
+  "products": [
+    {
+      "id": "0613680-70219",
+      "name": "Mvjns Kahverengi Basic Tişört",
+      "brand": "Mavi",
+      "category": "top",
+      "kind": "tee",
+      "price": 499.99,
+      "originalPrice": 499.99,
+      "url": "https://www.mavi.com/mvjns-kahverengi-basic-tisort/p/0613680-70219",
+      "source": "Üreticinin ürün sayfası",
+      "checkedAt": "2026-10-14",
+      "priceStatus": "snapshot",
+      "color": "Kahverengi",
+      "family": "brown",
+      "fit": "wide",
+      "fitLabel": "Loose Fit / Bol Rahat Kesim",
+      "material": "%100 Pamuk",
+      "description": "Mavi erkek koleksiyonundan Mvjns Kahverengi Basic Tişört.",
+      "patterned": true,
+      "warmth": 1,
+      "formality": 0,
+      "sizes": [
+        {
+          "size": "XS",
+          "available": true
+        },
+        {
+          "size": "S",
+          "available": true
+        },
+        {
+          "size": "M",
+          "available": true
+        },
+        {
+          "size": "L",
+          "available": true
+        },
+        {
+          "size": "XL",
+          "available": true
+        },
+        {
+          "size": "XXL",
+          "available": true
+        },
+        {
+          "size": "XXXL",
+          "available": false
+        }
+      ],
+      "sourceImages": [
+        "https://sky-static.mavi.com/mnresize/1005/1425/0613680-70219_image_1.jpg?v=1785914462384",
+        "https://sky-static.mavi.com/mnresize/1005/1425/0613680-70219_image_2.jpg?v=1785914462384"
+      ],
+      "image": "https://sky-static.mavi.com/mnresize/1005/1425/0613680-70219_image_1.jpg?v=1785914462384",
+      "alternateImage": "https://sky-static.mavi.com/mnresize/1005/1425/0613680-70219_image_2.jpg?v=1785914462384"
+    },
+    {
+      "id": "0613680-85173",
+      "name": "Mvjns Yeşil Basic Tişört",
+      "brand": "Mavi",
+      "category": "top",
+      "kind": "tee",
+      "price": 499.99,
+      "originalPrice": 499.99,
+      "url": "https://www.mavi.com/mvjns-yesil-basic-tisort/p/0613680-85173",
+      "source": "Üreticinin ürün sayfası",
+      "checkedAt": "2026-10-14",
+      "priceStatus": "snapshot",
+      "color": "Yeşil",
+      "family": "olive",
+      "fit": "wide",
+      "fitLabel": "Loose Fit / Bol Rahat Kesim",
+      "material": "%100 Pamuk",
+      "description": "Mavi erkek koleksiyonundan Mvjns Yeşil Basic Tişört.",
+      "patterned": true,
+      "warmth": 1,
+      "formality": 0,
+      "sizes": [
+        {
+          "size": "XS",
+          "available": true
+        },
+        {
+          "size": "S",
+          "available": true
+        },
+        {
+          "size": "M",
+          "available": true
+        },
+        {
+          "size": "L",
+          "available": true
+        },
+        {
+          "size": "XL",
+          "available": true
+        },
+        {
+          "size": "XXL",
+          "available": true
+        },
+        {
+          "size": "XXXL",
+          "available": false
+        }
+      ],
+      "sourceImages": [
+        "https://sky-static.mavi.com/mnresize/1005/1425/0613680-85173_image_1.jpg?v=1785914462386",
+        "https://sky-static.mavi.com/mnresize/1005/1425/0613680-85173_image_2.jpg?v=1785914462386"
+      ],
+      "image": "https://sky-static.mavi.com/mnresize/1005/1425/0613680-85173_image_1.jpg?v=1785914462386",
+      "alternateImage": "https://sky-static.mavi.com/mnresize/1005/1425/0613680-85173_image_2.jpg?v=1785914462386"
+    },
+    {
+      "id": "0613437-70490",
+      "name": "Lacivert Basic Tişört",
+      "brand": "Mavi",
+      "category": "top",
+      "kind": "tee",
+      "price": 449.99,
+      "originalPrice": 449.99,
+      "url": "https://www.mavi.com/lacivert-basic-tisort/p/0613437-70490",
+      "source": "Üreticinin ürün sayfası",
+      "checkedAt": "2026-10-14",
+      "priceStatus": "snapshot",
+      "color": "Lacivert",
+      "family": "navy",
+      "fit": "slim",
+      "fitLabel": "Slim Fit / Dar Kesim",
+      "material": "%100 Pamuk",
+      "description": "Yüzde yüz pamuklu orta ağırlıkta kumaştan üretilen Lacivert Basic Tişört, slim fit dar kesim ve bisiklet yaka tasarımıyla sade bir görünüm sunar.",
+      "patterned": false,
+      "warmth": 1,
+      "formality": 1,
+      "sizes": [
+        {
+          "size": "XS",
+          "available": true
+        },
+        {
+          "size": "S",
+          "available": true
+        },
+        {
+          "size": "M",
+          "available": true
+        },
+        {
+          "size": "L",
+          "available": true
+        },
+        {
+          "size": "XL",
+          "available": true
+        },
+        {
+          "size": "XXL",
+          "available": true
+        },
+        {
+          "size": "XXXL",
+          "available": true
+        }
+      ],
+      "sourceImages": [
+        "https://sky-static.mavi.com/mnresize/1005/1425/0613437-70490_image_1.jpg?v=1775054796659",
+        "https://sky-static.mavi.com/mnresize/1005/1425/0613437-70490_image_2.jpg?v=1775054796659"
+      ],
+      "image": "https://sky-static.mavi.com/mnresize/1005/1425/0613437-70490_image_1.jpg?v=1775054796659",
+      "alternateImage": "https://sky-static.mavi.com/mnresize/1005/1425/0613437-70490_image_2.jpg?v=1775054796659"
+    },
+    {
+      "id": "0612731-70223",
+      "name": "Mavi Black Mor Basic Tişört",
+      "brand": "Mavi",
+      "category": "top",
+      "kind": "tee",
+      "price": 799.99,
+      "originalPrice": 799.99,
+      "url": "https://www.mavi.com/mavi-black-mor-basic-tisort/p/0612731-70223",
+      "source": "Üreticinin ürün sayfası",
+      "checkedAt": "2026-10-14",
+      "priceStatus": "snapshot",
+      "color": "Mor",
+      "family": "purple",
+      "fit": "wide",
+      "fitLabel": "Loose Fit / Bol Rahat Kesim",
+      "material": "%80 Pamuk %20 Polyester",
+      "description": "Mavi Black koleksiyonundan Mor Basic Tişört, pamuk karışımlı orta ağırlıkta interlok kumaştan üretilmiştir. Loose fit, rahat kesim ve bisiklet yaka tasarımıyla sade bir görünüm sunar. Mavi Black, farklı tekniklerle zenginleştirilen güçlü logo detayları ve zamansız tasarımlarıyla şehirli erkeğin stilini modern bir çizgide yorumluyor. Özel teknikler ",
+      "patterned": false,
+      "warmth": 1,
+      "formality": 0,
+      "sizes": [
+        {
+          "size": "XS",
+          "available": false
+        },
+        {
+          "size": "S",
+          "available": true
+        },
+        {
+          "size": "M",
+          "available": true
+        },
+        {
+          "size": "L",
+          "available": true
+        },
+        {
+          "size": "XL",
+          "available": true
+        },
+        {
+          "size": "XXL",
+          "available": true
+        },
+        {
+          "size": "XXXL",
+          "available": false
+        }
+      ],
+      "sourceImages": [
+        "https://sky-static.mavi.com/mnresize/1005/1425/0612731-70223_image_1.jpg?v=1785914462129",
+        "https://sky-static.mavi.com/mnresize/1005/1425/0612731-70223_image_2.jpg?v=1785914462129"
+      ],
+      "image": "https://sky-static.mavi.com/mnresize/1005/1425/0612731-70223_image_1.jpg?v=1785914462129",
+      "alternateImage": "https://sky-static.mavi.com/mnresize/1005/1425/0612731-70223_image_2.jpg?v=1785914462129"
+    },
+    {
+      "id": "0612731-90892",
+      "name": "Mavi Black Kahverengi Basic Tişört",
+      "brand": "Mavi",
+      "category": "top",
+      "kind": "tee",
+      "price": 479.99,
+      "originalPrice": 799.99,
+      "url": "https://www.mavi.com/mavi-black-kahverengi-basic-tisort/p/0612731-90892",
+      "source": "Üreticinin ürün sayfası",
+      "checkedAt": "2026-10-14",
+      "priceStatus": "snapshot",
+      "color": "Kahverengi",
+      "family": "brown",
+      "fit": "wide",
+      "fitLabel": "Loose Fit / Bol Rahat Kesim",
+      "material": "%80 Pamuk %20 Polyester",
+      "description": "Mavi Black koleksiyonundan Kahverengi Basic Tişört, pamuk karışımlı orta ağırlıkta interlok kumaştan üretilmiştir. Loose fit, rahat kesim ve bisiklet yaka tasarımıyla sade bir görünüm sunar. Mavi Black, farklı tekniklerle zenginleştirilen güçlü logo detayları ve zamansız tasarımlarıyla şehirli erkeğin stilini modern bir çizgide yorumluyor. Özel tek",
+      "patterned": false,
+      "warmth": 1,
+      "formality": 0,
+      "sizes": [
+        {
+          "size": "XS",
+          "available": true
+        },
+        {
+          "size": "S",
+          "available": true
+        },
+        {
+          "size": "M",
+          "available": true
+        },
+        {
+          "size": "L",
+          "available": true
+        },
+        {
+          "size": "XL",
+          "available": true
+        },
+        {
+          "size": "XXL",
+          "available": true
+        },
+        {
+          "size": "XXXL",
+          "available": false
+        }
+      ],
+      "sourceImages": [
+        "https://sky-static.mavi.com/mnresize/1005/1425/0612731-90892_image_1.jpg?v=1785914462131",
+        "https://sky-static.mavi.com/mnresize/1005/1425/0612731-90892_image_2.jpg?v=1785914462131"
+      ],
+      "image": "https://sky-static.mavi.com/mnresize/1005/1425/0612731-90892_image_1.jpg?v=1785914462131",
+      "alternateImage": "https://sky-static.mavi.com/mnresize/1005/1425/0612731-90892_image_2.jpg?v=1785914462131"
+    },
+    {
+      "id": "0613676-70389",
+      "name": "Mavi Jeans Kahverengi Tişört",
+      "brand": "Mavi",
+      "category": "top",
+      "kind": "tee",
+      "price": 359.99,
+      "originalPrice": 599.99,
+      "url": "https://www.mavi.com/mavi-jeans-kahverengi-tisort/p/0613676-70389",
+      "source": "Üreticinin ürün sayfası",
+      "checkedAt": "2026-10-14",
+      "priceStatus": "snapshot",
+      "color": "Kahverengi",
+      "family": "brown",
+      "fit": "wide",
+      "fitLabel": "Oversize / Geniş Kesim",
+      "material": "%100 Pamuk",
+      "description": "Mavi erkek koleksiyonundan Mavi Jeans Kahverengi Tişört.",
+      "patterned": true,
+      "warmth": 1,
+      "formality": 0,
+      "sizes": [
+        {
+          "size": "XS",
+          "available": true
+        },
+        {
+          "size": "S",
+          "available": true
+        },
+        {
+          "size": "M",
+          "available": true
+        },
+        {
+          "size": "L",
+          "available": true
+        },
+        {
+          "size": "XL",
+          "available": true
+        },
+        {
+          "size": "XXL",
+          "available": true
+        },
+        {
+          "size": "XXXL",
+          "available": false
+        }
+      ],
+      "sourceImages": [
+        "https://sky-static.mavi.com/mnresize/1005/1425/0613676-70389_image_1.jpg?v=1786628953919",
+        "https://sky-static.mavi.com/mnresize/1005/1425/0613676-70389_image_2.jpg?v=1786628953919"
+      ],
+      "image": "https://sky-static.mavi.com/mnresize/1005/1425/0613676-70389_image_1.jpg?v=1786628953919",
+      "alternateImage": "https://sky-static.mavi.com/mnresize/1005/1425/0613676-70389_image_2.jpg?v=1786628953919"
+    },
+    {
+      "id": "0613509-70057",
+      "name": "Ekru Basic Tişört",
+      "brand": "Mavi",
+      "category": "top",
+      "kind": "tee",
+      "price": 599.99,
+      "originalPrice": 599.99,
+      "url": "https://www.mavi.com/ekru-basic-tisort/p/0613509-70057",
+      "source": "Üreticinin ürün sayfası",
+      "checkedAt": "2026-10-14",
+      "priceStatus": "snapshot",
+      "color": "Ekru",
+      "family": "cream",
+      "fit": "regular",
+      "fitLabel": "Regular Fit / Normal Kesim",
+      "material": "%100 Pamuk",
+      "description": "Mavi erkek koleksiyonundan Ekru Basic Tişört.",
+      "patterned": false,
+      "warmth": 1,
+      "formality": 1,
+      "sizes": [
+        {
+          "size": "XS",
+          "available": false
+        },
+        {
+          "size": "S",
+          "available": false
+        },
+        {
+          "size": "M",
+          "available": true
+        },
+        {
+          "size": "L",
+          "available": true
+        },
+        {
+          "size": "XL",
+          "available": true
+        },
+        {
+          "size": "XXL",
+          "available": true
+        },
+        {
+          "size": "XXXL",
+          "available": false
+        }
+      ],
+      "sourceImages": [
+        "https://sky-static.mavi.com/mnresize/1005/1425/0613509-70057_image_1.jpg?v=1785914462227",
+        "https://sky-static.mavi.com/mnresize/1005/1425/0613509-70057_image_2.jpg?v=1785914462227"
+      ],
+      "image": "https://sky-static.mavi.com/mnresize/1005/1425/0613509-70057_image_1.jpg?v=1785914462227",
+      "alternateImage": "https://sky-static.mavi.com/mnresize/1005/1425/0613509-70057_image_2.jpg?v=1785914462227"
+    },
+    {
+      "id": "0613676-70490",
+      "name": "Mavi Jeans Lacivert Tişört",
+      "brand": "Mavi",
+      "category": "top",
+      "kind": "tee",
+      "price": 359.99,
+      "originalPrice": 599.99,
+      "url": "https://www.mavi.com/mavi-jeans-lacivert-tisort/p/0613676-70490",
+      "source": "Üreticinin ürün sayfası",
+      "checkedAt": "2026-10-14",
+      "priceStatus": "snapshot",
+      "color": "Lacivert",
+      "family": "navy",
+      "fit": "wide",
+      "fitLabel": "Oversize / Geniş Kesim",
+      "material": "%100 Pamuk",
+      "description": "Mavi erkek koleksiyonundan Mavi Jeans Lacivert Tişört.",
+      "patterned": true,
+      "warmth": 1,
+      "formality": 0,
+      "sizes": [
+        {
+          "size": "XS",
+          "available": true
+        },
+        {
+          "size": "S",
+          "available": true
+        },
+        {
+          "size": "M",
+          "available": true
+        },
+        {
+          "size": "L",
+          "available": true
+        },
+        {
+          "size": "XL",
+          "available": true
+        },
+        {
+          "size": "XXL",
+          "available": true
+        },
+        {
+          "size": "XXXL",
+          "available": false
+        }
+      ],
+      "sourceImages": [
+        "https://sky-static.mavi.com/mnresize/1005/1425/0613676-70490_image_1.jpg?v=1786628953920",
+        "https://sky-static.mavi.com/mnresize/1005/1425/0613676-70490_image_2.jpg?v=1786628953920"
+      ],
+      "image": "https://sky-static.mavi.com/mnresize/1005/1425/0613676-70490_image_1.jpg?v=1786628953920",
+      "alternateImage": "https://sky-static.mavi.com/mnresize/1005/1425/0613676-70490_image_2.jpg?v=1786628953920"
+    },
+    {
+      "id": "0613551-90781",
+      "name": "Mavi Jeans Baskılı Yeşil Tişört",
+      "brand": "Mavi",
+      "category": "top",
+      "kind": "tee",
+      "price": 299.99,
+      "originalPrice": 499.99,
+      "url": "https://www.mavi.com/mavi-jeans-baskili-yesil-tisort/p/0613551-90781",
+      "source": "Üreticinin ürün sayfası",
+      "checkedAt": "2026-10-14",
+      "priceStatus": "snapshot",
+      "color": "Yeşil",
+      "family": "olive",
+      "fit": "wide",
+      "fitLabel": "Loose Fit / Bol Rahat Kesim",
+      "material": "%100 Pamuk",
+      "description": "Mavi erkek koleksiyonundan Mavi Jeans Baskılı Yeşil Tişört.",
+      "patterned": true,
+      "warmth": 1,
+      "formality": 0,
+      "sizes": [
+        {
+          "size": "XS",
+          "available": true
+        },
+        {
+          "size": "S",
+          "available": true
+        },
+        {
+          "size": "M",
+          "available": false
+        },
+        {
+          "size": "L",
+          "available": false
+        },
+        {
+          "size": "XL",
+          "available": true
+        },
+        {
+          "size": "XXL",
+          "available": false
+        },
+        {
+          "size": "XXXL",
+          "available": false
+        }
+      ],
+      "sourceImages": [
+        "https://sky-static.mavi.com/mnresize/1005/1425/0613551-90781_image_1.jpg?v=1785914462306",
+        "https://sky-static.mavi.com/mnresize/1005/1425/0613551-90781_image_2.jpg?v=1785914462306"
+      ],
+      "image": "https://sky-static.mavi.com/mnresize/1005/1425/0613551-90781_image_1.jpg?v=1785914462306",
+      "alternateImage": "https://sky-static.mavi.com/mnresize/1005/1425/0613551-90781_image_2.jpg?v=1785914462306"
+    },
+    {
+      "id": "0613681-70092",
+      "name": "Mavi Jeans Antrasit Basic Tişört",
+      "brand": "Mavi",
+      "category": "top",
+      "kind": "tee",
+      "price": 499.99,
+      "originalPrice": 499.99,
+      "url": "https://www.mavi.com/mavi-jeans-antrasit-basic-tisort/p/0613681-70092",
+      "source": "Üreticinin ürün sayfası",
+      "checkedAt": "2026-10-14",
+      "priceStatus": "snapshot",
+      "color": "Antrasit",
+      "family": "gray",
+      "fit": "wide",
+      "fitLabel": "Loose Fit / Bol Rahat Kesim",
+      "material": "%100 Pamuk",
+      "description": "Mavi erkek koleksiyonundan Mavi Jeans Antrasit Basic Tişört.",
+      "patterned": true,
+      "warmth": 1,
+      "formality": 0,
+      "sizes": [
+        {
+          "size": "XS",
+          "available": true
+        },
+        {
+          "size": "S",
+          "available": true
+        },
+        {
+          "size": "M",
+          "available": true
+        },
+        {
+          "size": "L",
+          "available": true
+        },
+        {
+          "size": "XL",
+          "available": true
+        },
+        {
+          "size": "XXL",
+          "available": true
+        },
+        {
+          "size": "XXXL",
+          "available": false
+        }
+      ],
+      "sourceImages": [
+        "https://sky-static.mavi.com/mnresize/1005/1425/0613681-70092_image_1.jpg?v=1785914462390",
+        "https://sky-static.mavi.com/mnresize/1005/1425/0613681-70092_image_2.jpg?v=1785914462390"
+      ],
+      "image": "https://sky-static.mavi.com/mnresize/1005/1425/0613681-70092_image_1.jpg?v=1785914462390",
+      "alternateImage": "https://sky-static.mavi.com/mnresize/1005/1425/0613681-70092_image_2.jpg?v=1785914462390"
+    },
+    {
+      "id": "0212131-70390",
+      "name": "Kırmızı Kanvas İnce Ceket",
+      "brand": "Mavi",
+      "category": "layer",
+      "kind": "shirt",
+      "price": 2799.99,
+      "originalPrice": 2799.99,
+      "url": "https://www.mavi.com/kirmizi-kanvas-ince-ceket/p/0212131-70390",
+      "source": "Üreticinin ürün sayfası",
+      "checkedAt": "2026-10-14",
+      "priceStatus": "snapshot",
+      "color": "Kırmızı",
+      "family": "red",
+      "fit": "wide",
+      "fitLabel": "Oversize / Geniş Kesim",
+      "material": "Kumaş: %100 Pamuk Astar: %65 Polyester %35 Pamuk",
+      "description": "Mavi erkek koleksiyonundan Kırmızı Kanvas İnce Ceket. İki adet yan cep, iki adet iç cep.",
+      "patterned": false,
+      "warmth": 2,
+      "formality": 0,
+      "sizes": [
+        {
+          "size": "XS",
+          "available": false
+        },
+        {
+          "size": "S",
+          "available": false
+        },
+        {
+          "size": "M",
+          "available": false
+        },
+        {
+          "size": "L",
+          "available": false
+        },
+        {
+          "size": "XL",
+          "available": true
+        },
+        {
+          "size": "XXL",
+          "available": false
+        },
+        {
+          "size": "XXXL",
+          "available": false
+        }
+      ],
+      "sourceImages": [
+        "https://sky-static.mavi.com/mnresize/1005/1425/0212131-70390_image_1.jpg?v=1786948612699",
+        "https://sky-static.mavi.com/mnresize/1005/1425/0212131-70390_image_2.jpg?v=1786948612700"
+      ],
+      "image": "https://sky-static.mavi.com/mnresize/1005/1425/0212131-70390_image_1.jpg?v=1786948612699",
+      "alternateImage": "https://sky-static.mavi.com/mnresize/1005/1425/0212131-70390_image_2.jpg?v=1786948612700"
+    },
+    {
+      "id": "0212107-91712",
+      "name": "Yeşil Ekose Gömlek",
+      "brand": "Mavi",
+      "category": "layer",
+      "kind": "shirt",
+      "price": 1599.99,
+      "originalPrice": 1599.99,
+      "url": "https://www.mavi.com/yesil-ekose-gomlek/p/0212107-91712",
+      "source": "Üreticinin ürün sayfası",
+      "checkedAt": "2026-10-14",
+      "priceStatus": "snapshot",
+      "color": "Yeşil",
+      "family": "olive",
+      "fit": "wide",
+      "fitLabel": "Oversize / Geniş Kesim",
+      "material": "%100 Pamuk",
+      "description": "Mavi erkek koleksiyonundan Yeşil Ekose Gömlek.",
+      "patterned": true,
+      "warmth": 2,
+      "formality": 0,
+      "sizes": [
+        {
+          "size": "XS",
+          "available": true
+        },
+        {
+          "size": "S",
+          "available": true
+        },
+        {
+          "size": "M",
+          "available": true
+        },
+        {
+          "size": "L",
+          "available": true
+        },
+        {
+          "size": "XL",
+          "available": true
+        },
+        {
+          "size": "XXL",
+          "available": true
+        },
+        {
+          "size": "XXXL",
+          "available": false
+        }
+      ],
+      "sourceImages": [
+        "https://sky-static.mavi.com/mnresize/1005/1425/0212107-91712_image_1.jpg?v=1786948612698",
+        "https://sky-static.mavi.com/mnresize/1005/1425/0212107-91712_image_2.jpg?v=1786948612698"
+      ],
+      "image": "https://sky-static.mavi.com/mnresize/1005/1425/0212107-91712_image_1.jpg?v=1786948612698",
+      "alternateImage": "https://sky-static.mavi.com/mnresize/1005/1425/0212107-91712_image_2.jpg?v=1786948612698"
+    },
+    {
+      "id": "0212126-91564",
+      "name": "Cepli Lacivert Gömlek",
+      "brand": "Mavi",
+      "category": "layer",
+      "kind": "shirt",
+      "price": 959.99,
+      "originalPrice": 1599.99,
+      "url": "https://www.mavi.com/cepli-lacivert-gomlek/p/0212126-91564",
+      "source": "Üreticinin ürün sayfası",
+      "checkedAt": "2026-10-14",
+      "priceStatus": "snapshot",
+      "color": "Lacivert",
+      "family": "navy",
+      "fit": "wide",
+      "fitLabel": "Loose Fit / Bol Rahat Kesim",
+      "material": "%100 Pamuk",
+      "description": "Mavi erkek koleksiyonundan Cepli Lacivert Gömlek. Bir adet ön cep.",
+      "patterned": false,
+      "warmth": 1,
+      "formality": 0,
+      "sizes": [
+        {
+          "size": "XS",
+          "available": true
+        },
+        {
+          "size": "S",
+          "available": true
+        },
+        {
+          "size": "M",
+          "available": true
+        },
+        {
+          "size": "L",
+          "available": true
+        },
+        {
+          "size": "XL",
+          "available": false
+        },
+        {
+          "size": "XXL",
+          "available": false
+        },
+        {
+          "size": "XXXL",
+          "available": false
+        }
+      ],
+      "sourceImages": [
+        "https://sky-static.mavi.com/mnresize/1005/1425/0212126-91564_image_3.jpg?v=1785914461973",
+        "https://sky-static.mavi.com/mnresize/1005/1425/0212126-91564_image_4.jpg?v=1785914461973"
+      ],
+      "image": "https://sky-static.mavi.com/mnresize/1005/1425/0212126-91564_image_3.jpg?v=1785914461973",
+      "alternateImage": "https://sky-static.mavi.com/mnresize/1005/1425/0212126-91564_image_4.jpg?v=1785914461973"
+    },
+    {
+      "id": "0220433-80020",
+      "name": "(Tencel™) Lyocell Karışımlı Antrasit Gömlek",
+      "brand": "Mavi",
+      "category": "layer",
+      "kind": "shirt",
+      "price": 2099.99,
+      "originalPrice": 2099.99,
+      "url": "https://www.mavi.com/lyocell-karisimli-antrasit-gomlek/p/0220433-80020",
+      "source": "Üreticinin ürün sayfası",
+      "checkedAt": "2026-10-14",
+      "priceStatus": "snapshot",
+      "color": "Antrasit",
+      "family": "gray",
+      "fit": "regular",
+      "fitLabel": "Regular Fit / Normal Kesim",
+      "material": "%91 Lyocell (Tencel™) %9 Polyester",
+      "description": "Mavi Black koleksiyonundan (Tencel TM) Lyocell Karışımlı Antrasit Gömlek. Gizli düğmeli yaka. Mavi Black, farklı tekniklerle zenginleştirilen güçlü logo detayları ve zamansız tasarımlarıyla şehirli erkeğin stilini modern bir çizgide yorumluyor.",
+      "patterned": false,
+      "warmth": 1,
+      "formality": 2,
+      "sizes": [
+        {
+          "size": "XS",
+          "available": true
+        },
+        {
+          "size": "S",
+          "available": true
+        },
+        {
+          "size": "M",
+          "available": true
+        },
+        {
+          "size": "L",
+          "available": true
+        },
+        {
+          "size": "XL",
+          "available": true
+        },
+        {
+          "size": "XXL",
+          "available": true
+        },
+        {
+          "size": "XXXL",
+          "available": true
+        }
+      ],
+      "sourceImages": [
+        "https://sky-static.mavi.com/mnresize/1005/1425/0220433-80020_image_1.jpg?v=1787220750573",
+        "https://sky-static.mavi.com/mnresize/1005/1425/0220433-80020_image_2.jpg?v=1787220750573"
+      ],
+      "image": "https://sky-static.mavi.com/mnresize/1005/1425/0220433-80020_image_1.jpg?v=1787220750573",
+      "alternateImage": "https://sky-static.mavi.com/mnresize/1005/1425/0220433-80020_image_2.jpg?v=1787220750573"
+    },
+    {
+      "id": "0212069-91268",
+      "name": "Antrasit Örme Gömlek",
+      "brand": "Mavi",
+      "category": "layer",
+      "kind": "shirt",
+      "price": 1079.99,
+      "originalPrice": 1799.99,
+      "url": "https://www.mavi.com/antrasit-orme-gomlek/p/0212069-91268",
+      "source": "Üreticinin ürün sayfası",
+      "checkedAt": "2026-10-14",
+      "priceStatus": "snapshot",
+      "color": "Antrasit",
+      "family": "gray",
+      "fit": "regular",
+      "fitLabel": "Regular Fit / Normal Kesim",
+      "material": "%100 Pamuk",
+      "description": "Mavi Black koleksiyonundan Antrasit Örme Gömlek. Gizli düğmeli yaka. Mavi Black, farklı tekniklerle zenginleştirilen güçlü logo detayları ve zamansız tasarımlarıyla şehirli erkeğin stilini modern bir çizgide yorumluyor.",
+      "patterned": false,
+      "warmth": 1,
+      "formality": 2,
+      "sizes": [
+        {
+          "size": "XS",
+          "available": true
+        },
+        {
+          "size": "S",
+          "available": true
+        },
+        {
+          "size": "M",
+          "available": true
+        },
+        {
+          "size": "L",
+          "available": true
+        },
+        {
+          "size": "XL",
+          "available": true
+        },
+        {
+          "size": "XXL",
+          "available": true
+        },
+        {
+          "size": "XXXL",
+          "available": false
+        }
+      ],
+      "sourceImages": [
+        "https://sky-static.mavi.com/mnresize/1005/1425/0212069-91268_image_1.jpg?v=1785914461918",
+        "https://sky-static.mavi.com/mnresize/1005/1425/0212069-91268_image_2.jpg?v=1785914461918"
+      ],
+      "image": "https://sky-static.mavi.com/mnresize/1005/1425/0212069-91268_image_1.jpg?v=1785914461918",
+      "alternateImage": "https://sky-static.mavi.com/mnresize/1005/1425/0212069-91268_image_2.jpg?v=1785914461918"
+    },
+    {
+      "id": "0220346-70321",
+      "name": "Kahverengi Kadife Gömlek",
+      "brand": "Mavi",
+      "category": "layer",
+      "kind": "shirt",
+      "price": 2099.99,
+      "originalPrice": 2099.99,
+      "url": "https://www.mavi.com/kahverengi-kadife-gomlek/p/0220346-70321",
+      "source": "Üreticinin ürün sayfası",
+      "checkedAt": "2026-10-14",
+      "priceStatus": "snapshot",
+      "color": "Kahverengi",
+      "family": "brown",
+      "fit": "regular",
+      "fitLabel": "Regular Fit / Normal Kesim",
+      "material": "%100 Pamuk",
+      "description": "Mavi erkek koleksiyonundan Kahverengi Kadife Gömlek. Mavi Black, farklı tekniklerle zenginleştirilen güçlü logo detayları ve zamansız tasarımlarıyla şehirli erkeğin stilini modern bir çizgide yorumluyor.",
+      "patterned": false,
+      "warmth": 2,
+      "formality": 1,
+      "sizes": [
+        {
+          "size": "XS",
+          "available": true
+        },
+        {
+          "size": "S",
+          "available": true
+        },
+        {
+          "size": "M",
+          "available": true
+        },
+        {
+          "size": "L",
+          "available": true
+        },
+        {
+          "size": "XL",
+          "available": true
+        },
+        {
+          "size": "XXL",
+          "available": true
+        },
+        {
+          "size": "XXXL",
+          "available": true
+        }
+      ],
+      "sourceImages": [
+        "https://sky-static.mavi.com/mnresize/1005/1425/0220346-70321_image_1.jpg?v=1790939043153",
+        "https://sky-static.mavi.com/mnresize/1005/1425/0220346-70321_image_2.jpg?v=1790939043154"
+      ],
+      "image": "https://sky-static.mavi.com/mnresize/1005/1425/0220346-70321_image_1.jpg?v=1790939043153",
+      "alternateImage": "https://sky-static.mavi.com/mnresize/1005/1425/0220346-70321_image_2.jpg?v=1790939043154"
+    },
+    {
+      "id": "0211969-a7374",
+      "name": "Çizgili Bordo Gömlek",
+      "brand": "Mavi",
+      "category": "layer",
+      "kind": "shirt",
+      "price": 1799.99,
+      "originalPrice": 1799.99,
+      "url": "https://www.mavi.com/cizgili-bordo-gomlek/p/0211969-A7374",
+      "source": "Üreticinin ürün sayfası",
+      "checkedAt": "2026-10-14",
+      "priceStatus": "snapshot",
+      "color": "Bordo",
+      "family": "red",
+      "fit": "wide",
+      "fitLabel": "Loose Fit / Bol Rahat Kesim",
+      "material": "%100 Pamuk",
+      "description": "Mavi erkek koleksiyonundan Çizgili Bordo Gömlek.",
+      "patterned": true,
+      "warmth": 1,
+      "formality": 0,
+      "sizes": [
+        {
+          "size": "XS",
+          "available": true
+        },
+        {
+          "size": "S",
+          "available": true
+        },
+        {
+          "size": "M",
+          "available": true
+        },
+        {
+          "size": "L",
+          "available": true
+        },
+        {
+          "size": "XL",
+          "available": true
+        },
+        {
+          "size": "XXL",
+          "available": true
+        },
+        {
+          "size": "XXXL",
+          "available": true
+        }
+      ],
+      "sourceImages": [
+        "https://sky-static.mavi.com/mnresize/1005/1425/0211969-A7374_image_1.jpg?v=1785914461879",
+        "https://sky-static.mavi.com/mnresize/1005/1425/0211969-A7374_image_2.jpg?v=1785914461880"
+      ],
+      "image": "https://sky-static.mavi.com/mnresize/1005/1425/0211969-A7374_image_1.jpg?v=1785914461879",
+      "alternateImage": "https://sky-static.mavi.com/mnresize/1005/1425/0211969-A7374_image_2.jpg?v=1785914461880"
+    },
+    {
+      "id": "0212021-25818",
+      "name": "Kahverengi Ekose Gömlek",
+      "brand": "Mavi",
+      "category": "layer",
+      "kind": "shirt",
+      "price": 1799.99,
+      "originalPrice": 1799.99,
+      "url": "https://www.mavi.com/kahverengi-ekose-gomlek/p/0212021-25818",
+      "source": "Üreticinin ürün sayfası",
+      "checkedAt": "2026-10-14",
+      "priceStatus": "snapshot",
+      "color": "Kahverengi",
+      "family": "brown",
+      "fit": "regular",
+      "fitLabel": "Regular Fit / Normal Kesim",
+      "material": "%100 Pamuk",
+      "description": "Mavi erkek koleksiyonundan Kahverengi Ekose Gömlek.",
+      "patterned": true,
+      "warmth": 2,
+      "formality": 1,
+      "sizes": [
+        {
+          "size": "XS",
+          "available": true
+        },
+        {
+          "size": "S",
+          "available": true
+        },
+        {
+          "size": "M",
+          "available": true
+        },
+        {
+          "size": "L",
+          "available": true
+        },
+        {
+          "size": "XL",
+          "available": true
+        },
+        {
+          "size": "XXL",
+          "available": true
+        },
+        {
+          "size": "XXXL",
+          "available": false
+        }
+      ],
+      "sourceImages": [
+        "https://sky-static.mavi.com/mnresize/1005/1425/0212021-25818_image_1.jpg?v=1789372371248",
+        "https://sky-static.mavi.com/mnresize/1005/1425/0212021-25818_image_2.jpg?v=1789372371248"
+      ],
+      "image": "https://sky-static.mavi.com/mnresize/1005/1425/0212021-25818_image_1.jpg?v=1789372371248",
+      "alternateImage": "https://sky-static.mavi.com/mnresize/1005/1425/0212021-25818_image_2.jpg?v=1789372371248"
+    },
+    {
+      "id": "0010101-83811",
+      "name": "Street Koyu Antrasit Jean Pantolon",
+      "brand": "Mavi",
+      "category": "bottom",
+      "kind": "jean",
+      "price": 1999.99,
+      "originalPrice": 1999.99,
+      "url": "https://www.mavi.com/mitte-street-koyu-antrasit-jean-pantolon/p/0010101-83811",
+      "source": "Üreticinin ürün sayfası",
+      "checkedAt": "2026-10-14",
+      "priceStatus": "snapshot",
+      "color": "Antrasit",
+      "family": "gray",
+      "fit": "wide",
+      "fitLabel": "Loose",
+      "material": "%99 Pamuk %1 Elastan",
+      "description": "Mavi denim koleksiyonundan Mitte Street Koyu Antrasit Jean Pantolon. Rahat kesim, 90 lar ilhamlı jean lerinden biri. Geniş paça.",
+      "patterned": false,
+      "warmth": 1,
+      "formality": 0,
+      "sizes": [
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "27",
+          "available": false
+        },
+        {
+          "size": "27",
+          "available": true
+        },
+        {
+          "size": "27",
+          "available": true
+        },
+        {
+          "size": "27",
+          "available": false
+        },
+        {
+          "size": "27",
+          "available": false
+        },
+        {
+          "size": "28",
+          "available": false
+        },
+        {
+          "size": "28",
+          "available": true
+        },
+        {
+          "size": "28",
+          "available": false
+        },
+        {
+          "size": "28",
+          "available": false
+        },
+        {
+          "size": "28",
+          "available": false
+        },
+        {
+          "size": "29",
+          "available": false
+        },
+        {
+          "size": "29",
+          "available": true
+        },
+        {
+          "size": "29",
+          "available": false
+        },
+        {
+          "size": "29",
+          "available": false
+        },
+        {
+          "size": "29",
+          "available": false
+        },
+        {
+          "size": "30",
+          "available": false
+        },
+        {
+          "size": "30",
+          "available": true
+        },
+        {
+          "size": "30",
+          "available": true
+        },
+        {
+          "size": "30",
+          "available": false
+        },
+        {
+          "size": "30",
+          "available": false
+        },
+        {
+          "size": "31",
+          "available": false
+        },
+        {
+          "size": "31",
+          "available": true
+        },
+        {
+          "size": "31",
+          "available": true
+        },
+        {
+          "size": "31",
+          "available": false
+        },
+        {
+          "size": "31",
+          "available": false
+        },
+        {
+          "size": "32",
+          "available": false
+        },
+        {
+          "size": "32",
+          "available": true
+        },
+        {
+          "size": "32",
+          "available": true
+        },
+        {
+          "size": "32",
+          "available": false
+        },
+        {
+          "size": "32",
+          "available": false
+        },
+        {
+          "size": "33",
+          "available": false
+        },
+        {
+          "size": "33",
+          "available": true
+        },
+        {
+          "size": "33",
+          "available": true
+        },
+        {
+          "size": "33",
+          "available": true
+        },
+        {
+          "size": "33",
+          "available": false
+        },
+        {
+          "size": "34",
+          "available": false
+        },
+        {
+          "size": "34",
+          "available": true
+        },
+        {
+          "size": "34",
+          "available": true
+        },
+        {
+          "size": "34",
+          "available": true
+        },
+        {
+          "size": "34",
+          "available": false
+        },
+        {
+          "size": "35",
+          "available": false
+        },
+        {
+          "size": "35",
+          "available": false
+        },
+        {
+          "size": "35",
+          "available": false
+        },
+        {
+          "size": "35",
+          "available": false
+        },
+        {
+          "size": "35",
+          "available": false
+        },
+        {
+          "size": "36",
+          "available": false
+        },
+        {
+          "size": "36",
+          "available": false
+        },
+        {
+          "size": "36",
+          "available": true
+        },
+        {
+          "size": "36",
+          "available": false
+        },
+        {
+          "size": "36",
+          "available": false
+        },
+        {
+          "size": "38",
+          "available": false
+        },
+        {
+          "size": "38",
+          "available": false
+        },
+        {
+          "size": "38",
+          "available": false
+        },
+        {
+          "size": "38",
+          "available": false
+        },
+        {
+          "size": "38",
+          "available": false
+        },
+        {
+          "size": "40",
+          "available": false
+        },
+        {
+          "size": "40",
+          "available": false
+        },
+        {
+          "size": "40",
+          "available": false
+        },
+        {
+          "size": "40",
+          "available": false
+        },
+        {
+          "size": "40",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        }
+      ],
+      "sourceImages": [
+        "https://sky-static.mavi.com/mnresize/1005/1425/0010101-83811_image_1.jpg?v=1786948612684",
+        "https://sky-static.mavi.com/mnresize/1005/1425/0010101-83811_image_2.jpg?v=1786948612685"
+      ],
+      "image": "https://sky-static.mavi.com/mnresize/1005/1425/0010101-83811_image_1.jpg?v=1786948612684",
+      "alternateImage": "https://sky-static.mavi.com/mnresize/1005/1425/0010101-83811_image_2.jpg?v=1786948612685"
+    },
+    {
+      "id": "0010039-89930",
+      "name": "Street Vintage Mavi Jean Pantolon",
+      "brand": "Mavi",
+      "category": "bottom",
+      "kind": "jean",
+      "price": 1999.99,
+      "originalPrice": 1999.99,
+      "url": "https://www.mavi.com/lisbon-street-vintage-mavi-jean-pantolon/p/0010039-89930",
+      "source": "Üreticinin ürün sayfası",
+      "checkedAt": "2026-10-14",
+      "priceStatus": "snapshot",
+      "color": "Mavi",
+      "family": "blue",
+      "fit": "wide",
+      "fitLabel": "Loose",
+      "material": "%99 Pamuk %1 Elastan",
+      "description": "Mavi denim koleksiyonundan Lisbon Street Vintage Mavi Jean Pantolon. Loose, bol kesim. Normal bel. Düz paçalı jean pantolon.",
+      "patterned": false,
+      "warmth": 1,
+      "formality": 0,
+      "sizes": [
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "27",
+          "available": true
+        },
+        {
+          "size": "27",
+          "available": true
+        },
+        {
+          "size": "27",
+          "available": false
+        },
+        {
+          "size": "27",
+          "available": false
+        },
+        {
+          "size": "27",
+          "available": false
+        },
+        {
+          "size": "27",
+          "available": false
+        },
+        {
+          "size": "28",
+          "available": true
+        },
+        {
+          "size": "28",
+          "available": true
+        },
+        {
+          "size": "28",
+          "available": false
+        },
+        {
+          "size": "28",
+          "available": false
+        },
+        {
+          "size": "28",
+          "available": false
+        },
+        {
+          "size": "28",
+          "available": false
+        },
+        {
+          "size": "29",
+          "available": true
+        },
+        {
+          "size": "29",
+          "available": true
+        },
+        {
+          "size": "29",
+          "available": false
+        },
+        {
+          "size": "29",
+          "available": false
+        },
+        {
+          "size": "29",
+          "available": false
+        },
+        {
+          "size": "29",
+          "available": false
+        },
+        {
+          "size": "30",
+          "available": true
+        },
+        {
+          "size": "30",
+          "available": true
+        },
+        {
+          "size": "30",
+          "available": false
+        },
+        {
+          "size": "30",
+          "available": false
+        },
+        {
+          "size": "30",
+          "available": false
+        },
+        {
+          "size": "30",
+          "available": false
+        },
+        {
+          "size": "31",
+          "available": true
+        },
+        {
+          "size": "31",
+          "available": true
+        },
+        {
+          "size": "31",
+          "available": false
+        },
+        {
+          "size": "31",
+          "available": false
+        },
+        {
+          "size": "31",
+          "available": false
+        },
+        {
+          "size": "31",
+          "available": false
+        },
+        {
+          "size": "32",
+          "available": true
+        },
+        {
+          "size": "32",
+          "available": true
+        },
+        {
+          "size": "32",
+          "available": true
+        },
+        {
+          "size": "32",
+          "available": false
+        },
+        {
+          "size": "32",
+          "available": false
+        },
+        {
+          "size": "32",
+          "available": false
+        },
+        {
+          "size": "33",
+          "available": true
+        },
+        {
+          "size": "33",
+          "available": true
+        },
+        {
+          "size": "33",
+          "available": true
+        },
+        {
+          "size": "33",
+          "available": false
+        },
+        {
+          "size": "33",
+          "available": false
+        },
+        {
+          "size": "33",
+          "available": false
+        },
+        {
+          "size": "34",
+          "available": true
+        },
+        {
+          "size": "34",
+          "available": true
+        },
+        {
+          "size": "34",
+          "available": true
+        },
+        {
+          "size": "34",
+          "available": false
+        },
+        {
+          "size": "34",
+          "available": false
+        },
+        {
+          "size": "34",
+          "available": false
+        },
+        {
+          "size": "35",
+          "available": false
+        },
+        {
+          "size": "35",
+          "available": false
+        },
+        {
+          "size": "35",
+          "available": false
+        },
+        {
+          "size": "35",
+          "available": false
+        },
+        {
+          "size": "35",
+          "available": false
+        },
+        {
+          "size": "35",
+          "available": false
+        },
+        {
+          "size": "36",
+          "available": true
+        },
+        {
+          "size": "36",
+          "available": true
+        },
+        {
+          "size": "36",
+          "available": false
+        },
+        {
+          "size": "36",
+          "available": false
+        },
+        {
+          "size": "36",
+          "available": false
+        },
+        {
+          "size": "36",
+          "available": false
+        },
+        {
+          "size": "38",
+          "available": false
+        },
+        {
+          "size": "38",
+          "available": true
+        },
+        {
+          "size": "38",
+          "available": false
+        },
+        {
+          "size": "38",
+          "available": false
+        },
+        {
+          "size": "38",
+          "available": false
+        },
+        {
+          "size": "38",
+          "available": false
+        },
+        {
+          "size": "40",
+          "available": false
+        },
+        {
+          "size": "40",
+          "available": false
+        },
+        {
+          "size": "40",
+          "available": false
+        },
+        {
+          "size": "40",
+          "available": false
+        },
+        {
+          "size": "40",
+          "available": false
+        },
+        {
+          "size": "40",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        },
+        {
+          "size": "44",
+          "available": false
+        },
+        {
+          "size": "44",
+          "available": false
+        },
+        {
+          "size": "44",
+          "available": false
+        },
+        {
+          "size": "44",
+          "available": false
+        },
+        {
+          "size": "44",
+          "available": false
+        },
+        {
+          "size": "44",
+          "available": false
+        },
+        {
+          "size": "46",
+          "available": false
+        },
+        {
+          "size": "46",
+          "available": false
+        },
+        {
+          "size": "46",
+          "available": false
+        },
+        {
+          "size": "46",
+          "available": false
+        },
+        {
+          "size": "46",
+          "available": false
+        },
+        {
+          "size": "46",
+          "available": false
+        }
+      ],
+      "sourceImages": [
+        "https://sky-static.mavi.com/mnresize/1005/1425/0010039-89930_image_1.jpg",
+        "https://sky-static.mavi.com/mnresize/1005/1425/0010039-89930_image_2.jpg"
+      ],
+      "image": "https://sky-static.mavi.com/mnresize/1005/1425/0010039-89930_image_1.jpg",
+      "alternateImage": "https://sky-static.mavi.com/mnresize/1005/1425/0010039-89930_image_2.jpg"
+    },
+    {
+      "id": "0019166-87850",
+      "name": "Classic Denim Puslu Mavi Jean Pantolon",
+      "brand": "Mavi",
+      "category": "bottom",
+      "kind": "jean",
+      "price": 1999.99,
+      "originalPrice": 1999.99,
+      "url": "https://www.mavi.com/marlon-classic-denim-puslu-mavi-jean-pantolon/p/0019166-87850",
+      "source": "Üreticinin ürün sayfası",
+      "checkedAt": "2026-10-14",
+      "priceStatus": "snapshot",
+      "color": "Mavi",
+      "family": "blue",
+      "fit": "regular",
+      "fitLabel": "Regular Straight",
+      "material": "%99 Pamuk %1 Elastan",
+      "description": "Mavi denim koleksiyonundan Marlon Classic Denim Puslu Mavi Jean Pantolon. Mavi Classic Denim, üstün kalitesi, gerçek indigo renkleri, özel aksesuar detayları, bugünün en öne çıkan fitleri ve klasiği yeniden yorumlayan zamansız görüntüsüyle Mavi nin jean ustalığının imzası. Bu ürün aynı zamanda Mavi nin All Blue koleksiyonunun bir parçasıdır.",
+      "patterned": false,
+      "warmth": 1,
+      "formality": 0,
+      "sizes": [
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "27",
+          "available": false
+        },
+        {
+          "size": "27",
+          "available": false
+        },
+        {
+          "size": "27",
+          "available": false
+        },
+        {
+          "size": "27",
+          "available": false
+        },
+        {
+          "size": "27",
+          "available": false
+        },
+        {
+          "size": "27",
+          "available": false
+        },
+        {
+          "size": "27",
+          "available": false
+        },
+        {
+          "size": "28",
+          "available": false
+        },
+        {
+          "size": "28",
+          "available": false
+        },
+        {
+          "size": "28",
+          "available": false
+        },
+        {
+          "size": "28",
+          "available": false
+        },
+        {
+          "size": "28",
+          "available": false
+        },
+        {
+          "size": "28",
+          "available": false
+        },
+        {
+          "size": "28",
+          "available": false
+        },
+        {
+          "size": "28",
+          "available": false
+        },
+        {
+          "size": "29",
+          "available": false
+        },
+        {
+          "size": "29",
+          "available": false
+        },
+        {
+          "size": "29",
+          "available": true
+        },
+        {
+          "size": "29",
+          "available": false
+        },
+        {
+          "size": "29",
+          "available": false
+        },
+        {
+          "size": "29",
+          "available": false
+        },
+        {
+          "size": "29",
+          "available": false
+        },
+        {
+          "size": "30",
+          "available": true
+        },
+        {
+          "size": "30",
+          "available": false
+        },
+        {
+          "size": "30",
+          "available": false
+        },
+        {
+          "size": "30",
+          "available": false
+        },
+        {
+          "size": "30",
+          "available": false
+        },
+        {
+          "size": "30",
+          "available": false
+        },
+        {
+          "size": "30",
+          "available": false
+        },
+        {
+          "size": "30",
+          "available": false
+        },
+        {
+          "size": "31",
+          "available": false
+        },
+        {
+          "size": "31",
+          "available": true
+        },
+        {
+          "size": "31",
+          "available": true
+        },
+        {
+          "size": "31",
+          "available": false
+        },
+        {
+          "size": "31",
+          "available": false
+        },
+        {
+          "size": "31",
+          "available": false
+        },
+        {
+          "size": "31",
+          "available": false
+        },
+        {
+          "size": "32",
+          "available": true
+        },
+        {
+          "size": "32",
+          "available": true
+        },
+        {
+          "size": "32",
+          "available": true
+        },
+        {
+          "size": "32",
+          "available": true
+        },
+        {
+          "size": "32",
+          "available": false
+        },
+        {
+          "size": "32",
+          "available": false
+        },
+        {
+          "size": "32",
+          "available": false
+        },
+        {
+          "size": "33",
+          "available": true
+        },
+        {
+          "size": "33",
+          "available": true
+        },
+        {
+          "size": "33",
+          "available": true
+        },
+        {
+          "size": "33",
+          "available": true
+        },
+        {
+          "size": "33",
+          "available": false
+        },
+        {
+          "size": "33",
+          "available": false
+        },
+        {
+          "size": "33",
+          "available": false
+        },
+        {
+          "size": "34",
+          "available": true
+        },
+        {
+          "size": "34",
+          "available": true
+        },
+        {
+          "size": "34",
+          "available": true
+        },
+        {
+          "size": "34",
+          "available": true
+        },
+        {
+          "size": "34",
+          "available": false
+        },
+        {
+          "size": "34",
+          "available": false
+        },
+        {
+          "size": "34",
+          "available": false
+        },
+        {
+          "size": "35",
+          "available": false
+        },
+        {
+          "size": "35",
+          "available": true
+        },
+        {
+          "size": "35",
+          "available": true
+        },
+        {
+          "size": "35",
+          "available": true
+        },
+        {
+          "size": "35",
+          "available": false
+        },
+        {
+          "size": "35",
+          "available": false
+        },
+        {
+          "size": "35",
+          "available": false
+        },
+        {
+          "size": "36",
+          "available": true
+        },
+        {
+          "size": "36",
+          "available": true
+        },
+        {
+          "size": "36",
+          "available": true
+        },
+        {
+          "size": "36",
+          "available": true
+        },
+        {
+          "size": "36",
+          "available": false
+        },
+        {
+          "size": "36",
+          "available": false
+        },
+        {
+          "size": "36",
+          "available": false
+        },
+        {
+          "size": "38",
+          "available": false
+        },
+        {
+          "size": "38",
+          "available": false
+        },
+        {
+          "size": "38",
+          "available": true
+        },
+        {
+          "size": "38",
+          "available": true
+        },
+        {
+          "size": "38",
+          "available": false
+        },
+        {
+          "size": "38",
+          "available": false
+        },
+        {
+          "size": "38",
+          "available": false
+        },
+        {
+          "size": "40",
+          "available": false
+        },
+        {
+          "size": "40",
+          "available": false
+        },
+        {
+          "size": "40",
+          "available": false
+        },
+        {
+          "size": "40",
+          "available": false
+        },
+        {
+          "size": "40",
+          "available": false
+        },
+        {
+          "size": "40",
+          "available": false
+        },
+        {
+          "size": "40",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        },
+        {
+          "size": "44",
+          "available": false
+        },
+        {
+          "size": "44",
+          "available": false
+        },
+        {
+          "size": "44",
+          "available": false
+        },
+        {
+          "size": "44",
+          "available": false
+        },
+        {
+          "size": "44",
+          "available": false
+        },
+        {
+          "size": "44",
+          "available": false
+        },
+        {
+          "size": "44",
+          "available": false
+        },
+        {
+          "size": "46",
+          "available": false
+        },
+        {
+          "size": "46",
+          "available": false
+        },
+        {
+          "size": "46",
+          "available": false
+        },
+        {
+          "size": "46",
+          "available": false
+        },
+        {
+          "size": "46",
+          "available": false
+        },
+        {
+          "size": "46",
+          "available": false
+        },
+        {
+          "size": "46",
+          "available": false
+        }
+      ],
+      "sourceImages": [
+        "https://sky-static.mavi.com/mnresize/1005/1425/0019166-87850_image_1.jpg",
+        "https://sky-static.mavi.com/mnresize/1005/1425/0019166-87850_image_2.jpg"
+      ],
+      "image": "https://sky-static.mavi.com/mnresize/1005/1425/0019166-87850_image_1.jpg",
+      "alternateImage": "https://sky-static.mavi.com/mnresize/1005/1425/0019166-87850_image_2.jpg"
+    },
+    {
+      "id": "0010289-91350",
+      "name": "Street Rinse Denim Jean Pantolon",
+      "brand": "Mavi",
+      "category": "bottom",
+      "kind": "jean",
+      "price": 1999.99,
+      "originalPrice": 1999.99,
+      "url": "https://www.mavi.com/toronto-street-rinse-denim-jean-pantolon/p/0010289-91350",
+      "source": "Üreticinin ürün sayfası",
+      "checkedAt": "2026-10-14",
+      "priceStatus": "snapshot",
+      "color": "Lacivert",
+      "family": "navy",
+      "fit": "wide",
+      "fitLabel": "Baggy",
+      "material": "%100 Pamuk",
+      "description": "Mavi denim koleksiyonundan Toronto Street Rinse Denim Jean Pantolon. Baggy fit. Rahat Kesim. Düz paça.",
+      "patterned": false,
+      "warmth": 1,
+      "formality": 0,
+      "sizes": [
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "27",
+          "available": false
+        },
+        {
+          "size": "27",
+          "available": true
+        },
+        {
+          "size": "27",
+          "available": true
+        },
+        {
+          "size": "27",
+          "available": false
+        },
+        {
+          "size": "27",
+          "available": false
+        },
+        {
+          "size": "27",
+          "available": false
+        },
+        {
+          "size": "27",
+          "available": false
+        },
+        {
+          "size": "28",
+          "available": false
+        },
+        {
+          "size": "28",
+          "available": true
+        },
+        {
+          "size": "28",
+          "available": true
+        },
+        {
+          "size": "28",
+          "available": false
+        },
+        {
+          "size": "28",
+          "available": false
+        },
+        {
+          "size": "28",
+          "available": false
+        },
+        {
+          "size": "28",
+          "available": false
+        },
+        {
+          "size": "29",
+          "available": false
+        },
+        {
+          "size": "29",
+          "available": true
+        },
+        {
+          "size": "29",
+          "available": true
+        },
+        {
+          "size": "29",
+          "available": false
+        },
+        {
+          "size": "29",
+          "available": false
+        },
+        {
+          "size": "29",
+          "available": false
+        },
+        {
+          "size": "29",
+          "available": false
+        },
+        {
+          "size": "30",
+          "available": false
+        },
+        {
+          "size": "30",
+          "available": true
+        },
+        {
+          "size": "30",
+          "available": true
+        },
+        {
+          "size": "30",
+          "available": false
+        },
+        {
+          "size": "30",
+          "available": false
+        },
+        {
+          "size": "30",
+          "available": false
+        },
+        {
+          "size": "30",
+          "available": false
+        },
+        {
+          "size": "31",
+          "available": false
+        },
+        {
+          "size": "31",
+          "available": true
+        },
+        {
+          "size": "31",
+          "available": true
+        },
+        {
+          "size": "31",
+          "available": false
+        },
+        {
+          "size": "31",
+          "available": false
+        },
+        {
+          "size": "31",
+          "available": false
+        },
+        {
+          "size": "31",
+          "available": false
+        },
+        {
+          "size": "32",
+          "available": false
+        },
+        {
+          "size": "32",
+          "available": true
+        },
+        {
+          "size": "32",
+          "available": true
+        },
+        {
+          "size": "32",
+          "available": false
+        },
+        {
+          "size": "32",
+          "available": false
+        },
+        {
+          "size": "32",
+          "available": false
+        },
+        {
+          "size": "32",
+          "available": false
+        },
+        {
+          "size": "33",
+          "available": false
+        },
+        {
+          "size": "33",
+          "available": true
+        },
+        {
+          "size": "33",
+          "available": true
+        },
+        {
+          "size": "33",
+          "available": false
+        },
+        {
+          "size": "33",
+          "available": false
+        },
+        {
+          "size": "33",
+          "available": false
+        },
+        {
+          "size": "33",
+          "available": false
+        },
+        {
+          "size": "34",
+          "available": false
+        },
+        {
+          "size": "34",
+          "available": true
+        },
+        {
+          "size": "34",
+          "available": true
+        },
+        {
+          "size": "34",
+          "available": false
+        },
+        {
+          "size": "34",
+          "available": false
+        },
+        {
+          "size": "34",
+          "available": false
+        },
+        {
+          "size": "34",
+          "available": false
+        },
+        {
+          "size": "35",
+          "available": false
+        },
+        {
+          "size": "35",
+          "available": false
+        },
+        {
+          "size": "35",
+          "available": false
+        },
+        {
+          "size": "35",
+          "available": false
+        },
+        {
+          "size": "35",
+          "available": false
+        },
+        {
+          "size": "35",
+          "available": false
+        },
+        {
+          "size": "35",
+          "available": false
+        },
+        {
+          "size": "36",
+          "available": false
+        },
+        {
+          "size": "36",
+          "available": false
+        },
+        {
+          "size": "36",
+          "available": true
+        },
+        {
+          "size": "36",
+          "available": false
+        },
+        {
+          "size": "36",
+          "available": false
+        },
+        {
+          "size": "36",
+          "available": false
+        },
+        {
+          "size": "36",
+          "available": false
+        },
+        {
+          "size": "38",
+          "available": false
+        },
+        {
+          "size": "38",
+          "available": true
+        },
+        {
+          "size": "38",
+          "available": false
+        },
+        {
+          "size": "38",
+          "available": false
+        },
+        {
+          "size": "38",
+          "available": false
+        },
+        {
+          "size": "38",
+          "available": false
+        },
+        {
+          "size": "38",
+          "available": false
+        },
+        {
+          "size": "40",
+          "available": false
+        },
+        {
+          "size": "40",
+          "available": false
+        },
+        {
+          "size": "40",
+          "available": false
+        },
+        {
+          "size": "40",
+          "available": false
+        },
+        {
+          "size": "40",
+          "available": false
+        },
+        {
+          "size": "40",
+          "available": false
+        },
+        {
+          "size": "40",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        },
+        {
+          "size": "44",
+          "available": false
+        },
+        {
+          "size": "44",
+          "available": false
+        },
+        {
+          "size": "44",
+          "available": false
+        },
+        {
+          "size": "44",
+          "available": false
+        },
+        {
+          "size": "44",
+          "available": false
+        },
+        {
+          "size": "44",
+          "available": false
+        },
+        {
+          "size": "44",
+          "available": false
+        },
+        {
+          "size": "46",
+          "available": false
+        },
+        {
+          "size": "46",
+          "available": false
+        },
+        {
+          "size": "46",
+          "available": false
+        },
+        {
+          "size": "46",
+          "available": false
+        },
+        {
+          "size": "46",
+          "available": false
+        },
+        {
+          "size": "46",
+          "available": false
+        },
+        {
+          "size": "46",
+          "available": false
+        }
+      ],
+      "sourceImages": [
+        "https://sky-static.mavi.com/mnresize/1005/1425/0010289-91350_image_1.jpg?v=1769606136660",
+        "https://sky-static.mavi.com/mnresize/1005/1425/0010289-91350_image_2.jpg?v=1769606136661"
+      ],
+      "image": "https://sky-static.mavi.com/mnresize/1005/1425/0010289-91350_image_1.jpg?v=1769606136660",
+      "alternateImage": "https://sky-static.mavi.com/mnresize/1005/1425/0010289-91350_image_2.jpg?v=1769606136661"
+    },
+    {
+      "id": "0017734787",
+      "name": "Koyu Gri Comfort Smoke Jean Pantolon",
+      "brand": "Mavi",
+      "category": "bottom",
+      "kind": "jean",
+      "price": 1699.99,
+      "originalPrice": 1699.99,
+      "url": "https://www.mavi.com/177-comfort-koyu-gri-comfort-smoke-jean-pantolon/p/0017734787",
+      "source": "Üreticinin ürün sayfası",
+      "checkedAt": "2026-10-14",
+      "priceStatus": "snapshot",
+      "color": "Antrasit",
+      "family": "gray",
+      "fit": "regular",
+      "fitLabel": "Regular Straight",
+      "material": "%98 Pamuk %2 Elastan",
+      "description": "Mavi denim koleksiyonundan 177 Koyu Gri Comfort Smoke Jean Pantolon. Diz boyunca hafifçe daralan klasik kesim. Orta bel.",
+      "patterned": false,
+      "warmth": 1,
+      "formality": 0,
+      "sizes": [
+        {
+          "size": "29",
+          "available": false
+        },
+        {
+          "size": "30",
+          "available": true
+        },
+        {
+          "size": "31",
+          "available": true
+        },
+        {
+          "size": "32",
+          "available": true
+        },
+        {
+          "size": "33",
+          "available": true
+        },
+        {
+          "size": "34",
+          "available": true
+        },
+        {
+          "size": "36",
+          "available": true
+        },
+        {
+          "size": "38",
+          "available": true
+        },
+        {
+          "size": "40",
+          "available": true
+        },
+        {
+          "size": "29",
+          "available": false
+        },
+        {
+          "size": "30",
+          "available": true
+        },
+        {
+          "size": "31",
+          "available": true
+        },
+        {
+          "size": "32",
+          "available": true
+        },
+        {
+          "size": "33",
+          "available": true
+        },
+        {
+          "size": "34",
+          "available": true
+        },
+        {
+          "size": "36",
+          "available": true
+        },
+        {
+          "size": "38",
+          "available": true
+        },
+        {
+          "size": "40",
+          "available": true
+        },
+        {
+          "size": "29",
+          "available": false
+        },
+        {
+          "size": "30",
+          "available": false
+        },
+        {
+          "size": "31",
+          "available": false
+        },
+        {
+          "size": "32",
+          "available": false
+        },
+        {
+          "size": "33",
+          "available": false
+        },
+        {
+          "size": "34",
+          "available": true
+        },
+        {
+          "size": "36",
+          "available": true
+        },
+        {
+          "size": "38",
+          "available": false
+        },
+        {
+          "size": "40",
+          "available": false
+        },
+        {
+          "size": "29",
+          "available": false
+        },
+        {
+          "size": "30",
+          "available": false
+        },
+        {
+          "size": "31",
+          "available": false
+        },
+        {
+          "size": "32",
+          "available": false
+        },
+        {
+          "size": "33",
+          "available": false
+        },
+        {
+          "size": "34",
+          "available": false
+        },
+        {
+          "size": "36",
+          "available": false
+        },
+        {
+          "size": "38",
+          "available": false
+        },
+        {
+          "size": "40",
+          "available": false
+        },
+        {
+          "size": "32",
+          "available": true
+        },
+        {
+          "size": "33",
+          "available": true
+        },
+        {
+          "size": "34",
+          "available": true
+        },
+        {
+          "size": "36",
+          "available": true
+        },
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "27",
+          "available": false
+        },
+        {
+          "size": "27",
+          "available": false
+        },
+        {
+          "size": "27",
+          "available": false
+        },
+        {
+          "size": "27",
+          "available": false
+        },
+        {
+          "size": "27",
+          "available": false
+        },
+        {
+          "size": "27",
+          "available": false
+        },
+        {
+          "size": "27",
+          "available": false
+        },
+        {
+          "size": "28",
+          "available": false
+        },
+        {
+          "size": "28",
+          "available": false
+        },
+        {
+          "size": "28",
+          "available": false
+        },
+        {
+          "size": "28",
+          "available": false
+        },
+        {
+          "size": "28",
+          "available": false
+        },
+        {
+          "size": "28",
+          "available": false
+        },
+        {
+          "size": "28",
+          "available": false
+        },
+        {
+          "size": "29",
+          "available": false
+        },
+        {
+          "size": "29",
+          "available": false
+        },
+        {
+          "size": "29",
+          "available": false
+        },
+        {
+          "size": "30",
+          "available": true
+        },
+        {
+          "size": "30",
+          "available": false
+        },
+        {
+          "size": "30",
+          "available": false
+        },
+        {
+          "size": "31",
+          "available": true
+        },
+        {
+          "size": "31",
+          "available": false
+        },
+        {
+          "size": "31",
+          "available": false
+        },
+        {
+          "size": "32",
+          "available": false
+        },
+        {
+          "size": "32",
+          "available": false
+        },
+        {
+          "size": "33",
+          "available": false
+        },
+        {
+          "size": "33",
+          "available": false
+        },
+        {
+          "size": "34",
+          "available": false
+        },
+        {
+          "size": "34",
+          "available": false
+        },
+        {
+          "size": "35",
+          "available": false
+        },
+        {
+          "size": "35",
+          "available": false
+        },
+        {
+          "size": "35",
+          "available": false
+        },
+        {
+          "size": "35",
+          "available": false
+        },
+        {
+          "size": "35",
+          "available": false
+        },
+        {
+          "size": "35",
+          "available": false
+        },
+        {
+          "size": "35",
+          "available": false
+        },
+        {
+          "size": "36",
+          "available": false
+        },
+        {
+          "size": "36",
+          "available": false
+        },
+        {
+          "size": "38",
+          "available": false
+        },
+        {
+          "size": "38",
+          "available": false
+        },
+        {
+          "size": "38",
+          "available": false
+        },
+        {
+          "size": "40",
+          "available": false
+        },
+        {
+          "size": "40",
+          "available": false
+        },
+        {
+          "size": "40",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        },
+        {
+          "size": "44",
+          "available": false
+        },
+        {
+          "size": "44",
+          "available": false
+        },
+        {
+          "size": "44",
+          "available": false
+        },
+        {
+          "size": "44",
+          "available": false
+        },
+        {
+          "size": "44",
+          "available": false
+        },
+        {
+          "size": "44",
+          "available": false
+        },
+        {
+          "size": "44",
+          "available": false
+        },
+        {
+          "size": "46",
+          "available": false
+        },
+        {
+          "size": "46",
+          "available": false
+        },
+        {
+          "size": "46",
+          "available": false
+        },
+        {
+          "size": "46",
+          "available": false
+        },
+        {
+          "size": "46",
+          "available": false
+        },
+        {
+          "size": "46",
+          "available": false
+        },
+        {
+          "size": "46",
+          "available": false
+        },
+        {
+          "size": "48",
+          "available": false
+        },
+        {
+          "size": "48",
+          "available": false
+        },
+        {
+          "size": "48",
+          "available": false
+        },
+        {
+          "size": "48",
+          "available": false
+        },
+        {
+          "size": "48",
+          "available": false
+        },
+        {
+          "size": "48",
+          "available": false
+        },
+        {
+          "size": "48",
+          "available": false
+        },
+        {
+          "size": "50",
+          "available": false
+        },
+        {
+          "size": "50",
+          "available": false
+        },
+        {
+          "size": "50",
+          "available": false
+        },
+        {
+          "size": "50",
+          "available": false
+        },
+        {
+          "size": "50",
+          "available": false
+        },
+        {
+          "size": "50",
+          "available": false
+        },
+        {
+          "size": "50",
+          "available": false
+        },
+        {
+          "size": "52",
+          "available": false
+        },
+        {
+          "size": "52",
+          "available": false
+        },
+        {
+          "size": "52",
+          "available": false
+        },
+        {
+          "size": "52",
+          "available": false
+        },
+        {
+          "size": "52",
+          "available": false
+        },
+        {
+          "size": "52",
+          "available": false
+        },
+        {
+          "size": "52",
+          "available": false
+        }
+      ],
+      "sourceImages": [
+        "https://sky-static.mavi.com/mnresize/1005/1425/0017734787_image_1.jpg?v=1770124146596",
+        "https://sky-static.mavi.com/mnresize/1005/1425/0017734787_image_2.jpg?v=1770124146596"
+      ],
+      "image": "https://sky-static.mavi.com/mnresize/1005/1425/0017734787_image_1.jpg?v=1770124146596",
+      "alternateImage": "https://sky-static.mavi.com/mnresize/1005/1425/0017734787_image_2.jpg?v=1770124146596"
+    },
+    {
+      "id": "00378a6869",
+      "name": "Martin Koyu Kahverengi Comfort Gabardin Pantolon",
+      "brand": "Mavi",
+      "category": "bottom",
+      "kind": "chino",
+      "price": 1799.99,
+      "originalPrice": 1799.99,
+      "url": "https://www.mavi.com/martin-koyu-kahverengi-comfort-gabardin-pantolon/p/00378A6869",
+      "source": "Üreticinin ürün sayfası",
+      "checkedAt": "2026-10-14",
+      "priceStatus": "snapshot",
+      "color": "Kahverengi",
+      "family": "brown",
+      "fit": "regular",
+      "fitLabel": "Regular Straight",
+      "material": "%97 Pamuk %3 Elastan",
+      "description": "Mavi erkek koleksiyonundan Martin Koyu Kahverengi Comfort Gabardin Pantolon. Basende rahat, düz paça.",
+      "patterned": false,
+      "warmth": 1,
+      "formality": 2,
+      "sizes": [
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "27",
+          "available": false
+        },
+        {
+          "size": "27",
+          "available": false
+        },
+        {
+          "size": "27",
+          "available": false
+        },
+        {
+          "size": "27",
+          "available": false
+        },
+        {
+          "size": "27",
+          "available": false
+        },
+        {
+          "size": "27",
+          "available": false
+        },
+        {
+          "size": "27",
+          "available": false
+        },
+        {
+          "size": "28",
+          "available": false
+        },
+        {
+          "size": "28",
+          "available": false
+        },
+        {
+          "size": "28",
+          "available": false
+        },
+        {
+          "size": "28",
+          "available": false
+        },
+        {
+          "size": "28",
+          "available": false
+        },
+        {
+          "size": "28",
+          "available": false
+        },
+        {
+          "size": "28",
+          "available": false
+        },
+        {
+          "size": "29",
+          "available": false
+        },
+        {
+          "size": "29",
+          "available": true
+        },
+        {
+          "size": "29",
+          "available": true
+        },
+        {
+          "size": "29",
+          "available": false
+        },
+        {
+          "size": "29",
+          "available": false
+        },
+        {
+          "size": "29",
+          "available": false
+        },
+        {
+          "size": "29",
+          "available": false
+        },
+        {
+          "size": "30",
+          "available": true
+        },
+        {
+          "size": "30",
+          "available": true
+        },
+        {
+          "size": "30",
+          "available": true
+        },
+        {
+          "size": "30",
+          "available": false
+        },
+        {
+          "size": "30",
+          "available": false
+        },
+        {
+          "size": "30",
+          "available": false
+        },
+        {
+          "size": "30",
+          "available": false
+        },
+        {
+          "size": "31",
+          "available": false
+        },
+        {
+          "size": "31",
+          "available": true
+        },
+        {
+          "size": "31",
+          "available": true
+        },
+        {
+          "size": "31",
+          "available": true
+        },
+        {
+          "size": "31",
+          "available": false
+        },
+        {
+          "size": "31",
+          "available": false
+        },
+        {
+          "size": "31",
+          "available": false
+        },
+        {
+          "size": "32",
+          "available": true
+        },
+        {
+          "size": "32",
+          "available": true
+        },
+        {
+          "size": "32",
+          "available": true
+        },
+        {
+          "size": "32",
+          "available": true
+        },
+        {
+          "size": "32",
+          "available": false
+        },
+        {
+          "size": "32",
+          "available": false
+        },
+        {
+          "size": "32",
+          "available": false
+        },
+        {
+          "size": "33",
+          "available": true
+        },
+        {
+          "size": "33",
+          "available": true
+        },
+        {
+          "size": "33",
+          "available": true
+        },
+        {
+          "size": "33",
+          "available": true
+        },
+        {
+          "size": "33",
+          "available": false
+        },
+        {
+          "size": "33",
+          "available": false
+        },
+        {
+          "size": "33",
+          "available": false
+        },
+        {
+          "size": "34",
+          "available": false
+        },
+        {
+          "size": "34",
+          "available": true
+        },
+        {
+          "size": "34",
+          "available": true
+        },
+        {
+          "size": "34",
+          "available": true
+        },
+        {
+          "size": "34",
+          "available": false
+        },
+        {
+          "size": "34",
+          "available": false
+        },
+        {
+          "size": "34",
+          "available": false
+        },
+        {
+          "size": "35",
+          "available": false
+        },
+        {
+          "size": "35",
+          "available": false
+        },
+        {
+          "size": "35",
+          "available": false
+        },
+        {
+          "size": "35",
+          "available": false
+        },
+        {
+          "size": "35",
+          "available": false
+        },
+        {
+          "size": "35",
+          "available": false
+        },
+        {
+          "size": "35",
+          "available": false
+        },
+        {
+          "size": "36",
+          "available": true
+        },
+        {
+          "size": "36",
+          "available": true
+        },
+        {
+          "size": "36",
+          "available": true
+        },
+        {
+          "size": "36",
+          "available": false
+        },
+        {
+          "size": "36",
+          "available": false
+        },
+        {
+          "size": "36",
+          "available": false
+        },
+        {
+          "size": "36",
+          "available": false
+        },
+        {
+          "size": "38",
+          "available": false
+        },
+        {
+          "size": "38",
+          "available": true
+        },
+        {
+          "size": "38",
+          "available": true
+        },
+        {
+          "size": "38",
+          "available": false
+        },
+        {
+          "size": "38",
+          "available": false
+        },
+        {
+          "size": "38",
+          "available": false
+        },
+        {
+          "size": "38",
+          "available": false
+        },
+        {
+          "size": "40",
+          "available": false
+        },
+        {
+          "size": "40",
+          "available": false
+        },
+        {
+          "size": "40",
+          "available": false
+        },
+        {
+          "size": "40",
+          "available": false
+        },
+        {
+          "size": "40",
+          "available": false
+        },
+        {
+          "size": "40",
+          "available": false
+        },
+        {
+          "size": "40",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        },
+        {
+          "size": "44",
+          "available": false
+        },
+        {
+          "size": "44",
+          "available": false
+        },
+        {
+          "size": "44",
+          "available": false
+        },
+        {
+          "size": "44",
+          "available": false
+        },
+        {
+          "size": "44",
+          "available": false
+        },
+        {
+          "size": "44",
+          "available": false
+        },
+        {
+          "size": "44",
+          "available": false
+        },
+        {
+          "size": "46",
+          "available": false
+        },
+        {
+          "size": "46",
+          "available": false
+        },
+        {
+          "size": "46",
+          "available": false
+        },
+        {
+          "size": "46",
+          "available": false
+        },
+        {
+          "size": "46",
+          "available": false
+        },
+        {
+          "size": "46",
+          "available": false
+        },
+        {
+          "size": "46",
+          "available": false
+        },
+        {
+          "size": "48",
+          "available": false
+        },
+        {
+          "size": "48",
+          "available": false
+        },
+        {
+          "size": "48",
+          "available": false
+        },
+        {
+          "size": "48",
+          "available": false
+        },
+        {
+          "size": "48",
+          "available": false
+        },
+        {
+          "size": "48",
+          "available": false
+        },
+        {
+          "size": "48",
+          "available": false
+        },
+        {
+          "size": "50",
+          "available": false
+        },
+        {
+          "size": "50",
+          "available": false
+        },
+        {
+          "size": "50",
+          "available": false
+        },
+        {
+          "size": "50",
+          "available": false
+        },
+        {
+          "size": "50",
+          "available": false
+        },
+        {
+          "size": "50",
+          "available": false
+        },
+        {
+          "size": "50",
+          "available": false
+        },
+        {
+          "size": "52",
+          "available": false
+        },
+        {
+          "size": "52",
+          "available": false
+        },
+        {
+          "size": "52",
+          "available": false
+        },
+        {
+          "size": "52",
+          "available": false
+        },
+        {
+          "size": "52",
+          "available": false
+        },
+        {
+          "size": "52",
+          "available": false
+        },
+        {
+          "size": "52",
+          "available": false
+        }
+      ],
+      "sourceImages": [
+        "https://sky-static.mavi.com/mnresize/1005/1425/00378A6869_image_1.jpg?v=1789372371233",
+        "https://sky-static.mavi.com/mnresize/1005/1425/00378A6869_image_2.jpg?v=1789372371233"
+      ],
+      "image": "https://sky-static.mavi.com/mnresize/1005/1425/00378A6869_image_1.jpg?v=1789372371233",
+      "alternateImage": "https://sky-static.mavi.com/mnresize/1005/1425/00378A6869_image_2.jpg?v=1789372371233"
+    },
+    {
+      "id": "0010039-a6391",
+      "name": "Lisbon Koyu Kahverengi Denim Gabardin Pantolon",
+      "brand": "Mavi",
+      "category": "bottom",
+      "kind": "chino",
+      "price": 1799.99,
+      "originalPrice": 1799.99,
+      "url": "https://www.mavi.com/lisbon-koyu-kahverengi-denim-gabardin-pantolon/p/0010039-A6391",
+      "source": "Üreticinin ürün sayfası",
+      "checkedAt": "2026-10-14",
+      "priceStatus": "snapshot",
+      "color": "Kahverengi",
+      "family": "brown",
+      "fit": "wide",
+      "fitLabel": "Loose",
+      "material": "%100 Pamuk",
+      "description": "Mavi denim koleksiyonundan Lisbon Koyu Kahverengi Denim Gabardin Pantolon. Loose, bol kesim. Normal bel. Düz paçalı gabardin pantolon.",
+      "patterned": false,
+      "warmth": 1,
+      "formality": 2,
+      "sizes": [
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "27",
+          "available": false
+        },
+        {
+          "size": "27",
+          "available": true
+        },
+        {
+          "size": "27",
+          "available": false
+        },
+        {
+          "size": "27",
+          "available": false
+        },
+        {
+          "size": "27",
+          "available": false
+        },
+        {
+          "size": "27",
+          "available": false
+        },
+        {
+          "size": "27",
+          "available": false
+        },
+        {
+          "size": "28",
+          "available": false
+        },
+        {
+          "size": "28",
+          "available": false
+        },
+        {
+          "size": "28",
+          "available": true
+        },
+        {
+          "size": "28",
+          "available": false
+        },
+        {
+          "size": "28",
+          "available": false
+        },
+        {
+          "size": "28",
+          "available": false
+        },
+        {
+          "size": "28",
+          "available": false
+        },
+        {
+          "size": "28",
+          "available": false
+        },
+        {
+          "size": "29",
+          "available": false
+        },
+        {
+          "size": "29",
+          "available": true
+        },
+        {
+          "size": "29",
+          "available": false
+        },
+        {
+          "size": "29",
+          "available": false
+        },
+        {
+          "size": "29",
+          "available": false
+        },
+        {
+          "size": "29",
+          "available": false
+        },
+        {
+          "size": "29",
+          "available": false
+        },
+        {
+          "size": "30",
+          "available": false
+        },
+        {
+          "size": "30",
+          "available": false
+        },
+        {
+          "size": "30",
+          "available": true
+        },
+        {
+          "size": "30",
+          "available": true
+        },
+        {
+          "size": "30",
+          "available": false
+        },
+        {
+          "size": "30",
+          "available": false
+        },
+        {
+          "size": "30",
+          "available": false
+        },
+        {
+          "size": "30",
+          "available": false
+        },
+        {
+          "size": "31",
+          "available": false
+        },
+        {
+          "size": "31",
+          "available": true
+        },
+        {
+          "size": "31",
+          "available": true
+        },
+        {
+          "size": "31",
+          "available": false
+        },
+        {
+          "size": "31",
+          "available": false
+        },
+        {
+          "size": "31",
+          "available": false
+        },
+        {
+          "size": "31",
+          "available": false
+        },
+        {
+          "size": "32",
+          "available": false
+        },
+        {
+          "size": "32",
+          "available": true
+        },
+        {
+          "size": "32",
+          "available": true
+        },
+        {
+          "size": "32",
+          "available": false
+        },
+        {
+          "size": "32",
+          "available": false
+        },
+        {
+          "size": "32",
+          "available": false
+        },
+        {
+          "size": "32",
+          "available": false
+        },
+        {
+          "size": "33",
+          "available": false
+        },
+        {
+          "size": "33",
+          "available": true
+        },
+        {
+          "size": "33",
+          "available": true
+        },
+        {
+          "size": "33",
+          "available": false
+        },
+        {
+          "size": "33",
+          "available": false
+        },
+        {
+          "size": "33",
+          "available": false
+        },
+        {
+          "size": "33",
+          "available": false
+        },
+        {
+          "size": "34",
+          "available": false
+        },
+        {
+          "size": "34",
+          "available": true
+        },
+        {
+          "size": "34",
+          "available": true
+        },
+        {
+          "size": "34",
+          "available": true
+        },
+        {
+          "size": "34",
+          "available": false
+        },
+        {
+          "size": "34",
+          "available": false
+        },
+        {
+          "size": "34",
+          "available": false
+        },
+        {
+          "size": "35",
+          "available": false
+        },
+        {
+          "size": "35",
+          "available": false
+        },
+        {
+          "size": "35",
+          "available": false
+        },
+        {
+          "size": "35",
+          "available": false
+        },
+        {
+          "size": "35",
+          "available": false
+        },
+        {
+          "size": "35",
+          "available": false
+        },
+        {
+          "size": "35",
+          "available": false
+        },
+        {
+          "size": "36",
+          "available": false
+        },
+        {
+          "size": "36",
+          "available": false
+        },
+        {
+          "size": "36",
+          "available": true
+        },
+        {
+          "size": "36",
+          "available": false
+        },
+        {
+          "size": "36",
+          "available": false
+        },
+        {
+          "size": "36",
+          "available": false
+        },
+        {
+          "size": "36",
+          "available": false
+        },
+        {
+          "size": "38",
+          "available": false
+        },
+        {
+          "size": "38",
+          "available": false
+        },
+        {
+          "size": "38",
+          "available": false
+        },
+        {
+          "size": "38",
+          "available": false
+        },
+        {
+          "size": "38",
+          "available": false
+        },
+        {
+          "size": "38",
+          "available": false
+        },
+        {
+          "size": "38",
+          "available": false
+        },
+        {
+          "size": "40",
+          "available": false
+        },
+        {
+          "size": "40",
+          "available": false
+        },
+        {
+          "size": "40",
+          "available": false
+        },
+        {
+          "size": "40",
+          "available": false
+        },
+        {
+          "size": "40",
+          "available": false
+        },
+        {
+          "size": "40",
+          "available": false
+        },
+        {
+          "size": "40",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        },
+        {
+          "size": "44",
+          "available": false
+        },
+        {
+          "size": "44",
+          "available": false
+        },
+        {
+          "size": "44",
+          "available": false
+        },
+        {
+          "size": "44",
+          "available": false
+        },
+        {
+          "size": "44",
+          "available": false
+        },
+        {
+          "size": "44",
+          "available": false
+        },
+        {
+          "size": "44",
+          "available": false
+        },
+        {
+          "size": "46",
+          "available": false
+        },
+        {
+          "size": "46",
+          "available": false
+        },
+        {
+          "size": "46",
+          "available": false
+        },
+        {
+          "size": "46",
+          "available": false
+        },
+        {
+          "size": "46",
+          "available": false
+        },
+        {
+          "size": "46",
+          "available": false
+        },
+        {
+          "size": "46",
+          "available": false
+        }
+      ],
+      "sourceImages": [
+        "https://sky-static.mavi.com/mnresize/1005/1425/0010039-A6391_image_1.jpg?v=1790249127497",
+        "https://sky-static.mavi.com/mnresize/1005/1425/0010039-A6391_image_2.jpg?v=1790249127497"
+      ],
+      "image": "https://sky-static.mavi.com/mnresize/1005/1425/0010039-A6391_image_1.jpg?v=1790249127497",
+      "alternateImage": "https://sky-static.mavi.com/mnresize/1005/1425/0010039-A6391_image_2.jpg?v=1790249127497"
+    },
+    {
+      "id": "0010601-71379",
+      "name": "Siyah Spandex Pantolon",
+      "brand": "Mavi",
+      "category": "bottom",
+      "kind": "chino",
+      "price": 1259.99,
+      "originalPrice": 2099.99,
+      "url": "https://www.mavi.com/siyah-spandex-pantolon/p/0010601-71379",
+      "source": "Üreticinin ürün sayfası",
+      "checkedAt": "2026-10-14",
+      "priceStatus": "snapshot",
+      "color": "Siyah",
+      "family": "black",
+      "fit": "regular",
+      "fitLabel": "Regular Straight",
+      "material": "Kumaş: %100 Polyester Garni: %80 Polyester %20 Pamuk",
+      "description": "Mavi erkek koleksiyonundan Siyah Spandex Pantolon. Mavi Black, farklı tekniklerle zenginleştirilen güçlü logo detayları ve zamansız tasarımlarıyla şehirli erkeğin stilini modern bir çizgide yorumluyor.",
+      "patterned": false,
+      "warmth": 1,
+      "formality": 2,
+      "sizes": [
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "27",
+          "available": false
+        },
+        {
+          "size": "28",
+          "available": true
+        },
+        {
+          "size": "29",
+          "available": true
+        },
+        {
+          "size": "30",
+          "available": true
+        },
+        {
+          "size": "31",
+          "available": true
+        },
+        {
+          "size": "32",
+          "available": true
+        },
+        {
+          "size": "33",
+          "available": true
+        },
+        {
+          "size": "34",
+          "available": true
+        },
+        {
+          "size": "35",
+          "available": false
+        },
+        {
+          "size": "36",
+          "available": false
+        },
+        {
+          "size": "38",
+          "available": false
+        },
+        {
+          "size": "40",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        },
+        {
+          "size": "44",
+          "available": false
+        },
+        {
+          "size": "46",
+          "available": false
+        },
+        {
+          "size": "48",
+          "available": false
+        },
+        {
+          "size": "50",
+          "available": false
+        },
+        {
+          "size": "52",
+          "available": false
+        }
+      ],
+      "sourceImages": [
+        "https://sky-static.mavi.com/mnresize/1005/1425/0010601-71379_image_1.jpg?v=1785914461460",
+        "https://sky-static.mavi.com/mnresize/1005/1425/0010601-71379_image_2.jpg?v=1785914461460"
+      ],
+      "image": "https://sky-static.mavi.com/mnresize/1005/1425/0010601-71379_image_1.jpg?v=1785914461460",
+      "alternateImage": "https://sky-static.mavi.com/mnresize/1005/1425/0010601-71379_image_2.jpg?v=1785914461460"
+    },
+    {
+      "id": "0010646-70322",
+      "name": "Ekru Chino Pantolon",
+      "brand": "Mavi",
+      "category": "bottom",
+      "kind": "chino",
+      "price": 1259.99,
+      "originalPrice": 2099.99,
+      "url": "https://www.mavi.com/ekru-chino-pantolon/p/0010646-70322",
+      "source": "Üreticinin ürün sayfası",
+      "checkedAt": "2026-10-14",
+      "priceStatus": "snapshot",
+      "color": "Ekru",
+      "family": "cream",
+      "fit": "regular",
+      "fitLabel": "Regular Straight",
+      "material": "Kumaş: %70 Polyester %23 Viskoz %7 Viskoz Astar: %100 Pamuk",
+      "description": "Mavi erkek koleksiyonundan Ekru Chino Pantolon. Mavi Black, farklı tekniklerle zenginleştirilen güçlü logo detayları ve zamansız tasarımlarıyla şehirli erkeğin stilini modern bir çizgide yorumluyor.",
+      "patterned": false,
+      "warmth": 1,
+      "formality": 2,
+      "sizes": [
+        {
+          "size": "26",
+          "available": false
+        },
+        {
+          "size": "27",
+          "available": true
+        },
+        {
+          "size": "28",
+          "available": true
+        },
+        {
+          "size": "29",
+          "available": true
+        },
+        {
+          "size": "30",
+          "available": true
+        },
+        {
+          "size": "31",
+          "available": true
+        },
+        {
+          "size": "32",
+          "available": true
+        },
+        {
+          "size": "33",
+          "available": true
+        },
+        {
+          "size": "34",
+          "available": true
+        },
+        {
+          "size": "35",
+          "available": false
+        },
+        {
+          "size": "36",
+          "available": true
+        },
+        {
+          "size": "38",
+          "available": false
+        },
+        {
+          "size": "40",
+          "available": false
+        },
+        {
+          "size": "42",
+          "available": false
+        },
+        {
+          "size": "44",
+          "available": false
+        },
+        {
+          "size": "46",
+          "available": false
+        },
+        {
+          "size": "48",
+          "available": false
+        },
+        {
+          "size": "50",
+          "available": false
+        },
+        {
+          "size": "52",
+          "available": false
+        }
+      ],
+      "sourceImages": [
+        "https://sky-static.mavi.com/mnresize/1005/1425/0010646-70322_image_1.jpg?v=1789372371209",
+        "https://sky-static.mavi.com/mnresize/1005/1425/0010646-70322_image_2.jpg?v=1789372371209"
+      ],
+      "image": "https://sky-static.mavi.com/mnresize/1005/1425/0010646-70322_image_1.jpg?v=1789372371209",
+      "alternateImage": "https://sky-static.mavi.com/mnresize/1005/1425/0010646-70322_image_2.jpg?v=1789372371209"
+    },
+    {
+      "id": "0010646-71379",
+      "name": "Siyah Chino Pantolon",
+      "brand": "Mavi",
+      "category": "bottom",
+      "kind": "chino",
+      "price": 1259.99,
+      "originalPrice": 2099.99,
+      "url": "https://www.mavi.com/siyah-chino-pantolon/p/0010646-71379",
+      "source": "Üreticinin ürün sayfası",
+      "checkedAt": "2026-10-14",
+      "priceStatus": "snapshot",
+      "color": "Siyah",
+      "family": "black",
+      "fit": "regular",
+      "fitLabel": "Regular Straight",
+      "material": "Kumaş: %70 Polyester %23 Viskoz %7 Elastan Astar: %100 Pamuk",
+      "description": "Mavi erkek koleksiyonundan Siyah Chino Pantolon. Mavi Black, farklı tekniklerle zenginleştirilen güçlü logo detayları ve zamansız tasarımlarıyla şehirli erkeğin stilini modern bir çizgide yorumluyor.",
+      "patterned": false,
+      "warmth": 1,
+      "formality": 2,
+      "sizes": [],
+      "sourceImages": [
+        "https://sky-static.mavi.com/mnresize/1005/1425/0010646-71379_image_1.jpg?v=1789372371213",
+        "https://sky-static.mavi.com/mnresize/1005/1425/0010646-71379_image_2.jpg?v=1789372371214"
+      ],
+      "image": "https://sky-static.mavi.com/mnresize/1005/1425/0010646-71379_image_1.jpg?v=1789372371213",
+      "alternateImage": "https://sky-static.mavi.com/mnresize/1005/1425/0010646-71379_image_2.jpg?v=1789372371214"
+    },
+    {
+      "id": "0611824-900",
+      "name": "Etiket Detaylı Siyah Basic Tişört",
+      "brand": "Mavi",
+      "category": "top",
+      "kind": "tee",
+      "price": 499.99,
+      "originalPrice": 499.99,
+      "url": "https://www.mavi.com/etiket-detayli-siyah-basic-tisort/p/0611824-900",
+      "source": "Üreticinin ürün sayfası",
+      "checkedAt": "2026-10-14",
+      "priceStatus": "snapshot",
+      "color": "Siyah",
+      "family": "black",
+      "fit": "wide",
+      "fitLabel": "Loose Fit / Bol Rahat Kesim",
+      "material": "%100 Pamuk",
+      "description": "Etiket Detaylı Siyah Basic Tişört, yüzde yüz pamuklu orta ağırlıkta kumaştan üretilmiştir. Loose fit, rahat kesim ve bisiklet yaka tasarımıyla sade bir görünüm sunan bu tişört, yan dikişte küçük etiket detayı taşımaktadır.",
+      "patterned": false,
+      "warmth": 1,
+      "formality": 0,
+      "sizes": [
+        {
+          "size": "XS",
+          "available": true
+        },
+        {
+          "size": "S",
+          "available": true
+        },
+        {
+          "size": "M",
+          "available": false
+        },
+        {
+          "size": "L",
+          "available": false
+        },
+        {
+          "size": "XL",
+          "available": false
+        },
+        {
+          "size": "XXL",
+          "available": false
+        },
+        {
+          "size": "XXXL",
+          "available": false
+        }
+      ],
+      "sourceImages": [
+        "https://sky-static.mavi.com/mnresize/1005/1425/0611824-900_image_1.jpg?v=1785914462108",
+        "https://sky-static.mavi.com/mnresize/1005/1425/0611824-900_image_2.jpg?v=1785914462108"
+      ],
+      "image": "https://sky-static.mavi.com/mnresize/1005/1425/0611824-900_image_1.jpg?v=1785914462108",
+      "alternateImage": "https://sky-static.mavi.com/mnresize/1005/1425/0611824-900_image_2.jpg?v=1785914462108"
+    },
+    {
+      "id": "lcw-4372801",
+      "name": "Chino Pantolon",
+      "brand": "LCW",
+      "category": "bottom",
+      "kind": "chino",
+      "price": 499.99,
+      "originalPrice": 499.99,
+      "url": "https://www.lcw.com/regular-fit-gabardin-erkek-chino-pantolon-bej-o-4372801",
+      "source": "Üreticinin ürün sayfası",
+      "checkedAt": "2026-10-14",
+      "priceStatus": "snapshot",
+      "color": "Bej",
+      "family": "cream",
+      "fit": "regular",
+      "fitLabel": "Regular",
+      "material": "Mağaza sayfasında",
+      "description": "LCWAIKIKI Classic Bej Gabardin Düz Standart & Regular Düz Paça Erkek Chino Pantolon",
+      "patterned": false,
+      "warmth": 1,
+      "formality": 2,
+      "sizes": [],
+      "sourceImages": [
+        "https://img-lcwaikiki.mncdn.com/mnpadding/320/426/ffffff/pim/productimages/20251/7531189/v1/l_20251-s50564z8-y0a-97-79-91-187_5.jpg"
+      ],
+      "image": "https://img-lcwaikiki.mncdn.com/mnpadding/320/426/ffffff/pim/productimages/20251/7531189/v1/l_20251-s50564z8-y0a-97-79-91-187_5.jpg"
+    },
+    {
+      "id": "lcw-4646965",
+      "name": "Chino Pantolon",
+      "brand": "LCW",
+      "category": "bottom",
+      "kind": "chino",
+      "price": 599.99,
+      "originalPrice": 599.99,
+      "url": "https://www.lcw.com/regular-fit-gabardin-erkek-chino-pantolon-haki-o-4646965",
+      "source": "Üreticinin ürün sayfası",
+      "checkedAt": "2026-10-14",
+      "priceStatus": "snapshot",
+      "color": "Haki",
+      "family": "olive",
+      "fit": "regular",
+      "fitLabel": "Regular",
+      "material": "Mağaza sayfasında",
+      "description": "LCWAIKIKI Classic Haki Gabardin Düz Standart & Regular Düz Paça Erkek Chino Pantolon",
+      "patterned": false,
+      "warmth": 1,
+      "formality": 2,
+      "sizes": [],
+      "sourceImages": [
+        "https://img-lcwaikiki.mncdn.com/mnpadding/320/426/ffffff/pim/productimages/20251/7531189/v1/l_20251-s50564z8-zap-98-76-97-189_a.jpg"
+      ],
+      "image": "https://img-lcwaikiki.mncdn.com/mnpadding/320/426/ffffff/pim/productimages/20251/7531189/v1/l_20251-s50564z8-zap-98-76-97-189_a.jpg"
+    },
+    {
+      "id": "lcw-5260728",
+      "name": "Chino Pantolon",
+      "brand": "LCW",
+      "category": "bottom",
+      "kind": "chino",
+      "price": 399.99,
+      "originalPrice": 399.99,
+      "url": "https://www.lcw.com/regular-fit-gabardin-erkek-chino-pantolon-siyah-o-5260728",
+      "source": "Üreticinin ürün sayfası",
+      "checkedAt": "2026-10-14",
+      "priceStatus": "snapshot",
+      "color": "Siyah",
+      "family": "black",
+      "fit": "regular",
+      "fitLabel": "Regular",
+      "material": "Mağaza sayfasında",
+      "description": "LCWAIKIKI Classic Siyah Gabardin Düz Standart & Regular Düz Paça Erkek Chino Pantolon",
+      "patterned": false,
+      "warmth": 1,
+      "formality": 2,
+      "sizes": [],
+      "sourceImages": [
+        "https://img-lcwaikiki.mncdn.com/mnpadding/320/426/ffffff/pim/productimages/20261/8386695/v2/l_20261-s61580z8-cvl-99-76-96-188_a.jpg"
+      ],
+      "image": "https://img-lcwaikiki.mncdn.com/mnpadding/320/426/ffffff/pim/productimages/20261/8386695/v2/l_20261-s61580z8-cvl-99-76-96-188_a.jpg"
+    },
+    {
+      "id": "lcw-5176616",
+      "name": "Sneaker",
+      "brand": "LCW",
+      "category": "shoe",
+      "kind": "sneaker",
+      "price": 499.99,
+      "originalPrice": 499.99,
+      "url": "https://www.lcw.com/bagcikli-erkek-spor-ayakkabi-beyaz-o-5176616",
+      "source": "Üreticinin ürün sayfası",
+      "checkedAt": "2026-10-14",
+      "priceStatus": "snapshot",
+      "color": "Beyaz",
+      "family": "cream",
+      "fit": "regular",
+      "fitLabel": "Regular",
+      "material": "Mağaza sayfasında",
+      "description": "LCW STEPS Beyaz Erkek Sneaker",
+      "patterned": false,
+      "warmth": 1,
+      "formality": 1,
+      "sizes": [],
+      "sourceImages": [
+        "https://img-lcwaikiki.mncdn.com/mnpadding/320/426/ffffff/pim/productimages/20261/8416503/v1/l_20261-s62752z8-j5e_a.jpg"
+      ],
+      "image": "https://img-lcwaikiki.mncdn.com/mnpadding/320/426/ffffff/pim/productimages/20261/8416503/v1/l_20261-s62752z8-j5e_a.jpg"
+    },
+    {
+      "id": "lcw-5261067",
+      "name": "Sneaker",
+      "brand": "LCW",
+      "category": "shoe",
+      "kind": "sneaker",
+      "price": 499.99,
+      "originalPrice": 499.99,
+      "url": "https://www.lcw.com/bagcikli-erkek-spor-ayakkabi-beyaz-o-5261067",
+      "source": "Üreticinin ürün sayfası",
+      "checkedAt": "2026-10-14",
+      "priceStatus": "snapshot",
+      "color": "Beyaz",
+      "family": "cream",
+      "fit": "regular",
+      "fitLabel": "Regular",
+      "material": "Mağaza sayfasında",
+      "description": "LCW STEPS Beyaz Erkek Sneaker",
+      "patterned": false,
+      "warmth": 1,
+      "formality": 1,
+      "sizes": [],
+      "sourceImages": [
+        "https://img-lcwaikiki.mncdn.com/mnpadding/320/426/ffffff/pim/productimages/20261/9026729/v1/l_20261-s6m747z8-j5e_a.jpg"
+      ],
+      "image": "https://img-lcwaikiki.mncdn.com/mnpadding/320/426/ffffff/pim/productimages/20261/9026729/v1/l_20261-s6m747z8-j5e_a.jpg"
+    },
+    {
+      "id": "lcw-4353409",
+      "name": "Sneaker",
+      "brand": "LCW",
+      "category": "shoe",
+      "kind": "sneaker",
+      "price": 1599.99,
+      "originalPrice": 1599.99,
+      "url": "https://www.lcw.com/bagcikli-erkek-spor-ayakkabi-beyaz-o-4353409",
+      "source": "Üreticinin ürün sayfası",
+      "checkedAt": "2026-10-14",
+      "priceStatus": "snapshot",
+      "color": "Beyaz",
+      "family": "cream",
+      "fit": "regular",
+      "fitLabel": "Regular",
+      "material": "Mağaza sayfasında",
+      "description": "LCW STEPS Beyaz Erkek Sneaker",
+      "patterned": false,
+      "warmth": 1,
+      "formality": 1,
+      "sizes": [],
+      "sourceImages": [
+        "https://img-lcwaikiki.mncdn.com/mnpadding/320/426/ffffff/pim/productimages/20242/7309852/v1/l_20242-w4bs95z8-j5e_a.jpg"
+      ],
+      "image": "https://img-lcwaikiki.mncdn.com/mnpadding/320/426/ffffff/pim/productimages/20242/7309852/v1/l_20242-w4bs95z8-j5e_a.jpg"
+    },
+    {
+      "id": "lcw-4264170",
+      "name": "Sneaker",
+      "brand": "LCW",
+      "category": "shoe",
+      "kind": "sneaker",
+      "price": 1199.99,
+      "originalPrice": 1199.99,
+      "url": "https://www.lcw.com/bagcikli-erkek-spor-ayakkabi-beyaz-o-4264170",
+      "source": "Üreticinin ürün sayfası",
+      "checkedAt": "2026-10-14",
+      "priceStatus": "snapshot",
+      "color": "Beyaz",
+      "family": "cream",
+      "fit": "regular",
+      "fitLabel": "Regular",
+      "material": "Mağaza sayfasında",
+      "description": "LCW STEPS Beyaz Erkek Sneaker",
+      "patterned": false,
+      "warmth": 1,
+      "formality": 1,
+      "sizes": [],
+      "sourceImages": [
+        "https://img-lcwaikiki.mncdn.com/mnpadding/320/426/ffffff/pim/productimages/20241/7617074/v1/l_20241-s4oj88z8-j5e_a.jpg"
+      ],
+      "image": "https://img-lcwaikiki.mncdn.com/mnpadding/320/426/ffffff/pim/productimages/20241/7617074/v1/l_20241-s4oj88z8-j5e_a.jpg"
+    }
+  ]
+}
