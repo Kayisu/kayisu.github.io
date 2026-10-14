@@ -1,0 +1,21 @@
+name: Kendince catalog audit
+on:
+  push:
+    branches: [main]
+    paths: ['scripts/kendince/audit.py', '.github/workflows/kendince-audit.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Audit first-party catalog sources
+        run: python scripts/kendince/audit.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: kendince-catalog-audit
+          path: kendince-audit/
