@@ -40,6 +40,9 @@ jobs:
       - name: Check Astro and TypeScript
         run: npx --no-install astro check
 
+      - name: Verify Kendince catalog and interactions
+        run: node scripts/kendince/test.mjs
+
       - name: Build static site
         run: npm run build
 
@@ -61,3 +64,13 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+      - name: Checkout published source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js for publication verification
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Verify published Kendince files
+        run: node scripts/kendince/verify-live.mjs
