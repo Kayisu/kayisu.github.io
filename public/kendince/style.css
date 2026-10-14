@@ -95,3 +95,46 @@ body{font-size:16px}main,.site-header,footer{max-width:1400px}.site-header{margi
 
 .table-product-name{font-size:14px!important;font-weight:600;line-height:1.5;text-align:left;text-decoration:underline;text-underline-offset:3px;padding:0;color:var(--green)}
 .filter-panel .toggle-row{grid-column:1/-1}
+
+/* One full outfit on one mannequin; real product photos remain one click away. */
+.preview-controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 18px;padding:12px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.preview-mode{display:flex;align-items:center;gap:3px;padding:3px;background:#e8ecdf;border-radius:6px}
+.preview-mode button{font-size:14px;padding:8px 14px;border-radius:4px;color:#6f7e60}
+.preview-mode button.selected{background:#fff;color:var(--green);box-shadow:0 1px 4px #1f3b2012}
+.preview-build{display:flex;align-items:center;gap:8px;font-size:13px;color:#6c795f;margin-left:auto}
+.preview-build select{font-size:14px;background:transparent;border:1px solid #ccd6bf;border-radius:4px;padding:7px 23px 7px 9px;color:var(--green)}
+.preview-layer{font-size:13px;text-decoration:underline;text-underline-offset:3px;color:#68795b}
+.outfit-visual.has-mannequin{height:450px;display:block;padding:23px 8px 34px;background:radial-gradient(ellipse at 50% 38%,#faf9f4 0%,#eeeee4 65%,#e8ebde 100%);overflow:hidden}
+.mannequin-stage{position:relative;height:100%;min-height:0;width:100%;isolation:isolate}
+.mannequin-svg{display:block;width:100%;height:calc(100% - 18px);max-width:100%;overflow:visible}
+.mannequin-caption{position:absolute;left:0;right:0;bottom:0;text-align:center;font-size:11px;letter-spacing:.2px;color:#7f8575;white-space:nowrap}
+.preview-expand{position:absolute;bottom:13px;right:12px;z-index:3;display:flex;align-items:center;gap:4px;padding:7px 9px;background:#ffffffdf;border:1px solid #d9dfcc;border-radius:4px;font-size:12px;color:#526b42}
+.preview-expand svg{width:14px;height:14px}
+.has-mannequin .mannequin-caption{bottom:10px}
+.has-mannequin .save-button,.has-mannequin .look-label{z-index:4}
+.preview-product-strip{display:flex;gap:8px;justify-content:center;padding:11px 13px 0;background:#fff;border-top:1px solid #e8eade}
+.preview-product-strip button{display:flex;flex-direction:column;align-items:center;gap:3px;color:#818d76;min-width:43px}
+.preview-product-strip img,.preview-product-strip .custom-image{width:36px;height:44px;object-fit:cover;object-position:center 40%;border:1px solid #e8ecdf;border-radius:3px;background:#f0f2e8}
+.preview-product-strip .custom-image{min-height:0}.preview-product-strip .custom-image svg{width:20px;height:20px}
+.preview-product-strip span{font-size:10px}.preview-product-strip .custom-image span{display:none}
+.mannequin-modal{padding:30px}.mannequin-modal-layout{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:30px;align-items:start}
+.mannequin-main{border-radius:7px;padding:15px 20px 18px;background:radial-gradient(ellipse at 50% 35%,#faf9f4,#eeeee4 68%,#e8ebde);border:1px solid #e2e6d9}
+.mannequin-main>.mannequin-stage{height:565px}
+.modal-preview-controls{border-top:0;border-bottom:1px solid #dce2d1;margin-bottom:8px;padding:0 0 12px;gap:12px}
+.modal-preview-controls .preview-mode{background:transparent;font-size:12px;color:#879079;letter-spacing:.8px}
+.modal-preview-controls .preview-build{margin-left:auto}.modal-preview-controls .preview-build>span{display:none}
+.preview-explainer{font-size:12px;line-height:1.75;color:#7a866e;padding-top:13px;border-top:1px solid #dce2d1}
+.mannequin-summary{padding:4px 0 20px;border-bottom:1px solid var(--line)}
+.mannequin-summary>span{font-size:12px;letter-spacing:1px;color:#7d8b6e;display:block}
+.mannequin-summary>strong{font-family:var(--serif);font-size:34px;font-weight:400;display:block;line-height:1.6}
+.mannequin-summary p{font-size:13px;color:#839074}
+.mannequin-item{display:flex;align-items:start;gap:16px;padding:18px 0;border-bottom:1px solid var(--line)}
+.mannequin-item>img,.mannequin-item>.custom-image{width:73px;height:99px;object-fit:cover;object-position:center 35%;border-radius:4px;flex:0 0 auto}
+.mannequin-item>.custom-image{min-height:0}.mannequin-item>div>span{font-size:12px;color:#829172}.mannequin-item h3{font-size:15px;font-weight:500;line-height:1.55;margin:3px 0 6px}.mannequin-item p{font-size:14px;color:#6d7f5a}
+.mannequin-item .detail-links{gap:12px;margin-top:10px}.mannequin-item .detail-links button{font-size:13px}
+.mannequin-modal-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}.mannequin-modal-actions button{flex:1;justify-content:center}
+.detail-footer{flex-wrap:wrap}
+@media(max-width:1100px){.outfit-visual.has-mannequin{height:425px;padding-left:2px;padding-right:2px}.preview-controls{gap:9px}.preview-mode button{padding:8px 11px}.mannequin-modal-layout{gap:22px}.mannequin-main{padding-left:14px;padding-right:14px}}
+@media(max-width:850px){.outfit-visual.has-mannequin{height:430px}.preview-build{margin-left:auto}.mannequin-main>.mannequin-stage{height:530px}}
+@media(max-width:600px){.outfit-visual.has-mannequin{height:490px;padding:30px 14px 32px}.preview-controls{gap:11px;margin-bottom:17px}.preview-mode button{font-size:14px}.preview-build{font-size:12px}.preview-build select{font-size:13px}.preview-layer{font-size:12px}.mannequin-caption{font-size:12px}.preview-product-strip img,.preview-product-strip .custom-image{width:45px;height:55px}.preview-product-strip button{min-width:54px}.preview-product-strip{gap:14px;padding-top:14px}.preview-product-strip span{font-size:11px}.preview-expand{font-size:13px;bottom:14px;right:15px}.mannequin-modal{padding:23px 18px}.mannequin-modal-layout{grid-template-columns:1fr;gap:24px}.mannequin-main>.mannequin-stage{height:560px}.mannequin-main{padding:16px 15px}.mannequin-summary>strong{font-size:32px}.mannequin-item h3{font-size:15px}.mannequin-item p{font-size:14px}}
+@media(prefers-reduced-motion:no-preference){.has-mannequin .mannequin-svg{animation:mannequin-arrive .38s ease-out}@keyframes mannequin-arrive{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}}
