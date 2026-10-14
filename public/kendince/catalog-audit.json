@@ -1,0 +1,204 @@
+{
+  "verifiedAt": "2026-10-14T18:32:59.8578611Z",
+  "stats": {
+    "attempted": 175,
+    "total": 204,
+    "priceVerified": 175,
+    "stockAvailable": 127,
+    "stockOut": 6,
+    "stockUnknown": 71,
+    "failed": 0,
+    "notReverified": 29
+  },
+  "sources": [
+    {
+      "url": "https://www.lcw.com/erkek-sweatshirt-t-300",
+      "retrievedAt": "2026-10-14T18:32:11.922414+00:00",
+      "found": 125,
+      "used": 28
+    },
+    {
+      "url": "https://www.lcw.com/erkek-tisort-t-345",
+      "retrievedAt": "2026-10-14T18:32:11.922414+00:00",
+      "found": 221,
+      "used": 28
+    },
+    {
+      "url": "https://www.lcw.com/erkek-gomlek-t-158",
+      "retrievedAt": "2026-10-14T18:32:11.922414+00:00",
+      "found": 108,
+      "used": 28
+    },
+    {
+      "url": "https://www.lcw.com/erkek-jean-t-194",
+      "retrievedAt": "2026-10-14T18:32:11.922414+00:00",
+      "found": 100,
+      "used": 28
+    },
+    {
+      "url": "https://www.lcw.com/erkek-pantolon-t-260",
+      "retrievedAt": "2026-10-14T18:32:11.922414+00:00",
+      "found": 170,
+      "used": 28
+    },
+    {
+      "url": "https://www.lcw.com/erkek-spor-ayakkabi-t-290",
+      "retrievedAt": "2026-10-14T18:32:11.922414+00:00",
+      "found": 100,
+      "used": 28
+    }
+  ],
+  "errors": [],
+  "method": "Anonymous first-party page retrieval; current price from page metadata cross-checked with view_item; size availability from variant quantities. No stock inference from size-button presence. Mavi sources not reverified are retained as unknown.",
+  "verificationWindow": {
+    "start": "2026-10-14T18:32:20.4197876Z",
+    "end": "2026-10-14T18:32:59.8578611Z"
+  },
+  "notReverified": [
+    {
+      "id": "0613680-70219",
+      "url": "https://www.mavi.com/mvjns-kahverengi-basic-tisort/p/0613680-70219",
+      "reason": "Bu turda kaynak yeniden doğrulanamadı. Önceki fiyat tarihi korundu; stok bilinmiyor."
+    },
+    {
+      "id": "0613680-85173",
+      "url": "https://www.mavi.com/mvjns-yesil-basic-tisort/p/0613680-85173",
+      "reason": "Bu turda kaynak yeniden doğrulanamadı. Önceki fiyat tarihi korundu; stok bilinmiyor."
+    },
+    {
+      "id": "0613437-70490",
+      "url": "https://www.mavi.com/lacivert-basic-tisort/p/0613437-70490",
+      "reason": "Bu turda kaynak yeniden doğrulanamadı. Önceki fiyat tarihi korundu; stok bilinmiyor."
+    },
+    {
+      "id": "0612731-70223",
+      "url": "https://www.mavi.com/mavi-black-mor-basic-tisort/p/0612731-70223",
+      "reason": "Bu turda kaynak yeniden doğrulanamadı. Önceki fiyat tarihi korundu; stok bilinmiyor."
+    },
+    {
+      "id": "0612731-90892",
+      "url": "https://www.mavi.com/mavi-black-kahverengi-basic-tisort/p/0612731-90892",
+      "reason": "Bu turda kaynak yeniden doğrulanamadı. Önceki fiyat tarihi korundu; stok bilinmiyor."
+    },
+    {
+      "id": "0613676-70389",
+      "url": "https://www.mavi.com/mavi-jeans-kahverengi-tisort/p/0613676-70389",
+      "reason": "Bu turda kaynak yeniden doğrulanamadı. Önceki fiyat tarihi korundu; stok bilinmiyor."
+    },
+    {
+      "id": "0613509-70057",
+      "url": "https://www.mavi.com/ekru-basic-tisort/p/0613509-70057",
+      "reason": "Bu turda kaynak yeniden doğrulanamadı. Önceki fiyat tarihi korundu; stok bilinmiyor."
+    },
+    {
+      "id": "0613676-70490",
+      "url": "https://www.mavi.com/mavi-jeans-lacivert-tisort/p/0613676-70490",
+      "reason": "Bu turda kaynak yeniden doğrulanamadı. Önceki fiyat tarihi korundu; stok bilinmiyor."
+    },
+    {
+      "id": "0613551-90781",
+      "url": "https://www.mavi.com/mavi-jeans-baskili-yesil-tisort/p/0613551-90781",
+      "reason": "Bu turda kaynak yeniden doğrulanamadı. Önceki fiyat tarihi korundu; stok bilinmiyor."
+    },
+    {
+      "id": "0613681-70092",
+      "url": "https://www.mavi.com/mavi-jeans-antrasit-basic-tisort/p/0613681-70092",
+      "reason": "Bu turda kaynak yeniden doğrulanamadı. Önceki fiyat tarihi korundu; stok bilinmiyor."
+    },
+    {
+      "id": "0212131-70390",
+      "url": "https://www.mavi.com/kirmizi-kanvas-ince-ceket/p/0212131-70390",
+      "reason": "Bu turda kaynak yeniden doğrulanamadı. Önceki fiyat tarihi korundu; stok bilinmiyor."
+    },
+    {
+      "id": "0212107-91712",
+      "url": "https://www.mavi.com/yesil-ekose-gomlek/p/0212107-91712",
+      "reason": "Bu turda kaynak yeniden doğrulanamadı. Önceki fiyat tarihi korundu; stok bilinmiyor."
+    },
+    {
+      "id": "0212126-91564",
+      "url": "https://www.mavi.com/cepli-lacivert-gomlek/p/0212126-91564",
+      "reason": "Bu turda kaynak yeniden doğrulanamadı. Önceki fiyat tarihi korundu; stok bilinmiyor."
+    },
+    {
+      "id": "0220433-80020",
+      "url": "https://www.mavi.com/lyocell-karisimli-antrasit-gomlek/p/0220433-80020",
+      "reason": "Bu turda kaynak yeniden doğrulanamadı. Önceki fiyat tarihi korundu; stok bilinmiyor."
+    },
+    {
+      "id": "0212069-91268",
+      "url": "https://www.mavi.com/antrasit-orme-gomlek/p/0212069-91268",
+      "reason": "Bu turda kaynak yeniden doğrulanamadı. Önceki fiyat tarihi korundu; stok bilinmiyor."
+    },
+    {
+      "id": "0220346-70321",
+      "url": "https://www.mavi.com/kahverengi-kadife-gomlek/p/0220346-70321",
+      "reason": "Bu turda kaynak yeniden doğrulanamadı. Önceki fiyat tarihi korundu; stok bilinmiyor."
+    },
+    {
+      "id": "0211969-a7374",
+      "url": "https://www.mavi.com/cizgili-bordo-gomlek/p/0211969-A7374",
+      "reason": "Bu turda kaynak yeniden doğrulanamadı. Önceki fiyat tarihi korundu; stok bilinmiyor."
+    },
+    {
+      "id": "0212021-25818",
+      "url": "https://www.mavi.com/kahverengi-ekose-gomlek/p/0212021-25818",
+      "reason": "Bu turda kaynak yeniden doğrulanamadı. Önceki fiyat tarihi korundu; stok bilinmiyor."
+    },
+    {
+      "id": "0010101-83811",
+      "url": "https://www.mavi.com/mitte-street-koyu-antrasit-jean-pantolon/p/0010101-83811",
+      "reason": "Bu turda kaynak yeniden doğrulanamadı. Önceki fiyat tarihi korundu; stok bilinmiyor."
+    },
+    {
+      "id": "0010039-89930",
+      "url": "https://www.mavi.com/lisbon-street-vintage-mavi-jean-pantolon/p/0010039-89930",
+      "reason": "Bu turda kaynak yeniden doğrulanamadı. Önceki fiyat tarihi korundu; stok bilinmiyor."
+    },
+    {
+      "id": "0019166-87850",
+      "url": "https://www.mavi.com/marlon-classic-denim-puslu-mavi-jean-pantolon/p/0019166-87850",
+      "reason": "Bu turda kaynak yeniden doğrulanamadı. Önceki fiyat tarihi korundu; stok bilinmiyor."
+    },
+    {
+      "id": "0010289-91350",
+      "url": "https://www.mavi.com/toronto-street-rinse-denim-jean-pantolon/p/0010289-91350",
+      "reason": "Bu turda kaynak yeniden doğrulanamadı. Önceki fiyat tarihi korundu; stok bilinmiyor."
+    },
+    {
+      "id": "0017734787",
+      "url": "https://www.mavi.com/177-comfort-koyu-gri-comfort-smoke-jean-pantolon/p/0017734787",
+      "reason": "Bu turda kaynak yeniden doğrulanamadı. Önceki fiyat tarihi korundu; stok bilinmiyor."
+    },
+    {
+      "id": "00378a6869",
+      "url": "https://www.mavi.com/martin-koyu-kahverengi-comfort-gabardin-pantolon/p/00378A6869",
+      "reason": "Bu turda kaynak yeniden doğrulanamadı. Önceki fiyat tarihi korundu; stok bilinmiyor."
+    },
+    {
+      "id": "0010039-a6391",
+      "url": "https://www.mavi.com/lisbon-koyu-kahverengi-denim-gabardin-pantolon/p/0010039-A6391",
+      "reason": "Bu turda kaynak yeniden doğrulanamadı. Önceki fiyat tarihi korundu; stok bilinmiyor."
+    },
+    {
+      "id": "0010601-71379",
+      "url": "https://www.mavi.com/siyah-spandex-pantolon/p/0010601-71379",
+      "reason": "Bu turda kaynak yeniden doğrulanamadı. Önceki fiyat tarihi korundu; stok bilinmiyor."
+    },
+    {
+      "id": "0010646-70322",
+      "url": "https://www.mavi.com/ekru-chino-pantolon/p/0010646-70322",
+      "reason": "Bu turda kaynak yeniden doğrulanamadı. Önceki fiyat tarihi korundu; stok bilinmiyor."
+    },
+    {
+      "id": "0010646-71379",
+      "url": "https://www.mavi.com/siyah-chino-pantolon/p/0010646-71379",
+      "reason": "Bu turda kaynak yeniden doğrulanamadı. Önceki fiyat tarihi korundu; stok bilinmiyor."
+    },
+    {
+      "id": "0611824-900",
+      "url": "https://www.mavi.com/etiket-detayli-siyah-basic-tisort/p/0611824-900",
+      "reason": "Bu turda kaynak yeniden doğrulanamadı. Önceki fiyat tarihi korundu; stok bilinmiyor."
+    }
+  ]
+}
