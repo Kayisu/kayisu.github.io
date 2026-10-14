@@ -78,7 +78,7 @@ async function runKendinceTests(engine,catalog,appSource,preview){
  check(!html('#app').includes('Atölyeyi açamadık')&&html('#app').includes('class="mannequin-svg"'),"texture failure broke catalog");
  return{assertions,scenarios,defaultSpend:engine.cost(baseOutfit,initial()),catalog:catalog.products.length,flows:'pass'};
 }
-console.log('Kendince verification:',await runKendinceTests(engine,catalog,appSource));
+console.log('Kendince verification:',await runKendinceTests(engine,catalog,appSource,preview));
 
 const textureManifest=JSON.parse(await readFile(new URL('../../public/kendince/mannequin-textures.json',import.meta.url),'utf8'));
 preview.setTextures(textureManifest);
