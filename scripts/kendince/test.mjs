@@ -1,8 +1,9 @@
 import {readFile} from 'node:fs/promises';
 import * as engine from '../../public/kendince/engine.js';
+import * as preview from '../../public/kendince/mannequin.js';
 const catalog=JSON.parse(await readFile(new URL('../../public/kendince/catalog.json',import.meta.url),'utf8'));
 const appSource=await readFile(new URL('../../public/kendince/app.js',import.meta.url),'utf8');
-async function runKendinceTests(engine,catalog,appSource){
+async function runKendinceTests(engine,catalog,appSource,preview){
  let assertions=0,scenarios=0;const check=(condition,message)=>{assertions++;if(!condition)throw Error(message);},clone=v=>JSON.parse(JSON.stringify(v));
  const initial=()=>({version:1,profile:{age:22,height:null,weight:null,fit:'any',chest:null,waist:null,shoe:null,size:'',bottomSize:''},owned:[],custom:[],saved:[],feedback:{},hidden:[],priceNotes:{},seed:1,filters:{budget:3500,weather:'mild',occasion:'day',style:'all',explore:35,availableOnly:true}});
  check(catalog.products.length===new Set(catalog.products.map(p=>p.id)).size,"duplicate catalog IDs");
@@ -39,10 +40,25 @@ async function runKendinceTests(engine,catalog,appSource){
  const location={hash:'',reload(){}},window={scrollTo(){},addEventListener(){}};
  class MockFormData{constructor(form){this.values=form.values;}get(key){return this.values[key]??null;}}
  const AF=Object.getPrototypeOf(async function(){}).constructor;
- const source=appSource.replace(/^import\s*\{([^}]+)\}[^\n]*\n/,'const {$1}=engine;\n');
- const app=await new AF('engine','document','localStorage','location','window','fetch','FormData','crypto','console','setTimeout','clearTimeout',source+';return {getState:()=>state,getOutfits:()=>outfits,getFilters:()=>catalogFilters,navigate,productModal,detailModal,find,catalogList,latestPrice,rebuild,render};')(engine,document,localStorage,location,window,async()=>({ok:true,json:async()=>catalog}),MockFormData,{randomUUID:()=> 'test-custom'},{error:e=>errors.push(String(e))},()=>0,()=>{});
+ const source=appSource.replace(/^import\s*\{([^}]+)\}[^\n]*\n/,'const {$1}=engine;\n').replace(/^import[^\n]+mannequin[^\n]*\n/m,'const {renderMannequin,setTextures}=preview;\n');
+ const app=await new AF('engine','preview','document','localStorage','location','window','fetch','FormData','crypto','console','setTimeout','clearTimeout',source+';return {getState:()=>state,getOutfits:()=>outfits,getFilters:()=>catalogFilters,navigate,productModal,detailModal,find,catalogList,latestPrice,rebuild,render};')(engine,preview,document,localStorage,location,window,async()=>({ok:true,json:async()=>catalog}),MockFormData,{randomUUID:()=> 'test-custom'},{error:e=>errors.push(String(e))},()=>0,()=>{});
  const html=selector=>document.querySelector(selector).innerHTML,click=(action,id,value)=>events.click({target:{closest:selector=>selector==='[data-action]'?{dataset:{action,id,value}}:null}}),change=(id,value,checked)=>events.change({target:{id,value,checked,dataset:{}}}),submit=(id,values,dataset={})=>events.submit({preventDefault(){},target:{id,values,dataset}});
  check(errors.length===0,"app boot: "+errors);check(html('#app').includes('Kombin atölyesi'),"no atelier");check(app.getOutfits().length===3,"no default3");
+ check(html('#app').includes('class="mannequin-svg"'),"default mannequin missing");
+ const before=app.getOutfits().map(engine.fingerprint).join(';');
+ click('preview-mode',null,'pieces');check(!html('#app').includes('class="mannequin-svg"')&&html('#app').includes('class="top-img"'),"pieces view");
+ click('preview-mode',null,'mannequin');check(html('#app').includes('class="mannequin-svg"'),"mannequin view");
+ check(app.getOutfits().map(engine.fingerprint).join(';')===before,"view changed outfits");
+ const modelLook=app.getOutfits()[0];click('mannequin',modelLook.id);check(html('#modal-content').includes('mannequin-modal')&&html('#modal-content').includes('Gerçek fotoğraf'),"model modal");
+ const openMarkup=html('#modal-content');click('preview-layer');check(html('#modal-content')!==openMarkup&&app.getState().preview.layerOpen===false,"layer view");
+ events.change({target:{dataset:{previewBuild:''},value:'broad'}});check(app.getState().preview.build==='broad'&&html('#modal-content').includes('scale(1.12 1)'),"build view");click('close');
+ const incomplete={items:[]};check(preview.renderMannequin(incomplete)==='',"incomplete preview");
+ const marked={...modelLook,items:modelLook.items.map(p=>({...p,name:'<script>bad</script>'}))};
+ check(!preview.renderMannequin(marked).includes('<script>')&&preview.renderMannequin(marked).includes('&lt;script&gt;'),"SVG escape");
+ const first=preview.renderMannequin(modelLook),second=preview.renderMannequin(modelLook),ids=[...first.matchAll(/ id="([^"]+)"/g)].map(m=>m[1]);
+ check(ids.length===new Set(ids).size,"duplicate SVG ids");check(!second.includes('id="'+ids[0]+'"'),"SVG ids reused between cards");
+ for(const ref of first.matchAll(/url\(#([^)]*)\)/g))check(ids.includes(ref[1]),"missing SVG definition "+ref[1]);
+
  app.navigate('prices');check(html('#app').includes('175 ürün')&&html('#app').includes('127 ürün'),"price counts missing");check(app.catalogList().length===127,"stock default");change('catalog-stock','all');check(app.catalogList().length===204,"all filter");change('catalog-stock','unverified');check(app.catalogList().length===29,"old filter");change('catalog-stock','out_of_stock');check(app.catalogList().length===6,"out filter");change('catalog-stock','available');
  change('catalog-kind','sneaker');check(app.catalogList().every(p=>p.kind==='sneaker'),"kind filter");change('catalog-kind','all');change('catalog-max','500');check(app.catalogList().every(p=>app.latestPrice(p)<=500),"max filter");change('catalog-max','');
  const o=app.getOutfits()[0],p=o.items[0];click('detail',o.id);check(html('#modal-content').includes('Parçayı değiştir')&&html('#modal-content').includes('Stok görüldü'),"detail");click('save',o.id);check(app.getState().saved.length===1,"save");click('like',o.id);check(Object.values(app.getState().feedback).length===1,"like");click('like',o.id);check(Object.values(app.getState().feedback).length===0,"like toggle");
@@ -53,7 +69,7 @@ async function runKendinceTests(engine,catalog,appSource){
  change('catalog-my-size','',true);check(app.catalogList().every(p=>engine.sizeMatches(p,app.getState().profile)),"catalog size filter");
  app.navigate('atelier');change('available-only','',false);check(app.getState().filters.availableOnly===false,"stock toggle");
  submit('custom-form',{name:'<img src=x onerror=evil()>',category:'top',family:'navy',fit:'regular',pattern:'plain',warmth:'1',formality:'1'});check(app.getState().custom.length===1,"custom save");app.navigate('wardrobe');check(html('#app').includes('&lt;img')&&!html('#app').includes('<img src=x'),"custom escaping");
- const persisted=JSON.parse(storage.get('kendince-v1'));check(persisted.saved.length===1&&persisted.custom.length===1&&persisted.profile.bottomSize==='32',"state persisted");
+ const persisted=JSON.parse(storage.get('kendince-v1'));check(persisted.saved.length===1&&persisted.custom.length===1&&persisted.profile.bottomSize==='32'&&persisted.preview.mode==='mannequin'&&persisted.preview.build==='broad',"state persisted");
  return{assertions,scenarios,defaultSpend:engine.cost(baseOutfit,initial()),catalog:catalog.products.length,flows:'pass'};
 }
 console.log('Kendince verification:',await runKendinceTests(engine,catalog,appSource));
