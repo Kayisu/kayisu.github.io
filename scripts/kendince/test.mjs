@@ -66,6 +66,9 @@ async function runKendinceTests(engine,catalog,appSource,preview){
  click('alternatives',p.id);check(html('#modal-content').includes('Bir parçayı değiştir'),"alternatives modal");
  const swapId=html('#modal-content').match(/data-action="swap" data-id="([^"]+)"/)?.[1];check(swapId,"missing swap");click('swap',swapId);
  const swapped=app.getOutfits().find(look=>look.items.some(item=>item.id===swapId));check(swapped,"swap did not change outfit");click('mannequin',swapped.id);check(html('#modal-content').includes(app.find(swapId).name),"mannequin not updated after swap");
+ click('product',swapId);check(html('#modal-content').includes('back-mannequin'),"photo return lost");click('back-mannequin');
+ const nextTop=swapped.items.find(item=>item.category==='top');click('alternatives',nextTop.id);
+ const secondSwap=html('#modal-content').match(/data-action="swap" data-id="([^"]+)"/)?.[1];check(secondSwap,"missing mannequin swap");click('swap',secondSwap);check(html('#modal-content').includes('mannequin-modal'),"swap left mannequin view");
  app.productModal(unknown);check(html('#modal-content').includes('Yeniden doğrulanmamış')&&!html('#modal-content').includes('class="size-chip '),"unknown false stock chips");app.productModal(out);check(html('#modal-content').includes('Tükendi'),"out modal");
  click('price-note',p.id);submit('price-note-form',{price:'321.50'},{id:p.id});check(app.latestPrice(p)===321.5,"manual note");check(html('#modal-content').includes('Senin notun'),"note label");click('clear-price',p.id);check(!app.getState().priceNotes[p.id],"note reset");
  submit('profile-form',{age:'25',height:'178',weight:'75',fit:'any',chest:'',waist:'',shoe:'42',size:'M',bottomSize:'32'});check(app.getState().profile.bottomSize==='32'&&app.getState().profile.shoe===42,"profile save");check(html('#modal-content').includes('Pantolon bedenim'),"profile field");
