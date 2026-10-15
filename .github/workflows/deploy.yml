@@ -41,7 +41,10 @@ jobs:
         run: npx --no-install astro check
 
       - name: Verify Kendince catalog and interactions
-        run: node scripts/kendince/test.mjs
+        run: |
+          node scripts/kendince/seasonal.test.mjs
+          node scripts/kendince/mannequin-seasonal.test.mjs
+          node scripts/kendince/test.mjs
 
       - name: Build static site
         run: npm run build

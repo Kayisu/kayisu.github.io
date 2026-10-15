@@ -1,12 +1,14 @@
 """Create small fabric swatches from public retailer photos, without AI.
 This prepares reviewable candidates only; the workflow never pushes repository changes.
 """
-import base64,datetime,io,json,pathlib,urllib.request,concurrent.futures,subprocess
+import base64,datetime,io,json,pathlib,urllib.request,concurrent.futures,subprocess,sys
 from PIL import Image,ImageDraw,ImageStat,ImageFilter,ImageOps
 import cairosvg
 root=pathlib.Path(__file__).resolve().parents[2]
 out=root/'mannequin-review';out.mkdir(exist_ok=True)
 catalog=json.loads((root/'public/kendince/catalog.json').read_text())
+existing=json.loads((root/'public/kendince/mannequin-textures.json').read_text()).get('products',{})
+emit_log='--emit-log' in sys.argv
 palette={'cream':'#ded7c6','black':'#292a29','navy':'#303946','blue':'#57758a','gray':'#797c7c','brown':'#76594a','olive':'#6a7052','red':'#773943','purple':'#685165','yellow':'#bca15b'}
 def crop_box(p):
  u=p['image'];model='99-76' in u
@@ -43,6 +45,8 @@ def sample_patch(p,photo):
  tile=Image.new('RGB',(48,64));tile.paste(patch,(0,0));tile.paste(ImageOps.mirror(patch),(24,0));tile.paste(ImageOps.flip(patch),(0,32));tile.paste(ImageOps.flip(ImageOps.mirror(patch)),(24,32))
  return tile.filter(ImageFilter.GaussianBlur(.35))
 def fetch(p):
+ old=existing.get(p['id'])
+ if old and old.get('texture') and old.get('sourceImage') in p.get('sourceImages',[p.get('image')]):return p['id'],old
  try:
   if not p.get('image','').startswith(('https://img-lcwaikiki.mncdn.com/','https://cdn.mavi.com/')):raise ValueError('unsupported image source')
   req=urllib.request.Request(p['image'],headers={'User-Agent':'Mozilla/5.0'})
@@ -60,7 +64,7 @@ def fetch(p):
 results=dict(concurrent.futures.ThreadPoolExecutor(max_workers=6).map(fetch,catalog['products']))
 manifest={'version':1,'preparedAt':datetime.datetime.now(datetime.timezone.utc).isoformat(),'method':'Deterministic photo crops; no AI, no virtual fit estimation. Crops reproduce a fabric sample, not an exact garment render.','products':results}
 (out/'textures.json').write_text(json.dumps(manifest,ensure_ascii=False,separators=(',',':')))
-print('TEXTURES_RESULT '+json.dumps(manifest,ensure_ascii=False,separators=(',',':')),flush=True)
+if emit_log:print('TEXTURES_RESULT '+json.dumps(manifest,ensure_ascii=False,separators=(',',':')),flush=True)
 print('TEXTURE_COVERAGE '+str(sum(bool(p['texture']) for p in results.values()))+'/'+str(len(results)),flush=True)
 subprocess.run(['node','scripts/kendince/render-mannequin-review.mjs'],check=True,cwd=root)
 svgs=sorted(out.glob('look-*.svg'))
@@ -70,4 +74,6 @@ for i,path in enumerate(svgs):
  sheet.paste(img,(i*320,35),img)
  draw.text((i*320+14,12),path.stem,fill='#424f3e')
 b=io.BytesIO();sheet.save(b,format='JPEG',quality=90)
-print('MANNEQUIN_REVIEW '+base64.b64encode(b.getvalue()).decode(),flush=True)
+(out/'review.jpg').write_bytes(b.getvalue())
+if emit_log:print('MANNEQUIN_REVIEW '+base64.b64encode(b.getvalue()).decode(),flush=True)
+print('Review image:',out/'review.jpg',flush=True)

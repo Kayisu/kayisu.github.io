@@ -23,5 +23,5 @@ jobs:
           name: kendince-catalog-audit
           path: |
             kendince-audit/report.json
-            public/kendince/catalog.json
+            kendince-audit/catalog.json
           retention-days: 7
