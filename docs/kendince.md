@@ -1,33 +1,140 @@
 # Kendince
 
-AI-free personal outfit workshop: https://kayisu.github.io/kendince/. Static runtime files in `public/kendince/` are copied unchanged to `dist/kendince/`. No model API, server, user-photo upload, or account is needed. Personal state remains only in browser localStorage (`kendince-v 1`). Existing wardrobe IDs, source IDs, feedback and saved outfits are retained.
+Personal, AI-free outfit workshop: https://kayisu.github.io/kendince/.
+The canonical source is `public/kendince/` in this repository. Astro copies it
+unchanged to `dist/kendince/`. No model API, account or server is required.
+Profile, owned items, saved looks, feedback and manual price observations stay
+in browser localStorage (`kendince-v1`); existing IDs and saved slots survive.
 
-## Model identity and honest variety
+## Current catalog
 
-The October 15 update distinguishes a product model from its color records. LCW base SKUs, explicit source model IDs, and Mavi model codes group true sibling colors; generic equal titles never merge unrelated SKUs. The previous 127 available records represented 71 model families, with 21 shades of one tee and 12 of one sweat. The new snapshot has 324 records, 216 source model families, 283 verified prices, 243 records with available variant quantities (231 also have verified prices), 6 sold out, 75 stock-unknown, 29 source records not reverified, and 12 conflicting source prices. Conflicting prices are labeled and excluded from automatic recommendations and the default price table.
+The October 16 expansion replaces a practical single-store recommendation pool
+with **8 storefronts, 528 distinct source models and
+636 product/color records**. 624 source prices are verified;
+581 records have explicit stock evidence. 569 records
+have both verified prices and available stock, across all eight storefronts.
+7 sold-out records, 48 unknown-stock records and
+12 conflicting prices remain visible with their actual status;
+they are excluded from default purchase recommendations.
 
-`wardrobe-rules.js` classifies actual construction using kind/name and first-party `sourceFacts` such as thickness and sleeve length. It never treats a thin jacket as an insulating winter coat because of the name alone. Model representatives enter bounded shortlists before scoring, so many shades cannot monopolize candidate slots. Selected cards require distinct structural fingerprints (garment kind, sleeve, fit, layer and footwear structure). Novel dominant garment models (outer, then mid, then top), construction families and fits are preferred within a score-quality window, while a useful wardrobe basic may repeat under genuinely different layers. Limited pools return fewer cards with reasons. A bounded 12-look history reduces repetition when the user explicitly asks for new outfits.
+| Storefront | Records | Verified price + available stock |
+| --- | ---: | ---: |
+| LCW | 295 | 231 |
+| Mavi | 48 | 46 |
+| DeFacto | 92 | 91 |
+| Koton | 85 | 85 |
+| Mango | 37 | 37 |
+| Decathlon | 31 | 31 |
+| Boyner | 32 | 32 |
+| AVVA | 16 | 16 |
 
-Generated items preserve source category/ID and carry a separate `slot` (`top`, `layer`, `outer`, `bottom`, `shoe`). Thin shirts may be worn closed as a top or open over a base; overshirts and cardigans are mids; actual coats and shells are outerwear. Templates preserve ordering and reject incompatible heavy layering. Saved outfits now retain slots/template/structure metadata; older saved records still reconstruct safely. Replacements preserve the original placement, template, climate, size, stock and real budget. The default alternative tab contains other models; sibling colors are requested explicitly.
+A storefront and a brand are separate fields. Boyner includes multiple brands;
+they do not count as multiple shops. Source model IDs group actual sibling
+colors; equal generic titles do not merge unrelated items. Existing Mavi IDs
+were retained while their source observations were refreshed.
 
-## Seasons and climate choices
+Every product links to its exact first-party page and image. Per-product
+`verifiedAt`, source price observations, stock method, source textile facts,
+and response hashes retain the evidence. The overall preparation date does
+not imply every product was checked at one instant. Failed sources do not
+become invented products. Offer-level InStock is explicitly distinguished
+from size-level data: when a purchase size is selected, products without an
+available matching size cannot enter recommendations or replacements.
 
-Season `auto` uses the browser month as an initial northern-hemisphere selection. The user chooses spring, summer, autumn or winter and a separate felt-weather preset; no city, forecast or external weather data is inferred. Season defaults map to mild/warm/cool/cold. Old state without the new season field migrates its old implicit weather preset to automatic without deleting sizes, spending limits or saved work.
+Conditional Boyner cart/coupon offers are separate `conditionalPrice` records.
+The regular, cross-checked source price is used in product/variant budgets;
+the detail view explains the promotion and its conditions. Shipping, coupons
+and cart discounts are never silently deducted. Manual user notes remain
+separate from source prices and do not change peer medians.
 
-Cold weather requires an insulating outer, a warm long upper or mid, long non-light-linen bottoms, and closed non-mesh footwear. Warm weather excludes heavy outerwear and boots. Cool weather needs a real layer. Source thickness wins over legacy warmth. These are clothing-construction rules, not temperature comfort or waterproof ratings. If a valid outfit cannot fit the budget or sizes, the app says so and offers an explicit button to adopt the cheapest valid rounded budget. It never silently clears size/climate constraints; the style reset changes only style/exploration.
+## Usable variety
 
-## Catalog and prices
+Nine visible directions are available: clean casual, earthy, relaxed street,
+smart casual, a bolder accent, workwear, preppy, outdoor and tonal.
+The last four require recognizable recipes rather than relabeling random
+basics. Workwear combines workwear layers and appropriate bottoms/boots;
+preppy requires relevant uppers and chinos/formal shoes; outdoor uses actual
+technical/outer/fleece constructions; tonal looks constrain actual colors.
 
-Snapshot:2026-10-15, source retrieval per record, UTC timestamps and an overall verification window in `catalog-audit.json`. Exact color quantities are parsed from variant data, not inferred from size-button presence. JSON-LD properties supply authentic color, brand and fabric/thickness facts. Current prices are cross-checked against independent fields in the same first-party retailer page; discrepancies are quarantined, rather than reported as verified. History contains actual source observations only. Images remain first-party CDN references and `no-referrer` is retained.
+The engine scores models before colors, reserves structure/kind/cut options,
+and distinguishes texture and visible outermost construction. Store identity
+alone never counts as silhouette variety. Recent dominant garments and
+12-look history reduce repetition, while a useful owned basic can recur
+under different layers. Store filters are hard constraints for new purchases;
+owned items still cost zero and remain usable. A structurally limited pool
+returns fewer honest cards. Feedback rejects exact model sets across sibling
+colors in generation and replacements.
 
-The price table groups colors into model families by default, with explicit color expansion and sibling thumbnails. Peer bands and category summaries count each model once: source prices among its matching available colors first yield one model median, then models are compared. At least four independent models are required for a product band. The min/max displayed in those bands are model-median extrema, not absolute color-price extrema. Manual notes affect personal spending but never source peer medians. Owned/custom pieces cost zero new spending; matching available sizes use conservative maximum variant prices. Shipping, coupons and cart discounts remain excluded. No market-wide lowest-price or quality claim is made.
+Bounded shortlists preserve a cheapest valid model/color witness. Increasing
+budget cannot erase that valid outfit simply because a preferred color is
+more expensive. Minimum budgets include the selected style recipe, source
+stock, sizes, weather, store selection and disliked combinations. Replacements
+revalidate every retained purchase as well as the new piece.
 
-## Mannequin and source preparation
+## Feels-like temperature
 
-`mannequin.js` renders one illustrative mannequin with distinct top, mid and outer placements. Coats/parka, puffer quilting, shells, blazers, knit collars and boot shafts differ in shape. `layerOpen` and `outerOpen` are independent. Small, reviewed fabric swatches come from 295 product photos; missing sources and custom items use explicitly labeled colors. This is not exact garment reconstruction, logo reproduction, virtual fit or a representation of the user's measurements. Actual product photos remain adjacent. Texture failure keeps the app usable.
+A manual numeric temperature overrides calendar and legacy weather presets.
+The user enters the feels-like value from their weather app; the site does
+not request location or fetch a forecast. Season mode remains available and
+clears the numeric override. Existing saved state migrates safely.
 
-`python scripts/kendince/refresh.py` prepares a candidate in `kendince-audit/`; `--write` is an explicit local option after review. Its read-only Actions workflow uploads that candidate and report, never commits/pushes. Discovery limits sibling colors while adding knitwear, coats, puffers, mids, boots and cargo. Failed source records retain old price dates and lose stock certainty. `python scripts/kendince/mannequin-assets.py` (Pillow + CairoSVG) reuses verified source swatches and prepares review candidates plus a raster review sheet in `mannequin-review/`; it never publishes by itself. No recurring schedule is installed.
+| Feels-like band | Clothing rules |
+| --- | --- |
+| 4°C or below | Long-sleeved base + warm mid + insulating outer; 0°C and below also require thicker trousers and boots |
+| Above 4°C, below 12°C | Warm long upper or mid, insulating outer and closed non-mesh shoes |
+| 12°C to below 18°C | A real removable layer and long trousers |
+| 18°C to below 24°C | Light upper arrangement; heavy insulation excluded |
+| 24°C or above | Light uppers/bottoms, no heavy knits or boots; 30°C+ requires a single short-sleeved upper |
+
+These are transparent clothing heuristics, not tested comfort guarantees.
+Retailer construction facts override generic category names. Waterproof and
+windproof do not imply insulation. Contradictory thickness properties cannot
+create a heavy insulation claim. Extremely cold inputs of −15°C and below
+return an explicit unsupported result when thermal-base evidence is absent.
+Insufficient budgets never weaken seasonal rules.
+
+## Browsing and visual preview
+
+“Parça keşfi” supports store, brand, garment, visible texture, text, size,
+stock and min/max price filters. Image cards and compact lists group colors
+by model by default, with 24-item progressive loading. The same source records
+support the outfit cards and actual product-detail photographs.
+
+The illustrative mannequin preserves top/mid/outer slots and independent
+open/closed outer layers. Coats, puffers, shells, knit collars, sleeveless
+sweater vests and footwear have distinct approximate outlines. Existing source
+swatches remain validated against recorded images. Other items use explicitly
+labelled representative colors. This is not garment reconstruction, virtual
+fit, body measurement simulation or an exact fabric/drape rendering.
+
+## Source maintenance
+
+`python scripts/kendince/refresh-all.py` prepares a candidate and evidence in
+`kendince-audit/`; `--write` is an explicit local acceptance step. It never
+commits, pushes or deploys. Its components are:
+
+- `refresh.py`: existing LCW source refresh and legacy observations.
+- `retailers-a.py`: DeFacto + Koton.
+- `retailers-b.py`: Mango + Decathlon + Boyner.
+- `retailers-c.py`: Mavi + AVVA, preserving prior IDs.
+- `merge-catalog.py`: validates feeds, retains observation history and merges
+  reviewed candidates without fabricating timestamps or inventory.
+
+Each new feed accepts `--output FILE` and `--limit N` for bounded review.
+The Actions catalog workflow uploads candidates/reports only. No recurring
+schedule or automatic source-data publication is installed.
 
 ## Validation
 
-Pages deployment gates on 16 focused seasonal/model scenarios, 40 mannequin checks and 80 real-catalog/application scenarios, plus Astro/TypeScript, full portfolio build and static route/bundle verification. App scenarios cover budget/stock/size, saved slot metadata, source price notes, color/model filters, silhouette/layer controls, swaps, seasonal UI, history, safe text and texture failure. Source swatches must match a product's recorded source images. Standalone SVGs with the real winter/autumn/summer catalog are rasterized for visual review. After deployment, anonymous HTTP checks compare nine live files against the committed bytes, including the rules module and texture manifest.
+Deployment gates on source-evidence invariants, the seasonal/model suite,
+focused temperature/diversity/budget regressions, UI DOM integration checks,
+42 mannequin checks and the existing real-catalog/application suite. Campaign
+prices, unknown sizes, strict stores, saved-look swaps, sibling-color dislikes,
+minimum budgets, zero/negative temperatures and all new recipe directions
+are covered. Astro/TypeScript, the full portfolio build and static route/bundle
+verification remain required. Publication compares nine live files against
+the committed bytes.
+
+Browser pixel QA was unavailable in this cloud session because its supported
+browser-control skill was not available. DOM rendering and functional checks
+were completed without claiming visual browser verification.

@@ -1,20 +1,67 @@
 {
-  "verifiedAt": "2026-10-15T07:33:56.626483+00:00",
-  "verificationWindow": {
-    "start": "2026-10-15T07:33:53.017050+00:00",
-    "end": "2026-10-15T07:33:56.626483+00:00"
-  },
+  "preparedAt": "2026-10-15T21:48:04.437023+00:00",
   "stats": {
-    "attempted": 295,
-    "total": 324,
-    "priceVerified": 283,
-    "stockAvailable": 243,
-    "stockOut": 6,
-    "stockUnknown": 75,
-    "failed": 0,
-    "notReverified": 29,
+    "total": 636,
+    "modelCount": 528,
+    "priceVerified": 624,
+    "stockAvailable": 581,
+    "stockOut": 7,
+    "stockUnknown": 48,
     "priceConflicts": 12,
-    "modelCount": 216
+    "notReverified": 0,
+    "storeCount": 8,
+    "eligible": 569,
+    "eligibleStores": 8,
+    "byStore": {
+      "LCW": 295,
+      "Mavi": 48,
+      "DeFacto": 92,
+      "Koton": 85,
+      "Mango": 37,
+      "Decathlon": 31,
+      "Boyner": 32,
+      "AVVA": 16
+    },
+    "eligibleByStore": {
+      "LCW": 231,
+      "Mavi": 46,
+      "DeFacto": 91,
+      "Koton": 85,
+      "Mango": 37,
+      "Decathlon": 31,
+      "Boyner": 32,
+      "AVVA": 16
+    },
+    "byKind": {
+      "sneaker": 38,
+      "cardigan": 48,
+      "sweat": 39,
+      "tee": 33,
+      "longtee": 7,
+      "overshirt": 32,
+      "shirt": 39,
+      "jean": 26,
+      "chino": 48,
+      "turtleneck": 8,
+      "knit": 60,
+      "coat": 20,
+      "puffer": 14,
+      "jacket": 64,
+      "boot": 24,
+      "cargo": 14,
+      "raincoat": 22,
+      "hoodie": 4,
+      "parka": 3,
+      "corduroy": 3,
+      "loafer": 12,
+      "technical": 4,
+      "derby": 5,
+      "jogger": 2
+    }
+  },
+  "verificationWindow": {
+    "start": "2026-10-15T07:33:53.061713+00:00",
+    "end": "2026-10-15T21:42:29.273893+00:00"
   },
   "sources": [
     {
@@ -88,155 +135,641 @@
       "used": 10,
       "role": "outer",
       "maxColorsPerModel": 2
+    },
+    {
+      "url": "https://www.defacto.com.tr/erkek-kazak",
+      "retrievedAt": "2026-10-15T21:38:19.195741+00:00",
+      "bodyHash": "27790418a53ac07ccf2642dedde447400ea4dafb3fccff16b15fbc62e3829517",
+      "retailer": "DeFacto",
+      "role": "top",
+      "foundCards": 24,
+      "selectedDistinctModels": 12,
+      "maxColorsPerModel": 1
+    },
+    {
+      "url": "https://www.defacto.com.tr/erkek-kazak?page=2",
+      "retrievedAt": "2026-10-15T21:38:24.182352+00:00",
+      "bodyHash": "a2d672d359ce62cd6171b6f9bc991d19e054a8477c482cc9ea8cd41980ef56eb",
+      "retailer": "DeFacto",
+      "role": "top",
+      "foundCards": 24,
+      "selectedDistinctModels": 1,
+      "maxColorsPerModel": 1
+    },
+    {
+      "url": "https://www.koton.com/erkek-kazak-suveter/",
+      "retrievedAt": "2026-10-15T21:38:21.316219+00:00",
+      "bodyHash": "c6a3f6b723197d6ebed9ee291aef8c1f82162c46c91c89f7105f7b407791a43c",
+      "retailer": "Koton",
+      "role": "top",
+      "foundCards": 24,
+      "selectedDistinctModels": 11,
+      "maxColorsPerModel": 1
+    },
+    {
+      "url": "https://www.koton.com/erkek-kazak-suveter/?page=2",
+      "retrievedAt": "2026-10-15T21:38:27.460781+00:00",
+      "bodyHash": "1383ff3ec39654d223627ef811f3465da09d87a5882379fc3ea6967df8efc849",
+      "retailer": "Koton",
+      "role": "top",
+      "foundCards": 24,
+      "selectedDistinctModels": 2,
+      "maxColorsPerModel": 1
+    },
+    {
+      "url": "https://www.defacto.com.tr/erkek-hirka-suveter",
+      "retrievedAt": "2026-10-15T21:38:19.613909+00:00",
+      "bodyHash": "8288c98b1953801be110dc1c2e4997b14862d76354c9f00b43bf2139f3c21b20",
+      "retailer": "DeFacto",
+      "role": "layer",
+      "foundCards": 24,
+      "selectedDistinctModels": 10,
+      "maxColorsPerModel": 1
+    },
+    {
+      "url": "https://www.koton.com/erkek-hirka/",
+      "retrievedAt": "2026-10-15T21:38:21.430464+00:00",
+      "bodyHash": "2b8518c41fef05597f931d7cf7bc5ee6b479d88bc02dee96b1e4d3919a6cc38d",
+      "retailer": "Koton",
+      "role": "layer",
+      "foundCards": 24,
+      "selectedDistinctModels": 10,
+      "maxColorsPerModel": 1
+    },
+    {
+      "url": "https://www.defacto.com.tr/erkek-dis-giyim",
+      "retrievedAt": "2026-10-15T21:38:24.217001+00:00",
+      "bodyHash": "c6cfd6debc74f29e2e4e438fcc2799fbc6bafac22875fe0ca08ded7a70fb4ac7",
+      "retailer": "DeFacto",
+      "role": "outer",
+      "foundCards": 24,
+      "selectedDistinctModels": 12,
+      "maxColorsPerModel": 1
+    },
+    {
+      "url": "https://www.koton.com/erkek-ceket/",
+      "retrievedAt": "2026-10-15T21:38:28.485015+00:00",
+      "bodyHash": "887487c3cb4162abfa25cabb5b4977b87536ff124031a776b09fc50938bcfc5d",
+      "retailer": "Koton",
+      "role": "outer",
+      "foundCards": 24,
+      "selectedDistinctModels": 12,
+      "maxColorsPerModel": 1
+    },
+    {
+      "url": "https://www.defacto.com.tr/erkek-oduncu-gomlek",
+      "retrievedAt": "2026-10-15T21:38:27.227099+00:00",
+      "bodyHash": "6acd34df04c96d7f894fa4d363f319fd39e67c35d348e9131d4b582620a39a69",
+      "retailer": "DeFacto",
+      "role": "layer",
+      "foundCards": 8,
+      "selectedDistinctModels": 8,
+      "maxColorsPerModel": 1
+    },
+    {
+      "url": "https://www.defacto.com.tr/erkek-oduncu-gomlek?page=2",
+      "retrievedAt": "2026-10-15T21:38:58.965057+00:00",
+      "bodyHash": "a6e0bb528892b8b014370696fbca16a912cfb1e98d74af90e497ab912581db79",
+      "retailer": "DeFacto",
+      "role": "layer",
+      "foundCards": 0,
+      "selectedDistinctModels": 0,
+      "maxColorsPerModel": 1
+    },
+    {
+      "url": "https://www.koton.com/erkek-kaban/",
+      "retrievedAt": "2026-10-15T21:38:28.236818+00:00",
+      "bodyHash": "fbabf031c8ae0c43ddf62845f082bdb501e73c026042aab6d2853035054f1132",
+      "retailer": "Koton",
+      "role": "outer",
+      "foundCards": 24,
+      "selectedDistinctModels": 7,
+      "maxColorsPerModel": 1
+    },
+    {
+      "url": "https://www.defacto.com.tr/erkek-jean-pantolon",
+      "retrievedAt": "2026-10-15T21:38:32.752684+00:00",
+      "bodyHash": "e6178bf0042edd2cd8372a4716cd8a399ada0af3c1909dacfecd54550c5e99e8",
+      "retailer": "DeFacto",
+      "role": "bottom",
+      "foundCards": 18,
+      "selectedDistinctModels": 9,
+      "maxColorsPerModel": 1
+    },
+    {
+      "url": "https://www.koton.com/erkek-pantolon/",
+      "retrievedAt": "2026-10-15T21:38:31.028929+00:00",
+      "bodyHash": "4c2cc977ee896d337350d8912aab23754884a18bfaae7802de56a177dbfd5817",
+      "retailer": "Koton",
+      "role": "bottom",
+      "foundCards": 24,
+      "selectedDistinctModels": 13,
+      "maxColorsPerModel": 1
+    },
+    {
+      "url": "https://www.defacto.com.tr/erkek-pantolon",
+      "retrievedAt": "2026-10-15T21:38:32.643472+00:00",
+      "bodyHash": "6f2ee9d87eca36ec813c4b9d59bbdd98bce0df734ef27d73dfda330638017849",
+      "retailer": "DeFacto",
+      "role": "bottom",
+      "foundCards": 24,
+      "selectedDistinctModels": 12,
+      "maxColorsPerModel": 1
+    },
+    {
+      "url": "https://www.koton.com/erkek-mont/",
+      "retrievedAt": "2026-10-15T21:38:31.337590+00:00",
+      "bodyHash": "8443db0d1edaebfbaf1d5d1ce30a8d4a260c98c4f369dcb8f179686dbc7c06e5",
+      "retailer": "Koton",
+      "role": "outer",
+      "foundCards": 24,
+      "selectedDistinctModels": 10,
+      "maxColorsPerModel": 1
+    },
+    {
+      "url": "https://www.defacto.com.tr/erkek-sweatshirt",
+      "retrievedAt": "2026-10-15T21:38:32.636005+00:00",
+      "bodyHash": "6172fe32813f371a36d8c5ab6e10aefff7dcf46d266e57681e088cc700696eb9",
+      "retailer": "DeFacto",
+      "role": "top",
+      "foundCards": 20,
+      "selectedDistinctModels": 10,
+      "maxColorsPerModel": 1
+    },
+    {
+      "url": "https://www.koton.com/erkek-gomlek/",
+      "retrievedAt": "2026-10-15T21:38:34.961270+00:00",
+      "bodyHash": "facbc181f8d853b244641b0bb21f1daf3f48d1c755551ccbf1da2dab324e6ed9",
+      "retailer": "Koton",
+      "role": "layer",
+      "foundCards": 24,
+      "selectedDistinctModels": 9,
+      "maxColorsPerModel": 1
+    },
+    {
+      "url": "https://www.defacto.com.tr/erkek-yagmurluk",
+      "retrievedAt": "2026-10-15T21:38:38.034988+00:00",
+      "bodyHash": "1159ff19bf2db81fc937c76118747757ac768456f792a9eb3ab0d68962988d99",
+      "retailer": "DeFacto",
+      "role": "outer",
+      "foundCards": 3,
+      "selectedDistinctModels": 3,
+      "maxColorsPerModel": 1
+    },
+    {
+      "url": "https://www.defacto.com.tr/erkek-yagmurluk?page=2",
+      "retrievedAt": "2026-10-15T21:38:58.924548+00:00",
+      "bodyHash": "b88717ed4673a953360319c645af51e01a9e87060156be0288c083115256ec1e",
+      "retailer": "DeFacto",
+      "role": "outer",
+      "foundCards": 0,
+      "selectedDistinctModels": 0,
+      "maxColorsPerModel": 1
+    },
+    {
+      "url": "https://www.koton.com/erkek-sweatshirt/",
+      "retrievedAt": "2026-10-15T21:38:35.018100+00:00",
+      "bodyHash": "9e5d37df03e89d3f56a5c85cea6c521fe8899fb91874cb675665ddae8c4b6acc",
+      "retailer": "Koton",
+      "role": "top",
+      "foundCards": 24,
+      "selectedDistinctModels": 9,
+      "maxColorsPerModel": 1
+    },
+    {
+      "url": "https://www.koton.com/dokulu-kazak-erkek/",
+      "retrievedAt": "2026-10-15T21:41:00.024459+00:00",
+      "bodyHash": "814f5c3d781aceca2bb697ae1af8c556d620cf58fc2f249ea85bb2beb34fa930",
+      "retailer": "Koton",
+      "role": "top",
+      "foundCards": 24,
+      "selectedDistinctModels": 8,
+      "maxColorsPerModel": 1
+    },
+    {
+      "url": "https://www.defacto.com.tr/erkek-deri-ceket",
+      "retrievedAt": "2026-10-15T21:40:56.192915+00:00",
+      "bodyHash": "f94bce382e9cb4581053afabeabb88d9f14bcda1d185390c05483400ce44b0d1",
+      "retailer": "DeFacto",
+      "role": "outer",
+      "foundCards": 24,
+      "selectedDistinctModels": 6,
+      "maxColorsPerModel": 1
+    },
+    {
+      "url": "https://www.defacto.com.tr/erkek-bomber-ceket",
+      "retrievedAt": "2026-10-15T21:40:56.244907+00:00",
+      "bodyHash": "e125017f9264fdc5901f1b70570092b1f52cfece4dc5c8500e554f80674ade03",
+      "retailer": "DeFacto",
+      "role": "outer",
+      "foundCards": 22,
+      "selectedDistinctModels": 6,
+      "maxColorsPerModel": 1
+    },
+    {
+      "url": "https://shop.mango.com/tr/tr/c/erkek/pantolon/b126cc9c",
+      "retailer": "Mango",
+      "retrievedAt": "2026-10-15T21:42:25.745154+00:00",
+      "found": 6,
+      "used": 6,
+      "role": "bottom",
+      "bodyHash": "16bddaabf41054136460f7193a56c289360c7003ddf67769844902ed82acc0ed",
+      "maxColorsPerModel": 1
+    },
+    {
+      "url": "https://shop.mango.com/tr/tr/c/erkek/jean/2402cc2c",
+      "retailer": "Mango",
+      "retrievedAt": "2026-10-15T21:42:25.748648+00:00",
+      "found": 7,
+      "used": 5,
+      "role": "bottom",
+      "bodyHash": "0be192c958f87952987319adc50a43dc38430259690e59534635b25cd8712819",
+      "maxColorsPerModel": 1
+    },
+    {
+      "url": "https://shop.mango.com/tr/tr/c/erkek/gomlek-ceketler/41a897fb",
+      "retailer": "Mango",
+      "retrievedAt": "2026-10-15T21:42:25.751309+00:00",
+      "found": 4,
+      "used": 4,
+      "role": "layer",
+      "bodyHash": "a401f9a135e017c01140111510f3800c66d9703a901bb86faf7db0005b88dc7b",
+      "maxColorsPerModel": 1
+    },
+    {
+      "url": "https://shop.mango.com/tr/tr/c/erkek/ceket/b5a3a3f6",
+      "retailer": "Mango",
+      "retrievedAt": "2026-10-15T21:42:25.754457+00:00",
+      "found": 7,
+      "used": 6,
+      "role": "outer",
+      "bodyHash": "d82d6e0a292e99ffd2224e36230328d38e999d30cb79c9964f320e4f46518497",
+      "maxColorsPerModel": 1
+    },
+    {
+      "url": "https://shop.mango.com/tr/tr/c/erkek/palto/3a5ade78",
+      "retailer": "Mango",
+      "retrievedAt": "2026-10-15T21:42:25.757091+00:00",
+      "found": 4,
+      "used": 4,
+      "role": "outer",
+      "bodyHash": "e5499f036107aea5c3176ca6f1950451404b75651ab18618851c3bf86234b2c4",
+      "maxColorsPerModel": 1
+    },
+    {
+      "url": "https://shop.mango.com/tr/tr/c/erkek/gabardin-trenckotlar/6337428e",
+      "retailer": "Mango",
+      "retrievedAt": "2026-10-15T21:42:25.760760+00:00",
+      "found": 5,
+      "used": 3,
+      "role": "outer",
+      "bodyHash": "d9f4c863ecd41093b7bbad99f37719b5fa44ed562f19734959d97e786b6e670e",
+      "maxColorsPerModel": 1
+    },
+    {
+      "url": "https://shop.mango.com/tr/tr/c/erkek/ayakkabı/474b3a4f",
+      "retailer": "Mango",
+      "retrievedAt": "2026-10-15T21:42:25.762542+00:00",
+      "found": 6,
+      "used": 6,
+      "role": "shoe",
+      "bodyHash": "e870b36776b29ab440bffb7302db55b204b822144ef4b7e242542a8bb3bbef6f",
+      "maxColorsPerModel": 1
+    },
+    {
+      "url": "https://shop.mango.com/tr/tr/c/erkek/hırka-ve-kazak/89e09112",
+      "retailer": "Mango",
+      "retrievedAt": "2026-10-15T21:42:25.769469+00:00",
+      "found": 5,
+      "used": 5,
+      "role": "layer",
+      "bodyHash": "ab7c586a99e3c2afab05d5a93d86c316efb3af01392fadb0b696fa3cb960fe5e",
+      "maxColorsPerModel": 1
+    },
+    {
+      "url": "https://www.decathlon.com.tr/erkek/polarlar?size=40",
+      "retailer": "Decathlon",
+      "retrievedAt": "2026-10-15T21:42:25.766289+00:00",
+      "found": 26,
+      "used": 8,
+      "role": "layer",
+      "bodyHash": "3fbe10b5b621e01108bcd21715e3b45761c78e880790ee94454f0b2609361f9a",
+      "maxColorsPerModel": 1
+    },
+    {
+      "url": "https://www.decathlon.com.tr/erkek/su-gecirmez-kiyafetler?size=40",
+      "retailer": "Decathlon",
+      "retrievedAt": "2026-10-15T21:42:25.781148+00:00",
+      "found": 17,
+      "used": 8,
+      "role": "outer",
+      "bodyHash": "09f01de1fead2254c7234d3755f4589e676d8225c79f051f9337d86df0339740",
+      "maxColorsPerModel": 1
+    },
+    {
+      "url": "https://www.decathlon.com.tr/erkek/montlar-ve-yagmurluklar?size=40",
+      "retailer": "Decathlon",
+      "retrievedAt": "2026-10-15T21:42:25.773596+00:00",
+      "found": 20,
+      "used": 10,
+      "role": "outer",
+      "bodyHash": "62b2d49bb798c265a35296116b9b3ddb019bed467c0b28b3c16b391b9fb72cbf",
+      "maxColorsPerModel": 1
+    },
+    {
+      "url": "https://www.decathlon.com.tr/erkek/pantolonlar?size=40",
+      "retailer": "Decathlon",
+      "retrievedAt": "2026-10-15T21:42:25.777471+00:00",
+      "found": 23,
+      "used": 6,
+      "role": "bottom",
+      "bodyHash": "be31093b467557d6f1744d1663b774bf663315d1a7c33c559f67c574e482b874",
+      "maxColorsPerModel": 1
+    },
+    {
+      "url": "https://www.decathlon.com.tr/erkek/botlar?size=40",
+      "retailer": "Decathlon",
+      "retrievedAt": "2026-10-15T21:42:25.785474+00:00",
+      "found": 19,
+      "used": 6,
+      "role": "shoe",
+      "bodyHash": "a0d9b502c22bf0795ef8db69360cf261169b49f3a7ebf3c9531a2cb13a6c2247",
+      "maxColorsPerModel": 1
+    },
+    {
+      "url": "https://www.boyner.com.tr/erkek-loafer-x-g3730-c2754",
+      "retailer": "Boyner",
+      "retrievedAt": "2026-10-15T21:42:25.810882+00:00",
+      "found": 19,
+      "used": 8,
+      "role": "shoe",
+      "bodyHash": "28fd46810749549b862342c96afaa2a46b8aa5661281db94e7f7328624ef238f",
+      "maxColorsPerModel": 1
+    },
+    {
+      "url": "https://www.boyner.com.tr/erkek-bot-x-g3730-c23896692",
+      "retailer": "Boyner",
+      "retrievedAt": "2026-10-15T21:42:25.807655+00:00",
+      "found": 8,
+      "used": 8,
+      "role": "shoe",
+      "bodyHash": "246433b7f3f09eb785c4b192608ae465c8e980573cb2668f21b45d29fded7976",
+      "maxColorsPerModel": 1
+    },
+    {
+      "url": "https://www.boyner.com.tr/erkek-klasik-ayakkabi-x-g3730-c2753",
+      "retailer": "Boyner",
+      "retrievedAt": "2026-10-15T21:42:25.809032+00:00",
+      "found": 21,
+      "used": 6,
+      "role": "shoe",
+      "bodyHash": "46d46d95742b5da2ba071dcc7b10de9bd6e755b47362c6e517e62fb4a4743441",
+      "maxColorsPerModel": 1
+    },
+    {
+      "url": "https://www.boyner.com.tr/erkek-sneaker-x-g3730-c2756",
+      "retailer": "Boyner",
+      "retrievedAt": "2026-10-15T21:42:25.823135+00:00",
+      "found": 22,
+      "used": 10,
+      "role": "shoe",
+      "bodyHash": "fecded2ea2027af14f33855bc880b7720dbff2dc9549380fdac70546e79c418d",
+      "maxColorsPerModel": 1
+    },
+    {
+      "retailer": "Mavi",
+      "url": "https://www.mavi.com/erkek/triko/c/2",
+      "checkedAt": "2026-10-15T21:40:46.298855+00:00",
+      "status": "ok",
+      "method": "anonymous category SSR ng-state products; model deduplication",
+      "discovered": 24,
+      "selected": 11,
+      "bodyHash": "bc284c8895f0a086399697b27e3d2e8c4b4078d23a45c821591123820bc781ab"
+    },
+    {
+      "retailer": "Mavi",
+      "url": "https://www.mavi.com/erkek/jean/c/2",
+      "checkedAt": "2026-10-15T21:40:46.519258+00:00",
+      "status": "ok",
+      "method": "anonymous category SSR ng-state products; model deduplication",
+      "discovered": 24,
+      "selected": 4,
+      "bodyHash": "f3a650217535abc0778889ce9f5b1950e1cada517a8a62270e4b438dfdbd5bbc"
+    },
+    {
+      "retailer": "Mavi",
+      "url": "https://www.mavi.com/erkek/dis+giyim/c/2?query=%3Arelevance%3AcategoryValue%3AD%C4%B1%C5%9F%20Giyim",
+      "checkedAt": "2026-10-15T21:40:46.469198+00:00",
+      "status": "ok",
+      "method": "anonymous category SSR ng-state products; model deduplication",
+      "discovered": 24,
+      "selected": 5,
+      "bodyHash": "86a7c6c005c6b5b70f4b40e316fe00702b2c25426100959c52a66e138a68716a"
+    },
+    {
+      "retailer": "AVVA",
+      "url": "https://www.avva.com.tr/erkek-gomlek/gomlek-ceket",
+      "checkedAt": "2026-10-15T21:40:45.680674+00:00",
+      "status": "ok",
+      "method": "anonymous category productName links; identical colourway titles collapsed",
+      "discovered": 57,
+      "selected": 6,
+      "bodyHash": "34d20bf3093f7c84c6c87158bd10aa6e107ceed1bace22e5b96f53797c7fef3d"
+    },
+    {
+      "retailer": "AVVA",
+      "url": "https://www.avva.com.tr/erkek-pantolon",
+      "checkedAt": "2026-10-15T21:40:53.796443+00:00",
+      "status": "ok",
+      "method": "anonymous category productName links; identical colourway titles collapsed",
+      "discovered": 58,
+      "selected": 6,
+      "bodyHash": "848e2efd223ddd6b77aa8d7615ffac015b84924a5f7c7645682e5777e327db5f"
+    },
+    {
+      "retailer": "AVVA",
+      "url": "https://www.avva.com.tr/erkek-kazak",
+      "checkedAt": "2026-10-15T21:40:43.993334+00:00",
+      "status": "ok",
+      "method": "anonymous category productName links; identical colourway titles collapsed",
+      "discovered": 58,
+      "selected": 6,
+      "bodyHash": "fe5ec78e46d36282bfa96bbd5be4298115395f912fece3a85f3af838eb593d12"
+    },
+    {
+      "retailer": "AVVA",
+      "url": "https://www.avva.com.tr/erkek-mont",
+      "checkedAt": "2026-10-15T21:40:46.735738+00:00",
+      "status": "ok",
+      "method": "anonymous category productName links; identical colourway titles collapsed",
+      "discovered": 58,
+      "selected": 4,
+      "bodyHash": "f767547da75dcf412c02d2f2ba9fe01c5e5fff11c98c9293339798c354ab6acf"
+    },
+    {
+      "retailer": "AVVA",
+      "url": "https://www.avva.com.tr/erkek-ceket",
+      "checkedAt": "2026-10-15T21:40:47.278129+00:00",
+      "status": "ok",
+      "method": "anonymous category productName links; identical colourway titles collapsed",
+      "discovered": 32,
+      "selected": 3,
+      "bodyHash": "4b9458a1a1357fa84aa32acbb313edddcaadde02d9e1ee4790156802b8635692"
     }
   ],
-  "errors": [],
-  "notReverified": [
+  "feeds": [
     {
-      "id": "0613680-70219",
-      "url": "https://www.mavi.com/mvjns-kahverengi-basic-tisort/p/0613680-70219",
-      "reason": "Bu turda kaynak yeniden doğrulanamadı; önceki fiyat tarihi korundu ve stok belirsiz bırakıldı."
+      "feed": "catalog-a.json",
+      "models": 177,
+      "records": 177,
+      "stats": {
+        "attempted": 177,
+        "total": 177,
+        "distinctModels": 177,
+        "retailers": {
+          "DeFacto": 92,
+          "Koton": 85
+        },
+        "kinds": {
+          "knit": 32,
+          "cardigan": 16,
+          "sweat": 16,
+          "jacket": 40,
+          "overshirt": 10,
+          "coat": 2,
+          "jean": 9,
+          "chino": 25,
+          "shirt": 6,
+          "raincoat": 6,
+          "puffer": 2,
+          "turtleneck": 4,
+          "hoodie": 4,
+          "parka": 2,
+          "longtee": 1,
+          "corduroy": 2
+        },
+        "priceVerified": 177,
+        "stockAvailable": 176,
+        "stockOut": 1,
+        "stockUnknown": 0,
+        "sizeVerifiedProducts": 92,
+        "failed": 0
+      },
+      "errors": []
     },
     {
-      "id": "0613680-85173",
-      "url": "https://www.mavi.com/mvjns-yesil-basic-tisort/p/0613680-85173",
-      "reason": "Bu turda kaynak yeniden doğrulanamadı; önceki fiyat tarihi korundu ve stok belirsiz bırakıldı."
+      "feed": "catalog-b.json",
+      "models": 100,
+      "records": 100,
+      "stats": {
+        "attempted": 100,
+        "total": 100,
+        "modelCount": 100,
+        "priceVerified": 100,
+        "stockAvailable": 100,
+        "stockOut": 0,
+        "stockUnknown": 0,
+        "failed": 0,
+        "byRetailer": {
+          "Mango": 37,
+          "Decathlon": 31,
+          "Boyner": 32
+        },
+        "byKind": {
+          "boot": 17,
+          "cardigan": 9,
+          "cargo": 2,
+          "chino": 4,
+          "coat": 4,
+          "corduroy": 2,
+          "derby": 5,
+          "jacket": 11,
+          "jean": 5,
+          "knit": 2,
+          "loafer": 12,
+          "overshirt": 4,
+          "parka": 1,
+          "raincoat": 6,
+          "sneaker": 10,
+          "sweat": 2,
+          "technical": 4
+        }
+      },
+      "errors": []
     },
     {
-      "id": "0613437-70490",
-      "url": "https://www.mavi.com/lacivert-basic-tisort/p/0613437-70490",
-      "reason": "Bu turda kaynak yeniden doğrulanamadı; önceki fiyat tarihi korundu ve stok belirsiz bırakıldı."
-    },
-    {
-      "id": "0612731-70223",
-      "url": "https://www.mavi.com/mavi-black-mor-basic-tisort/p/0612731-70223",
-      "reason": "Bu turda kaynak yeniden doğrulanamadı; önceki fiyat tarihi korundu ve stok belirsiz bırakıldı."
-    },
-    {
-      "id": "0612731-90892",
-      "url": "https://www.mavi.com/mavi-black-kahverengi-basic-tisort/p/0612731-90892",
-      "reason": "Bu turda kaynak yeniden doğrulanamadı; önceki fiyat tarihi korundu ve stok belirsiz bırakıldı."
-    },
-    {
-      "id": "0613676-70389",
-      "url": "https://www.mavi.com/mavi-jeans-kahverengi-tisort/p/0613676-70389",
-      "reason": "Bu turda kaynak yeniden doğrulanamadı; önceki fiyat tarihi korundu ve stok belirsiz bırakıldı."
-    },
-    {
-      "id": "0613509-70057",
-      "url": "https://www.mavi.com/ekru-basic-tisort/p/0613509-70057",
-      "reason": "Bu turda kaynak yeniden doğrulanamadı; önceki fiyat tarihi korundu ve stok belirsiz bırakıldı."
-    },
-    {
-      "id": "0613676-70490",
-      "url": "https://www.mavi.com/mavi-jeans-lacivert-tisort/p/0613676-70490",
-      "reason": "Bu turda kaynak yeniden doğrulanamadı; önceki fiyat tarihi korundu ve stok belirsiz bırakıldı."
-    },
-    {
-      "id": "0613551-90781",
-      "url": "https://www.mavi.com/mavi-jeans-baskili-yesil-tisort/p/0613551-90781",
-      "reason": "Bu turda kaynak yeniden doğrulanamadı; önceki fiyat tarihi korundu ve stok belirsiz bırakıldı."
-    },
-    {
-      "id": "0613681-70092",
-      "url": "https://www.mavi.com/mavi-jeans-antrasit-basic-tisort/p/0613681-70092",
-      "reason": "Bu turda kaynak yeniden doğrulanamadı; önceki fiyat tarihi korundu ve stok belirsiz bırakıldı."
-    },
-    {
-      "id": "0212131-70390",
-      "url": "https://www.mavi.com/kirmizi-kanvas-ince-ceket/p/0212131-70390",
-      "reason": "Bu turda kaynak yeniden doğrulanamadı; önceki fiyat tarihi korundu ve stok belirsiz bırakıldı."
-    },
-    {
-      "id": "0212107-91712",
-      "url": "https://www.mavi.com/yesil-ekose-gomlek/p/0212107-91712",
-      "reason": "Bu turda kaynak yeniden doğrulanamadı; önceki fiyat tarihi korundu ve stok belirsiz bırakıldı."
-    },
-    {
-      "id": "0212126-91564",
-      "url": "https://www.mavi.com/cepli-lacivert-gomlek/p/0212126-91564",
-      "reason": "Bu turda kaynak yeniden doğrulanamadı; önceki fiyat tarihi korundu ve stok belirsiz bırakıldı."
-    },
-    {
-      "id": "0220433-80020",
-      "url": "https://www.mavi.com/lyocell-karisimli-antrasit-gomlek/p/0220433-80020",
-      "reason": "Bu turda kaynak yeniden doğrulanamadı; önceki fiyat tarihi korundu ve stok belirsiz bırakıldı."
-    },
-    {
-      "id": "0212069-91268",
-      "url": "https://www.mavi.com/antrasit-orme-gomlek/p/0212069-91268",
-      "reason": "Bu turda kaynak yeniden doğrulanamadı; önceki fiyat tarihi korundu ve stok belirsiz bırakıldı."
-    },
-    {
-      "id": "0220346-70321",
-      "url": "https://www.mavi.com/kahverengi-kadife-gomlek/p/0220346-70321",
-      "reason": "Bu turda kaynak yeniden doğrulanamadı; önceki fiyat tarihi korundu ve stok belirsiz bırakıldı."
-    },
-    {
-      "id": "0211969-a7374",
-      "url": "https://www.mavi.com/cizgili-bordo-gomlek/p/0211969-A7374",
-      "reason": "Bu turda kaynak yeniden doğrulanamadı; önceki fiyat tarihi korundu ve stok belirsiz bırakıldı."
-    },
-    {
-      "id": "0212021-25818",
-      "url": "https://www.mavi.com/kahverengi-ekose-gomlek/p/0212021-25818",
-      "reason": "Bu turda kaynak yeniden doğrulanamadı; önceki fiyat tarihi korundu ve stok belirsiz bırakıldı."
-    },
-    {
-      "id": "0010101-83811",
-      "url": "https://www.mavi.com/mitte-street-koyu-antrasit-jean-pantolon/p/0010101-83811",
-      "reason": "Bu turda kaynak yeniden doğrulanamadı; önceki fiyat tarihi korundu ve stok belirsiz bırakıldı."
-    },
-    {
-      "id": "0010039-89930",
-      "url": "https://www.mavi.com/lisbon-street-vintage-mavi-jean-pantolon/p/0010039-89930",
-      "reason": "Bu turda kaynak yeniden doğrulanamadı; önceki fiyat tarihi korundu ve stok belirsiz bırakıldı."
-    },
-    {
-      "id": "0019166-87850",
-      "url": "https://www.mavi.com/marlon-classic-denim-puslu-mavi-jean-pantolon/p/0019166-87850",
-      "reason": "Bu turda kaynak yeniden doğrulanamadı; önceki fiyat tarihi korundu ve stok belirsiz bırakıldı."
-    },
-    {
-      "id": "0010289-91350",
-      "url": "https://www.mavi.com/toronto-street-rinse-denim-jean-pantolon/p/0010289-91350",
-      "reason": "Bu turda kaynak yeniden doğrulanamadı; önceki fiyat tarihi korundu ve stok belirsiz bırakıldı."
-    },
-    {
-      "id": "0017734787",
-      "url": "https://www.mavi.com/177-comfort-koyu-gri-comfort-smoke-jean-pantolon/p/0017734787",
-      "reason": "Bu turda kaynak yeniden doğrulanamadı; önceki fiyat tarihi korundu ve stok belirsiz bırakıldı."
-    },
-    {
-      "id": "00378a6869",
-      "url": "https://www.mavi.com/martin-koyu-kahverengi-comfort-gabardin-pantolon/p/00378A6869",
-      "reason": "Bu turda kaynak yeniden doğrulanamadı; önceki fiyat tarihi korundu ve stok belirsiz bırakıldı."
-    },
-    {
-      "id": "0010039-a6391",
-      "url": "https://www.mavi.com/lisbon-koyu-kahverengi-denim-gabardin-pantolon/p/0010039-A6391",
-      "reason": "Bu turda kaynak yeniden doğrulanamadı; önceki fiyat tarihi korundu ve stok belirsiz bırakıldı."
-    },
-    {
-      "id": "0010601-71379",
-      "url": "https://www.mavi.com/siyah-spandex-pantolon/p/0010601-71379",
-      "reason": "Bu turda kaynak yeniden doğrulanamadı; önceki fiyat tarihi korundu ve stok belirsiz bırakıldı."
-    },
-    {
-      "id": "0010646-70322",
-      "url": "https://www.mavi.com/ekru-chino-pantolon/p/0010646-70322",
-      "reason": "Bu turda kaynak yeniden doğrulanamadı; önceki fiyat tarihi korundu ve stok belirsiz bırakıldı."
-    },
-    {
-      "id": "0010646-71379",
-      "url": "https://www.mavi.com/siyah-chino-pantolon/p/0010646-71379",
-      "reason": "Bu turda kaynak yeniden doğrulanamadı; önceki fiyat tarihi korundu ve stok belirsiz bırakıldı."
-    },
-    {
-      "id": "0611824-900",
-      "url": "https://www.mavi.com/etiket-detayli-siyah-basic-tisort/p/0611824-900",
-      "reason": "Bu turda kaynak yeniden doğrulanamadı; önceki fiyat tarihi korundu ve stok belirsiz bırakıldı."
+      "feed": "catalog-c.json",
+      "models": 59,
+      "records": 64,
+      "stats": {
+        "attempted": 73,
+        "total": 64,
+        "modelCount": 59,
+        "priceVerified": 64,
+        "stockAvailable": 62,
+        "stockOut": 0,
+        "stockUnknown": 2,
+        "failed": 7,
+        "existingMaviRefreshed": 29,
+        "retailers": {
+          "Mavi": 48,
+          "AVVA": 16
+        },
+        "startedAt": "2026-10-15T21:40:40.830352+00:00",
+        "completedAt": "2026-10-15T21:43:02.827990+00:00"
+      },
+      "errors": [
+        {
+          "retailer": "AVVA",
+          "url": "https://www.avva.com.tr/siyah-klasik-yaka-suet-dokulu-mevsimlik-mont-35868",
+          "error": "<urlopen error Tunnel connection failed: 403 Forbidden>",
+          "checkedAt": "2026-10-15T21:42:16.823688+00:00",
+          "stage": "product"
+        },
+        {
+          "retailer": "AVVA",
+          "url": "https://www.avva.com.tr/bej-dik-yaka-suet-dokulu-mevsimlik-mont-33206",
+          "error": "<urlopen error Tunnel connection failed: 403 Forbidden>",
+          "checkedAt": "2026-10-15T21:42:16.824767+00:00",
+          "stage": "product"
+        },
+        {
+          "retailer": "AVVA",
+          "url": "https://www.avva.com.tr/gri-klasik-yaka-su-itici-teknik-kumas-mevsimlik-mont-38627",
+          "error": "<urlopen error Tunnel connection failed: 403 Forbidden>",
+          "checkedAt": "2026-10-15T21:42:16.825362+00:00",
+          "stage": "product"
+        },
+        {
+          "retailer": "AVVA",
+          "url": "https://www.avva.com.tr/siyah-klasik-yaka-citcitli-suet-dokulu-mevsimlik-mont-35775",
+          "error": "<urlopen error Tunnel connection failed: 403 Forbidden>",
+          "checkedAt": "2026-10-15T21:42:16.826074+00:00",
+          "stage": "product"
+        },
+        {
+          "retailer": "AVVA",
+          "url": "https://www.avva.com.tr/bej-mono-yaka-hafif-soft-touch-blazer-ceket-37753",
+          "error": "<urlopen error Tunnel connection failed: 403 Forbidden>",
+          "checkedAt": "2026-10-15T21:42:16.826637+00:00",
+          "stage": "product"
+        },
+        {
+          "retailer": "AVVA",
+          "url": "https://www.avva.com.tr/gri-mono-yaka-pamuklu-hafif-bistretch-blazer-ceket-37508",
+          "error": "<urlopen error Tunnel connection failed: 403 Forbidden>",
+          "checkedAt": "2026-10-15T21:42:16.827175+00:00",
+          "stage": "product"
+        },
+        {
+          "retailer": "AVVA",
+          "url": "https://www.avva.com.tr/siyah-mono-yaka-kapakli-cep-cift-yirtmac-astarsiz-lightweight-ceket-38961",
+          "error": "<urlopen error Tunnel connection failed: 403 Forbidden>",
+          "checkedAt": "2026-10-15T21:42:16.827967+00:00",
+          "stage": "product"
+        }
+      ]
     }
   ],
-  "method": "Anonymous first-party product pages; price cross-check with GA4/JSON-LD; exact color variant quantities; source textile/thickness attributes; model grouping by SKU, never generic product title."
+  "method": "First-party product pages and structured offers. Dates remain per observation. Offer-level stock does not imply an available selected size. No invented variants, prices or history."
 }

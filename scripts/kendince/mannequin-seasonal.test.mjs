@@ -32,6 +32,9 @@ for(const [kind,detail] of [['puffer','quilt'],['parka','hood'],['raincoat','she
  check(rendered.includes(`data-detail="${detail}"`),`${kind} has a distinct construction`);
 }
 for(const [kind,detail] of [['hoodie','hood'],['knit','rib']])check(renderMannequin({...outfit(),items:[{...top,kind},bottom,shoe]}).includes(`data-detail="${detail}"`),`${kind} collar/hem is distinct`);
+const vest=renderMannequin(outfit({...mid,kind:'vest'}),{layerOpen:true});
+check(vest.includes('data-detail="vest-armholes"'),'sweater vest preserves the shirt sleeves below');
+check(vest.includes('data-kind="vest" data-open="false"'),'pullover vest never opens like a cardigan');
 for(const [kind,detail] of [['loafer','loafer-vamp'],['derby','derby-laces']])check(renderMannequin({...outfit(),items:[top,bottom,{...shoe,kind}]}).includes(`data-detail="${detail}"`),`${kind} footwear is distinct`);
 check(renderMannequin(outfit(product('old-layer','layer','shirt'))).includes('data-garment="layer"'),'old category-only saved layers remain supported');
 check(renderMannequin({items:[top,bottom]})==='','incomplete look has no misleading mannequin');

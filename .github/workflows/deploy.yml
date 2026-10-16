@@ -44,6 +44,9 @@ jobs:
         run: |
           node scripts/kendince/seasonal.test.mjs
           node scripts/kendince/mannequin-seasonal.test.mjs
+          node scripts/kendince/temperature-diversity.test.mjs
+          node scripts/kendince/catalog.test.mjs
+          node --test scripts/kendince/ui.test.mjs
           node scripts/kendince/test.mjs
 
       - name: Build static site
