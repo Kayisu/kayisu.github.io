@@ -1,29 +1,26 @@
 ---
-title: Sandcastle Sandbox
+title: Sandstruction
 slug: sandcastle-sandbox
 translationKey: sandcastle-sandbox
 locale: en
 planet: venus
-summary: Sculpt a small coastal landscape, guide the water, and place towers and decorations.
+summary: A construction sandbox for unfinished pages. Drive six tools and machines, move earth and pave your own roads.
 status: prototype
 year: 2026
 kind: game
-tags: [Three.js, React, WebGL]
-demo: https://kayisu.github.io/planet/earth/games/sandbox/
+tags: [Three.js, JavaScript, WebGL]
+demo: https://kayisu.github.io/sandstruction/
 role: Solo build
 ---
 
-## Problem
+## Idea
 
-The sandbox gives a browser player a small coastal terrain to shape, with water,
-towers, and decorations that can be placed in the scene.
+This page is under construction. Build something while you are here. Sandstruction turns missing and unfinished portfolio pages into a small construction site.
 
-## Approach
+## Gameplay
 
-It is built with React Three Fiber and Three.js. The player sculpts terrain,
-guides water, and places towers and decorations. Its state persists locally in
-the browser.
+Drive a dump truck, loader, dozer, roller, asphalt paver or use a hand shovel. Excavate, carry, push, grade, compact and pave a seeded landscape. The browser keeps your save; eight tool strokes can be undone.
 
 ## Status
 
-The 2026 prototype is playable at the Earth games route.
+Version 0.2.0 uses original low-poly Three.js models and simplified terrain physics. The previous sandbox route redirects to the new game.

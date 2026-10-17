@@ -40,6 +40,9 @@ jobs:
       - name: Check Astro and TypeScript
         run: npx --no-install astro check
 
+      - name: Verify Sandstruction terrain and gameplay
+        run: npm run test:sandstruction
+
       - name: Verify Kendince catalog and interactions
         run: |
           node scripts/kendince/seasonal.test.mjs

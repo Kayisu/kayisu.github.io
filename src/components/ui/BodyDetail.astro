@@ -6,6 +6,7 @@ import {
   type Locale,
 } from '../../i18n';
 import { getProjectIndex, type ProjectPlanet } from '../../lib/projects';
+import { sandstructionHref } from '../../lib/sandstruction';
 import EarthGamesSection from '../games/EarthGamesSection.astro';
 import SiteFooter from '../layout/SiteFooter.astro';
 import SiteHeader from '../layout/SiteHeader.astro';
@@ -56,7 +57,7 @@ const projects = (await getProjectIndex()).forPlanet(locale, body.name as Projec
           </ul>
         </section>
       ) : (
-        <p class="planet-empty-state">{dictionary.project.emptyQuiet}</p>
+        <div class="planet-empty-state"><p>{dictionary.project.emptyQuiet}</p><p><a href={sandstructionHref('wip', `${locale === 'tr' ? '/tr' : ''}/planet/${body.name}/`, locale)}>{locale === 'tr' ? 'Beklerken Sandstruction’da bir şeyler inşa et →' : 'Build something in Sandstruction while you wait →'}</a></p></div>
       )
     }
 

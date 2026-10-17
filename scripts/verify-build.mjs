@@ -47,7 +47,8 @@ function decodeAttribute(value) {
   return value
     .replaceAll('&quot;', '"')
     .replaceAll('&#39;', "'")
-    .replaceAll('&amp;', '&');
+    .replaceAll('&amp;', '&')
+    .replaceAll('&#38;', '&');
 }
 
 function islandTags(html) {
@@ -181,7 +182,7 @@ const sandboxRoute = '/planet/earth/games/sandbox/';
 const yksRoute = '/yks/2026/tip-tercih/';
 
 for (const route of interactiveRoutes) assertIsland(route, 'SolarApp');
-assertIsland(sandboxRoute, 'SandboxApp');
+assertStatic(sandboxRoute);
 assertIsland(yksRoute, 'YksApp');
 
 for (const [route] of htmlByRoute) {
@@ -318,39 +319,18 @@ for (const absent of [
   if (existsSync(join(dist, absent))) fail(`Unexpected route was generated: ${absent}`);
 }
 
+// Sandstruction is an isolated static game; the old island route is a redirect.
 const sandboxHtml = read(htmlPath(sandboxRoute));
-const sandboxStyles = [...stylesheetHrefs(sandboxHtml)].filter((href) => /sandbox/i.test(href));
-if (sandboxStyles.length === 0) fail('Sandbox has no identifiable route stylesheet');
-const nonSandboxHtml = [...htmlByRoute.entries()].filter(([route]) => route !== sandboxRoute);
-for (const style of sandboxStyles) {
-  if (!read(style.replace(/^\//, '')).includes('.sandbox-shell')) {
-    fail(`Sandbox stylesheet does not contain the sandbox namespace: ${style}`);
-  }
-  for (const [route, html] of nonSandboxHtml) {
-    if (assetReferences(html).has(style)) fail(`${route} unexpectedly loads sandbox CSS ${style}`);
-  }
-}
-
-const sandboxAssets = assetReferences(sandboxHtml);
-const sandboxGraph = javascriptGraph(sandboxAssets);
-const nonSandboxGraph = javascriptGraph(
-  nonSandboxHtml.flatMap(([, html]) => [...assetReferences(html)]),
-);
-const sandboxEntries = [...sandboxAssets].filter((asset) => /SandboxApp/i.test(asset));
-if (sandboxEntries.length !== 1) {
-  fail(`Sandbox expected one SandboxApp entry; found ${JSON.stringify(sandboxEntries)}`);
-}
-for (const asset of sandboxEntries) {
-  if (nonSandboxGraph.has(asset)) fail(`Sandbox entry leaks into a non-sandbox graph: ${asset}`);
-}
-if (![...sandboxGraph].some((asset) => /SandboxApp/i.test(asset))) {
-  fail('Sandbox JavaScript graph does not contain its SandboxApp entry');
-}
-
+if (!sandboxHtml.includes('/sandstruction/')) fail('Legacy sandbox must link to Sandstruction');
+for (const asset of ['index.html','game.js','terrain.js','physics.js','models.js','nature.js','style.css','vendor/three.module.js','vendor/THREE-LICENSE.txt']) requireFile(`sandstruction/${asset}`);
+const gameHtml = read('sandstruction/index.html');
+if (!gameHtml.includes('Sandstruction') || !gameHtml.includes('v0.2')) fail('Sandstruction metadata/version is missing');
 for (const [route, html] of htmlByRoute) {
-  if (route !== sandboxRoute && html.includes('SandboxApp')) {
-    fail(`${route} unexpectedly references SandboxApp`);
-  }
+  if (route !== '/sandstruction/' && /(?:src|href)="[^" ]*sandstruction\/(?:game\.js|vendor\/three)/.test(html)) fail(`${route} must not load the game engine`);
+}
+for (const [file, reason] of [['404.html','404'],['wip/index.html','wip'],['unreachable/index.html','unreachable'],['tr/wip/index.html','wip'],['tr/unreachable/index.html','unreachable']]) {
+  const html = read(file);
+  if (!html.includes(`data-reason="${reason}"`) || !html.includes('data-sandstruction-fallback')) fail(`${file} must route to the correct construction entry`);
 }
 
 // --- YKS explorer ----------------------------------------------------------

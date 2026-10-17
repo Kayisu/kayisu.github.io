@@ -1,4 +1,5 @@
 ---
+import SandstructionRedirect from '../../components/fallback/SandstructionRedirect.astro';
 import ProjectCaseStudy from '../../components/projects/ProjectCaseStudy.astro';
 import { getBody } from '../../data/planets';
 import {
@@ -48,6 +49,9 @@ const dictionary = getDictionary(locale);
   alternatePaths={getAlternatePaths(route)}
   ogType="article"
 >
+  {entry.data.status === 'wip' ? (
+    <main id="main-content"><SandstructionRedirect reason="wip" locale={locale} from={projectPath(locale, entry.data.slug)} /></main>
+  ) : (
   <ProjectCaseStudy
     entry={entry}
     body={body}
@@ -56,4 +60,6 @@ const dictionary = getDictionary(locale);
     accent={accent}
     neighbours={projectIndex.neighboursOf(entry)}
   />
+  )}
+
 </BaseLayout>

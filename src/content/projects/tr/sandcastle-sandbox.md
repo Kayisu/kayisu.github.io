@@ -1,29 +1,26 @@
 ---
-title: Sandcastle Sandbox
+title: Sandstruction
 slug: sandcastle-sandbox
 translationKey: sandcastle-sandbox
 locale: tr
 planet: venus
-summary: Küçük bir kıyı arazisini şekillendirin, suyu yönlendirin, kuleler ve süslemeler yerleştirin.
+summary: Sayfa yapılıyor. Sen de bir şeyler yap. Altı araç ve aletle kaz, taşı, düzle ve kendi yolunu inşa et.
 status: prototype
 year: 2026
 kind: game
-tags: [Three.js, React, WebGL]
-demo: https://kayisu.github.io/planet/earth/games/sandbox/
+tags: [Three.js, JavaScript, WebGL]
+demo: https://kayisu.github.io/sandstruction/
 role: Tek kişilik
 ---
 
-## Problem
+## Fikir
 
-Sandbox, tarayıcıdaki oyuncuya şekillendirebileceği küçük bir kıyı arazisi ile
-sahneye yerleştirebileceği su, kuleler ve süslemeler sunar.
+Sayfa yapılıyor. Sen de bir şeyler yap. Sandstruction, portföyün bulunamayan ve henüz hazır olmayan sayfalarını küçük bir şantiyeye çevirir.
 
-## Yaklaşım
+## Oynanış
 
-React Three Fiber ve Three.js ile geliştirilmiştir. Oyuncu araziyi şekillendirir,
-suyu yönlendirir, kuleler ve süslemeler yerleştirir. Durum, tarayıcıda yerel
-olarak saklanır.
+Kamyon, kepçe, dozer, silindir, asfalt serici ve el küreği ile rastgele araziyi şekillendir. Kaz, taşı, it, düzle, sıkıştır ve asfalt dök. Kayıt tarayıcıda tutulur; son sekiz çalışma geri alınabilir.
 
 ## Durum
 
-2026 prototipi Earth oyunları rotasında oynanabilir.
+v0.2.0, özgün Three.js modelleri ve basitleştirilmiş arazi fiziği kullanır. Eski sandbox bağlantısı yeni oyuna yönlenir.

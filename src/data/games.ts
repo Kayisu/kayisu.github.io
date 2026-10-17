@@ -3,18 +3,12 @@ export interface EarthGameDefinition {
   title: string;
   summary: string;
   status: 'prototype' | 'active' | 'shipped';
-  href: `/planet/earth/games/${string}/`;
+  href: '/sandstruction/' | `/planet/earth/games/${string}/`;
   controls: readonly string[];
 }
-
-export const EARTH_GAMES = [
-  {
-    slug: 'sandbox',
-    title: 'Sandcastle Sandbox',
-    summary:
-      'Sculpt a small coastal landscape, guide the water, and place towers and decorations.',
-    status: 'prototype',
-    href: '/planet/earth/games/sandbox/',
-    controls: ['Sculpt terrain', 'Place towers', 'Decorate the shore', 'Save locally'],
-  },
-] as const satisfies readonly EarthGameDefinition[];
+export const EARTH_GAMES = [{
+  slug: 'sandbox', title: 'Sandstruction',
+  summary: 'This page is under construction. Build something while you’re here: drive six machines, move earth, grade and pave your own roads.',
+  status: 'prototype', href: '/sandstruction/',
+  controls: ['Drive six machines', 'Excavate & haul', 'Grade & pave', 'Undo & save locally'],
+}] as const satisfies readonly EarthGameDefinition[];

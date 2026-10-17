@@ -1,0 +1,14 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SiteHeader from '../layout/SiteHeader.astro';
+import SiteFooter from '../layout/SiteFooter.astro';
+import SandstructionRedirect from './SandstructionRedirect.astro';
+import type { UnavailableReason } from '../../lib/sandstruction';
+interface Props { reason: UnavailableReason; locale?: 'en' | 'tr'; canonicalPath: string; }
+const {reason, locale = 'en', canonicalPath} = Astro.props;
+---
+<BaseLayout title="Sandstruction · Work in progress | Kayisu" description={locale === 'tr' ? 'Bu sayfa henüz hazır değil. Madem buradasın, bir şeyler inşa et.' : 'This page is not ready yet. Build something while you are here.'} locale={locale} canonicalPath={canonicalPath} noindex>
+  <SiteHeader locale={locale} />
+  <main id="main-content"><SandstructionRedirect reason={reason} locale={locale} /></main>
+  <SiteFooter locale={locale} />
+</BaseLayout>

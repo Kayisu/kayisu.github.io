@@ -1,0 +1,33 @@
+---
+import { sandstructionHref, type UnavailableReason } from '../../lib/sandstruction';
+interface Props { reason: UnavailableReason; locale: 'en' | 'tr'; from?: string; }
+const {reason, locale, from = ''} = Astro.props;
+const tr = locale === 'tr';
+const labels = {
+  '404': tr ? '404 · Burada henüz bir yol yok' : '404 · No road here yet',
+  wip: tr ? 'WIP · İnşaat devam ediyor' : 'WIP · Work in progress',
+  unreachable: tr ? 'Bu yol şu an kapalı' : 'This road is currently closed',
+};
+---
+<section class="construction-fallback" data-sandstruction-fallback data-reason={reason} data-locale={locale} data-from={from}>
+  <p class="eyebrow">{labels[reason]}</p>
+  <h1>{tr ? 'Sayfa yapılıyor.' : 'This page is under construction.'}<br /><em>{tr ? 'Sen de bir şeyler yap.' : 'Build something while you’re here.'}</em></h1>
+  <p>{tr ? 'Bir avuç kum, birkaç büyük makine. Sandstruction sahası açılıyor.' : 'A little sand. A few big machines. Opening the Sandstruction site.'}</p>
+  <div class="actions"><a data-game-link href={sandstructionHref(reason, from, locale)}>{tr ? 'Sandstruction’a gir' : 'Enter Sandstruction'} ↗</a><a href={tr ? '/tr/' : '/'}>← {tr ? 'Portföye dön' : 'Back to the portfolio'}</a></div>
+  <noscript><p>{tr ? 'Otomatik geçiş için JavaScript gerekir; oyunu yukarıdaki bağlantıdan açabilirsiniz.' : 'Automatic transfer needs JavaScript. You can open the game using the link above.'}</p></noscript>
+  <script is:inline>
+    (() => {
+      const root = document.querySelector('[data-sandstruction-fallback]');
+      if (!root || location.pathname.startsWith('/sandstruction/')) return;
+      const url = new URL('/sandstruction/', location.origin);
+      url.searchParams.set('reason', root.dataset.reason || '404');
+      url.searchParams.set('lang', location.pathname.startsWith('/tr/') ? 'tr' : root.dataset.locale || 'en');
+      url.searchParams.set('from', root.dataset.from || location.pathname);
+      root.querySelector('[data-game-link]').href = url.pathname + url.search;
+      location.replace(url.pathname + url.search);
+    })();
+  </script>
+</section>
+<style>
+.construction-fallback{max-width:65rem;margin:0 auto;padding:clamp(6rem,15vh,11rem) 1.5rem;min-height:70vh}.eyebrow{color:var(--color-accent);font-size:.75rem;letter-spacing:.13em;text-transform:uppercase}.construction-fallback h1{font-size:clamp(2.6rem,7vw,5rem);line-height:1.08;letter-spacing:-.045em;margin:1rem 0 1.5rem}.construction-fallback em{font-family:Georgia,serif;font-weight:400}.construction-fallback>p:not(.eyebrow){color:var(--color-text-secondary);line-height:1.7}.actions{display:flex;flex-wrap:wrap;gap:1rem;margin-top:2rem}.actions a{padding:.85rem 1.1rem;border:1px solid var(--color-border-subtle);border-radius:.5rem;text-decoration:none;color:var(--color-text-primary)}.actions a:first-child{background:var(--color-accent);color:var(--color-page)}
+</style>

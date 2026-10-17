@@ -1,0 +1,11 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {Terrain,N,CELL} from '../../public/sandstruction/terrain.js';
+const volume=t=>t.h.reduce((sum,h)=>sum+h*CELL*CELL,0);
+test('seeds reproduce a world and different seeds change the terrain',()=>{const a=new Terrain(42),b=new Terrain(42),c=new Terrain(43);assert.deepEqual(a.h,b.h);assert.notDeepEqual(a.h,c.h);});
+test('dumping adds the requested volume and digging transfers it back',()=>{const t=new Terrain(8),before=volume(t);assert.equal(t.deposit(0,0,2,3,2),3);assert.ok(Math.abs(volume(t)-before-3)<.0001);const result=t.dig(0,0,2,1.4);assert.ok(Math.abs(result.volume-1.4)<.0001);assert.ok(Math.abs(volume(t)-before-1.6)<.0001);});
+test('dozer reduces local height variation without creating material',()=>{const t=new Terrain(1);t.deposit(10,10,1.1,8,1);const cells=t.cells(10,10,2),spread=()=>{const h=cells.map(([i])=>t.h[i]);return Math.max(...h)-Math.min(...h);},before=volume(t),s=spread();t.level(10,10,2,.5);assert.ok(spread()<s);assert.ok(Math.abs(volume(t)-before)<.0001);});
+test('roller compacts laid material, respects the cap and leaves raw earth alone',()=>{const t=new Terrain();t.deposit(0,0,2,2,2);for(let i=0;i<30;i++)t.roll(0,0,2,1);assert.equal(t.compact[t.nearest(0,0)],1);t.roll(20,20,2,1);assert.equal(t.compact[t.nearest(20,20)],0);});
+test('asphalt changes surface and digging cannot pass the bottom limit',()=>{const t=new Terrain();t.pave(2,2,2,1);assert.equal(t.mat[t.nearest(2,2)],3);for(let i=0;i<20;i++)t.dig(2,2,2,100);assert.ok([...t.h].every(h=>h>=-3.000001));});
+test('save round trip retains every height, material and compaction value',()=>{const t=new Terrain(831);t.deposit(2,3,2,6,2);t.roll(2,3,2,.8);const copy=Terrain.restore(JSON.parse(JSON.stringify(t.serialize())));assert.deepEqual(copy.h,t.h);assert.deepEqual(copy.mat,t.mat);assert.deepEqual(copy.compact,t.compact);assert.throws(()=>Terrain.restore({h:[],mat:[],compact:[]}));const invalid=t.serialize();invalid.h[0]=NaN;assert.throws(()=>Terrain.restore(invalid));});
+test('sampling clamps safely at and beyond all map edges',()=>{const t=new Terrain();for(const x of[-100,-48,0,48,100])for(const z of[-100,-48,0,48,100])assert.ok(Number.isFinite(t.sample(x,z)));assert.equal(t.h.length,(N+1)**2);});

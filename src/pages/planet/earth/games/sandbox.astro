@@ -1,23 +1,10 @@
 ---
 import BaseLayout from '../../../../layouts/BaseLayout.astro';
-import GameShell from '../../../../components/games/GameShell.astro';
-import SandboxApp from '../../../../components/sandbox/SandboxApp';
-import '../../../../styles/sandbox.css';
 ---
-
-<BaseLayout
-  title="Sandcastle Sandbox | Kayisu"
-  description="Sculpt terrain, guide water, and build a small coastal scene in the browser."
->
-  <GameShell
-    title="Sandcastle Sandbox"
-    backHref="/planet/earth/games/"
-    backLabel="Back to Earth Games"
-  >
-    <SandboxApp client:only="react">
-      <div slot="fallback" class="sandbox-shell__status" role="status">
-        Loading sandbox&hellip;
-      </div>
-    </SandboxApp>
-  </GameShell>
+<BaseLayout title="Sandstruction | Kayisu" description="The construction sandbox has moved to Sandstruction." canonicalPath="/sandstruction/" noindex>
+  <main id="main-content" style="padding:8rem 2rem;text-align:center">
+    <h1>Sandcastle Sandbox is now Sandstruction.</h1>
+    <p><a href="/sandstruction/">Enter Sandstruction ↗</a></p>
+  </main>
+  <script is:inline>location.replace('/sandstruction/' + location.search + location.hash);</script>
 </BaseLayout>
