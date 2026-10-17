@@ -583,8 +583,8 @@ function drive(dt) {
     m.group.position.z = m.z;
     for (const wheel of m.wheels) {
       const spin = wheel.userData.spin || wheel;
-      spin.rotation.x += (m.speed * dt) / (wheel.userData.radius || 0.67);
-      if (wheel.userData.front) wheel.rotation.y = -(m.steer || 0);
+      spin.rotation.x -= (m.speed * dt) / (wheel.userData.radius || 0.67);
+      if (wheel.userData.front) wheel.rotation.y = m.steer || 0;
     }
     m.group.rotation.y = m.angle;
     const dx = -Math.sin(m.angle),
