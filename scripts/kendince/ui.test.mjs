@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import vm from 'node:vm';
 import {readFile} from 'node:fs/promises';
 import * as engine from '../../public/kendince/engine.js';
+import {materialInfo} from '../../public/kendince/materials.js';
 import {renderMannequin,setTextures} from '../../public/kendince/mannequin.js';
 
 const source=await readFile(new URL('../../public/kendince/app.js',import.meta.url),'utf8');
@@ -12,7 +13,7 @@ const catalog=JSON.parse(await readFile(new URL('../../public/kendince/catalog.j
 function harness(){
  const elements=new Map(),listeners=new Map(),storage=new Map();
  const element=key=>{if(!elements.has(key))elements.set(key,{innerHTML:'',textContent:'',className:'',value:'',open:false,classList:{toggle(){}},addEventListener(){},showModal(){this.open=true;},close(){this.open=false;}});return elements.get(key);};
- const sandbox={...engine,renderMannequin,setTextures,console,Intl,Map,Set,WeakMap,Date,Number,String,Object,Array,Math,JSON,FormData,URL,Blob,crypto:globalThis.crypto,localStorage:{getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v)},document:{querySelector:element,querySelectorAll:()=>[],addEventListener:(kind,fn)=>listeners.set(kind,fn)},window:{addEventListener(){},scrollTo(){}},location:{hash:''},setTimeout:()=>0,clearTimeout(){},fixture:catalog};
+ const sandbox={...engine,materialInfo,renderMannequin,setTextures,console,Intl,Map,Set,WeakMap,Date,Number,String,Object,Array,Math,JSON,FormData,URL,Blob,crypto:globalThis.crypto,localStorage:{getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v)},document:{querySelector:element,querySelectorAll:()=>[],addEventListener:(kind,fn)=>listeners.set(kind,fn)},window:{addEventListener(){},scrollTo(){}},location:{hash:''},setTimeout:()=>0,clearTimeout(){},fixture:catalog};
  vm.createContext(sandbox);
  const body=source.replace(/^import .*;\n/gm,'').slice(0,source.replace(/^import .*;\n/gm,'').indexOf("try{const r=await fetch('catalog.json"));
  vm.runInContext(body+`\nproducts=fixture.products;page='prices';catalogVerifiedAt=fixture.verifiedAt;catalogStats=fixture.stats;for(const p of products){const key=modelKey(p);if(!modelGroups.has(key))modelGroups.set(key,[]);modelGroups.get(key).push(p);}globalThis.ui={state:()=>state,filters:()=>catalogFilters,products:()=>products,list:catalogList,renderPrices,climateControls,stockSummary,productModal,renderAtelier,rebuild,catalogResults,outfits:()=>outfits,renderCompass,renderWardrobe};`,sandbox);
@@ -120,4 +121,26 @@ test('conditional campaign pricing is disclosed and escaped without lowering the
  assert.doesNotMatch(html,/<özel>/);
  assert.equal(engine.unitPrice(p,h.ui.state()),base);
  assert.equal(base,2000);
+});
+
+
+test('300k discovery budget is accepted in both numeric entry and presets',()=>{
+ const h=harness();h.ui.state().filters.temperature=21;
+ h.change('budget','300000');assert.equal(h.ui.state().filters.budget,300000);
+ assert.match(h.ui.renderAtelier(),/max="300000"/);
+ h.change('budget','300001');assert.equal(h.ui.state().filters.budget,300000);
+ h.action('budget-preset','75000');assert.equal(h.ui.state().filters.budget,75000);
+});
+test('new brand discovery keeps synthetic items and shows composition and FX disclosures',()=>{
+ const h=harness();h.action('discovery-catalog');
+ const list=h.ui.list();assert.ok(list.length>50);assert.ok(list.every(p=>p.discovery));
+ const synthetic=list.find(p=>materialInfo(p).status==='synthetic');assert.ok(synthetic);
+ assert.ok(list.some(p=>p.priceOrigin?.tlEstimate));
+ h.ui.productModal(synthetic);assert.match(h.element('#modal-content').innerHTML,/Sentetik içerir/);
+ const foreign=list.find(p=>p.priceOrigin?.tlEstimate);h.ui.productModal(foreign);
+ assert.match(h.element('#modal-content').innerHTML,/TCMB/);assert.match(h.element('#modal-content').innerHTML,/Türkiye teslimatı doğrulanmadı/);
+ h.action('catalog-reset');assert.equal(h.ui.filters().discoveryOnly,false);
+ h.action('discovery-looks');assert.equal(h.ui.state().filters.budget,300000);
+ assert.ok(h.ui.state().filters.stores.length>=8);
+ for(const o of h.ui.outfits())for(const p of o.items)assert.ok(p.discovery||h.ui.state().owned.includes(p.id));
 });

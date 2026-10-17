@@ -1,5 +1,6 @@
 import {readFile} from 'node:fs/promises';
 import * as engine from '../../public/kendince/engine.js';
+import {materialInfo} from '../../public/kendince/materials.js';
 import * as preview from '../../public/kendince/mannequin.js';
 const catalog=JSON.parse(await readFile(new URL('../../public/kendince/catalog.json',import.meta.url),'utf8'));
 const appSource=await readFile(new URL('../../public/kendince/app.js',import.meta.url),'utf8');
@@ -41,7 +42,7 @@ async function runKendinceTests(engine,catalog,appSource,preview){
  const location={hash:'',reload(){}},window={scrollTo(){},addEventListener(){}};
  class MockFormData{constructor(form){this.values=form.values;}get(key){return this.values[key]??null;}}
  const AF=Object.getPrototypeOf(async function(){}).constructor;
- const source=appSource.replace(/^import\s*\{([^}]+)\}[^\n]*\n/,'const {$1}=engine;\n').replace(/^import[^\n]+mannequin[^\n]*\n/m,'const {renderMannequin,setTextures}=preview;\n');
+ const source=appSource.replace(/^import\s*\{([^}]+)\}[^\n]*\n/,'const {$1}=engine;\n').replace(/^import[^\n]+mannequin[^\n]*\n/m,'const {renderMannequin,setTextures}=preview;\n').replace(/^import[^\n]+materials[^\n]*\n/m,'const {materialInfo}=engine;\n');
  const app=await new AF('engine','preview','document','localStorage','location','window','fetch','FormData','crypto','console','setTimeout','clearTimeout',source+';return {getState:()=>state,getOutfits:()=>outfits,getFilters:()=>catalogFilters,navigate,productModal,detailModal,find,catalogList,latestPrice,rebuild,render};')(engine,preview,document,localStorage,location,window,async()=>({ok:true,json:async()=>catalog}),MockFormData,{randomUUID:()=> 'test-custom'},{error:e=>errors.push(String(e))},()=>0,()=>{});
  const html=selector=>document.querySelector(selector).innerHTML,click=(action,id,value)=>events.click({target:{closest:selector=>selector==='[data-action]'?{dataset:{action,id,value}}:null}}),change=(id,value,checked)=>events.change({target:{id,value,checked,dataset:{}}}),submit=(id,values,dataset={})=>events.submit({preventDefault(){},target:{id,values,dataset}});
  check(errors.length===0,"app boot: "+errors);check(html('#app').includes('Kombin atölyesi'),"no atelier");check(app.getOutfits().length===3,"no default3");
@@ -82,7 +83,7 @@ async function runKendinceTests(engine,catalog,appSource,preview){
  check(!html('#app').includes('Atölyeyi açamadık')&&html('#app').includes('class="mannequin-svg"'),"texture failure broke catalog");
  return{assertions,scenarios,defaultSpend:engine.cost(baseOutfit,initial()),catalog:catalog.products.length,flows:'pass'};
 }
-console.log('Kendince verification:',await runKendinceTests(engine,catalog,appSource,preview));
+console.log('Kendince verification:',await runKendinceTests({...engine,materialInfo},catalog,appSource,preview));
 
 const textureManifest=JSON.parse(await readFile(new URL('../../public/kendince/mannequin-textures.json',import.meta.url),'utf8'));
 preview.setTextures(textureManifest);

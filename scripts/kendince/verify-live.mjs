@@ -1,7 +1,7 @@
 import {readFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 async function verifyPublished(){
- const files=['index.html','app.js','engine.js','style.css','catalog.json','catalog-audit.json','mannequin.js','mannequin-textures.json','wardrobe-rules.js'],expected=new Map();
+ const files=['index.html','app.js','engine.js','style.css','catalog.json','catalog-audit.json','mannequin.js','mannequin-textures.json','wardrobe-rules.js','materials.js'],expected=new Map();
  for(const path of files)expected.set(path,await readFile(new URL('../../public/kendince/'+path,import.meta.url)));
  const token=process.env.GITHUB_SHA?.slice(0,12)||Date.now().toString();let failures=[];
  for(let attempt=0;attempt<8;attempt++){

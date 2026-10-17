@@ -1,17 +1,17 @@
 {
-  "preparedAt": "2026-10-15T21:48:04.437023+00:00",
+  "preparedAt": "2026-10-17T22:50:43.815603+00:00",
   "stats": {
-    "total": 636,
-    "modelCount": 528,
-    "priceVerified": 624,
-    "stockAvailable": 581,
+    "total": 1005,
+    "modelCount": 897,
+    "priceVerified": 993,
+    "stockAvailable": 950,
     "stockOut": 7,
     "stockUnknown": 48,
     "priceConflicts": 12,
     "notReverified": 0,
-    "storeCount": 8,
-    "eligible": 569,
-    "eligibleStores": 8,
+    "storeCount": 20,
+    "eligible": 938,
+    "eligibleStores": 20,
     "byStore": {
       "LCW": 295,
       "Mavi": 48,
@@ -20,7 +20,19 @@
       "Mango": 37,
       "Decathlon": 31,
       "Boyner": 32,
-      "AVVA": 16
+      "AVVA": 16,
+      "A Kind of Guise": 30,
+      "Drake’s": 32,
+      "Les Benjamins": 32,
+      "Norse Projects": 32,
+      "Percival": 32,
+      "Portuguese Flannel": 20,
+      "Stan Ray": 32,
+      "Story mfg.": 32,
+      "Studio Nicholson": 32,
+      "Universal Works": 32,
+      "Wax London": 32,
+      "mfpen": 31
     },
     "eligibleByStore": {
       "LCW": 231,
@@ -30,38 +42,54 @@
       "Mango": 37,
       "Decathlon": 31,
       "Boyner": 32,
-      "AVVA": 16
+      "AVVA": 16,
+      "A Kind of Guise": 30,
+      "Drake’s": 32,
+      "Les Benjamins": 32,
+      "Norse Projects": 32,
+      "Percival": 32,
+      "Portuguese Flannel": 20,
+      "Stan Ray": 32,
+      "Story mfg.": 32,
+      "Studio Nicholson": 32,
+      "Universal Works": 32,
+      "Wax London": 32,
+      "mfpen": 31
     },
     "byKind": {
-      "sneaker": 38,
-      "cardigan": 48,
-      "sweat": 39,
-      "tee": 33,
-      "longtee": 7,
-      "overshirt": 32,
-      "shirt": 39,
-      "jean": 26,
-      "chino": 48,
-      "turtleneck": 8,
-      "knit": 60,
-      "coat": 20,
-      "puffer": 14,
-      "jacket": 64,
-      "boot": 24,
-      "cargo": 14,
-      "raincoat": 22,
-      "hoodie": 4,
-      "parka": 3,
-      "corduroy": 3,
-      "loafer": 12,
+      "sneaker": 42,
+      "cardigan": 67,
+      "sweat": 60,
+      "tee": 55,
+      "longtee": 12,
+      "overshirt": 46,
+      "shirt": 76,
+      "jean": 41,
+      "chino": 81,
+      "turtleneck": 12,
+      "knit": 80,
+      "coat": 44,
+      "puffer": 17,
+      "jacket": 98,
+      "boot": 31,
+      "cargo": 21,
+      "raincoat": 26,
+      "hoodie": 13,
+      "parka": 6,
+      "corduroy": 12,
+      "loafer": 16,
       "technical": 4,
-      "derby": 5,
-      "jogger": 2
+      "derby": 19,
+      "jogger": 6,
+      "blazer": 12,
+      "vest": 15,
+      "shorts": 15,
+      "polo": 11
     }
   },
   "verificationWindow": {
     "start": "2026-10-15T07:33:53.061713+00:00",
-    "end": "2026-10-15T21:42:29.273893+00:00"
+    "end": "2026-10-17T22:42:50.511185+00:00"
   },
   "sources": [
     {
@@ -615,158 +643,117 @@
       "discovered": 32,
       "selected": 3,
       "bodyHash": "4b9458a1a1357fa84aa32acbb313edddcaadde02d9e1ee4790156802b8635692"
+    },
+    {
+      "retailer": "A Kind of Guise",
+      "url": "https://akindofguise.com/products.json?limit=250",
+      "method": "First-party product feed, variant availability, successful product page and shop /cart.js currency",
+      "responseSha256": "9fc5dcc9fe484ef9d94c371007ef68d5c2091b8e515b067282905081738425b2"
+    },
+    {
+      "retailer": "Drake’s",
+      "url": "https://www.drakes.com/products.json?limit=250",
+      "method": "First-party product feed, variant availability, successful product page and shop /cart.js currency",
+      "responseSha256": "3a51b2dd19b37f57ba59dda0194ca1aa17b5a48c14c4141b3224678031f1e62e"
+    },
+    {
+      "retailer": "Les Benjamins",
+      "url": "https://lesbenjamins.com/products.json?limit=250",
+      "method": "First-party product feed, variant availability, successful product page and shop /cart.js currency",
+      "responseSha256": "cf15647dfda4576ceb3da0c06ec2aa303804be638498dae0014a5e797974025b"
+    },
+    {
+      "retailer": "Norse Projects",
+      "url": "https://www.norseprojects.com/products.json?limit=250",
+      "method": "First-party product feed, variant availability, successful product page and shop /cart.js currency",
+      "responseSha256": "46001c26e519388cb0793b4a8faf779d334d1bfec7b9abfc816c197b40135b23"
+    },
+    {
+      "retailer": "Percival",
+      "url": "https://www.percivalclo.com/products.json?limit=250",
+      "method": "First-party product feed, variant availability, successful product page and shop /cart.js currency",
+      "responseSha256": "d3f36526831fa024c27e7b1b06703b8f764b8cfa4a90ff5f9c42b961142f0abd"
+    },
+    {
+      "retailer": "Portuguese Flannel",
+      "url": "https://www.portugueseflannel.com/products.json?limit=250",
+      "method": "First-party product feed, variant availability, successful product page and shop /cart.js currency",
+      "responseSha256": "877ba996b59ffebe11bc314d02206c65dd0fbd60ffbe3ad4edd920d6aaa43a01"
+    },
+    {
+      "retailer": "Stan Ray",
+      "url": "https://www.stanray.com/products.json?limit=250",
+      "method": "First-party product feed, variant availability, successful product page and shop /cart.js currency",
+      "responseSha256": "084d1195e92214171dacc85a5a19f1c2279ca906489ac280dd6c64f43a24f093"
+    },
+    {
+      "retailer": "Story mfg.",
+      "url": "https://www.storymfg.com/products.json?limit=250",
+      "method": "First-party product feed, variant availability, successful product page and shop /cart.js currency",
+      "responseSha256": "613dc6d3499335b1bbceed9ced8e593d05192102d4bb824e59f7fc459e6bc403"
+    },
+    {
+      "retailer": "Studio Nicholson",
+      "url": "https://www.studionicholson.com/products.json?limit=250",
+      "method": "First-party product feed, variant availability, successful product page and shop /cart.js currency",
+      "responseSha256": "e20211de0bc373c668e65bf2c0a072d64829f9aae7d3e9b1d364d9442139c23c"
+    },
+    {
+      "retailer": "Universal Works",
+      "url": "https://universalworks.com/products.json?limit=250",
+      "method": "First-party product feed, variant availability, successful product page and shop /cart.js currency",
+      "responseSha256": "c1c450368a27f01c0c6645150b8e106a5187b1991e4d8354a5052aca852758fd"
+    },
+    {
+      "retailer": "Wax London",
+      "url": "https://waxlondon.com/products.json?limit=250",
+      "method": "First-party product feed, variant availability, successful product page and shop /cart.js currency",
+      "responseSha256": "5dfd1be9ab0d49e615c33f21bd955a41c09c850c9493a1358d6c934adf836636"
+    },
+    {
+      "retailer": "mfpen",
+      "url": "https://mfpen.com/products.json?limit=250",
+      "method": "First-party product feed, variant availability, successful product page and shop /cart.js currency",
+      "responseSha256": "719fa3d1c849af32dfbdc266516b74f4c219e319e165590e2b0058ea229bef3e"
     }
   ],
   "feeds": [
     {
-      "feed": "catalog-a.json",
-      "models": 177,
-      "records": 177,
+      "feed": "independent-feed.json",
+      "models": 369,
+      "records": 369,
       "stats": {
-        "attempted": 177,
-        "total": 177,
-        "distinctModels": 177,
-        "retailers": {
-          "DeFacto": 92,
-          "Koton": 85
+        "byStore": {
+          "A Kind of Guise": 30,
+          "Drake’s": 32,
+          "Les Benjamins": 32,
+          "Norse Projects": 32,
+          "Percival": 32,
+          "Portuguese Flannel": 20,
+          "Stan Ray": 32,
+          "Story mfg.": 32,
+          "Studio Nicholson": 32,
+          "Universal Works": 32,
+          "Wax London": 32,
+          "mfpen": 31
         },
-        "kinds": {
-          "knit": 32,
-          "cardigan": 16,
-          "sweat": 16,
-          "jacket": 40,
-          "overshirt": 10,
-          "coat": 2,
-          "jean": 9,
-          "chino": 25,
-          "shirt": 6,
-          "raincoat": 6,
-          "puffer": 2,
-          "turtleneck": 4,
-          "hoodie": 4,
-          "parka": 2,
-          "longtee": 1,
-          "corduroy": 2
-        },
-        "priceVerified": 177,
-        "stockAvailable": 176,
-        "stockOut": 1,
-        "stockUnknown": 0,
-        "sizeVerifiedProducts": 92,
-        "failed": 0
-      },
-      "errors": []
-    },
-    {
-      "feed": "catalog-b.json",
-      "models": 100,
-      "records": 100,
-      "stats": {
-        "attempted": 100,
-        "total": 100,
-        "modelCount": 100,
-        "priceVerified": 100,
-        "stockAvailable": 100,
-        "stockOut": 0,
-        "stockUnknown": 0,
-        "failed": 0,
-        "byRetailer": {
-          "Mango": 37,
-          "Decathlon": 31,
-          "Boyner": 32
-        },
-        "byKind": {
-          "boot": 17,
-          "cardigan": 9,
-          "cargo": 2,
-          "chino": 4,
-          "coat": 4,
-          "corduroy": 2,
-          "derby": 5,
-          "jacket": 11,
-          "jean": 5,
-          "knit": 2,
-          "loafer": 12,
-          "overshirt": 4,
-          "parka": 1,
-          "raincoat": 6,
-          "sneaker": 10,
-          "sweat": 2,
-          "technical": 4
-        }
-      },
-      "errors": []
-    },
-    {
-      "feed": "catalog-c.json",
-      "models": 59,
-      "records": 64,
-      "stats": {
-        "attempted": 73,
-        "total": 64,
-        "modelCount": 59,
-        "priceVerified": 64,
-        "stockAvailable": 62,
-        "stockOut": 0,
-        "stockUnknown": 2,
-        "failed": 7,
-        "existingMaviRefreshed": 29,
-        "retailers": {
-          "Mavi": 48,
-          "AVVA": 16
-        },
-        "startedAt": "2026-10-15T21:40:40.830352+00:00",
-        "completedAt": "2026-10-15T21:43:02.827990+00:00"
+        "total": 369
       },
       "errors": [
         {
-          "retailer": "AVVA",
-          "url": "https://www.avva.com.tr/siyah-klasik-yaka-suet-dokulu-mevsimlik-mont-35868",
-          "error": "<urlopen error Tunnel connection failed: 403 Forbidden>",
-          "checkedAt": "2026-10-15T21:42:16.823688+00:00",
-          "stage": "product"
+          "error": "HTTP Error 404: Not Found",
+          "retailer": "Wax London",
+          "url": "https://waxlondon.com/products/heath-navy-and-multicolour-wool-check-jacket"
         },
         {
-          "retailer": "AVVA",
-          "url": "https://www.avva.com.tr/bej-dik-yaka-suet-dokulu-mevsimlik-mont-33206",
-          "error": "<urlopen error Tunnel connection failed: 403 Forbidden>",
-          "checkedAt": "2026-10-15T21:42:16.824767+00:00",
-          "stage": "product"
+          "error": "HTTP Error 404: Not Found",
+          "retailer": "Wax London",
+          "url": "https://waxlondon.com/products/reeve-washed-brown-loopback-organic-cotton-collared-sweatshirt"
         },
         {
-          "retailer": "AVVA",
-          "url": "https://www.avva.com.tr/gri-klasik-yaka-su-itici-teknik-kumas-mevsimlik-mont-38627",
-          "error": "<urlopen error Tunnel connection failed: 403 Forbidden>",
-          "checkedAt": "2026-10-15T21:42:16.825362+00:00",
-          "stage": "product"
-        },
-        {
-          "retailer": "AVVA",
-          "url": "https://www.avva.com.tr/siyah-klasik-yaka-citcitli-suet-dokulu-mevsimlik-mont-35775",
-          "error": "<urlopen error Tunnel connection failed: 403 Forbidden>",
-          "checkedAt": "2026-10-15T21:42:16.826074+00:00",
-          "stage": "product"
-        },
-        {
-          "retailer": "AVVA",
-          "url": "https://www.avva.com.tr/bej-mono-yaka-hafif-soft-touch-blazer-ceket-37753",
-          "error": "<urlopen error Tunnel connection failed: 403 Forbidden>",
-          "checkedAt": "2026-10-15T21:42:16.826637+00:00",
-          "stage": "product"
-        },
-        {
-          "retailer": "AVVA",
-          "url": "https://www.avva.com.tr/gri-mono-yaka-pamuklu-hafif-bistretch-blazer-ceket-37508",
-          "error": "<urlopen error Tunnel connection failed: 403 Forbidden>",
-          "checkedAt": "2026-10-15T21:42:16.827175+00:00",
-          "stage": "product"
-        },
-        {
-          "retailer": "AVVA",
-          "url": "https://www.avva.com.tr/siyah-mono-yaka-kapakli-cep-cift-yirtmac-astarsiz-lightweight-ceket-38961",
-          "error": "<urlopen error Tunnel connection failed: 403 Forbidden>",
-          "checkedAt": "2026-10-15T21:42:16.827967+00:00",
-          "stage": "product"
+          "error": "HTTP Error 404: Not Found",
+          "retailer": "Wax London",
+          "url": "https://waxlondon.com/products/curzon-brown-lyocell-twill-short-sleeve-shirt"
         }
       ]
     }

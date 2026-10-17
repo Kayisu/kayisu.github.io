@@ -1,4 +1,4 @@
-import {modelKey,slotOf,garmentFacts,SEASONS,seasonForMonth,effectiveClimate,structureKey,seasonCompatibility,TEMPERATURE_BANDS,temperatureBand,climateAdvice,storeKey} from './wardrobe-rules.js?v=5';
+import {modelKey,slotOf,garmentFacts,SEASONS,seasonForMonth,effectiveClimate,structureKey,seasonCompatibility,TEMPERATURE_BANDS,temperatureBand,climateAdvice,storeKey} from './wardrobe-rules.js?v=6';
 export {modelKey,slotOf,garmentFacts,SEASONS,seasonForMonth,effectiveClimate,structureKey,seasonCompatibility,TEMPERATURE_BANDS,temperatureBand,climateAdvice,storeKey};
 export const STYLE = {
  clean:{name:'Sade, ama sıradan değil',short:'Sade casual',subtitle:'Az parça. Temiz bir denge.',colors:['cream','navy','gray','black'],fit:'regular',formality:1},

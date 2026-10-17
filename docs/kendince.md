@@ -6,7 +6,47 @@ unchanged to `dist/kendince/`. No model API, account or server is required.
 Profile, owned items, saved looks, feedback and manual price observations stay
 in browser localStorage (`kendince-v1`); existing IDs and saved slots survive.
 
-## Current catalog
+## Current discovery expansion
+
+The October 18 update adds **369 selected product records from 12 new storefronts**:
+A Kind of Guise, Drake’s, Les Benjamins, Norse Projects, Percival, Portuguese
+Flannel, Stan Ray, Story mfg., Studio Nicholson, Universal Works, Wax London
+and mfpen. The combined catalog has **20 storefronts, 897 source models and
+1,005 product/color records**. Existing IDs, ownership and browser state remain.
+Selection rotates garment types and avoids filling each source with sibling colors.
+Only available feed variants with a successful, identity-checked first-party product
+page are accepted. Deleted/draft pages are skipped. Store names and product brands
+remain separate, including Paraboot and Clarks products sold by these stores.
+
+Both budget inputs now reach **300,000 TL**, with 10/30/75/150/300-thousand presets.
+The explicit “Yeni markalarla kombin dene” action selects the new stores and sets
+that discovery ceiling; existing personal budgets are otherwise preserved. The
+catalog has a new-brands-only browse toggle, independent of material composition.
+
+**No fabric is automatically excluded.** `materials.js` identifies declared synthetic
+fibers (including a small elastane fraction and separate polyester lining), natural
+fiber statements, regenerated cellulose and leather statements. Missing percentages
+or composition remain explicit. Natural outer fabric is never a certification that
+lining, fill, soles and trims are synthetic-free. Composition and uncertainty appear
+on product cards, outfit details, alternatives and product modals; outfit cards carry
+a short summary. Qualitative statements are retained without invented percentages.
+
+Foreign records preserve source currency/amount, variant prices, and the dated
+TCMB selling rate in `priceOrigin`. TL amounts are **estimates for comparison**,
+not verified Turkish sale prices or landed cost. Cards, totals and details disclose
+conversion; shipping, customs, taxes and availability of Turkish delivery are not
+assumed. The current captured rate is the October 16 TCMB bulletin. Original feed
+and product-page check times stay separate; cache reuse does not refresh timestamps.
+
+`independent-brands.py --cache /absolute/cache/path` fetches source feeds, shop
+currencies, TCMB rates and page evidence, then prepares a local candidate. Add
+`--write` for explicit local acceptance; `--cached` reuses captured responses with
+their original observation times. It does not commit or deploy. All prior catalog,
+season, budget, size and saved-state checks remain deployment gates; material and
+300k/discovery UI regression checks were added. Browser pixel QA remains unavailable
+in this session; functional DOM tests and static build checks are used.
+
+## October 16 baseline (before the current expansion)
 
 The October 16 expansion replaces a practical single-store recommendation pool
 with **8 storefronts, 528 distinct source models and
