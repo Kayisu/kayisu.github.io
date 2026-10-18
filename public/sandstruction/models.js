@@ -17,7 +17,7 @@ function box(g, x, y, z, w, h, d, m = yellow) {
   return o;
 }
 function cyl(g, x, y, z, r, len, m = black) {
-  const o = new T.Mesh(new T.CylinderGeometry(r, r, len, 12), m);
+  const o = new T.Mesh(new T.CylinderGeometry(r, r, len, 24), m);
   o.rotation.z = Math.PI / 2;
   o.position.set(x, y, z);
   o.castShadow = true;
@@ -80,6 +80,17 @@ function beam(g, a, b, width = 0.18, m = yellow) {
   o.castShadow = true;
   g.add(o);
   return o;
+}
+export const BLADE_MIN_WIDTH = 1.2,
+  BLADE_MAX_WIDTH = 6,
+  BLADE_DEFAULT_WIDTH = 3.2;
+export function clampBladeWidth(value) {
+  return Number.isFinite(value)
+    ? Math.min(
+        BLADE_MAX_WIDTH,
+        Math.max(BLADE_MIN_WIDTH, Math.round(value * 5) / 5),
+      )
+    : BLADE_DEFAULT_WIDTH;
 }
 export const MACHINES = [
   {
@@ -151,7 +162,8 @@ export const MACHINES = [
 ];
 export function machineModel(id) {
   const g = new T.Group();
-  const wheels = [];
+  const wheels = [],
+    bladeParts = [];
   let moving = null,
     load = null,
     arm = null;
@@ -210,7 +222,7 @@ export function machineModel(id) {
     g.add(moving);
     const blade = box(moving, 0, 0.56, -2.05, 3.2, 0.9, 0.22, metal);
     blade.rotation.x = -0.18;
-    box(moving, 0, 0.14, -2.12, 3.25, 0.12, 0.3, dark);
+    bladeParts.push(blade, box(moving, 0, 0.14, -2.12, 3.2, 0.12, 0.3, dark));
     for (const x of [-0.8, 0.8])
       beam(
         moving,
@@ -291,7 +303,7 @@ export function machineModel(id) {
       box(g, x * 1.015, 1.45, 0.45, 0.025, 0.24, 0.08, dark);
     }
   }
-  return { group: g, wheels, moving, load, arm };
+  return { group: g, wheels, moving, load, arm, bladeParts };
 }
 export function treeModel(scale = 1) {
   const g = new T.Group();

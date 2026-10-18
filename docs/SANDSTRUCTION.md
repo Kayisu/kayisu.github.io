@@ -2,9 +2,15 @@
 
 **Sayfa yapılıyor. Sen de bir şeyler yap.**
 
-Version **0.3.0**. A browser construction sandbox and a playable destination for unfinished or missing portfolio pages.
+Version **0.4.0**. A browser construction sandbox and a playable destination for unfinished or missing portfolio pages.
 
 Serve `dist/` with a static HTTP server. No build or install required. Three.js r160 is vendored under MIT. Run `npm test` for terrain conservation, driving/collision, save migration, model geometry and entrypoint checks.
+
+## Curved surfaces and blade width in 0.4
+
+The 256-cell simulation now drives a separate GPU-rendered cubic B-spline surface. Geometry and material colors are reconstructed continuously; the default desktop display uses 768 subdivisions, while 512 and 1024 are available from the Surface control. Height and analytic slope use the same reconstruction on CPU and GPU, keeping wheels and tools aligned with the visible terrain. Render subdivision changes do not resample or modify the saved simulation. A CPU compatibility path remains for devices without float vertex textures.
+
+The dozer blade can be adjusted from 1.2 to 6.0 metres using U/I or its buttons. Visible blade panels, the rectangular guide, excavation/grading footprints, obstacle checks and saved state use the same width. Tool edges are feathered to avoid hard cut stamps. Wheels and the visual grains have rounder geometry.
 
 ## Material flow in 0.3
 
@@ -14,7 +20,7 @@ Dense saves use binary-encoded typed arrays and migrate the previous 112-cell wo
 
 ## Controls
 
-WASD/arrows: drive. Space: work. 1–6/Tab: change machine. X: dig/unload or push/grade. J/K: lower/raise dozer blade. R: sandbox refill. Shift: brake. Z: undo the last continuous tool stroke (eight retained). Q/E or right drag: orbit. Wheel or +/−: zoom. C: camera behind machine. M: overhead. G: grid. H: help.
+WASD/arrows: drive. Space: work. 1–6/Tab: change machine. X: dig/unload or push/grade. J/K: lower/raise dozer blade. U/I: narrower/wider blade. R: sandbox refill. Shift: brake. Z: undo the last continuous tool stroke (eight retained). Q/E or right drag: orbit. Wheel or +/−: zoom. C: camera behind machine. M: overhead. G: grid. H: help.
 
 ## Included
 
@@ -26,13 +32,17 @@ Public route: https://kayisu.github.io/sandstruction/
 
 The old `/planet/earth/games/sandbox/` route redirects to the new game. Arrival parameters `reason=404`, `reason=wip` or `reason=unreachable` select the welcome copy. Optional `from` is rendered as plain text. Portfolio 404, explicit WIP/unreachable entries and WIP projects redirect to the game; empty categories offer a link. A server outage cannot be intercepted when the site itself cannot load.
 
-v0.1 saves migrate on the same origin. Sites and GitHub Pages are different origins and therefore keep separate browser saves.
+v0.1–v0.3 saves migrate on the same origin. Sites and GitHub Pages are different origins and therefore keep separate browser saves.
 
 ## Simulation boundaries
 
 Original prototype; no commercial assets or game binaries were used. Terrain is a heightfield with a dominant surface material, not discrete grains or full strata. Mixed bucket contents use one dominant material. Collision bodies are circles, not full rigid bodies. Some scenery is decorative. Water is visual with no fluid simulation. Excavation floor: −3 m. Mission mode and an autonomous delivery vehicle are deferred.
 
 # Changelog
+
+## 0.4.0 — 2026-10-18
+
+Separated the display mesh from the simulation using GPU cubic B-spline height and color reconstruction, analytic surface normals, 512/768/1024 display detail and matching CPU terrain queries. Added 1.2–6.0 m blade width controls (U/I and buttons), blade/guide/footprint/obstacle integration, feathered blade edges and saved width. Increased wheel and grain curvature. Preserved existing worlds.
 
 ## 0.3.0 — 2026-10-18
 

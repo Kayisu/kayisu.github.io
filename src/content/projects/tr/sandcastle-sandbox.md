@@ -23,4 +23,4 @@ Kamyon, kepçe, dozer, silindir, asfalt serici ve el küreği ile rastgele arazi
 
 ## Durum
 
-v0.3.0, özgün Three.js modelleri ve basitleştirilmiş arazi fiziği kullanır. Eski sandbox bağlantısı yeni oyuna yönlenir.
+v0.4.0, özgün Three.js modelleri ve basitleştirilmiş arazi fiziği kullanır. Eski sandbox bağlantısı yeni oyuna yönlenir.

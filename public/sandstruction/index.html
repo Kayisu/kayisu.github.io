@@ -9,11 +9,11 @@
     <meta name="theme-color" content="#24372e" />
     <meta
       name="description"
-      content="Sandstruction: bu sayfa henüz hazır değil. Madem buradasın, iş makineleriyle bir şeyler inşa et. Sandbox v0.3."
+      content="Sandstruction: bu sayfa henüz hazır değil. Madem buradasın, iş makineleriyle bir şeyler inşa et. Sandbox v0.4."
     />
     <link rel="canonical" href="https://kayisu.github.io/sandstruction/" />
     <title>Sandstruction — Sayfa yapılıyor. Sen de bir şeyler yap.</title>
-    <link rel="stylesheet" href="./style.css?v=0.3.0" />
+    <link rel="stylesheet" href="./style.css?v=0.4.0" />
   </head>
   <body>
     <div id="world" aria-label="3 boyutlu iş makinesi oyun alanı"></div>
@@ -29,7 +29,7 @@
       >
       <div class="session">
         <span class="live-dot"></span> SERBEST SAHA <span class="sep">/</span
-        ><span id="seedLabel">SAHA 3817</span><span class="version">v0.3</span>
+        ><span id="seedLabel">SAHA 3817</span><span class="version">v0.4</span>
       </div>
       <div class="top-actions">
         <a
@@ -37,6 +37,11 @@
           href="https://kayisu.github.io/"
           title="Portföye dön"
           >← Portföy</a
+        ><button
+          id="qualityBtn"
+          title="Yüzey ayrıntısı: dengeli, pürüzsüz veya en yüksek"
+        >
+          Yüzey: Pürüzsüz</button
         ><button id="lightBtn" title="Işık koşullarını değiştir">SABAH</button>
         <button id="soundBtn" title="Sesi aç veya kapat" aria-label="Sesi aç">
           SES KAPALI</button
@@ -120,6 +125,14 @@
           ><output id="bladeHeight">+0.05 m</output
           ><button id="bladeUp" aria-label="Bıçağı yükselt">＋</button>
         </div>
+        <div class="blade-width-row">
+          <span>BIÇAK GENİŞLİĞİ <kbd>U / I</kbd></span>
+          <div>
+            <button id="widthDown" aria-label="Bıçağı daralt">−</button
+            ><output id="bladeWidth">3.2 m</output
+            ><button id="widthUp" aria-label="Bıçağı genişlet">＋</button>
+          </div>
+        </div>
       </div>
       <p id="surfaceStatus" class="surface-status">Zemin: toprak</p>
       <div class="work-utilities">
@@ -165,7 +178,7 @@
     <div id="overlay" class="overlay">
       <section class="welcome modal">
         <span class="eyebrow" id="arrivalBadge"
-          >SANDSTRUCTION / SANDBOX 0.3</span
+          >SANDSTRUCTION / SANDBOX 0.4</span
         >
         <h2 id="welcomeTitle">
           Sayfa yapılıyor.<br /><em>Sen de bir şeyler yap.</em>
@@ -256,6 +269,6 @@
         >Mevcut saha ve otomatik kaydın yeni sahayla değiştirilir.</small
       >
     </dialog>
-    <script type="module" src="./game.js?v=0.3.0"></script>
+    <script type="module" src="./game.js?v=0.4.0"></script>
   </body>
 </html>

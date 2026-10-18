@@ -7,11 +7,17 @@ import {
   MATERIALS,
   clamp,
   random,
-} from "./terrain.js?v=0.3.0";
-import { MACHINES, machineModel, fleetIcon } from "./models.js?v=0.3.0";
-import { stepVehicle } from "./physics.js?v=0.3.0";
-import { TerrainSurface } from "./terrain-render.js?v=0.3.0";
-import { plantForest } from "./nature.js?v=0.3.0";
+} from "./terrain.js?v=0.4.0";
+import {
+  MACHINES,
+  machineModel,
+  fleetIcon,
+  clampBladeWidth,
+} from "./models.js?v=0.4.0";
+import { stepVehicle } from "./physics.js?v=0.4.0";
+import { TerrainSurface } from "./terrain-render.js?v=0.4.0";
+import { SmoothTerrain, SURFACE_QUALITIES } from "./smooth-terrain.js?v=0.4.0";
+import { plantForest } from "./nature.js?v=0.4.0";
 const $ = (id) => document.getElementById(id),
   keys = new Set(),
   SAVE_KEY = "sandstruction-save-v2";
@@ -138,6 +144,18 @@ ground.material.onBeforeCompile = (shader) => {
 ground.material.customProgramCacheKey = () => "sandstruction-smooth-ground-v03";
 ground.receiveShadow = true;
 scene.add(ground);
+const smoothGround = renderer.capabilities.floatVertexTextures
+  ? new SmoothTerrain(
+      terrainBlend,
+      groundTexture(),
+      innerWidth < 700 ? 512 : 768,
+    )
+  : null;
+if (smoothGround) {
+  ground.visible = false;
+  scene.add(smoothGround.mesh);
+}
+
 let edges;
 const edgeMat = new T.MeshStandardMaterial({
   color: 0x6d7259,
@@ -216,7 +234,7 @@ function updateWorkGuide(v) {
   const p = toolPosition(v),
     dx = -Math.sin(v.angle),
     dz = -Math.cos(v.angle),
-    width = v.id === "roller" ? 2.2 : 3.1,
+    width = v.id === "roller" ? 2.2 : v.id === "dozer" ? v.bladeWidth : 3.1,
     depth = v.id === "dozer" ? 0.8 : 1.2,
     attr = guideGeometry.attributes.position;
   [
@@ -236,7 +254,7 @@ function updateWorkGuide(v) {
   attr.needsUpdate = true;
   workGuide.material.color.set(v.id === "roller" ? 0xa3c38b : 0xf2cb69);
 }
-const dustGeo = new T.IcosahedronGeometry(0.035, 0),
+const dustGeo = new T.IcosahedronGeometry(0.035, 1),
   dustMat = new T.MeshStandardMaterial({ color: 0xffffff, roughness: 1 });
 const particles = new T.InstancedMesh(dustGeo, dustMat, 2000);
 particles.instanceMatrix.setUsage(T.DynamicDrawUsage);
@@ -356,7 +374,7 @@ function rebuildScenery() {
   ctx.fillStyle = "#ece9db";
   ctx.fillText("MAKE YOUR OWN ROAD.", 28, 121);
   ctx.font = "bold 21px Arial";
-  ctx.fillText("SANDSTRUCTION / 0.3", 28, 207);
+  ctx.fillText("SANDSTRUCTION / 0.4", 28, 207);
   const face = new T.Mesh(
     new T.PlaneGeometry(5, 2.5),
     new T.MeshStandardMaterial({
@@ -371,27 +389,32 @@ function rebuildScenery() {
     box(scenery, x, 1.6, 18, 0.14, 3.7, 0.14, 0x6d7964);
 }
 function updateTerrain() {
-  const p = terrainGeo.attributes.position;
-  if (!surfaceCache || surfaceCache.seed !== terrain.seed)
-    surfaceCache = new TerrainSurface(terrain.seed);
-  surfaceCache.write(
-    terrain,
-    p.array,
-    colors,
-    terrainGeo.attributes.normal.array,
-    previousHeights,
-    terrainBlend.value,
-    !terrainInitialized,
-  );
-  terrainGeo.attributes.normal.needsUpdate = true;
-  terrainInitialized = true;
-  terrainBlend.value = 0;
-  terrainGeo.attributes.aPreviousHeight.needsUpdate = true;
-  terrainGeo.attributes.aCompaction.array = terrain.compact;
-  terrainGeo.attributes.aCompaction.needsUpdate = true;
-  p.needsUpdate = true;
-  terrainGeo.attributes.color.needsUpdate = true;
-  terrainGeo.computeBoundingSphere();
+  if (smoothGround) {
+    smoothGround.update(terrain, !terrainInitialized);
+    terrainInitialized = true;
+  } else {
+    const p = terrainGeo.attributes.position;
+    if (!surfaceCache || surfaceCache.seed !== terrain.seed)
+      surfaceCache = new TerrainSurface(terrain.seed);
+    surfaceCache.write(
+      terrain,
+      p.array,
+      colors,
+      terrainGeo.attributes.normal.array,
+      previousHeights,
+      terrainBlend.value,
+      !terrainInitialized,
+    );
+    terrainGeo.attributes.normal.needsUpdate = true;
+    terrainInitialized = true;
+    terrainBlend.value = 0;
+    terrainGeo.attributes.aPreviousHeight.needsUpdate = true;
+    terrainGeo.attributes.aCompaction.array = terrain.compact;
+    terrainGeo.attributes.aCompaction.needsUpdate = true;
+    p.needsUpdate = true;
+    terrainGeo.attributes.color.needsUpdate = true;
+    terrainGeo.computeBoundingSphere();
+  }
   if (edges) {
     scene.remove(edges);
     edges.geometry.dispose();
@@ -409,16 +432,16 @@ function updateTerrain() {
       [xx, zz] = terrain.coord(b);
     verts.push(
       x,
-      terrain.h[a],
+      terrain.sample(x, z),
       z,
       xx,
-      terrain.h[b],
+      terrain.sample(xx, zz),
       zz,
       x,
       -3.5,
       z,
       xx,
-      terrain.h[b],
+      terrain.sample(xx, zz),
       zz,
       xx,
       -3.5,
@@ -461,6 +484,7 @@ function createVehicles(saved) {
         ? clamp(state.bladeOffset, -0.35, 0.55)
         : 0.05,
       bladeDatum: terrain.sample(x, z),
+      bladeWidth: clampBladeWidth(state?.bladeWidth),
     };
     fleet.add(v.group);
     return v;
@@ -601,6 +625,7 @@ function operate(v, dt) {
           v.angle,
           v.bladeDatum + v.bladeOffset,
           dt * Math.abs(v.speed) * 1.8,
+          v.bladeWidth,
         )
       : terrain.push(
           p.x,
@@ -608,6 +633,7 @@ function operate(v, dt) {
           v.angle,
           v.bladeDatum + v.bladeOffset,
           dt * Math.max(0, v.speed) * 0.8,
+          v.bladeWidth,
         );
     stats.moved += amount;
   } else if (id === "roller") {
@@ -751,9 +777,10 @@ function drive(dt) {
         4,
         dt,
       );
+    for (const part of m.bladeParts) part.scale.x = m.bladeWidth / 3.2;
     if (m.id === "dozer" && m.moving)
       m.moving.position.y = clamp(
-        m.bladeDatum + m.bladeOffset - terrain.sample(m.x, m.z),
+        m.bladeDatum + m.bladeOffset - terrain.sample(m.x, m.z) - 0.11,
         -0.55,
         0.7,
       );
@@ -885,6 +912,7 @@ function updateUI() {
     terrain.mat[cell] === 0
       ? "Zemin: toprak"
       : `${MATERIALS[terrain.mat[cell]].name} · ${comp < 0.25 ? "gevşek / pürüzlü" : comp < 0.8 ? "işleniyor" : "sıkıştırılmış / düzgün"}`;
+  $("bladeWidth").textContent = v.bladeWidth.toFixed(1) + " m";
   $("bladeHeight").textContent =
     (v.bladeOffset >= 0 ? "+" : "") + v.bladeOffset.toFixed(2) + " m";
 }
@@ -898,7 +926,7 @@ function save(manual = false) {
   if (!started) return;
   try {
     const data = {
-      version: 3,
+      version: 4,
       terrain: terrain.serialize(true),
       vehicles: vehicles.map((v) => ({
         x: v.x,
@@ -908,11 +936,13 @@ function save(manual = false) {
         material: v.material,
         unload: v.unload,
         bladeOffset: v.bladeOffset,
+        bladeWidth: v.bladeWidth,
       })),
       selected,
       stats,
       cameraAngle,
       cameraDistance,
+      surfaceQuality: smoothGround?.segments,
     };
     localStorage.setItem(SAVE_KEY, JSON.stringify(data));
     dirty = false;
@@ -936,7 +966,7 @@ function load() {
     if (!raw) return false;
     const data = JSON.parse(raw);
     if (
-      ![1, 2, 3].includes(data.version) ||
+      ![1, 2, 3, 4].includes(data.version) ||
       !Array.isArray(data.vehicles) ||
       data.vehicles.length !== 6 ||
       !data.vehicles.every(
@@ -956,6 +986,10 @@ function load() {
     selected = clamp(Math.trunc(data.selected) || 0, 0, 5);
     cameraAngle = Number.isFinite(data.cameraAngle) ? data.cameraAngle : 0.68;
     cameraDistance = clamp(data.cameraDistance || 19, 10, 40);
+    if (smoothGround && SURFACE_QUALITIES.includes(data.surfaceQuality)) {
+      smoothGround.setQuality(data.surfaceQuality);
+      updateQualityLabel();
+    }
     rebuildScenery();
     changed = true;
     select(selected);
@@ -1061,6 +1095,8 @@ document.addEventListener("keydown", (e) => {
   if (k === "r") refill();
   if (k === "j") adjustBlade(-0.05);
   if (k === "k") adjustBlade(0.05);
+  if (k === "u") adjustWidth(-0.2);
+  if (k === "i") adjustWidth(0.2);
   if (k === "m") mapView = !mapView;
   if (k === "g") grid.visible = !grid.visible;
   if (k === "h") openDialog("helpDialog");
@@ -1432,3 +1468,29 @@ function adjustBlade(delta) {
 }
 $("bladeDown").onclick = () => adjustBlade(-0.05);
 $("bladeUp").onclick = () => adjustBlade(0.05);
+
+function adjustWidth(delta) {
+  const v = vehicles[selected];
+  if (v.id !== "dozer") return;
+  v.bladeWidth = clampBladeWidth(v.bladeWidth + delta);
+  dirty = true;
+  updateUI();
+}
+$("widthDown").onclick = () => adjustWidth(-0.2);
+$("widthUp").onclick = () => adjustWidth(0.2);
+function updateQualityLabel() {
+  const labels = { 512: "Dengeli", 768: "Pürüzsüz", 1024: "En yüksek" };
+  $("qualityBtn").textContent =
+    "Yüzey: " + (labels[smoothGround?.segments] || "Uyumlu");
+}
+$("qualityBtn").hidden = !smoothGround;
+$("qualityBtn").onclick = () => {
+  if (!smoothGround) return;
+  const i = SURFACE_QUALITIES.indexOf(smoothGround.segments);
+  smoothGround.setQuality(
+    SURFACE_QUALITIES[(i + 1) % SURFACE_QUALITIES.length],
+  );
+  dirty = true;
+  updateQualityLabel();
+};
+updateQualityLabel();

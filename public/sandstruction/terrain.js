@@ -1,3 +1,4 @@
+import { sampleSpline } from "./cubic-surface.js?v=0.4.0";
 export const N = 256,
   SIZE = 96,
   CELL = SIZE / N;
@@ -86,6 +87,9 @@ export class Terrain {
     this.deposit(-14, 31, 2.6, 8, 2);
   }
   sample(x, z) {
+    return sampleSpline(this.h, x, z, N, SIZE);
+  }
+  sampleLinear(x, z) {
     const gx = clamp((x + SIZE / 2) / CELL, 0, N - 0.001),
       gz = clamp((z + SIZE / 2) / CELL, 0, N - 0.001),
       ix = Math.floor(gx),
@@ -259,20 +263,33 @@ export class Terrain {
       this.add(i, Math.max(0, level - this.h[i]), material);
     return volume;
   }
-  push(x, z, angle, targetHeight, strength) {
+  bladeFootprint(x, z, angle, width, depth) {
+    width = clamp(width, 1.2, 6);
+    const dx = -Math.sin(angle),
+      dz = -Math.cos(angle);
+    return this.footprint(x, z, angle, width, depth).map(([i]) => {
+      const [wx, wz] = this.coord(i),
+        side = Math.abs((wx - x) * dz - (wz - z) * dx),
+        fwd = Math.abs((wx - x) * dx + (wz - z) * dz);
+      const edge = clamp((width / 2 - side) / 0.24, 0, 1),
+        front = clamp((depth / 2 - fwd) / 0.16, 0, 1);
+      return [i, edge * edge * (3 - 2 * edge) * front];
+    });
+  }
+  push(x, z, angle, targetHeight, strength, width = 3.2) {
     if (strength <= 0) return 0;
     const dx = -Math.sin(angle),
       dz = -Math.cos(angle),
       toX = clamp(x + dx * 1.35, -46, 46),
       toZ = clamp(z + dz * 1.35, -46, 46),
-      dest = this.footprint(toX, toZ, angle, 3.2, 1.5);
+      dest = this.footprint(toX, toZ, angle, width + 0.1, 1.5);
     if (!dest.length) return 0;
     const counts = [0, 0, 0, 0];
     let moved = 0;
-    for (const [i] of this.footprint(x, z, angle, 3.1, 0.8)) {
+    for (const [i, w] of this.bladeFootprint(x, z, angle, width, 0.8)) {
       const cut = Math.min(
         Math.max(0, this.h[i] - Math.max(-3, targetHeight)),
-        strength,
+        strength * w,
       );
       this.h[i] -= cut;
       const v = cut * CELL * CELL;
@@ -283,17 +300,17 @@ export class Terrain {
       this.marks[i] = 0.15;
     }
     this.fillLowest(dest, moved, counts.indexOf(Math.max(...counts)));
-    if (moved > 0) this.touch(x, z, 4);
+    if (moved > 0) this.touch(x, z, width / 2 + 3);
     return moved;
   }
-  grade(x, z, angle, targetHeight, strength) {
-    const cells = this.footprint(x, z, angle, 3.1, 1.7),
+  grade(x, z, angle, targetHeight, strength, width = 3.2) {
+    const cells = this.bladeFootprint(x, z, angle, width, 1.7),
       high = [],
       low = [];
     let excess = 0,
       deficit = 0;
-    for (const [i] of cells) {
-      const d = this.h[i] - targetHeight;
+    for (const [i, w] of cells) {
+      const d = (this.h[i] - targetHeight) * w;
       if (d > 0) {
         high.push([i, d]);
         excess += d;
@@ -315,7 +332,7 @@ export class Terrain {
     }
     const mat = counts.indexOf(Math.max(...counts));
     for (const [i, d] of low) this.add(i, (transfer * d) / deficit, mat);
-    this.touch(x, z, 3);
+    this.touch(x, z, width / 2 + 2);
     return transfer * CELL * CELL;
   }
   finish(x, z, angle, width, depth, strength) {

@@ -1,4 +1,4 @@
-import { clamp } from "./terrain.js?v=0.3.0";
+import { clamp } from "./terrain.js?v=0.4.0";
 
 export function stepVehicle(v, input, terrain, others, dt) {
   dt = clamp(dt, 0, 0.05);
@@ -22,6 +22,7 @@ export function stepVehicle(v, input, terrain, others, dt) {
   const turn = (input.left ? 1 : 0) - (input.right ? 1 : 0);
   v.steer =
     (v.steer || 0) + (turn * 0.48 - (v.steer || 0)) * (1 - Math.exp(-dt * 8));
+  const oldAngle = v.angle;
   v.angle +=
     v.steer * dt * (v.id === "shovel" ? 4 : 1.8) * clamp(v.speed / 1.5, -1, 1);
   const ox = v.x,
@@ -42,6 +43,33 @@ export function stepVehicle(v, input, terrain, others, dt) {
       radius + (other.radius ?? (other.id === "shovel" ? 0.32 : 1.45));
     const before = Math.hypot(ox - other.x, oz - other.z),
       after = Math.hypot(x - other.x, z - other.z);
+    if (v.id === "dozer") {
+      const w = Number.isFinite(v.bladeWidth)
+          ? clamp(v.bladeWidth, 1.2, 6)
+          : 3.2,
+        r = other.radius ?? (other.id === "shovel" ? 0.32 : 1.45);
+      const distance = (px, pz, angle) => {
+        const dx = -Math.sin(angle),
+          dz = -Math.cos(angle),
+          rx = other.x - (px + dx * 2.05),
+          rz = other.z - (pz + dz * 2.05);
+        return Math.hypot(
+          Math.max(0, Math.abs(rx * dz - rz * dx) - w / 2),
+          Math.max(0, Math.abs(rx * dx + rz * dz) - 0.4),
+        );
+      };
+      if (
+        distance(x, z, v.angle) < r &&
+        distance(x, z, v.angle) < distance(ox, oz, oldAngle)
+      ) {
+        x = ox;
+        z = oz;
+        v.angle = oldAngle;
+        v.speed = 0;
+        collision = true;
+        break;
+      }
+    }
     // Permit separating from overlaps introduced by old saves.
     if (after < combined && after < before) {
       x = ox;

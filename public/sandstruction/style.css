@@ -1289,3 +1289,49 @@ body:not(.playing) .instrument {
     height: 24px;
   }
 }
+
+.blade-width-row {
+  display: block !important;
+  border-top: 1px solid var(--line);
+  padding-top: 10px;
+  margin-top: 10px !important;
+}
+.blade-width-row > span {
+  font-size: 7px;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.blade-width-row > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 7px;
+}
+.top-actions #qualityBtn {
+  font-size: 8px;
+  letter-spacing: 0.2px;
+  padding-inline: 10px;
+}
+@media (max-width: 1250px) {
+  .top-actions #soundBtn {
+    display: none;
+  }
+}
+@media (max-width: 700px) {
+  .top-actions #qualityBtn {
+    display: none;
+  }
+  .camera-tools {
+    top: 86px !important;
+    bottom: auto;
+  }
+  .blade-width-row > span {
+    font-size: 6px;
+  }
+  .blade-width-row {
+    padding-top: 8px;
+    margin-top: 8px !important;
+  }
+}
