@@ -110,6 +110,7 @@ test("DOM lookups and local module imports resolve", () => {
   for (const m of js.matchAll(/\$\("([^"]+)"\)/g))
     assert.ok(ids.has(m[1]), m[1]);
   for (const file of [
+    "contour-surface.js",
     "road-plan.js",
     "road-work.js",
     "road-guide.js",

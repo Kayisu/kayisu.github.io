@@ -1,7 +1,7 @@
 import * as T from "./vendor/three.module.js";
-import { N, SIZE, CELL } from "./terrain.js?v=0.6.0";
-import { SurfaceField } from "./surface-field.js?v=0.6.0";
-import { ROAD_MATERIAL_GLSL } from "./road-material.js?v=0.6.0";
+import { N, SIZE, CELL } from "./terrain.js?v=0.6.1";
+import { SurfaceField } from "./surface-field.js?v=0.6.1";
+import { ROAD_MATERIAL_GLSL } from "./road-material.js?v=0.6.1";
 export const SURFACE_QUALITIES = [256, 512, 768, 1024];
 const constants = `const float SS_N=${N.toFixed(1)}; const float SS_SIZE=${SIZE.toFixed(1)}; const float SS_CELL=${CELL.toFixed(8)}; const float SS_TEX=${(N + 1).toFixed(1)};`;
 const weights = `vec4 SS_weights(float t){float a=1.0-t;float t2=t*t;float t3=t2*t;return vec4(a*a*a,3.0*t3-6.0*t2+4.0,-3.0*t3+3.0*t2+3.0*t+1.0,t3)/6.0;}`;
@@ -100,7 +100,7 @@ export class SmoothTerrain {
     this.colorTexture.minFilter = this.colorTexture.magFilter = T.LinearFilter;
     this.colorTexture.generateMipmaps = false;
     this.materialTexture = new T.DataTexture(
-      this.field.material,
+      this.field.coverage,
       N + 1,
       N + 1,
       T.RGBAFormat,
@@ -130,7 +130,7 @@ export class SmoothTerrain {
     this.material.onBeforeCompile = (shader) =>
       configureSurfaceShader(shader, uniforms);
     this.material.customProgramCacheKey = () =>
-      "sandstruction-road-material-v06";
+      "sandstruction-contour-surface-v061";
     this.mesh = new T.Mesh(new T.BufferGeometry(), this.material);
     this.mesh.receiveShadow = true;
     this.mesh.frustumCulled = false;

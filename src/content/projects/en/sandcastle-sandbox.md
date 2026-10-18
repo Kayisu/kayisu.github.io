@@ -23,6 +23,6 @@ Drive a dump truck, loader, dozer, roller, asphalt paver or use a hand shovel. E
 
 ## Status
 
-Version 0.6.0 uses original low-poly Three.js models and simplified terrain physics. The previous sandbox route redirects to the new game.
+Version 0.6.1 uses original low-poly Three.js models and simplified terrain physics. The previous sandbox route redirects to the new game.
 
 Phones and tablets use an analog joystick, simultaneous tool controls, camera gestures and scrollable control panels in portrait or landscape.

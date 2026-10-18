@@ -6,8 +6,8 @@ import {
   splineWeights,
   splineDerivatives,
   sampleSpline,
-  sampleSplineGradient,
 } from "../../public/sandstruction/cubic-surface.js";
+import { sampleContourGradient } from "../../public/sandstruction/contour-surface.js";
 import { SurfaceField } from "../../public/sandstruction/surface-field.js";
 import {
   configureSurfaceShader,
@@ -39,13 +39,13 @@ test("reconstructed height and slope stay continuous at a stepped simulation cel
     const h = t.sample(k * 0.01, 0);
     assert.ok(h >= -1e-12 && h <= 1 + 1e-12);
   }
-  const a = sampleSplineGradient(t.h, -1e-6, 0, N, SIZE),
-    b = sampleSplineGradient(t.h, 1e-6, 0, N, SIZE);
+  const a = sampleContourGradient(t.h, -1e-6, 0, N, SIZE),
+    b = sampleContourGradient(t.h, 1e-6, 0, N, SIZE);
   assert.ok(Math.abs(a.height - b.height) < 0.00001);
   assert.ok(Math.abs(a.dx - b.dx) < 0.0001);
   const p = 0.07,
     epsilon = 0.00001,
-    g = sampleSplineGradient(t.h, p, 0, N, SIZE),
+    g = sampleContourGradient(t.h, p, 0, N, SIZE),
     finite =
       (t.sample(p + epsilon, 0) - t.sample(p - epsilon, 0)) / (2 * epsilon);
   assert.ok(Math.abs(g.dx - finite) < 1e-6);
@@ -62,7 +62,7 @@ test("curved display reproduces planes and does not mutate simulation volume", (
     [3.13, -4.19],
     [-11.2, 9.4],
   ]) {
-    const p = sampleSplineGradient(t.h, x, z, N, SIZE);
+    const p = sampleContourGradient(t.h, x, z, N, SIZE);
     assert.ok(Math.abs(p.height - (0.2 + x * 0.12 - z * 0.17)) < 0.000001);
     assert.ok(Math.abs(p.dx - 0.12) < 0.000001);
     assert.ok(Math.abs(p.dz + 0.17) < 0.000001);

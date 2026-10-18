@@ -1,4 +1,4 @@
-import { N, CELL, clamp } from "./terrain.js?v=0.6.0";
+import { N, CELL, clamp } from "./terrain.js?v=0.6.1";
 
 export class RoadPlan {
   constructor(start, end, width = 3.2) {

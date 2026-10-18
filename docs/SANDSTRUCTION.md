@@ -2,9 +2,15 @@
 
 **Sayfa yapılıyor. Sen de bir şeyler yap.**
 
-Version **0.6.0**. A browser construction sandbox and a playable destination for unfinished or missing portfolio pages.
+Version **0.6.1**. A browser construction sandbox and a playable destination for unfinished or missing portfolio pages.
 
 Serve `dist/` with a static HTTP server. No build or install required. Three.js r160 is vendored under MIT. Run `npm test` for terrain conservation, driving/collision, save migration, model geometry and entrypoint checks.
+
+## Shoulder correction in 0.6.1
+
+A shared contour prefilter rounds raster stair steps in both height and material coverage before cubic display reconstruction. CPU contact queries match the filtered GPU surface, including map boundaries. Source height, bulk volume and save arrays stay intact, so existing excavations benefit without world migration. New procedural roads also use a continuous shoulder profile instead of a binary height cut. Material coverage is sharpened after reconstruction to avoid broad colour blur. The compatibility mesh uses filtered heights and normals too.
+
+Regression checks measure diagonal shoulder shading ripple at four angles, validate CPU/GPU agreement and confirm untouched saves/material cores. The mobile-layout query now uses the primary coarse pointer only; CSS and hidden-state gates prevent desktop controls from leaking, and inactive touch bindings ignore input.
 
 ## Desktop road workshop in 0.6
 
@@ -20,7 +26,7 @@ Tests include the full construction sequence using vehicle physics at 30 and 60 
 
 ## Touch flow in 0.5
 
-Coarse-pointer devices (including tablets and hybrids) and viewports up to 900 CSS pixels use the touch layout. A proportional joystick drives/steers, while separate held work/brake controls accept simultaneous pointers. Optional work lock frees a thumb for the camera. Pointer capture loss releases its owning control; window blur, backgrounding, resize, panel opening and machine selection reset held/locked actions. Keyboard controls stay available.
+Devices whose primary pointer is coarse (phones and tablets) use the touch layout. Narrow desktop windows and a secondary touchscreen do not enable touch controls. Hidden touch controls also reject driving/work input. A proportional joystick drives/steers, while separate held work/brake controls accept simultaneous pointers. Optional work lock frees a thumb for the camera. Pointer capture loss releases its owning control; window blur, backgrounding, resize, panel opening and machine selection reset held/locked actions. Keyboard controls stay available.
 
 Machine selection, full tool controls, the map and settings move into scrollable native dialogs without duplicating their state. All controls remain reachable on portrait/landscape phones and tablets, including material/refill, blade width/height, sound, lighting, saving and surface quality. Touch targets are at least 44 CSS pixels. One-finger terrain drag orbits/tilts the camera; two-finger pinch zooms. Fullscreen is offered only where supported. Visual viewport sizing and safe-area padding accommodate browser bars, the keyboard and display cutouts. The welcome and help screens explain touch controls.
 
@@ -62,6 +68,14 @@ Original prototype; no commercial assets or game binaries were used. Terrain is 
 
 
 # Changelog
+
+## 0.6.1 — Rounded shoulders and touch-control isolation
+
+- Round cell-period shoulder steps before height/coverage reconstruction, including existing saves.
+- Match CPU wheel/tool queries and GPU heights; preserve simulation volume and saved arrays.
+- Generate continuous road shoulders rather than binary height cuts in fresh worlds.
+- Restrict mobile UI to a primary coarse pointer, with explicit visibility and inactive-input guards.
+- Add diagonal contour, CPU/GPU alignment and desktop-to-touch lifecycle regression coverage.
 
 ## 0.6.0 — Desktop road workshop
 

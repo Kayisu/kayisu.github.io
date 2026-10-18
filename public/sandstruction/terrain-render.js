@@ -1,4 +1,5 @@
-import { N, CELL, MATERIALS, random } from "./terrain.js?v=0.6.0";
+import { filterContours, shoulderCoverage } from "./contour-surface.js?v=0.6.1";
+import { N, CELL, MATERIALS, random } from "./terrain.js?v=0.6.1";
 const linear = (c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
 const rgb = (hex) => [
   linear(((hex >> 16) & 255) / 255),
@@ -12,6 +13,8 @@ const palettes = MATERIALS.map((m) => rgb(m.color)),
 export class TerrainSurface {
   constructor(seed) {
     this.seed = seed;
+    this.filtered = new Float32Array((N + 1) ** 2);
+    this.filterScratch = new Float32Array(this.filtered.length);
     this.natural = new Float32Array((N + 1) ** 2 * 3);
     this.grain = new Float32Array((N + 1) ** 2);
     const phase = random(seed)() * 20;
@@ -21,11 +24,15 @@ export class TerrainSurface {
           wx = x * CELL - 48,
           wz = z * CELL - 48,
           v = (Math.sin(wx * 0.73 + wz * 0.52) * 0.5 + 0.5) * 0.45,
-          onRoad = Math.abs(wx - 6 * Math.sin(wz * 0.065 + phase)) < 3.6;
+          onRoad = shoulderCoverage(
+            Math.abs(wx - 6 * Math.sin(wz * 0.065 + phase)),
+            3.6,
+            0.4,
+          );
         for (let c = 0; c < 3; c++)
-          this.natural[i * 3 + c] = onRoad
-            ? road[c]
-            : green[c] + (patch[c] - green[c]) * v;
+          this.natural[i * 3 + c] =
+            road[c] * onRoad +
+            (green[c] + (patch[c] - green[c]) * v) * (1 - onRoad);
         this.grain[i] = Math.sin(wx * 7.1 + wz * 3.7) * 0.035;
       }
   }
@@ -39,7 +46,7 @@ export class TerrainSurface {
     instant = false,
   ) {
     const stride = N + 1,
-      h = terrain.h;
+      h = filterContours(terrain.h, this.filtered, this.filterScratch, N);
     for (let z = 0; z <= N; z++)
       for (let x = 0; x <= N; x++) {
         const i = z * stride + x,

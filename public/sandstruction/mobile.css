@@ -17,6 +17,9 @@ body {
 .mobile-only {
   display: none;
 }
+body:not(.touch-layout) .mobile-only {
+  display: none !important;
+}
 button,
 a {
   -webkit-tap-highlight-color: transparent;

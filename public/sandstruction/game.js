@@ -7,28 +7,28 @@ import {
   MATERIALS,
   clamp,
   random,
-} from "./terrain.js?v=0.6.0";
+} from "./terrain.js?v=0.6.1";
 import {
   MACHINES,
   machineModel,
   fleetIcon,
   clampBladeWidth,
-} from "./models.js?v=0.6.0";
-import { stepVehicle } from "./physics.js?v=0.6.0";
-import { TerrainSurface } from "./terrain-render.js?v=0.6.0";
-import { SmoothTerrain, SURFACE_QUALITIES } from "./smooth-terrain.js?v=0.6.0";
-import { plantForest } from "./nature.js?v=0.6.0";
-import { initMobileUI, MOBILE_QUERY } from "./mobile-ui.js?v=0.6.0";
-import { CameraGestures, renderProfile } from "./touch-input.js?v=0.6.0";
-import { RoadPlan, prepareWorkshop } from "./road-plan.js?v=0.6.0";
-import { RoadGuide, intersectTerrain } from "./road-guide.js?v=0.6.0";
+} from "./models.js?v=0.6.1";
+import { stepVehicle } from "./physics.js?v=0.6.1";
+import { TerrainSurface } from "./terrain-render.js?v=0.6.1";
+import { SmoothTerrain, SURFACE_QUALITIES } from "./smooth-terrain.js?v=0.6.1";
+import { plantForest } from "./nature.js?v=0.6.1";
+import { initMobileUI, MOBILE_QUERY } from "./mobile-ui.js?v=0.6.1";
+import { CameraGestures, renderProfile } from "./touch-input.js?v=0.6.1";
+import { RoadPlan, prepareWorkshop } from "./road-plan.js?v=0.6.1";
+import { RoadGuide, intersectTerrain } from "./road-guide.js?v=0.6.1";
 import {
   ROAD_WORK_SPEED,
   ROAD_FILL_DEPTH,
   ROAD_ASPHALT_DEPTH,
   ROAD_SPREAD_WIDTH,
   roadPlacement,
-} from "./road-work.js?v=0.6.0";
+} from "./road-work.js?v=0.6.1";
 const gestures = new CameraGestures();
 let roadPlan = null,
   roadMeasure = null,
@@ -438,7 +438,7 @@ function rebuildScenery() {
   ctx.fillStyle = "#ece9db";
   ctx.fillText("MAKE YOUR OWN ROAD.", 28, 121);
   ctx.font = "bold 21px Arial";
-  ctx.fillText("SANDSTRUCTION / 0.6", 28, 207);
+  ctx.fillText("SANDSTRUCTION / 0.6.1", 28, 207);
   const face = new T.Mesh(
     new T.PlaneGeometry(5, 2.5),
     new T.MeshStandardMaterial({
@@ -1561,7 +1561,7 @@ mobileUI = initMobileUI({
 buildFleetUI();
 newWorld(3817);
 if (!isMobile()) {
-  $("arrivalBadge").textContent = "SANDSTRUCTION / YOL ATÖLYESİ 0.6";
+  $("arrivalBadge").textContent = "SANDSTRUCTION / YOL ATÖLYESİ 0.6.1";
   $("welcomeTitle").innerHTML =
     "Malzemeyi hisset.<br/><em>Yolunu inşa et.</em>";
   $("welcomeDescription").textContent =

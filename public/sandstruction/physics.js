@@ -1,4 +1,4 @@
-import { clamp } from "./terrain.js?v=0.6.0";
+import { clamp } from "./terrain.js?v=0.6.1";
 
 export function stepVehicle(v, input, terrain, others, dt) {
   dt = clamp(dt, 0, 0.05);

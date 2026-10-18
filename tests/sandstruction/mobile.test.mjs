@@ -174,9 +174,18 @@ test("bound mobile controls recover from capture loss, panel resets and tablet/d
   doc.getElementById = get;
   doc.createComment = () => new Node();
   doc.querySelector = get;
-  doc.querySelectorAll = () => [];
+  const mobileNodes = [
+    get("mobileControls"),
+    get("mobileToolbar"),
+    get("mobileHud"),
+  ];
+  doc.querySelectorAll = (selector) =>
+    selector === ".mobile-only" ? mobileNodes : [];
   globalThis.document = doc;
-  globalThis.matchMedia = () => query;
+  globalThis.matchMedia = (value) => {
+    assert.equal(value, "(pointer: coarse)");
+    return query;
+  };
   let playing = true,
     cleared = 0;
   try {
@@ -187,6 +196,7 @@ test("bound mobile controls recover from capture loss, panel resets and tablet/d
       onLayout: () => {},
     });
     assert.equal(ui.touch, true);
+    assert.ok(mobileNodes.every((node) => node.hidden === false));
     fire(get("drivePad"), "pointerdown", 1, 60, 10);
     fire(get("touchWork"), "pointerdown", 2);
     assert.equal(ui.input.throttle, 1);
@@ -211,6 +221,17 @@ test("bound mobile controls recover from capture loss, panel resets and tablet/d
     query.dispatchEvent(new Event("change"));
     assert.equal(doc.body.classList.contains("touch-layout"), false);
     assert.ok(cleared >= 2);
+    assert.ok(mobileNodes.every((node) => node.hidden === true));
+    fire(get("touchWork"), "pointerdown", 19);
+    fire(get("drivePad"), "pointerdown", 20, 60, 10);
+    get("workLock").onclick();
+    assert.equal(ui.input.work, false);
+    assert.equal(ui.input.throttle, 0);
+    query.matches = true;
+    query.dispatchEvent(new Event("change"));
+    assert.ok(mobileNodes.every((node) => node.hidden === false));
+    fire(get("touchWork"), "pointerdown", 21);
+    assert.equal(ui.input.work, true);
   } finally {
     Object.assign(globalThis, prior);
   }

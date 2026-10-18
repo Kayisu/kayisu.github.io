@@ -1,6 +1,6 @@
-import { TouchInput } from "./touch-input.js?v=0.6.0";
+import { TouchInput } from "./touch-input.js?v=0.6.1";
 
-export const MOBILE_QUERY = "(any-pointer: coarse), (max-width: 900px)";
+export const MOBILE_QUERY = "(pointer: coarse)";
 
 export function initMobileUI({ canPlay, clearInput, openDialog, onLayout }) {
   const $ = (id) => document.getElementById(id),
@@ -33,6 +33,9 @@ export function initMobileUI({ canPlay, clearInput, openDialog, onLayout }) {
     clearInput();
     reset();
     document.body.classList.toggle("touch-layout", query.matches);
+    document.querySelectorAll(".mobile-only").forEach((node) => {
+      node.hidden = !query.matches;
+    });
     for (const { node, target, anchor } of relocations)
       if (query.matches) target.append(node);
       else anchor.after(node);
@@ -82,7 +85,13 @@ export function initMobileUI({ canPlay, clearInput, openDialog, onLayout }) {
   }
   pad.addEventListener("pointerdown", (e) => {
     e.preventDefault();
-    if (e.button !== 0 || !canPlay() || !input.stickStart(e.pointerId)) return;
+    if (
+      e.button !== 0 ||
+      !query.matches ||
+      !canPlay() ||
+      !input.stickStart(e.pointerId)
+    )
+      return;
     pad.setPointerCapture(e.pointerId);
     reflect();
     move(e);
@@ -100,7 +109,7 @@ export function initMobileUI({ canPlay, clearInput, openDialog, onLayout }) {
     const button = $(id);
     button.addEventListener("pointerdown", (e) => {
       e.preventDefault();
-      if (e.button !== 0 || !canPlay()) return;
+      if (e.button !== 0 || !query.matches || !canPlay()) return;
       input[field].add(e.pointerId);
       button.setPointerCapture(e.pointerId);
       reflect();
@@ -112,7 +121,7 @@ export function initMobileUI({ canPlay, clearInput, openDialog, onLayout }) {
       });
   }
   $("workLock").onclick = () => {
-    if (canPlay()) {
+    if (query.matches && canPlay()) {
       input.locked = !input.locked;
       reflect();
     }

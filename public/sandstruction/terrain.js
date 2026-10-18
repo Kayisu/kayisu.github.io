@@ -1,4 +1,4 @@
-import { sampleSpline } from "./cubic-surface.js?v=0.6.0";
+import { sampleContour, shoulderCoverage } from "./contour-surface.js?v=0.6.1";
 export const N = 256,
   SIZE = 96,
   CELL = SIZE / N;
@@ -77,8 +77,9 @@ export class Terrain {
           0.3 * Math.sin(wz * 0.31 + wx * 0.08 + phase) +
           0.14 * Math.sin(wx * 0.52 + wz * 0.42);
         const road = 6 * Math.sin(wz * 0.065 + phase);
-        if (Math.abs(wx - road) < 4.2)
-          h -= 0.7 + Math.sin(wz * 0.3 + phase) * 0.35;
+        h -=
+          shoulderCoverage(Math.abs(wx - road), 4.2) *
+          (0.7 + Math.sin(wz * 0.3 + phase) * 0.35);
         h += Math.exp(-((wx - 24) ** 2 + (wz + 16) ** 2) / 190) * 3.5;
         if (wx < -21 && wz > 17) h = 0.4;
         this.h[i] = h;
@@ -87,7 +88,7 @@ export class Terrain {
     this.deposit(-14, 31, 2.6, 8, 2);
   }
   sample(x, z) {
-    return sampleSpline(this.h, x, z, N, SIZE);
+    return sampleContour(this.h, x, z, N, SIZE);
   }
   sampleLinear(x, z) {
     const gx = clamp((x + SIZE / 2) / CELL, 0, N - 0.001),
