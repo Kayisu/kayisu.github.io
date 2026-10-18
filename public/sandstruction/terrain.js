@@ -1,4 +1,4 @@
-export const N = 112,
+export const N = 256,
   SIZE = 96,
   CELL = SIZE / N;
 export const MATERIALS = [
@@ -18,13 +18,41 @@ export function random(seed) {
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
   };
 }
+const grain = (x, z) =>
+  0.5 +
+  0.5 * Math.sin(x * 7.31 + Math.sin(z * 9.17)) * Math.cos(z * 6.73 + x * 3.11);
+function encode(array) {
+  const bytes = new Uint8Array(
+    array.buffer,
+    array.byteOffset,
+    array.byteLength,
+  );
+  let binary = "";
+  for (let i = 0; i < bytes.length; i += 16384)
+    binary += String.fromCharCode(...bytes.subarray(i, i + 16384));
+  return btoa(binary);
+}
+function decode(value, Type, length) {
+  if (typeof value !== "string") throw Error("Geçersiz kayıt");
+  const binary = atob(value);
+  if (binary.length !== length * Type.BYTES_PER_ELEMENT)
+    throw Error("Geçersiz kayıt boyutu");
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new Type(bytes.buffer);
+}
 export class Terrain {
   constructor(seed = 3817) {
     this.seed = seed >>> 0;
-    this.h = new Float32Array((N + 1) ** 2);
-    this.mat = new Uint8Array(this.h.length);
-    this.compact = new Float32Array(this.h.length);
-    this.marks = new Float32Array(this.h.length);
+    const count = (N + 1) ** 2;
+    this.h = new Float32Array(count);
+    this.mat = new Uint8Array(count);
+    this.compact = new Float32Array(count);
+    this.marks = new Float32Array(count);
+    this.loose = new Float32Array(count);
+    this.flux = new Float64Array(count);
+    this.active = null;
+    this.settleAge = 0;
     this.make();
   }
   index(x, z) {
@@ -37,8 +65,7 @@ export class Terrain {
     ];
   }
   make() {
-    const rng = random(this.seed),
-      phase = rng() * 20;
+    const phase = random(this.seed)() * 20;
     for (let z = 0; z <= N; z++)
       for (let x = 0; x <= N; x++) {
         const wx = x * CELL - SIZE / 2,
@@ -51,14 +78,10 @@ export class Terrain {
         const road = 6 * Math.sin(wz * 0.065 + phase);
         if (Math.abs(wx - road) < 4.2)
           h -= 0.7 + Math.sin(wz * 0.3 + phase) * 0.35;
-        const hill = Math.exp(-((wx - 24) ** 2 + (wz + 16) ** 2) / 190) * 3.5;
-        h += hill;
+        h += Math.exp(-((wx - 24) ** 2 + (wz + 16) ** 2) / 190) * 3.5;
         if (wx < -21 && wz > 17) h = 0.4;
         this.h[i] = h;
-        this.mat[i] = 0;
-        this.compact[i] = 0;
       }
-    // Excavatable stockpiles beside the machine yard.
     this.deposit(-15, 24, 2.8, 10, 1);
     this.deposit(-14, 31, 2.6, 8, 2);
   }
@@ -83,8 +106,8 @@ export class Terrain {
     );
   }
   cells(x, z, r) {
-    const out = [];
-    let a = Math.max(0, Math.floor((x - r + SIZE / 2) / CELL)),
+    const out = [],
+      a = Math.max(0, Math.floor((x - r + SIZE / 2) / CELL)),
       b = Math.min(N, Math.ceil((x + r + SIZE / 2) / CELL)),
       c = Math.max(0, Math.floor((z - r + SIZE / 2) / CELL)),
       d = Math.min(N, Math.ceil((z + r + SIZE / 2) / CELL));
@@ -97,23 +120,65 @@ export class Terrain {
       }
     return out;
   }
+  footprint(x, z, angle, width, depth) {
+    const dx = -Math.sin(angle),
+      dz = -Math.cos(angle);
+    return this.cells(x, z, Math.hypot(width, depth) / 2 + CELL).filter(
+      ([i]) => {
+        const [wx, wz] = this.coord(i);
+        return (
+          Math.abs((wx - x) * dz - (wz - z) * dx) < width / 2 &&
+          Math.abs((wx - x) * dx + (wz - z) * dz) < depth / 2
+        );
+      },
+    );
+  }
+  touch(x, z, r) {
+    const bounds = [
+      Math.max(0, Math.floor((x - r + 48) / CELL) - 2),
+      Math.min(N, Math.ceil((x + r + 48) / CELL) + 2),
+      Math.max(0, Math.floor((z - r + 48) / CELL) - 2),
+      Math.min(N, Math.ceil((z + r + 48) / CELL) + 2),
+    ];
+    if (this.active) {
+      this.active = [
+        Math.min(this.active[0], bounds[0]),
+        Math.max(this.active[1], bounds[1]),
+        Math.min(this.active[2], bounds[2]),
+        Math.max(this.active[3], bounds[3]),
+      ];
+    } else this.active = bounds;
+    this.settleAge = 0;
+  }
+  add(i, dh, material) {
+    if (dh <= 0) return;
+    const old = this.loose[i];
+    this.h[i] += dh;
+    this.loose[i] += dh;
+    this.compact[i] *= old / (old + dh || 1);
+    this.mat[i] = material;
+    this.marks[i] = material === 0 ? 0.18 : 0;
+  }
   deposit(x, z, r, volume, material = 1) {
-    const cells = this.cells(x, z, r);
-    let weight = cells.reduce((s, c) => s + c[1], 0);
-    if (!weight || volume <= 0) return 0;
-    for (const [i, w] of cells) {
-      this.h[i] += (volume * w) / weight / (CELL * CELL);
-      this.mat[i] = material;
-      this.compact[i] = 0;
-      this.marks[i] = 0;
-    }
+    if (volume <= 0) return 0;
+    const cells = this.cells(x, z, r),
+      weights = cells.map(([i, w]) => {
+        const [a, b] = this.coord(i);
+        return w * w * (0.8 + grain(a, b) * 0.4);
+      }),
+      total = weights.reduce((a, b) => a + b, 0);
+    if (!total) return 0;
+    cells.forEach(([i], k) =>
+      this.add(i, (volume * weights[k]) / total / (CELL * CELL), material),
+    );
+    this.touch(x, z, r + 1);
     return volume;
   }
   dig(x, z, r, volume) {
     if (volume <= 0) return { volume: 0, material: 0 };
-    let removed = 0,
-      counts = [0, 0, 0, 0];
-    const cells = this.cells(x, z, r),
+    let removed = 0;
+    const counts = [0, 0, 0, 0],
+      cells = this.cells(x, z, r),
       weight = cells.reduce((s, c) => s + c[1], 0);
     if (!weight) return { volume: 0, material: 0 };
     for (const [i, w] of cells) {
@@ -124,10 +189,12 @@ export class Terrain {
       this.h[i] -= cut;
       removed += cut * CELL * CELL;
       counts[this.mat[i]] += cut;
-      this.mat[i] = 0;
+      this.loose[i] = Math.max(0, this.loose[i] - cut);
+      if (this.loose[i] < 0.001) this.mat[i] = 0;
       this.compact[i] = 0;
-      this.marks[i] = 0;
+      this.marks[i] = 0.2;
     }
+    this.touch(x, z, r + 1);
     return { volume: removed, material: counts.indexOf(Math.max(...counts)) };
   }
   level(x, z, r, strength) {
@@ -138,19 +205,10 @@ export class Terrain {
     for (const [i] of cells) {
       const delta = (mean - this.h[i]) * clamp(strength, 0, 1);
       this.h[i] += delta;
+      this.loose[i] = Math.max(0, this.loose[i] + delta);
       moved += Math.abs(delta) * CELL * CELL;
     }
     return moved / 2;
-  }
-  roll(x, z, r, strength) {
-    let area = 0;
-    for (const [i, w] of this.cells(x, z, r)) {
-      if (this.mat[i] === 0) continue;
-      const before = this.compact[i];
-      this.compact[i] = clamp(before + strength * w, 0, 1);
-      area += (this.compact[i] - before) * CELL * CELL;
-    }
-    return area;
   }
   pave(x, z, r, volume) {
     return this.deposit(x, z, r, volume, 3);
@@ -158,66 +216,207 @@ export class Terrain {
   ribbon(x, z, angle, width, depth, volume) {
     if (volume <= 0) return 0;
     const dx = -Math.sin(angle),
-      dz = -Math.cos(angle);
-    const cells = this.cells(x, z, Math.hypot(width, depth) / 2 + CELL).filter(
-      ([i]) => {
-        const [wx, wz] = this.coord(i),
-          rx = wx - x,
-          rz = wz - z;
-        return (
-          Math.abs(rx * dz - rz * dx) <= width / 2 &&
-          Math.abs(rx * dx + rz * dz) <= depth / 2
-        );
-      },
+      dz = -Math.cos(angle),
+      cells = this.footprint(x, z, angle, width, depth);
+    let total = 0;
+    const weights = cells.map(([i]) => {
+      const [a, b] = this.coord(i),
+        side = Math.abs((a - x) * dz - (b - z) * dx),
+        fwd = Math.abs((a - x) * dx + (b - z) * dz),
+        w =
+          clamp((width / 2 - side) / 0.3, 0, 1) *
+          clamp((depth / 2 - fwd) / 0.2, 0, 1) *
+          (0.35 + grain(a, b) * 1.5);
+      total += w;
+      return w;
+    });
+    if (!total) return 0;
+    cells.forEach(([i], k) =>
+      this.add(i, (volume * weights[k]) / total / (CELL * CELL), 3),
     );
-    if (!cells.length) return 0;
-    for (const [i] of cells) {
-      this.h[i] += volume / cells.length / (CELL * CELL);
-      this.mat[i] = 3;
-      this.compact[i] = 0;
-      this.marks[i] = 0;
+    this.touch(x, z, Math.max(width, depth) / 2 + 1);
+    return volume;
+  }
+  fillLowest(cells, volume, material) {
+    if (!cells.length || volume <= 0) return 0;
+    const sorted = cells.map((c) => c[0]).sort((a, b) => this.h[a] - this.h[b]);
+    let remaining = volume / (CELL * CELL),
+      level = this.h[sorted[0]],
+      count = 1;
+    for (; count < sorted.length; count++) {
+      const next = this.h[sorted[count]],
+        needed = (next - level) * count;
+      if (remaining <= needed) {
+        level += remaining / count;
+        remaining = 0;
+        break;
+      }
+      remaining -= needed;
+      level = next;
     }
+    if (remaining > 0) level += remaining / sorted.length;
+    for (const i of sorted)
+      this.add(i, Math.max(0, level - this.h[i]), material);
     return volume;
   }
   push(x, z, angle, targetHeight, strength) {
     if (strength <= 0) return 0;
     const dx = -Math.sin(angle),
       dz = -Math.cos(angle),
-      counts = [0, 0, 0, 0];
+      toX = clamp(x + dx * 1.35, -46, 46),
+      toZ = clamp(z + dz * 1.35, -46, 46),
+      dest = this.footprint(toX, toZ, angle, 3.2, 1.5);
+    if (!dest.length) return 0;
+    const counts = [0, 0, 0, 0];
     let moved = 0;
-    for (const [i, w] of this.cells(x, z, 2)) {
-      const [wx, wz] = this.coord(i),
-        rx = wx - x,
-        rz = wz - z;
-      if (
-        Math.abs(rx * dz - rz * dx) > 1.55 ||
-        Math.abs(rx * dx + rz * dz) > 0.75
-      )
-        continue;
+    for (const [i] of this.footprint(x, z, angle, 3.1, 0.8)) {
       const cut = Math.min(
         Math.max(0, this.h[i] - Math.max(-3, targetHeight)),
-        strength * w,
+        strength,
       );
       this.h[i] -= cut;
-      const volume = cut * CELL * CELL;
-      moved += volume;
-      counts[this.mat[i]] += volume;
+      const v = cut * CELL * CELL;
+      moved += v;
+      counts[this.mat[i]] += v;
+      this.loose[i] = Math.max(0, this.loose[i] - cut);
       this.compact[i] = 0;
-      this.marks[i] = 0;
+      this.marks[i] = 0.15;
     }
-    if (moved > 0)
-      this.deposit(
-        clamp(x + dx * 1.65, -47, 47),
-        clamp(z + dz * 1.65, -47, 47),
-        1.45,
-        moved,
-        counts.indexOf(Math.max(...counts)),
-      );
+    this.fillLowest(dest, moved, counts.indexOf(Math.max(...counts)));
+    if (moved > 0) this.touch(x, z, 4);
+    return moved;
+  }
+  grade(x, z, angle, targetHeight, strength) {
+    const cells = this.footprint(x, z, angle, 3.1, 1.7),
+      high = [],
+      low = [];
+    let excess = 0,
+      deficit = 0;
+    for (const [i] of cells) {
+      const d = this.h[i] - targetHeight;
+      if (d > 0) {
+        high.push([i, d]);
+        excess += d;
+      } else {
+        low.push([i, -d]);
+        deficit -= d;
+      }
+    }
+    const transfer = Math.min(excess, deficit) * clamp(strength, 0, 1);
+    if (!transfer) return 0;
+    const counts = [0, 0, 0, 0];
+    for (const [i, d] of high) {
+      const cut = (transfer * d) / excess;
+      counts[this.mat[i]] += cut;
+      this.h[i] -= cut;
+      this.loose[i] = Math.max(0, this.loose[i] - cut);
+      this.marks[i] = 0.15;
+      this.compact[i] = 0;
+    }
+    const mat = counts.indexOf(Math.max(...counts));
+    for (const [i, d] of low) this.add(i, (transfer * d) / deficit, mat);
+    this.touch(x, z, 3);
+    return transfer * CELL * CELL;
+  }
+  finish(x, z, angle, width, depth, strength) {
+    let area = 0,
+      moved = 0;
+    const cells = this.footprint(x, z, angle, width, depth),
+      eligible = new Set(
+        cells.filter(([i]) => this.mat[i] > 0).map(([i]) => i),
+      ),
+      rate = clamp(strength, 0, 1);
+    for (const [i] of cells) {
+      if (!eligible.has(i)) continue;
+      const old = this.compact[i];
+      this.compact[i] = clamp(old + rate, 0, 1);
+      area += (this.compact[i] - old) * CELL * CELL;
+      for (const j of [i + 1, i + N + 1]) {
+        if (!eligible.has(j) || this.mat[i] !== this.mat[j]) continue;
+        const a = this.h[i] > this.h[j] ? i : j,
+          b = a === i ? j : i;
+        const flow = Math.min(
+          (this.h[a] - this.h[b]) * 0.45 * rate,
+          this.loose[a] * 0.4,
+        );
+        this.h[a] -= flow;
+        this.h[b] += flow;
+        this.loose[a] = Math.max(0, this.loose[a] - flow);
+        this.loose[b] += flow;
+        moved += flow * CELL * CELL;
+      }
+    }
+    return area + moved;
+  }
+  roll(x, z, r, strength) {
+    return this.finish(x, z, 0, r * 2, r * 2, strength);
+  }
+  settle(dt) {
+    if (!this.active) return 0;
+    dt = clamp(dt, 0, 0.05);
+    this.settleAge += dt;
+    const [a, b, c, d] = this.active,
+      slopes = [0.7, 0.55, 0.8, 1.2];
+    this.flux.fill(0);
+    let moved = 0,
+      minX = N,
+      maxX = 0,
+      minZ = N,
+      maxZ = 0;
+    for (let z = c; z <= d; z++)
+      for (let x = a; x <= b; x++) {
+        const i = this.index(x, z);
+        for (const j of [x < N ? i + 1 : -1, z < N ? i + N + 1 : -1]) {
+          if (j < 0) continue;
+          const high = this.h[i] > this.h[j] ? i : j,
+            low = high === i ? j : i;
+          if (this.loose[high] < 0.000001 || this.compact[high] > 0.94)
+            continue;
+          const excess =
+            this.h[high] - this.h[low] - slopes[this.mat[high]] * CELL;
+          if (excess <= 0) continue;
+          const amount =
+            Math.min(excess * dt * 3, this.loose[high] * 0.24) *
+            (1 - this.compact[high]);
+          this.flux[high] -= amount;
+          this.flux[low] += amount;
+          moved += amount * CELL * CELL;
+          if (amount > 0.000001) {
+            minX = Math.min(minX, x);
+            maxX = Math.max(maxX, x + (j === i + 1 ? 1 : 0));
+            minZ = Math.min(minZ, z);
+            maxZ = Math.max(maxZ, z + (j === i + N + 1 ? 1 : 0));
+          }
+          if (amount > 0.000001 && this.loose[low] < this.loose[high])
+            this.mat[low] = this.mat[high];
+        }
+      }
+    for (let z = Math.max(0, c - 1); z <= Math.min(N, d + 1); z++)
+      for (let x = Math.max(0, a - 1); x <= Math.min(N, b + 1); x++) {
+        const i = this.index(x, z),
+          f = this.flux[i];
+        if (!f) continue;
+        this.h[i] += f;
+        this.loose[i] = Math.max(0, this.loose[i] + f);
+        if (f > 0) {
+          this.compact[i] *= 0.985;
+          this.marks[i] *= 0.9;
+        }
+      }
+    if (moved > 0.000001 && minX <= maxX)
+      this.active = [
+        Math.max(0, minX - 2),
+        Math.min(N, maxX + 2),
+        Math.max(0, minZ - 2),
+        Math.min(N, maxZ + 2),
+      ];
+    if ((moved < 0.000005 && this.settleAge > 0.5) || this.settleAge > 7)
+      this.active = null;
     return moved;
   }
   track(x, z, strength = 0.3) {
     let changed = false;
-    for (const [i, w] of this.cells(x, z, 0.62)) {
+    for (const [i, w] of this.cells(x, z, 0.42)) {
       const before = this.marks[i];
       this.marks[i] = clamp(before + strength * w, 0, 1);
       if (this.mat[i] === 1 || this.mat[i] === 2)
@@ -226,40 +425,93 @@ export class Terrain {
     }
     return changed;
   }
-  serialize() {
+  serialize(packed = false) {
+    if (packed)
+      return {
+        format: "f32-base64",
+        n: N,
+        seed: this.seed,
+        h: encode(this.h),
+        mat: encode(this.mat),
+        compact: encode(this.compact),
+        marks: encode(this.marks),
+        loose: encode(this.loose),
+      };
     return {
+      n: N,
       seed: this.seed,
       h: Array.from(this.h),
       mat: Array.from(this.mat),
       compact: Array.from(this.compact),
       marks: Array.from(this.marks),
+      loose: Array.from(this.loose),
     };
   }
   static restore(data) {
-    const count = (N + 1) ** 2;
-    if (
-      !data ||
-      ![data.h, data.mat, data.compact].every(
-        (v) => Array.isArray(v) && v.length === count,
-      ) ||
-      !data.h.every((v) => Number.isFinite(v) && v > -100 && v < 1000) ||
-      !data.mat.every((v) => Number.isInteger(v) && v >= 0 && v <= 3) ||
-      !data.compact.every((v) => Number.isFinite(v) && v >= 0 && v <= 1)
-    )
-      throw Error("Geçersiz arazi kaydı");
-    const t = new Terrain(data.seed);
-    t.h.set(data.h);
-    t.mat.set(data.mat);
-    t.compact.set(data.compact);
-    if (data.marks) {
+    if (!data) throw Error("Geçersiz arazi kaydı");
+    const sourceN = data.n ?? Math.sqrt(data.h?.length || 0) - 1,
+      count = (sourceN + 1) ** 2;
+    if (!Number.isInteger(sourceN) || sourceN < 16 || sourceN > 512)
+      throw Error("Geçersiz arazi çözünürlüğü");
+    const fields = {};
+    for (const key of ["h", "mat", "compact", "marks", "loose"]) {
+      const value = data[key];
+      if (value === undefined && ["marks", "loose"].includes(key)) continue;
+      const Type = key === "mat" ? Uint8Array : Float32Array;
+      if (data.format === "f32-base64")
+        fields[key] = decode(value, Type, count);
+      else {
+        if (!Array.isArray(value) || value.length !== count)
+          throw Error("Geçersiz kayıt boyutu");
+        fields[key] = value;
+      }
       if (
-        !Array.isArray(data.marks) ||
-        data.marks.length !== count ||
-        !data.marks.every((v) => Number.isFinite(v) && v >= 0 && v <= 1)
+        !Array.from(fields[key]).every(
+          (v) =>
+            Number.isFinite(v) &&
+            (key === "h"
+              ? v > -100 && v < 1000
+              : key === "mat"
+                ? Number.isInteger(v) && v >= 0 && v <= 3
+                : key === "loose"
+                  ? v >= 0 && v < 1000
+                  : v >= 0 && v <= 1),
+        )
       )
-        throw Error("Geçersiz tekerlek izleri");
-      t.marks.set(data.marks);
+        throw Error("Geçersiz kayıt değeri");
     }
+    const t = new Terrain(data.seed);
+    t.active = null;
+    const interpolate = (arr, gx, gz) => {
+      if (!arr) return 0;
+      const ix = Math.min(sourceN - 1, Math.floor(gx)),
+        iz = Math.min(sourceN - 1, Math.floor(gz)),
+        fx = gx - ix,
+        fz = gz - iz,
+        i = iz * (sourceN + 1) + ix;
+      return (
+        arr[i] * (1 - fx) * (1 - fz) +
+        arr[i + 1] * fx * (1 - fz) +
+        arr[i + sourceN + 1] * (1 - fx) * fz +
+        arr[i + sourceN + 2] * fx * fz
+      );
+    };
+    for (let z = 0; z <= N; z++)
+      for (let x = 0; x <= N; x++) {
+        const i = t.index(x, z),
+          gx = (x / N) * sourceN,
+          gz = (z / N) * sourceN,
+          nearest = Math.round(gz) * (sourceN + 1) + Math.round(gx);
+        t.h[i] = interpolate(fields.h, gx, gz);
+        t.mat[i] = fields.mat[nearest];
+        t.compact[i] = interpolate(fields.compact, gx, gz);
+        t.marks[i] = interpolate(fields.marks, gx, gz);
+        t.loose[i] = fields.loose
+          ? interpolate(fields.loose, gx, gz)
+          : t.mat[i] > 0
+            ? 0.18 * (1 - t.compact[i])
+            : 0;
+      }
     return t;
   }
 }

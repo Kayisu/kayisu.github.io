@@ -2,13 +2,19 @@
 
 **Sayfa yapılıyor. Sen de bir şeyler yap.**
 
-Version **0.2.0**. A browser construction sandbox and a playable destination for unfinished or missing portfolio pages.
+Version **0.3.0**. A browser construction sandbox and a playable destination for unfinished or missing portfolio pages.
 
 Serve `dist/` with a static HTTP server. No build or install required. Three.js r160 is vendored under MIT. Run `npm test` for terrain conservation, driving/collision, save migration, model geometry and entrypoint checks.
 
+## Material flow in 0.3
+
+The surface is now 256 × 256 cells (37.5 cm spacing, 66,049 vertices). Loose material relaxes down slopes without changing bulk volume. Asphalt is laid with uneven aggregate thickness; roller passes reduce height variation and increase compaction. The dozer captures a fixed blade datum at the beginning of a stroke; J/K and on-screen buttons adjust blade height, and a rectangular guide shows the footprint. A 2,000-instance visual grain pool replaces cube chips. Smooth vertex normals, fine bump texture, feathered material colors and interpolated mesh updates reduce faceting and stepping. Tightly bounded updates avoid running granular relaxation over the whole map. The visible grains are tracers; mass lives in the conservative heightfield and loose-layer channels.
+
+Dense saves use binary-encoded typed arrays and migrate the previous 112-cell worlds.
+
 ## Controls
 
-WASD/arrows: drive. Space: work. 1–6/Tab: change machine. X: dig/unload or push/grade. R: sandbox refill. Shift: brake. Z: undo the last continuous tool stroke (eight retained). Q/E or right drag: orbit. Wheel or +/−: zoom. C: camera behind machine. M: overhead. G: grid. H: help.
+WASD/arrows: drive. Space: work. 1–6/Tab: change machine. X: dig/unload or push/grade. J/K: lower/raise dozer blade. R: sandbox refill. Shift: brake. Z: undo the last continuous tool stroke (eight retained). Q/E or right drag: orbit. Wheel or +/−: zoom. C: camera behind machine. M: overhead. G: grid. H: help.
 
 ## Included
 
@@ -27,6 +33,10 @@ v0.1 saves migrate on the same origin. Sites and GitHub Pages are different orig
 Original prototype; no commercial assets or game binaries were used. Terrain is a heightfield with a dominant surface material, not discrete grains or full strata. Mixed bucket contents use one dominant material. Collision bodies are circles, not full rigid bodies. Some scenery is decorative. Water is visual with no fluid simulation. Excavation floor: −3 m. Mission mode and an autonomous delivery vehicle are deferred.
 
 # Changelog
+
+## 0.3.0 — 2026-10-18
+
+Rebuilt material handling around a denser smooth heightfield and conservative loose-material flow. Asphalt starts uneven and becomes smoother through roller passes. Added a fixed dozer blade datum, J/K height control and a rectangular footprint. Expanded round visual grains from 160 to 2,000, added interpolated surface updates, analytic smooth normals and compaction-sensitive bump detail. Preserved v0.1/v0.2 worlds through resolution migration and packed browser saves. Added material-flow, roughness, volume, migration and interpolation checks.
 
 ## 0.2.0 — 2026-10-18
 

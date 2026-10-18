@@ -1,0 +1,21 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {Terrain,N,CELL} from '../../public/sandstruction/terrain.js';
+function flat(){const t=new Terrain(5);for(const key of['h','mat','compact','marks','loose'])t[key].fill(0);t.active=null;return t;}
+const mass=t=>t.h.reduce((s,h)=>s+h*CELL*CELL,0);
+function rms(t,indices){const values=indices.map(i=>t.h[i]),mean=values.reduce((a,b)=>a+b,0)/values.length;return Math.sqrt(values.reduce((s,v)=>s+(v-mean)**2,0)/values.length);}
+test('higher resolution uses 37.5 cm cells and over five times as many vertices',()=>{assert.equal(CELL,.375);assert.ok((N+1)**2>5*113**2);});
+test('loose sand relaxes into a wider, lower pile while conserving volume',()=>{const t=flat();t.deposit(0,0,1.2,3,1);const before=mass(t),peak=Math.max(...t.h),initial=t.loose.filter(v=>v>.001).length;for(let i=0;i<150;i++)t.settle(1/30);const after=mass(t),endPeak=Math.max(...t.h),spread=t.loose.filter(v=>v>.001).length;assert.ok(Math.abs(after-before)<.0005,`${after-before}`);assert.ok(endPeak<peak*.75);assert.ok(spread>initial);assert.ok(t.loose.every(v=>v>=0));});
+test('asphalt starts rough and successive roller passes reduce roughness without losing volume',()=>{const t=flat();t.ribbon(0,0,0,3.1,2.4,1.2);const indices=t.cells(0,0,1.1).map(([i])=>i).filter(i=>t.mat[i]===3),before=rms(t,indices),volume=mass(t);for(let pass=0;pass<8;pass++)for(let z=-1.8;z<=1.8;z+=.2)t.finish(0,z,0,2.2,1.3,.15);const after=rms(t,indices);assert.ok(after<before*.6,`roughness ${before} -> ${after}`);assert.ok(Math.abs(mass(t)-volume)<.0001);assert.ok(t.compact[t.nearest(0,0)]>.9);});
+test('a compacted pile resists passive flow',()=>{const a=flat(),b=flat();a.deposit(0,0,1,3,1);b.deposit(0,0,1,3,1);b.compact.fill(1);const before=b.h.slice();for(let i=0;i<40;i++){a.settle(1/30);b.settle(1/30);}assert.deepEqual(before,b.h);assert.ok(a.h[a.nearest(0,0)]<b.h[b.nearest(0,0)]);});
+test('blade grading is volume conserving and reduces deviations around its datum',()=>{const t=flat();for(const[i]of t.footprint(0,0,0,3.1,1.7)){const[x,z]=t.coord(i);t.h[i]=.3+Math.sin(x*4)*.12;t.mat[i]=2;t.loose[i]=.2;}const cells=t.footprint(0,0,0,3.1,1.7).map(([i])=>i),volume=mass(t),before=rms(t,cells);for(let i=0;i<15;i++)t.grade(0,0,0,.3,.2);assert.ok(rms(t,cells)<before*.2);assert.ok(Math.abs(mass(t)-volume)<.0001);});
+test('packed terrain saves roundtrip exactly and fit a browser save budget',()=>{const t=flat();t.deposit(0,0,2,5,3);t.track(0,0);const packed=t.serialize(true),json=JSON.stringify(packed);assert.ok(json.length<1_600_000);const restored=Terrain.restore(JSON.parse(json));for(const key of['h','mat','loose','compact','marks'])assert.deepEqual(restored[key],t[key]);assert.throws(()=>Terrain.restore({...packed,h:packed.h.slice(8)}));});
+test('112-cell v0.2 saves are interpolated without losing the world or surface identity',()=>{const n=112,count=113**2,h=Array.from({length:count},(_,i)=>i%113*.01),legacy={seed:55,h,mat:Array(count).fill(2),compact:Array(count).fill(.5),marks:Array(count).fill(0)};const restored=Terrain.restore(legacy);assert.equal(restored.seed,55);assert.equal(restored.h.length,(N+1)**2);assert.ok(Math.abs(restored.sample(0,0)-.56)<.00001);assert.equal(restored.mat[restored.nearest(0,0)],2);assert.equal(restored.compact[restored.nearest(0,0)],.5);});
+
+test('dense surface normals are smooth, unit length, and height interpolation stays continuous',async()=>{
+ const {TerrainSurface}=await import('../../public/sandstruction/terrain-render.js');const t=flat(),count=(N+1)**2,positions=new Float32Array(count*3),colors=new Float32Array(count*3),normals=new Float32Array(count*3),previous=new Float32Array(count),surface=new TerrainSurface(t.seed);
+ for(let i=0;i<count;i++){const[x,z]=t.coord(i);t.h[i]=x*.1+z*.2;}
+ surface.write(t,positions,colors,normals,previous,1,true);
+ const i=t.nearest(0,0)*3,length=Math.hypot(normals[i],normals[i+1],normals[i+2]);assert.ok(Math.abs(length-1)<1e-6);assert.ok(Math.abs(normals[i]/normals[i+1]+.1)<1e-5);assert.ok(colors.every(Number.isFinite));
+ t.h.fill(1);surface.write(t,positions,colors,normals,previous,1,true);t.h.fill(2);surface.write(t,positions,colors,normals,previous,1,false);t.h.fill(3);surface.write(t,positions,colors,normals,previous,.5,false);assert.equal(previous[0],1.5);assert.equal(positions[1],3);
+});

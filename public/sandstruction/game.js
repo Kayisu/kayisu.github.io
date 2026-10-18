@@ -7,10 +7,11 @@ import {
   MATERIALS,
   clamp,
   random,
-} from "./terrain.js?v=0.2.0";
-import { MACHINES, machineModel, fleetIcon } from "./models.js?v=0.2.0";
-import { stepVehicle } from "./physics.js?v=0.2.0";
-import { plantForest } from "./nature.js?v=0.2.0";
+} from "./terrain.js?v=0.3.0";
+import { MACHINES, machineModel, fleetIcon } from "./models.js?v=0.3.0";
+import { stepVehicle } from "./physics.js?v=0.3.0";
+import { TerrainSurface } from "./terrain-render.js?v=0.3.0";
+import { plantForest } from "./nature.js?v=0.3.0";
 const $ = (id) => document.getElementById(id),
   keys = new Set(),
   SAVE_KEY = "sandstruction-save-v2";
@@ -20,6 +21,10 @@ let workStarted = false,
   trackDistance = 0,
   atmosphere = 0,
   obstacles = [];
+let settlingClock = 0,
+  terrainInitialized = false;
+const terrainBlend = { value: 1 };
+let surfaceCache;
 let terrain = new Terrain(3817),
   vehicles = [],
   selected = 0,
@@ -87,15 +92,50 @@ const terrainGeo = new T.PlaneGeometry(SIZE, SIZE, N, N);
 terrainGeo.rotateX(-Math.PI / 2);
 const colors = new Float32Array(terrainGeo.attributes.position.count * 3);
 terrainGeo.setAttribute("color", new T.BufferAttribute(colors, 3));
+const previousHeights = new Float32Array(terrainGeo.attributes.position.count);
+terrainGeo.setAttribute(
+  "aPreviousHeight",
+  new T.BufferAttribute(previousHeights, 1),
+);
+terrainGeo.setAttribute(
+  "aCompaction",
+  new T.BufferAttribute(terrain.compact, 1),
+);
 const ground = new T.Mesh(
   terrainGeo,
   new T.MeshStandardMaterial({
     vertexColors: true,
     roughness: 1,
-    flatShading: true,
+    flatShading: false,
     map: groundTexture(),
+    bumpMap: groundTexture(),
+    bumpScale: 0.035,
   }),
 );
+ground.material.onBeforeCompile = (shader) => {
+  shader.uniforms.uTerrainBlend = terrainBlend;
+  shader.vertexShader =
+    "uniform float uTerrainBlend; attribute float aPreviousHeight; attribute float aCompaction; varying float vCompaction;\n" +
+    shader.vertexShader;
+  shader.vertexShader = shader.vertexShader.replace(
+    "#include <begin_vertex>",
+    "#include <begin_vertex>\n transformed.y=mix(aPreviousHeight,position.y,uTerrainBlend); vCompaction=aCompaction;",
+  );
+  shader.fragmentShader =
+    "varying float vCompaction;\n" + shader.fragmentShader;
+  shader.fragmentShader = shader.fragmentShader.replace(
+    "#include <roughnessmap_fragment>",
+    "#include <roughnessmap_fragment>\n roughnessFactor *= mix(1.0,0.68,vCompaction);",
+  );
+  shader.fragmentShader = shader.fragmentShader.replace(
+    "#include <normal_fragment_maps>",
+    T.ShaderChunk.normal_fragment_maps.replace(
+      "dHdxy_fwd()",
+      "dHdxy_fwd()*mix(1.0,0.12,vCompaction)",
+    ),
+  );
+};
+ground.material.customProgramCacheKey = () => "sandstruction-smooth-ground-v03";
 ground.receiveShadow = true;
 scene.add(ground);
 let edges;
@@ -151,13 +191,58 @@ const toolRing = new T.Mesh(
 toolRing.rotation.x = -Math.PI / 2;
 toolRing.visible = false;
 scene.add(toolRing);
-const dustGeo = new T.BoxGeometry(0.09, 0.09, 0.09),
-  dustMat = new T.MeshStandardMaterial({ color: 0xc8ac72, roughness: 1 });
-const particles = new T.InstancedMesh(dustGeo, dustMat, 160);
+const guideGeometry = new T.BufferGeometry();
+guideGeometry.setAttribute(
+  "position",
+  new T.Float32BufferAttribute(new Float32Array(12), 3),
+);
+const workGuide = new T.LineLoop(
+  guideGeometry,
+  new T.LineBasicMaterial({
+    color: 0xf2cb69,
+    depthTest: false,
+    transparent: true,
+    opacity: 0.8,
+  }),
+);
+workGuide.frustumCulled = false;
+workGuide.renderOrder = 8;
+workGuide.visible = false;
+scene.add(workGuide);
+function updateWorkGuide(v) {
+  const active = ["dozer", "roller", "paver"].includes(v.id);
+  workGuide.visible = started && active;
+  if (!active) return;
+  const p = toolPosition(v),
+    dx = -Math.sin(v.angle),
+    dz = -Math.cos(v.angle),
+    width = v.id === "roller" ? 2.2 : 3.1,
+    depth = v.id === "dozer" ? 0.8 : 1.2,
+    attr = guideGeometry.attributes.position;
+  [
+    [-1, -1],
+    [1, -1],
+    [1, 1],
+    [-1, 1],
+  ].forEach(([side, forward], i) => {
+    const x = p.x + (dz * side * width) / 2 + (dx * forward * depth) / 2,
+      z = p.z - (dx * side * width) / 2 + (dz * forward * depth) / 2,
+      y =
+        v.id === "dozer"
+          ? v.bladeDatum + v.bladeOffset + 0.05
+          : terrain.sample(x, z) + 0.06;
+    attr.setXYZ(i, x, y, z);
+  });
+  attr.needsUpdate = true;
+  workGuide.material.color.set(v.id === "roller" ? 0xa3c38b : 0xf2cb69);
+}
+const dustGeo = new T.IcosahedronGeometry(0.035, 0),
+  dustMat = new T.MeshStandardMaterial({ color: 0xffffff, roughness: 1 });
+const particles = new T.InstancedMesh(dustGeo, dustMat, 2000);
 particles.instanceMatrix.setUsage(T.DynamicDrawUsage);
 particles.frustumCulled = false;
 scene.add(particles);
-const dust = Array.from({ length: 160 }, () => ({
+const dust = Array.from({ length: 2000 }, () => ({
   life: 0,
   x: 0,
   y: -100,
@@ -271,7 +356,7 @@ function rebuildScenery() {
   ctx.fillStyle = "#ece9db";
   ctx.fillText("MAKE YOUR OWN ROAD.", 28, 121);
   ctx.font = "bold 21px Arial";
-  ctx.fillText("SANDSTRUCTION / 0.2", 28, 207);
+  ctx.fillText("SANDSTRUCTION / 0.3", 28, 207);
   const face = new T.Mesh(
     new T.PlaneGeometry(5, 2.5),
     new T.MeshStandardMaterial({
@@ -287,30 +372,25 @@ function rebuildScenery() {
 }
 function updateTerrain() {
   const p = terrainGeo.attributes.position;
-  const c = new T.Color(),
-    patchColor = new T.Color(0xa6a47a),
-    phase = random(terrain.seed)() * 20;
-  for (let i = 0; i < p.count; i++) {
-    p.setY(i, terrain.h[i]);
-    const [x, z] = terrain.coord(i);
-    const material = terrain.mat[i];
-    if (material === 0) {
-      const variation = Math.sin(x * 0.73 + z * 0.52) * 0.5 + 0.5;
-      c.set(0x87936a).lerp(patchColor, variation * 0.45);
-      if (Math.abs(x - 6 * Math.sin(z * 0.065 + phase)) < 3.6) c.set(0x999172);
-    } else {
-      c.set(MATERIALS[material].color);
-      const v = Math.sin(x * 7.1 + z * 3.7) * 0.035;
-      c.offsetHSL(0, 0, v - terrain.compact[i] * 0.07);
-    }
-    c.multiplyScalar(1 - terrain.marks[i] * 0.25);
-    colors[i * 3] = c.r;
-    colors[i * 3 + 1] = c.g;
-    colors[i * 3 + 2] = c.b;
-  }
+  if (!surfaceCache || surfaceCache.seed !== terrain.seed)
+    surfaceCache = new TerrainSurface(terrain.seed);
+  surfaceCache.write(
+    terrain,
+    p.array,
+    colors,
+    terrainGeo.attributes.normal.array,
+    previousHeights,
+    terrainBlend.value,
+    !terrainInitialized,
+  );
+  terrainGeo.attributes.normal.needsUpdate = true;
+  terrainInitialized = true;
+  terrainBlend.value = 0;
+  terrainGeo.attributes.aPreviousHeight.needsUpdate = true;
+  terrainGeo.attributes.aCompaction.array = terrain.compact;
+  terrainGeo.attributes.aCompaction.needsUpdate = true;
   p.needsUpdate = true;
   terrainGeo.attributes.color.needsUpdate = true;
-  terrainGeo.computeVertexNormals();
   terrainGeo.computeBoundingSphere();
   if (edges) {
     scene.remove(edges);
@@ -377,6 +457,10 @@ function createVehicles(saved) {
       ),
       material: state?.material ?? (i === 4 ? 3 : 1),
       unload: state?.unload ?? false,
+      bladeOffset: Number.isFinite(state?.bladeOffset)
+        ? clamp(state.bladeOffset, -0.35, 0.55)
+        : 0.05,
+      bladeDatum: terrain.sample(x, z),
     };
     fleet.add(v.group);
     return v;
@@ -405,6 +489,7 @@ function select(i) {
   $("machineName").textContent = v.name;
   $("machineDesc").textContent = v.desc;
   $("materialRow").hidden = v.id !== "truck";
+  $("bladePanel").hidden = v.id !== "dozer";
   $("refillBtn").hidden = !["truck", "paver"].includes(v.id);
   $("modeBtn").hidden = !["loader", "shovel", "dozer"].includes(v.id);
   $("loadLabel").textContent = v.capacity ? "HAZNE YÜKÜ" : "İŞLENEN HACİM";
@@ -439,26 +524,47 @@ function toolPosition(v) {
         ? -2.1
         : v.id === "shovel"
           ? 1.1
-          : 2.5;
+          : v.id === "roller"
+            ? 1.25
+            : v.id === "dozer"
+              ? 2.05
+              : 2.3;
   return {
     x: v.x - Math.sin(v.angle) * reach,
     z: v.z - Math.cos(v.angle) * reach,
   };
 }
-function spawnDust(x, z, material, count = 3) {
-  particles.material.color.set(MATERIALS[material]?.color ?? 0x9b8461);
+function spawnDust(
+  x,
+  z,
+  material,
+  count = 10,
+  sourceHeight = 0,
+  pouring = false,
+) {
+  const color = new T.Color(MATERIALS[material]?.color ?? 0x9b8461);
   for (let i = 0; i < count; i++) {
-    const d = dust[dustCursor++ % dust.length];
+    const slot = dustCursor++ % dust.length,
+      d = dust[slot];
+    const spread = pouring ? 0.35 : 1.2;
     Object.assign(d, {
-      x: x + (Math.random() - 0.5) * 1.5,
-      z: z + (Math.random() - 0.5) * 1.5,
-      y: terrain.sample(x, z) + 0.2,
-      life: 0.35 + Math.random() * 0.45,
-      vx: (Math.random() - 0.5) * 1.6,
-      vz: (Math.random() - 0.5) * 1.6,
-      vy: 1 + Math.random() * 2,
+      x: x + (Math.random() - 0.5) * spread,
+      z: z + (Math.random() - 0.5) * spread,
+      y: terrain.sample(x, z) + Math.max(0.12, sourceHeight),
+      life: pouring ? 1.6 : 0.7,
+      vx: (Math.random() - 0.5) * (pouring ? 0.6 : 1.6),
+      vz: (Math.random() - 0.5) * (pouring ? 0.6 : 1.6),
+      vy: pouring ? -0.5 : 1.3 + Math.random(),
+      scale: 0.45 + Math.random() * 0.85,
+      pouring,
+      landed: false,
     });
+    particles.setColorAt(
+      slot,
+      color.clone().multiplyScalar(0.82 + Math.random() * 0.32),
+    );
   }
+  if (particles.instanceColor) particles.instanceColor.needsUpdate = true;
 }
 let warningAt = -10;
 function operate(v, dt) {
@@ -489,18 +595,23 @@ function operate(v, dt) {
     }
   } else if (id === "dozer") {
     amount = v.unload
-      ? terrain.level(p.x, p.z, 1.9, dt * 1.5)
+      ? terrain.grade(
+          p.x,
+          p.z,
+          v.angle,
+          v.bladeDatum + v.bladeOffset,
+          dt * Math.abs(v.speed) * 1.8,
+        )
       : terrain.push(
           p.x,
           p.z,
           v.angle,
-          terrain.sample(v.x, v.z) + 0.12,
+          v.bladeDatum + v.bladeOffset,
           dt * Math.max(0, v.speed) * 0.8,
         );
     stats.moved += amount;
   } else if (id === "roller") {
-    amount = terrain.roll(p.x, p.z, 1.5, dt * 0.8);
-    if (amount > 0) terrain.level(p.x, p.z, 1.1, dt * 0.08);
+    amount = terrain.finish(p.x, p.z, v.angle, 2.2, 1.3, dt * 2.4);
   } else if (id === "paver") {
     amount = terrain.ribbon(
       p.x,
@@ -515,8 +626,25 @@ function operate(v, dt) {
   if (amount > 0.00001) {
     changed = true;
     dirty = true;
-    if (Math.random() < 0.65)
-      spawnDust(p.x, p.z, v.id === "paver" ? 3 : v.material, 3);
+    const pouring =
+      id === "truck" ||
+      ((id === "loader" || id === "shovel") && v.unload) ||
+      id === "paver";
+    if (id !== "roller")
+      spawnDust(
+        p.x,
+        p.z,
+        id === "paver" ? 3 : v.material,
+        Math.min(30, Math.max(4, Math.ceil(amount * 450))),
+        id === "truck"
+          ? 1.5
+          : id === "loader"
+            ? 0.65
+            : id === "paver"
+              ? 0.35
+              : 0.25,
+        pouring,
+      );
   } else if (elapsed - warningAt > 4) {
     warningAt = elapsed;
     if (
@@ -531,6 +659,8 @@ function operate(v, dt) {
       );
     else if (v.capacity && v.cargo >= v.capacity - 0.01 && !v.unload)
       toast("Hazne dolu. X ile boşaltma moduna geç.");
+    else if (id === "dozer")
+      toast("Bıçak kotu J/K ile ayarlanır. SPACE basılıyken ileri sür.");
     else if (id === "paver")
       toast("Asfalt şeridi için SPACE basılıyken ilerle.");
     else if (id === "roller")
@@ -567,7 +697,11 @@ function drive(dt) {
         changed = true;
   }
   working = keys.has(" ") && started && !document.querySelector("dialog[open]");
-  if (working && !workStarted) rememberWork();
+  if (working && !workStarted) {
+    rememberWork();
+    v.bladeDatum = terrain.sample(v.x, v.z);
+  }
+  if (!working) v.bladeDatum = terrain.sample(v.x, v.z);
   workStarted = working;
   if (working) operate(v, dt);
   if (keys.has("q")) cameraAngle += dt * 1.3;
@@ -617,6 +751,12 @@ function drive(dt) {
         4,
         dt,
       );
+    if (m.id === "dozer" && m.moving)
+      m.moving.position.y = clamp(
+        m.bladeDatum + m.bladeOffset - terrain.sample(m.x, m.z),
+        -0.55,
+        0.7,
+      );
     if (m.arm && m.id === "loader")
       m.arm.rotation.x = T.MathUtils.damp(
         m.arm.rotation.x,
@@ -629,7 +769,8 @@ function drive(dt) {
         i === selected && working ? Math.sin(elapsed * 9) * 0.23 : 0;
   });
   const pos = toolPosition(v);
-  toolRing.visible = started;
+  toolRing.visible = started && !["dozer", "roller", "paver"].includes(v.id);
+  updateWorkGuide(v);
   toolRing.position.set(pos.x, terrain.sample(pos.x, pos.z) + 0.08, pos.z);
   toolRing.scale.setScalar(v.id === "shovel" ? 0.6 : 1);
   toolRing.material.opacity = working ? 0.85 : 0.28;
@@ -731,12 +872,21 @@ function updateUI() {
   const action = {
     truck: MATERIALS[v.material].name.toUpperCase() + " DÖKÜLÜYOR",
     loader: v.unload ? "HAZNE BOŞALTILIYOR" : "KAZI YAPILIYOR",
-    dozer: "ZEMİN DÜZLENİYOR",
+    dozer: v.unload ? "TESVİYE · SABİT KOT" : "İTME · SABİT KOT",
     roller: "MALZEME SIKIŞTIRILIYOR",
     paver: "ASFALT SERİLİYOR",
     shovel: v.unload ? "KÜREK BOŞALTILIYOR" : "KAZI YAPILIYOR",
   };
   $("workingText").textContent = action[v.id];
+  const contact = toolPosition(v),
+    cell = terrain.nearest(contact.x, contact.z),
+    comp = terrain.compact[cell];
+  $("surfaceStatus").textContent =
+    terrain.mat[cell] === 0
+      ? "Zemin: toprak"
+      : `${MATERIALS[terrain.mat[cell]].name} · ${comp < 0.25 ? "gevşek / pürüzlü" : comp < 0.8 ? "işleniyor" : "sıkıştırılmış / düzgün"}`;
+  $("bladeHeight").textContent =
+    (v.bladeOffset >= 0 ? "+" : "") + v.bladeOffset.toFixed(2) + " m";
 }
 function toast(message) {
   $("toast").textContent = message;
@@ -748,8 +898,8 @@ function save(manual = false) {
   if (!started) return;
   try {
     const data = {
-      version: 2,
-      terrain: terrain.serialize(),
+      version: 3,
+      terrain: terrain.serialize(true),
       vehicles: vehicles.map((v) => ({
         x: v.x,
         z: v.z,
@@ -757,6 +907,7 @@ function save(manual = false) {
         cargo: v.cargo,
         material: v.material,
         unload: v.unload,
+        bladeOffset: v.bladeOffset,
       })),
       selected,
       stats,
@@ -785,7 +936,7 @@ function load() {
     if (!raw) return false;
     const data = JSON.parse(raw);
     if (
-      ![1, 2].includes(data.version) ||
+      ![1, 2, 3].includes(data.version) ||
       !Array.isArray(data.vehicles) ||
       data.vehicles.length !== 6 ||
       !data.vehicles.every(
@@ -817,6 +968,8 @@ function load() {
 }
 function newWorld(seed) {
   terrain = new Terrain(seed);
+  terrainInitialized = false;
+  settlingClock = 0;
   stats = { moved: 0 };
   undoStack.length = 0;
   workStarted = false;
@@ -906,6 +1059,8 @@ document.addEventListener("keydown", (e) => {
   if (k === "tab") select((selected + 1) % 6);
   if (k === "x") toggleMode();
   if (k === "r") refill();
+  if (k === "j") adjustBlade(-0.05);
+  if (k === "k") adjustBlade(0.05);
   if (k === "m") mapView = !mapView;
   if (k === "g") grid.visible = !grid.visible;
   if (k === "h") openDialog("helpDialog");
@@ -1059,10 +1214,18 @@ function frame(now) {
       v.group.rotation.y = v.angle;
     });
   }
-  if (changed && terrainTimer > 0.055) {
+  if (started && !document.querySelector("dialog[open]")) {
+    settlingClock += dt;
+    while (settlingClock >= 1 / 30) {
+      if (terrain.settle(1 / 30) > 0.0000001) changed = dirty = true;
+      settlingClock -= 1 / 30;
+    }
+  }
+  if (changed && terrainTimer > 1 / 30) {
     updateTerrain();
     terrainTimer = 0;
   }
+  terrainBlend.value = T.MathUtils.damp(terrainBlend.value, 1, 42, dt);
   updateCamera(dt);
   for (let i = 0; i < dust.length; i++) {
     const p = dust[i];
@@ -1071,9 +1234,20 @@ function frame(now) {
       p.x += p.vx * dt;
       p.z += p.vz * dt;
       p.y += p.vy * dt;
-      p.vy -= 4 * dt;
+      p.vy -= 9.8 * dt;
+      const floor = terrain.sample(p.x, p.z) + 0.025;
+      if (p.y < floor) {
+        p.y = floor;
+        p.vy = 0;
+        p.vx *= 0.7;
+        p.vz *= 0.7;
+        if (!p.landed) {
+          p.landed = true;
+          p.life = Math.min(p.life, 0.3);
+        }
+      }
       dummy.position.set(p.x, p.y, p.z);
-      dummy.scale.setScalar(p.life * 1.5);
+      dummy.scale.setScalar((p.scale || 1) * Math.min(1, p.life * 4));
     } else dummy.scale.setScalar(0);
     dummy.updateMatrix();
     particles.setMatrixAt(i, dummy.matrix);
@@ -1110,7 +1284,7 @@ function groundTexture() {
   ctx.putImageData(img, 0, 0);
   const tex = new T.CanvasTexture(canvas);
   tex.wrapS = tex.wrapT = T.RepeatWrapping;
-  tex.repeat.set(80, 80);
+  tex.repeat.set(160, 160);
   tex.colorSpace = T.SRGBColorSpace;
   tex.anisotropy = 4;
   return tex;
@@ -1121,6 +1295,7 @@ function rememberWork() {
     mat: terrain.mat.slice(),
     compact: terrain.compact.slice(),
     marks: terrain.marks.slice(),
+    loose: terrain.loose.slice(),
     cargo: vehicles.map((v) => ({ cargo: v.cargo, material: v.material })),
     moved: stats.moved,
   });
@@ -1138,6 +1313,9 @@ function undoWork() {
   terrain.mat.set(prev.mat);
   terrain.compact.set(prev.compact);
   terrain.marks.set(prev.marks);
+  terrain.loose.set(prev.loose);
+  terrain.active = null;
+  dust.forEach((p) => (p.life = 0));
   vehicles.forEach((v, i) => Object.assign(v, prev.cargo[i]));
   stats.moved = prev.moved;
   changed = dirty = true;
@@ -1204,11 +1382,23 @@ function applyArrivalContext() {
       "Burada yol yapmak serbest. Bir makine seç, kendi yolunu aç.",
     ],
   };
-  if(params.get("lang")==="en") {
-    Object.assign(copy,{
-      "404":["404 · NO ROAD HERE YET","Page not found.","But you found a construction site. Build something while you are here."],
-      wip:["WIP · WORK IN PROGRESS","This page is being built.","A little sand. A few big machines. Build something while you wait."],
-      unreachable:["THIS ROAD IS CURRENTLY CLOSED","Currently unreachable.","Building roads is allowed here. Pick a machine and make your own way."]
+  if (params.get("lang") === "en") {
+    Object.assign(copy, {
+      404: [
+        "404 · NO ROAD HERE YET",
+        "Page not found.",
+        "But you found a construction site. Build something while you are here.",
+      ],
+      wip: [
+        "WIP · WORK IN PROGRESS",
+        "This page is being built.",
+        "A little sand. A few big machines. Build something while you wait.",
+      ],
+      unreachable: [
+        "THIS ROAD IS CURRENTLY CLOSED",
+        "Currently unreachable.",
+        "Building roads is allowed here. Pick a machine and make your own way.",
+      ],
     });
   }
   if (!copy[reason]) return;
@@ -1232,3 +1422,13 @@ $("zoomIn").onclick = () =>
   (cameraDistance = clamp(cameraDistance - 3, 10, 40));
 $("zoomOut").onclick = () =>
   (cameraDistance = clamp(cameraDistance + 3, 10, 40));
+
+function adjustBlade(delta) {
+  const v = vehicles[selected];
+  if (v.id !== "dozer") return;
+  v.bladeOffset = clamp(v.bladeOffset + delta, -0.35, 0.55);
+  dirty = true;
+  updateUI();
+}
+$("bladeDown").onclick = () => adjustBlade(-0.05);
+$("bladeUp").onclick = () => adjustBlade(0.05);

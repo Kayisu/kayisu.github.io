@@ -9,11 +9,11 @@
     <meta name="theme-color" content="#24372e" />
     <meta
       name="description"
-      content="Sandstruction: bu sayfa henüz hazır değil. Madem buradasın, iş makineleriyle bir şeyler inşa et. Sandbox v0.2."
+      content="Sandstruction: bu sayfa henüz hazır değil. Madem buradasın, iş makineleriyle bir şeyler inşa et. Sandbox v0.3."
     />
     <link rel="canonical" href="https://kayisu.github.io/sandstruction/" />
     <title>Sandstruction — Sayfa yapılıyor. Sen de bir şeyler yap.</title>
-    <link rel="stylesheet" href="./style.css?v=0.2.0" />
+    <link rel="stylesheet" href="./style.css?v=0.3.0" />
   </head>
   <body>
     <div id="world" aria-label="3 boyutlu iş makinesi oyun alanı"></div>
@@ -29,7 +29,7 @@
       >
       <div class="session">
         <span class="live-dot"></span> SERBEST SAHA <span class="sep">/</span
-        ><span id="seedLabel">SAHA 3817</span><span class="version">v0.2</span>
+        ><span id="seedLabel">SAHA 3817</span><span class="version">v0.3</span>
       </div>
       <div class="top-actions">
         <a
@@ -113,6 +113,15 @@
         <button id="modeBtn">Kazı modu <span>X</span></button
         ><button id="refillBtn">Kasayı doldur <span>R</span></button>
       </div>
+      <div id="bladePanel" class="blade-panel" hidden>
+        <span>BIÇAK YÜKSEKLİĞİ <kbd>J / K</kbd></span>
+        <div>
+          <button id="bladeDown" aria-label="Bıçağı indir">−</button
+          ><output id="bladeHeight">+0.05 m</output
+          ><button id="bladeUp" aria-label="Bıçağı yükselt">＋</button>
+        </div>
+      </div>
+      <p id="surfaceStatus" class="surface-status">Zemin: toprak</p>
       <div class="work-utilities">
         <button id="undoBtn" disabled title="Son çalışmayı geri al (Z)">
           ↶ Geri al <kbd>Z</kbd></button
@@ -156,7 +165,7 @@
     <div id="overlay" class="overlay">
       <section class="welcome modal">
         <span class="eyebrow" id="arrivalBadge"
-          >SANDSTRUCTION / SANDBOX 0.2</span
+          >SANDSTRUCTION / SANDBOX 0.3</span
         >
         <h2 id="welcomeTitle">
           Sayfa yapılıyor.<br /><em>Sen de bir şeyler yap.</em>
@@ -200,14 +209,17 @@
         <li>
           <b>Dozerle yay, silindirle sıkıştır.</b
           ><span
-            >3 ve 4 ile seç. SPACE basılı tutarak ilerle. Dozer yerel kot
-            farkını azaltır, silindir dökülmüş malzemeyi sıkıştırır.</span
+            >3 ve 4 ile seç. SPACE basılı tutarak ilerle. Dozerde X itme/tesviye
+            seçer; J/K bıçağı indirir/yükseltir. SPACE başında bıçak kotu
+            sabitlenir. Dozer yerel kot farkını azaltır, silindir dökülmüş
+            malzemeyi sıkıştırır.</span
           >
         </li>
         <li>
           <b>Asfalt sericiyle bitir.</b
           ><span
-            >5 ile seç; SPACE basılıyken altta ince asfalt katmanı oluşur.</span
+            >5 ile seç; SPACE basılıyken ilerle. Asfalt önce gevşek ve pürüzlü
+            serilir. Silindirle birkaç geçiş yaparak düzgünleştir.</span
           >
         </li>
       </ol>
@@ -244,6 +256,6 @@
         >Mevcut saha ve otomatik kaydın yeni sahayla değiştirilir.</small
       >
     </dialog>
-    <script type="module" src="./game.js?v=0.2.0"></script>
+    <script type="module" src="./game.js?v=0.3.0"></script>
   </body>
 </html>

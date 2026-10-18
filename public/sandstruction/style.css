@@ -1228,3 +1228,64 @@ body:not(.playing) .instrument {
     top: 249px;
   }
 }
+
+.surface-status {
+  font-size: 9px !important;
+  padding: 8px 0 0;
+  line-height: 1.5 !important;
+  color: #7d826d !important;
+}
+.blade-panel {
+  margin-top: 11px;
+  padding: 10px 0;
+  border-block: 1px solid var(--line);
+}
+.blade-panel > span {
+  font-size: 7px;
+  letter-spacing: 1px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.blade-panel > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+}
+.blade-panel button {
+  background: #e3e5d6;
+  width: 31px;
+  height: 25px;
+  border-radius: 3px;
+  font-size: 15px;
+}
+.blade-panel output {
+  font-size: 16px;
+  font-variant-numeric: tabular-nums;
+}
+.blade-panel kbd {
+  font-size: 6px;
+  padding: 1px 3px;
+}
+.instrument .surface-status {
+  display: block !important;
+}
+@media (max-width: 700px) {
+  .blade-panel {
+    padding: 8px 0;
+  }
+  .blade-panel > span {
+    font-size: 6px;
+  }
+  .blade-panel output {
+    font-size: 13px;
+  }
+  .surface-status {
+    font-size: 8px !important;
+    padding-top: 6px;
+  }
+  .blade-panel button {
+    height: 24px;
+  }
+}
