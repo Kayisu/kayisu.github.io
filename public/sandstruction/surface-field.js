@@ -1,5 +1,5 @@
-import { N, MATERIALS } from "./terrain.js?v=0.5.0";
-import { TerrainSurface } from "./terrain-render.js?v=0.5.0";
+import { N, MATERIALS } from "./terrain.js?v=0.6.0";
+import { TerrainSurface } from "./terrain-render.js?v=0.6.0";
 const lin = (c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
 const palette = MATERIALS.map((m) => [
   lin(((m.color >> 16) & 255) / 255),
@@ -10,6 +10,7 @@ export class SurfaceField {
   constructor() {
     this.data = new Float32Array((N + 1) ** 2 * 4);
     this.color = new Uint8Array(this.data.length);
+    this.material = new Uint8Array(this.data.length);
     this.cache = null;
   }
   update(terrain, blend = 1, instant = false) {
@@ -29,6 +30,10 @@ export class SurfaceField {
       this.data[j + 1] = terrain.h[i];
       this.data[j + 2] = terrain.compact[i];
       this.data[j + 3] = terrain.marks[i];
+      this.material[j] = mat === 1 ? 255 : 0;
+      this.material[j + 1] = mat === 2 ? 255 : 0;
+      this.material[j + 2] = mat === 3 ? 255 : 0;
+      this.material[j + 3] = Math.round(terrain.compact[i] * 255);
       for (let c = 0; c < 3; c++)
         this.color[j + c] = Math.round(
           Math.max(

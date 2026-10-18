@@ -7,20 +7,46 @@ import {
   MATERIALS,
   clamp,
   random,
-} from "./terrain.js?v=0.5.0";
+} from "./terrain.js?v=0.6.0";
 import {
   MACHINES,
   machineModel,
   fleetIcon,
   clampBladeWidth,
-} from "./models.js?v=0.5.0";
-import { stepVehicle } from "./physics.js?v=0.5.0";
-import { TerrainSurface } from "./terrain-render.js?v=0.5.0";
-import { SmoothTerrain, SURFACE_QUALITIES } from "./smooth-terrain.js?v=0.5.0";
-import { plantForest } from "./nature.js?v=0.5.0";
-import { initMobileUI, MOBILE_QUERY } from "./mobile-ui.js?v=0.5.0";
-import { CameraGestures, renderProfile } from "./touch-input.js?v=0.5.0";
+} from "./models.js?v=0.6.0";
+import { stepVehicle } from "./physics.js?v=0.6.0";
+import { TerrainSurface } from "./terrain-render.js?v=0.6.0";
+import { SmoothTerrain, SURFACE_QUALITIES } from "./smooth-terrain.js?v=0.6.0";
+import { plantForest } from "./nature.js?v=0.6.0";
+import { initMobileUI, MOBILE_QUERY } from "./mobile-ui.js?v=0.6.0";
+import { CameraGestures, renderProfile } from "./touch-input.js?v=0.6.0";
+import { RoadPlan, prepareWorkshop } from "./road-plan.js?v=0.6.0";
+import { RoadGuide, intersectTerrain } from "./road-guide.js?v=0.6.0";
+import {
+  ROAD_WORK_SPEED,
+  ROAD_FILL_DEPTH,
+  ROAD_ASPHALT_DEPTH,
+  ROAD_SPREAD_WIDTH,
+  roadPlacement,
+} from "./road-work.js?v=0.6.0";
 const gestures = new CameraGestures();
+let roadPlan = null,
+  roadMeasure = null,
+  planning = false,
+  planDraft = null;
+let equipmentLatched = false,
+  workGear = true,
+  cameraMode = 0,
+  inspectionMode = 0,
+  lastRoadUI = -1;
+function isMobile() {
+  return mobileUI?.touch ?? touchLayout;
+}
+function wantsWork() {
+  return (
+    keys.has(" ") || mobileUI?.input.work || (!isMobile() && equipmentLatched)
+  );
+}
 let mobileUI;
 const touchLayout = matchMedia(MOBILE_QUERY).matches;
 function viewportSize() {
@@ -98,9 +124,22 @@ renderer.toneMappingExposure = 1.18;
 $("world").appendChild(renderer.domElement);
 const scene = new T.Scene();
 scene.background = new T.Color(0xc8d8d2);
-scene.fog = new T.Fog(0xc8d8d2, 75, 175);
+scene.fog = new T.Fog(0xc8d8d2, 90, 190);
+const roadGuide = new RoadGuide(scene);
+const planningLine = new T.Line(
+  new T.BufferGeometry().setFromPoints([new T.Vector3(), new T.Vector3()]),
+  new T.LineBasicMaterial({ color: 0xffd46a, depthTest: false }),
+);
+planningLine.visible = false;
+planningLine.renderOrder = 10;
+planningLine.frustumCulled = false;
+scene.add(planningLine);
 const camera = new T.PerspectiveCamera(46, innerWidth / innerHeight, 0.1, 260);
-const hemi = new T.HemisphereLight(0xf1f0dc, 0x647157, 2.3);
+const hemi = new T.HemisphereLight(
+  0xf1f0dc,
+  0x647157,
+  touchLayout ? 2.3 : 1.65,
+);
 scene.add(hemi);
 const sun = new T.DirectionalLight(0xffedc1, 3.1);
 sun.position.set(-30, 55, 20);
@@ -168,7 +207,12 @@ ground.material.customProgramCacheKey = () => "sandstruction-smooth-ground-v03";
 ground.receiveShadow = true;
 scene.add(ground);
 const smoothGround = renderer.capabilities.floatVertexTextures
-  ? new SmoothTerrain(terrainBlend, groundTexture(), initialProfile.segments)
+  ? new SmoothTerrain(
+      terrainBlend,
+      groundTexture(),
+      initialProfile.segments,
+      !touchLayout,
+    )
   : null;
 if (smoothGround) {
   ground.visible = false;
@@ -394,7 +438,7 @@ function rebuildScenery() {
   ctx.fillStyle = "#ece9db";
   ctx.fillText("MAKE YOUR OWN ROAD.", 28, 121);
   ctx.font = "bold 21px Arial";
-  ctx.fillText("SANDSTRUCTION / 0.4", 28, 207);
+  ctx.fillText("SANDSTRUCTION / 0.6", 28, 207);
   const face = new T.Mesh(
     new T.PlaneGeometry(5, 2.5),
     new T.MeshStandardMaterial({
@@ -484,14 +528,21 @@ function createVehicles(saved) {
   vehicles = MACHINES.map((def, i) => {
     const model = machineModel(def.id);
     const state = saved?.[i];
-    const x = state?.x ?? -32 + (i % 3) * 4.6,
-      z = state?.z ?? 27 + Math.floor(i / 3) * 6;
+    const workshop = !state && roadPlan && !isMobile();
+    const x = state?.x ?? (workshop ? (i === 0 ? -3 : 7) : -32 + (i % 3) * 4.6),
+      z =
+        state?.z ??
+        (workshop
+          ? i === 0
+            ? 11.5
+            : 24 - i * 5.4
+          : 27 + Math.floor(i / 3) * 6);
     const v = {
       ...def,
       ...model,
       x: clamp(x, -45, 45),
       z: clamp(z, -45, 45),
-      angle: state?.angle ?? -0.5,
+      angle: state?.angle ?? (workshop ? 0 : -0.5),
       speed: 0,
       cargo: clamp(
         state?.cargo ?? (i === 0 || i === 4 ? def.capacity : 0),
@@ -499,10 +550,12 @@ function createVehicles(saved) {
         def.capacity,
       ),
       material: state?.material ?? (i === 4 ? 3 : 1),
-      unload: state?.unload ?? false,
+      unload: state?.unload ?? (workshop && (i === 0 || i === 2)),
       bladeOffset: Number.isFinite(state?.bladeOffset)
         ? clamp(state.bladeOffset, -0.35, 0.55)
-        : 0.05,
+        : workshop
+          ? 0
+          : 0.05,
       bladeDatum: terrain.sample(x, z),
       bladeWidth: clampBladeWidth(state?.bladeWidth),
     };
@@ -536,16 +589,25 @@ function select(i) {
   $("materialRow").hidden = v.id !== "truck";
   $("bladePanel").hidden = v.id !== "dozer";
   $("refillBtn").hidden = !["truck", "paver"].includes(v.id);
-  $("modeBtn").hidden = !["loader", "shovel", "dozer"].includes(v.id);
   $("loadLabel").textContent = v.capacity ? "HAZNE YÜKÜ" : "İŞLENEN HACİM";
   updateMode();
+  updateDesktopButtons();
   updateUI();
 }
 function updateMode() {
   const v = vehicles[selected];
+  $("modeBtn").hidden = ![
+    "loader",
+    "shovel",
+    "dozer",
+    ...(!isMobile() ? ["truck"] : []),
+  ].includes(v.id);
   mobileUI?.machineChanged(v);
   $("modeBtn").innerHTML =
     (v.unload ? "Boşaltma modu" : "Kazı modu") + " <span>X</span>";
+  if (v.id === "truck" && !isMobile())
+    $("modeBtn").innerHTML =
+      (v.unload ? "Şerit dökümü" : "Yığın dökümü") + " <span>X</span>";
   if (v.id === "dozer")
     $("modeBtn").innerHTML =
       (v.unload ? "Tesviye modu" : "İtme modu") + " <span>X</span>";
@@ -613,13 +675,25 @@ function spawnDust(
   if (particles.instanceColor) particles.instanceColor.needsUpdate = true;
 }
 let warningAt = -10;
-function operate(v, dt) {
+function operate(v, dt, distance = 0) {
   const p = toolPosition(v),
     id = v.id;
   let amount = 0;
   if (id === "truck") {
-    amount = Math.min(v.cargo, 1.8 * dt);
-    terrain.deposit(p.x, p.z, 1.55, amount, v.material);
+    if (!isMobile() && v.unload) {
+      amount = terrain.spreadLayer(
+        p.x,
+        p.z,
+        v.angle,
+        ROAD_SPREAD_WIDTH,
+        1.1,
+        Math.min(v.cargo, ROAD_SPREAD_WIDTH * ROAD_FILL_DEPTH * distance),
+        v.material,
+      );
+    } else {
+      amount = Math.min(v.cargo, 1.8 * dt);
+      terrain.deposit(p.x, p.z, 1.55, amount, v.material);
+    }
     v.cargo -= amount;
   } else if (id === "loader" || id === "shovel") {
     const rate = id === "shovel" ? 0.22 : 1.25,
@@ -640,35 +714,59 @@ function operate(v, dt) {
       v.cargo += amount;
     }
   } else if (id === "dozer") {
-    amount = v.unload
-      ? terrain.grade(
-          p.x,
-          p.z,
-          v.angle,
-          v.bladeDatum + v.bladeOffset,
-          dt * Math.abs(v.speed) * 1.8,
-          v.bladeWidth,
-        )
-      : terrain.push(
-          p.x,
-          p.z,
-          v.angle,
-          v.bladeDatum + v.bladeOffset,
-          dt * Math.max(0, v.speed) * 0.8,
-          v.bladeWidth,
-        );
+    if (v.unload && !isMobile()) {
+      const alongRoad = roadPlan?.contains(p.x, p.z, 2);
+      amount = terrain.bladeGrade(
+        p.x,
+        p.z,
+        v.angle,
+        v.bladeDatum + v.bladeOffset,
+        distance * 1.6,
+        v.bladeWidth,
+        alongRoad ? roadPlan.slope * roadPlan.dx : 0,
+        alongRoad ? roadPlan.slope * roadPlan.dz : 0,
+      );
+    } else {
+      amount = v.unload
+        ? terrain.grade(
+            p.x,
+            p.z,
+            v.angle,
+            v.bladeDatum + v.bladeOffset,
+            dt * Math.abs(v.speed) * 1.8,
+            v.bladeWidth,
+          )
+        : terrain.push(
+            p.x,
+            p.z,
+            v.angle,
+            v.bladeDatum + v.bladeOffset,
+            dt * Math.max(0, v.speed) * 0.8,
+            v.bladeWidth,
+          );
+    }
     stats.moved += amount;
   } else if (id === "roller") {
     amount = terrain.finish(p.x, p.z, v.angle, 2.2, 1.3, dt * 2.4);
   } else if (id === "paver") {
-    amount = terrain.ribbon(
-      p.x,
-      p.z,
-      v.angle,
-      3.1,
-      1.2,
-      Math.min(v.cargo, 0.28 * Math.abs(v.speed) * dt),
-    );
+    amount = isMobile()
+      ? terrain.ribbon(
+          p.x,
+          p.z,
+          v.angle,
+          3.1,
+          1.2,
+          Math.min(v.cargo, 0.28 * Math.abs(v.speed) * dt),
+        )
+      : terrain.spreadLayer(
+          p.x,
+          p.z,
+          v.angle,
+          ROAD_SPREAD_WIDTH,
+          1.1,
+          Math.min(v.cargo, ROAD_SPREAD_WIDTH * ROAD_ASPHALT_DEPTH * distance),
+          3,
+        );
     v.cargo -= amount;
   }
   if (amount > 0.00001) {
@@ -737,6 +835,10 @@ function drive(dt) {
             Number(keys.has("d") || keys.has("arrowright"))
           : (mobileUI?.input.steer ?? 0),
       brake: keys.has("shift") || mobileUI?.input.brake,
+      speedLimit:
+        !isMobile() && workGear && wantsWork()
+          ? ROAD_WORK_SPEED[v.id]
+          : undefined,
     },
     terrain,
     [...vehicles, ...obstacles],
@@ -756,14 +858,26 @@ function drive(dt) {
       )
         changed = true;
   }
-  working = (keys.has(" ") || mobileUI?.input.work) && canPlay();
+  working = wantsWork() && canPlay();
   if (working && !workStarted) {
     rememberWork();
     v.bladeDatum = terrain.sample(v.x, v.z);
   }
   if (!working) v.bladeDatum = terrain.sample(v.x, v.z);
+  const bladePoint = toolPosition(v);
+  if (
+    !isMobile() &&
+    v.id === "dozer" &&
+    v.unload &&
+    roadPlan?.contains(bladePoint.x, bladePoint.z, 2)
+  )
+    v.bladeDatum = roadPlan.heightAt(bladePoint.x, bladePoint.z);
   workStarted = working;
-  if (working) operate(v, dt);
+  if (working) operate(v, dt, motion.distance);
+  if (!isMobile() && (keys.has("q") || keys.has("e")) && cameraMode !== 2) {
+    cameraMode = 2;
+    updateDesktopButtons();
+  }
   if (keys.has("q")) cameraAngle += dt * 1.3;
   if (keys.has("e")) cameraAngle -= dt * 1.3;
   vehicles.forEach((m, i) => {
@@ -856,7 +970,23 @@ const cameraTarget = new T.Vector3(-29, 0, 26),
   lookTarget = new T.Vector3();
 function updateCamera(dt, instant = false) {
   const v = vehicles[selected];
-  lookTarget.set(v.x, terrain.sample(v.x, v.z) + 0.7, v.z);
+  const focus = !isMobile() && cameraMode === 0 ? toolPosition(v) : v;
+  lookTarget.set(focus.x, terrain.sample(focus.x, focus.z) + 0.65, focus.z);
+  if (!isMobile() && cameraMode !== 2 && !mapView) {
+    cameraAngle = T.MathUtils.damp(
+      cameraAngle,
+      v.angle + (cameraMode === 0 ? 0.85 : 0.12),
+      3,
+      dt,
+    );
+    cameraPitch = T.MathUtils.damp(
+      cameraPitch,
+      cameraMode === 0 ? 0.61 : 0.5,
+      3,
+      dt,
+    );
+  }
+  roadGuide.group.visible = !!roadPlan && !isMobile() && started;
   cameraTarget.lerp(lookTarget, instant ? 1 : 1 - Math.exp(-dt * 4));
   const dist = mapView ? 65 : cameraDistance;
   const horizontal = mapView ? 0.12 : Math.cos(cameraPitch) * 1.1,
@@ -952,6 +1082,45 @@ function updateUI() {
     terrain.mat[cell] === 0
       ? "Zemin: toprak"
       : `${MATERIALS[terrain.mat[cell]].name} · ${comp < 0.25 ? "gevşek / pürüzlü" : comp < 0.8 ? "işleniyor" : "sıkıştırılmış / düzgün"}`;
+  updateRoadUI();
+  if (!isMobile()) {
+    const delta = roadPlan?.contains(contact.x, contact.z, 1)
+      ? terrain.sample(contact.x, contact.z) -
+        roadPlan.heightAt(contact.x, contact.z) -
+        (terrain.mat[cell] === 3 ? 0.1 : 0)
+      : null;
+    $("probeMaterial").textContent =
+      MATERIALS[terrain.mat[cell]].name +
+      (terrain.mat[cell] === 3
+        ? comp < 0.85
+          ? " · gevşek"
+          : " · bitmiş"
+        : "");
+    $("probeCompact").textContent = "Sıkışma: %" + Math.round(comp * 100);
+    $("probeGrade").textContent =
+      delta === null
+        ? "Kot: serbest"
+        : Math.abs(delta) < 0.075
+          ? "Kot: uygun"
+          : (delta > 0 ? "Yüksek +" : "Eksik ") +
+            Math.round(delta * 100) +
+            " cm";
+    $("probeHint").textContent =
+      v.id === "dozer"
+        ? roadPlan?.contains(contact.x, contact.z, 2) && v.unload
+          ? "Bıçak yol kotunu izliyor · J/K ile ince ayar"
+          : "X ile tesviyeye geç · J/K bıçak kotu"
+        : v.id === "roller"
+          ? "İkinci şeridi de geç · hedef %85 ve üzeri"
+          : v.id === "paver"
+            ? "10 cm serim · dalgaları silindir bitirir"
+            : v.id === "truck"
+              ? v.unload
+                ? "Şerit dökümü · ilerle ve çalıştır · R doldur"
+                : "Yığın dökümü · X ile şeride geç"
+              : v.tool;
+    $("equipmentBtn").setAttribute("aria-pressed", String(working));
+  }
   $("bladeWidth").textContent = v.bladeWidth.toFixed(1) + " m";
   $("bladeHeight").textContent =
     (v.bladeOffset >= 0 ? "+" : "") + v.bladeOffset.toFixed(2) + " m";
@@ -994,6 +1163,8 @@ function save(manual = false) {
       cameraAngle,
       cameraDistance,
       cameraPitch,
+      roadPlan: roadPlan?.serialize(),
+      cameraMode,
       displayTouch: mobileUI?.touch ?? touchLayout,
       surfaceQuality: smoothGround?.segments,
     };
@@ -1035,6 +1206,12 @@ function load() {
     stats = {
       moved: Number.isFinite(data.stats?.moved) ? data.stats.moved : 0,
     };
+    let restoredRoad = null;
+    try {
+      restoredRoad = RoadPlan.restore(data.roadPlan);
+    } catch {}
+    setRoad(restoredRoad);
+    cameraMode = [0, 1, 2].includes(data.cameraMode) ? data.cameraMode : 0;
     createVehicles(data.vehicles);
     selected = clamp(Math.trunc(data.selected) || 0, 0, 5);
     cameraAngle = Number.isFinite(data.cameraAngle) ? data.cameraAngle : 0.68;
@@ -1061,7 +1238,9 @@ function load() {
   }
 }
 function newWorld(seed) {
+  cancelPlanning();
   terrain = new Terrain(seed);
+  setRoad(isMobile() ? null : prepareWorkshop(terrain));
   terrainInitialized = false;
   settlingClock = 0;
   stats = { moved: 0 };
@@ -1071,8 +1250,9 @@ function newWorld(seed) {
   createVehicles();
   selected = 0;
   cameraAngle = 0.68;
-  cameraDistance = 22;
-  cameraPitch = Math.PI / 4;
+  cameraDistance = isMobile() ? 22 : 15;
+  cameraPitch = isMobile() ? Math.PI / 4 : 0.61;
+  cameraMode = 0;
   mapView = false;
   rebuildScenery();
   updateTerrain();
@@ -1092,17 +1272,25 @@ function start(resume) {
   toast(
     mobileUI?.touch
       ? "Sol çubukla sür · sağdan çalıştır · araziyi sürükleyerek kamerayı döndür"
-      : "WASD ile sür · SPACE ile çalıştır · 1–6 ile makine değiştir",
+      : "WASD sür · SPACE çalıştır · X şerit/yığın · F ekipmanı açık tut",
   );
   save();
 }
 function canPlay() {
-  return started && !document.hidden && !document.querySelector("dialog[open]");
+  return (
+    started &&
+    !planning &&
+    !document.hidden &&
+    !document.querySelector("dialog[open]")
+  );
 }
 function clearKeys() {
   keys.clear();
   mobileUI?.reset();
   gestures.reset();
+  equipmentLatched = false;
+  $("equipmentBtn").setAttribute("aria-pressed", "false");
+  $("equipmentBtn").innerHTML = "Ekipmanı aç <kbd>F</kbd>";
   if (engineGain)
     engineGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.05);
   working = false;
@@ -1110,6 +1298,7 @@ function clearKeys() {
   workStarted = false;
 }
 function openDialog(id) {
+  cancelPlanning();
   clearKeys();
   document.querySelectorAll("dialog[open]").forEach((d) => {
     if (d.id !== id) d.close();
@@ -1120,10 +1309,23 @@ function openDialog(id) {
 }
 function toggleMode() {
   const v = vehicles[selected];
-  if (!["loader", "shovel", "dozer"].includes(v.id)) return;
+  if (
+    !["loader", "shovel", "dozer", ...(!isMobile() ? ["truck"] : [])].includes(
+      v.id,
+    )
+  )
+    return;
   v.unload = !v.unload;
   updateMode();
   dirty = true;
+  if (v.id === "truck") {
+    toast(
+      v.unload
+        ? "Şerit dökümü · çalıştırırken ileri sür"
+        : "Yığın dökümü · durarak dök",
+    );
+    return;
+  }
   if (v.id === "dozer") {
     toast(
       v.unload
@@ -1158,7 +1360,7 @@ function refill() {
 }
 document.addEventListener("keydown", (e) => {
   if (
-    ["INPUT", "TEXTAREA"].includes(document.activeElement?.tagName) ||
+    ["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement?.tagName) ||
     document.querySelector("dialog[open]")
   )
     return;
@@ -1170,6 +1372,10 @@ document.addEventListener("keydown", (e) => {
     e.preventDefault();
   if (!started) return;
   const k = e.key.toLowerCase();
+  if (planning) {
+    if (k === "escape") cancelPlanning();
+    return;
+  }
   keys.add(k);
   if (e.repeat) return;
   if (/^[1-6]$/.test(k)) select(+k - 1);
@@ -1181,10 +1387,21 @@ document.addEventListener("keydown", (e) => {
   if (k === "u") adjustWidth(-0.2);
   if (k === "i") adjustWidth(0.2);
   if (k === "m") mapView = !mapView;
+  if (!isMobile()) {
+    if (k === "o") cycleWorkCamera();
+    if (k === "v") cycleInspection();
+    if (k === "b") toggleWorkGear();
+    if (k === "f") toggleEquipment();
+    if (k === "escape") cancelPlanning();
+  }
   if (k === "g") grid.visible = !grid.visible;
   if (k === "h") openDialog("helpDialog");
   if (k === "z") undoWork();
   if (k === "c") {
+    if (!isMobile()) {
+      cameraMode = 1;
+      updateDesktopButtons();
+    }
     cameraAngle = vCameraHeading();
     mapView = false;
   }
@@ -1197,12 +1414,24 @@ document.addEventListener("visibilitychange", () => {
 });
 renderer.domElement.addEventListener("contextmenu", (e) => e.preventDefault());
 renderer.domElement.addEventListener("pointerdown", (e) => {
+  if (planning && !isMobile() && e.button === 0) {
+    placeRoadPoint(e);
+    return;
+  }
   if (!canPlay() || (e.pointerType === "mouse" && e.button !== 2)) return;
   e.preventDefault();
+  if (!isMobile()) {
+    cameraMode = 2;
+    updateDesktopButtons();
+  }
   gestures.start(e.pointerId, e.clientX, e.clientY);
   renderer.domElement.setPointerCapture(e.pointerId);
 });
 renderer.domElement.addEventListener("pointermove", (e) => {
+  if (planning && planDraft) {
+    previewRoadPoint(e);
+    return;
+  }
   if (!canPlay()) return;
   const delta = gestures.move(e.pointerId, e.clientX, e.clientY);
   if (!delta) return;
@@ -1304,6 +1533,11 @@ function resizeViewport() {
   camera.updateProjectionMatrix();
   renderer.setPixelRatio(currentProfile().pixelRatio);
   renderer.setSize(width, height);
+  if (isMobile() && planning) cancelPlanning();
+  updateDesktopButtons();
+  hemi.intensity = isMobile() ? 2.3 : 1.65;
+  setAtmosphere(atmosphere);
+  if (vehicles.length) updateMode();
 }
 let resizeFrame = 0;
 function scheduleResize() {
@@ -1326,6 +1560,15 @@ mobileUI = initMobileUI({
 });
 buildFleetUI();
 newWorld(3817);
+if (!isMobile()) {
+  $("arrivalBadge").textContent = "SANDSTRUCTION / YOL ATÖLYESİ 0.6";
+  $("welcomeTitle").innerHTML =
+    "Malzemeyi hisset.<br/><em>Yolunu inşa et.</em>";
+  $("welcomeDescription").textContent =
+    "24 metrelik bozuk bir hat. Kum, dozer, asfalt ve silindir. Yeni sahada yol yapmayı dene veya kendi hattını çiz.";
+  $("startBtn").innerHTML = "Yol sahasına gir <span>↗</span>";
+}
+updateDesktopButtons();
 setAtmosphere(0);
 applyArrivalContext();
 try {
@@ -1498,7 +1741,7 @@ function setAtmosphere(index) {
   sun.color.set(m.sun);
   sun.intensity = m.power;
   sun.position.set(...m.pos);
-  renderer.toneMappingExposure = m.exposure;
+  renderer.toneMappingExposure = m.exposure * (isMobile() ? 1 : 0.86);
   $("lightBtn").textContent = m.label;
 }
 function applyArrivalContext() {
@@ -1554,6 +1797,10 @@ function applyArrivalContext() {
 $("undoBtn").onclick = undoWork;
 $("lightBtn").onclick = () => setAtmosphere(atmosphere + 1);
 $("cameraBtn").onclick = () => {
+  if (!isMobile()) {
+    cameraMode = 1;
+    updateDesktopButtons();
+  }
   cameraAngle = vCameraHeading();
   mapView = false;
 };
@@ -1602,3 +1849,272 @@ $("qualityBtn").onclick = () => {
   updateQualityLabel();
 };
 updateQualityLabel();
+
+function setRoad(plan) {
+  roadPlan = plan;
+  roadMeasure = null;
+  lastRoadUI = -1;
+  roadGuide.setPlan(plan);
+  smoothGround?.setRoad(plan);
+  if (plan) {
+    $("roadWidth").value = String(plan.width);
+    roadGuide.update(terrain, inspectionMode === 2);
+  }
+  dirty = true;
+}
+function updateRoadUI(force = false) {
+  if (isMobile()) return;
+  if (!force && elapsed - lastRoadUI < 0.4) return;
+  lastRoadUI = elapsed;
+  roadMeasure = roadPlan?.measure(terrain) || null;
+  $("roadSummary").textContent = roadPlan
+    ? `${roadPlan.length.toFixed(0)} m × ${roadPlan.width.toFixed(1)} m · ${roadMeasure.missing.toFixed(1)} m³ dolgu eksiği`
+    : "Arazide iki nokta seçerek kendi hattını çiz.";
+  const stages = $("roadStages").querySelectorAll("[data-stage]");
+  stages.forEach((el, i) => {
+    const amount = roadMeasure?.ratios[i] || 0;
+    el.querySelector("output").textContent = roadMeasure
+      ? "%" + Math.round(amount * 100)
+      : "—";
+    el.querySelector("em").style.width = amount * 100 + "%";
+    el.classList.toggle("current", i === roadMeasure?.stage);
+  });
+  $("roadStations").innerHTML = (roadMeasure?.stations || [])
+    .map(
+      (v) =>
+        `<i style="background:${v > 0.9 ? "#8fba93" : v > 0.2 ? "#bcaa64" : "#3b4d40"}"></i>`,
+    )
+    .join("");
+  const advice = [
+    "Kamyonla çukurları doldur. Şerit dökümü için X; yük bitince R.",
+    "Dozerle tesviye yap. Bıçak hat kotunu izler; fazlalık öne taşınır.",
+    "Asfalt sericiyle yavaşça ilerle. Arkandaki gevşek katmanı izle.",
+    "Silindirle iki kenarı da geç. Sıkışma görünümü eksik yerleri gösterir.",
+    "Yol hazır. Üzerinden sür, yeni bir hat çiz veya serbestçe devam et.",
+  ];
+  $("roadAdvice").textContent = roadMeasure
+    ? advice[roadMeasure.stage]
+    : "Kılavuz olmadan da bütün makineler kullanılabilir.";
+  const machine = roadMeasure ? [0, 2, 4, 3, 3][roadMeasure.stage] : 0;
+  $("prepareMachineBtn").textContent = MACHINES[machine].short + " hazırla ↗";
+  for (const id of [
+    "prepareMachineBtn",
+    "roadStartBtn",
+    "roadEndBtn",
+    "clearRoadBtn",
+  ]) {
+    $(id).disabled = !roadPlan;
+  }
+  if (roadPlan) roadGuide.update(terrain, inspectionMode === 2);
+}
+function updateDesktopButtons() {
+  $("workCameraBtn").innerHTML =
+    "Kamera: " + ["İş", "Takip", "Serbest"][cameraMode] + " <kbd>O</kbd>";
+  $("inspectionBtn").innerHTML =
+    "Görünüm: " +
+    ["Malzeme", "Sıkışma", "Kot"][inspectionMode] +
+    " <kbd>V</kbd>";
+  $("workGearBtn").innerHTML =
+    (workGear ? "İş vitesi açık" : "Serbest sürüş") + " <kbd>B</kbd>";
+  $("workGearBtn").setAttribute("aria-pressed", String(workGear));
+  $("equipmentBtn").innerHTML =
+    (equipmentLatched ? "Ekipmanı kapat" : "Ekipmanı aç") + " <kbd>F</kbd>";
+  $("equipmentBtn").setAttribute("aria-pressed", String(equipmentLatched));
+  if (smoothGround) {
+    smoothGround.uniforms.uDesktopDetail.value = isMobile() ? 0 : 1;
+    smoothGround.uniforms.uInspection.value = isMobile() ? 0 : inspectionMode;
+  }
+}
+function cycleWorkCamera() {
+  cancelPlanning();
+  cameraMode = (cameraMode + 1) % 3;
+  mapView = false;
+  if (cameraMode === 0) cameraDistance = 15;
+  updateDesktopButtons();
+}
+function cycleInspection() {
+  inspectionMode = (inspectionMode + 1) % 3;
+  updateDesktopButtons();
+  updateRoadUI(true);
+  toast(
+    [
+      "Malzeme görünümü",
+      "Sıkışma: turuncu gevşek · yeşil sıkışmış",
+      "Kot: mavi eksik · turuncu fazla · yeşil uygun",
+    ][inspectionMode],
+  );
+}
+function toggleWorkGear() {
+  workGear = !workGear;
+  updateDesktopButtons();
+}
+function toggleEquipment() {
+  if (!canPlay()) return;
+  equipmentLatched = !equipmentLatched;
+  updateDesktopButtons();
+}
+function cancelPlanning() {
+  if (planning) mapView = false;
+  planning = false;
+  planDraft = null;
+  planningLine.visible = false;
+  document.body.classList.remove("planning");
+  $("planRoadBtn").textContent = "＋ Hat çiz";
+}
+function pointerTerrain(e) {
+  const r = renderer.domElement.getBoundingClientRect(),
+    raycaster = new T.Raycaster();
+  raycaster.setFromCamera(
+    new T.Vector2(
+      ((e.clientX - r.left) / r.width) * 2 - 1,
+      1 - ((e.clientY - r.top) / r.height) * 2,
+    ),
+    camera,
+  );
+  return intersectTerrain(raycaster.ray, terrain);
+}
+function placeRoadPoint(e) {
+  const p = pointerTerrain(e);
+  if (!p) {
+    toast("Saha içinde bir nokta seç.");
+    return;
+  }
+  if (!planDraft) {
+    planDraft = { ...p, h: p.h + 0.18 };
+    toast("Şimdi bitişi seç · 6–60 m · ESC iptal");
+    return;
+  }
+  try {
+    setRoad(
+      new RoadPlan(
+        planDraft,
+        { ...p, h: p.h + 0.18 },
+        Number($("roadWidth").value),
+      ),
+    );
+    cancelPlanning();
+    mapView = false;
+    cameraMode = 0;
+    updateRoadUI(true);
+    toast("Hat çizildi. Arazi değişmedi; çalışmaya başlayabilirsin.");
+  } catch (error) {
+    toast(error.message);
+  }
+}
+function previewRoadPoint(e) {
+  const p = pointerTerrain(e);
+  if (!p) return;
+  const positions = planningLine.geometry.attributes.position;
+  positions.setXYZ(0, planDraft.x, planDraft.h + 0.1, planDraft.z);
+  positions.setXYZ(1, p.x, p.h + 0.28, p.z);
+  positions.needsUpdate = true;
+  planningLine.visible = true;
+}
+function alignToRoad(atEnd = false) {
+  if (!roadPlan) return false;
+  clearKeys();
+  cancelPlanning();
+  const v = vehicles[selected],
+    placement = roadPlacement(roadPlan, v, atEnd, Number($("roadLane").value));
+  const { x, z, angle } = placement;
+  if (
+    Math.abs(x) > 45 ||
+    Math.abs(z) > 45 ||
+    [...vehicles, ...obstacles].some(
+      (o) => o !== v && Math.hypot(x - o.x, z - o.z) < 1.5 + (o.radius ?? 1.45),
+    )
+  ) {
+    toast("Bu konum dolu veya sınır dışında. Diğer uç/şeridi seç.");
+    return false;
+  }
+  v.x = x;
+  v.z = z;
+  v.angle = angle;
+  v.speed = 0;
+  v.bladeDatum = placement.datum;
+  if (v.id === "dozer") {
+    v.unload = true;
+    v.bladeOffset = 0;
+  }
+  if (v.id === "truck") v.unload = true;
+  mapView = false;
+  cameraMode = 0;
+  cameraDistance = 15;
+  cameraAngle = angle + 0.85;
+  updateMode();
+  updateDesktopButtons();
+  updateCamera(1, true);
+  dirty = true;
+  return true;
+}
+$("planRoadBtn").onclick = () => {
+  if (planning) {
+    cancelPlanning();
+    return;
+  }
+  clearKeys();
+  planning = true;
+  planDraft = null;
+  mapView = true;
+  document.body.classList.add("planning");
+  $("planRoadBtn").textContent = "Çizimi iptal et";
+  toast("Arazide yolun başlangıcına tıkla · ESC iptal");
+};
+$("clearRoadBtn").onclick = () => {
+  cancelPlanning();
+  setRoad(null);
+  updateRoadUI(true);
+  toast("Kılavuz kaldırıldı. Yaptığın yol arazide duruyor.");
+};
+$("roadWidth").onchange = () => {
+  if (roadPlan) {
+    setRoad(
+      new RoadPlan(roadPlan.start, roadPlan.end, Number($("roadWidth").value)),
+    );
+    updateRoadUI(true);
+  }
+};
+$("roadStartBtn").onclick = () => alignToRoad(false);
+$("roadEndBtn").onclick = () => alignToRoad(true);
+$("prepareMachineBtn").onclick = () => {
+  if (!roadPlan) return;
+  clearKeys();
+  const previous = selected,
+    old = vehicles[previous],
+    before = { x: old.x, z: old.z, angle: old.angle };
+  let parking = null;
+  for (const x of [7, 11, 15])
+    for (let z = 24; z >= -24; z -= 5.4) {
+      if (
+        !parking &&
+        ![...vehicles, ...obstacles].some(
+          (o) =>
+            o !== old &&
+            Math.hypot(x - o.x, z - o.z) < 1.5 + (o.radius ?? 1.45),
+        )
+      )
+        parking = { x, z };
+    }
+  if (!parking) {
+    toast("Park alanı dolu. Makineleri elle yerleştirebilirsin.");
+    return;
+  }
+  Object.assign(old, parking, { angle: 0 });
+  roadMeasure = roadPlan.measure(terrain);
+  const i = [0, 2, 4, 3, 3][roadMeasure.stage];
+  select(i);
+  if (alignToRoad(false)) {
+    const next = vehicles[i];
+    if (next.capacity) next.cargo = next.capacity;
+    toast(next.name + " hazır · SPACE çalıştır · WASD sür");
+  } else {
+    Object.assign(old, before);
+    select(previous);
+  }
+};
+$("workCameraBtn").onclick = cycleWorkCamera;
+$("inspectionBtn").onclick = cycleInspection;
+$("workGearBtn").onclick = toggleWorkGear;
+$("equipmentBtn").onclick = toggleEquipment;
+
+$("desktopHelpBtn").onclick = () => openDialog("helpDialog");

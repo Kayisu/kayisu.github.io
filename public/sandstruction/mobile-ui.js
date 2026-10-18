@@ -1,4 +1,4 @@
-import { TouchInput } from "./touch-input.js?v=0.5.0";
+import { TouchInput } from "./touch-input.js?v=0.6.0";
 
 export const MOBILE_QUERY = "(any-pointer: coarse), (max-width: 900px)";
 

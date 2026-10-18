@@ -9,12 +9,13 @@
     <meta name="theme-color" content="#24372e" />
     <meta
       name="description"
-      content="Sandstruction: bu sayfa henüz hazır değil. Madem buradasın, iş makineleriyle bir şeyler inşa et. Sandbox v0.5."
+      content="Sandstruction: bu sayfa henüz hazır değil. Madem buradasın, iş makineleriyle bir şeyler inşa et. Sandbox v0.6."
     />
     <link rel="canonical" href="https://kayisu.github.io/sandstruction/" />
     <title>Sandstruction — Sayfa yapılıyor. Sen de bir şeyler yap.</title>
-    <link rel="stylesheet" href="./style.css?v=0.5.0" />
-    <link rel="stylesheet" href="./mobile.css?v=0.5.0" />
+    <link rel="stylesheet" href="./style.css?v=0.6.0" />
+    <link rel="stylesheet" href="./mobile.css?v=0.6.0" />
+    <link rel="stylesheet" href="./desktop.css?v=0.6.0" />
   </head>
   <body>
     <div id="world" aria-label="3 boyutlu iş makinesi oyun alanı"></div>
@@ -30,7 +31,7 @@
       >
       <div class="session">
         <span class="live-dot"></span> SERBEST SAHA <span class="sep">/</span
-        ><span id="seedLabel">SAHA 3817</span><span class="version">v0.5</span>
+        ><span id="seedLabel">SAHA 3817</span><span class="version">v0.6</span>
       </div>
       <button
         id="mobileMenuBtn"
@@ -61,6 +62,86 @@
         </button>
       </div>
     </header>
+    <nav class="workbar desktop-only" aria-label="Yol çalışma araçları">
+      <button id="workCameraBtn">Kamera: İş <kbd>O</kbd></button>
+      <button id="inspectionBtn">Görünüm: Malzeme <kbd>V</kbd></button>
+      <button id="workGearBtn" aria-pressed="true">
+        İş vitesi açık <kbd>B</kbd>
+      </button>
+      <button id="equipmentBtn" aria-pressed="false">
+        Ekipmanı aç <kbd>F</kbd>
+      </button>
+    </nav>
+    <aside class="road-desk desktop-only" aria-label="Yol atölyesi">
+      <div class="desk-kicker">
+        <span class="live-dot"></span> YOL ATÖLYESİ <span>06</span>
+      </div>
+      <h2>Yaptığın yol,<br /><em>gözünün önünde.</em></h2>
+      <p id="roadSummary">Bir hat çiz veya serbestçe çalış.</p>
+      <div class="road-plan-actions">
+        <button id="planRoadBtn">＋ Hat çiz</button
+        ><button
+          id="clearRoadBtn"
+          title="Yalnızca kılavuzu kaldırır; araziyi değiştirmez"
+        >
+          Kılavuzu kaldır
+        </button>
+      </div>
+      <label class="road-width"
+        >Yol genişliği
+        <select id="roadWidth">
+          <option value="3.2">3,2 m</option>
+          <option value="4.4">4,4 m</option>
+          <option value="6">6 m</option>
+        </select></label
+      >
+      <div class="road-stages" id="roadStages">
+        <div data-stage="0">
+          <span>01</span><b>Dolgu</b><output>—</output><i><em></em></i>
+        </div>
+        <div data-stage="1">
+          <span>02</span><b>Tesviye</b><output>—</output><i><em></em></i>
+        </div>
+        <div data-stage="2">
+          <span>03</span><b>Asfalt</b><output>—</output><i><em></em></i>
+        </div>
+        <div data-stage="3">
+          <span>04</span><b>Sıkıştırma</b><output>—</output><i><em></em></i>
+        </div>
+      </div>
+      <div
+        id="roadStations"
+        class="road-stations"
+        aria-label="Yol boyunca tamamlanan bölümler"
+      ></div>
+      <p id="roadAdvice" class="road-advice">
+        Kum veya çakıl dökerek çukurları doldur.
+      </p>
+      <button id="prepareMachineBtn" class="desk-primary">
+        Önerilen makineyi hazırla ↗
+      </button>
+      <div class="road-align">
+        <select id="roadLane" aria-label="Çalışma şeridi">
+          <option value="0">Orta</option>
+          <option value="-1">Sol kenar</option>
+          <option value="1">Sağ kenar</option></select
+        ><button id="roadStartBtn">Başa al</button
+        ><button id="roadEndBtn">Sona al</button>
+      </div>
+      <small>Sandbox serbest. Bu hat yalnızca çalışma kılavuzu.</small
+      ><button id="desktopHelpBtn" class="desk-help">
+        Kontroller ve yol rehberi · H
+      </button>
+    </aside>
+    <section
+      class="surface-probe desktop-only"
+      aria-label="Alet altındaki zemin"
+    >
+      <span class="probe-label">ALETİN ALTINDA</span
+      ><b id="probeMaterial">Toprak</b> <span id="probeGrade">Kot: serbest</span
+      ><span id="probeCompact">Sıkışma: %0</span>
+      <span id="probeHint">Malzemeyi dök, sonra yay.</span>
+    </section>
     <aside class="guide">
       <span class="eyebrow">ACELE ETME. BURASI SENİN.</span>
       <h1>Bir yol bul.<br /><em>Ya da bir yol yap.</em></h1>
@@ -249,7 +330,7 @@
       class="mobile-sheet menu-sheet"
     >
       <button class="close" data-close aria-label="Kapat">×</button>
-      <span class="eyebrow">SANDSTRUCTION / v0.5</span>
+      <span class="eyebrow">SANDSTRUCTION / v0.6</span>
       <h2>Saha menüsü</h2>
       <div id="menuSheetBody"></div>
       <div class="menu-extras">
@@ -265,7 +346,7 @@
     <div id="overlay" class="overlay">
       <section class="welcome modal">
         <span class="eyebrow" id="arrivalBadge"
-          >SANDSTRUCTION / SANDBOX 0.5</span
+          >SANDSTRUCTION / SANDBOX 0.6</span
         >
         <h2 id="welcomeTitle">
           Sayfa yapılıyor.<br /><em>Sen de bir şeyler yap.</em>
@@ -311,6 +392,26 @@
           Arazide tek parmakla kamerayı döndür; iki parmağını açıp kapatarak
           yakınlaş. +/− düğmeleri de kullanılabilir. Alet ayarları: malzeme,
           doldurma, mod, dozer yüksekliği/genişliği, geri al ve kamera hizalama.
+        </p>
+      </div>
+      <div class="desktop-help">
+        <b>Masaüstü yol atölyesi</b>
+        <p>
+          Yeni sahada 24 metrelik bozuk yol hazır. Kamyonla şerit dök, dozerle
+          kota getir, asfalt ser ve silindirle iki kenardan geç. Hat çiz
+          düğmesiyle kendi yolunu da planlayabilirsin.
+        </p>
+        <p>
+          Soldaki yüzdeler gerçek zemin durumunu ölçer. Önerilen makineyi
+          hazırla, önceki makineyi park edip yenisini hattın başına getirir. Yük
+          bitince R ile doldur; alet hattın sonunu geçene kadar çalış. Silindir
+          için Sol/Sağ kenarı seçip Başa al düğmesini kullan.
+        </p>
+        <p>
+          O: iş/takip/serbest kamera. V: malzeme/sıkışma/kot. B: yavaş iş
+          vitesi. F: ekipmanı açık tut. Kot görünümünde mavi eksik, turuncu
+          fazla, yeşil uygun yüksekliği gösterir. Yeni hat çizerken ESC iptal
+          eder.
         </p>
       </div>
       <ol class="instructions">
@@ -380,6 +481,6 @@
         >Mevcut saha ve otomatik kaydın yeni sahayla değiştirilir.</small
       >
     </dialog>
-    <script type="module" src="./game.js?v=0.5.0"></script>
+    <script type="module" src="./game.js?v=0.6.0"></script>
   </body>
 </html>

@@ -2,9 +2,21 @@
 
 **Sayfa yapılıyor. Sen de bir şeyler yap.**
 
-Version **0.5.0**. A browser construction sandbox and a playable destination for unfinished or missing portfolio pages.
+Version **0.6.0**. A browser construction sandbox and a playable destination for unfinished or missing portfolio pages.
 
 Serve `dist/` with a static HTTP server. No build or install required. Three.js r160 is vendored under MIT. Run `npm test` for terrain conservation, driving/collision, save migration, model geometry and entrypoint checks.
+
+## Desktop road workshop in 0.6
+
+Desktop rendering keeps the continuous cubic height surface but reconstructs material identity separately: sharpened cubic coverage, rounded shoulders, world-space sand/gravel/asphalt detail and compaction-sensitive asphalt relief/colour. Height smoothing no longer implies broad material-colour blur. Desktop render resolution has an 8.4-million-pixel budget; the mobile budget and existing colour path remain unchanged.
+
+A fresh desktop world includes a 24 m damaged practice strip. An optional two-click road plan follows an endpoint grade and measures fill, grading, asphalt coverage and finishing from actual terrain cells. Guidance never paints or repairs the terrain. Existing saves keep their worlds; draw a guide in them or deliberately choose a new field to get the workshop. Plans are optional extra save data, with old saves still accepted.
+
+Moving strip dumping, mass-conserving plane grading and a distance-metered nominal 10 cm asphalt pass lead into roller finishing. The dozer backfills low areas and pushes remaining material ahead. The work gear limits machine speed for controlled passes. The workshop helper parks the current machine and aligns the next tool with a stake, with centre/left/right lanes for wider roads and roller passes. Cargo stays finite; R refills it. Drive the working end beyond the final stake to finish the last patch.
+
+O selects working-end/follow/free cameras. V switches material/compaction/grade inspection. B toggles work speed; F latches the tool. Pointer orbit and Q/E select free camera. The live probe reads the actual contact area's material, target-height difference and compaction. The sandbox remains fully freeform, with six machines, blade-width adjustment and stroke undo.
+
+Tests include the full construction sequence using vehicle physics at 30 and 60 FPS, finite-cargo refills, settling and bulk-volume conservation, plus material masks, optional plan restoration, sloped grading, tool alignment and surface picking. Shader snippets compile with the available software OpenGL compiler; a real browser/WebGL visual and performance session was unavailable. This is a heightfield workshop, not a full layered-material or rigid-body simulator.
 
 ## Touch flow in 0.5
 
@@ -48,7 +60,19 @@ v0.1–v0.3 saves migrate on the same origin. Sites and GitHub Pages are differe
 
 Original prototype; no commercial assets or game binaries were used. Terrain is a heightfield with a dominant surface material, not discrete grains or full strata. Mixed bucket contents use one dominant material. Collision bodies are circles, not full rigid bodies. Some scenery is decorative. Water is visual with no fluid simulation. Excavation floor: −3 m. Mission mode and an autonomous delivery vehicle are deferred.
 
+
 # Changelog
+
+## 0.6.0 — Desktop road workshop
+
+- Separate crisp material coverage and procedural sand/gravel/asphalt shading from the smooth height surface.
+- Closer working-end camera, follow/free modes and a higher desktop render-pixel budget.
+- Optional road plans, actual grade/compaction inspection and four measured construction stages.
+- A fresh-world 24 m practice strip; restored worlds are preserved.
+- Distance-metered strip dumping and asphalt laying; conservative cut/backfill/push grading.
+- Work-speed limits, equipment latch, tool-to-stake placement and roller lane selection.
+- Desktop road workbench, contact probe and task-specific help; mobile flow retained.
+- Optional saved road/camera state, with v1–v4 worlds still readable.
 
 ## 0.5.0 — Mobile flow
 

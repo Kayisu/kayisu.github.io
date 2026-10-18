@@ -90,11 +90,11 @@ export function renderProfile({
   cores = 8,
 }) {
   const area = Math.max(1, width * height),
-    budget = touch ? 1200000 : 2800000;
+    budget = touch ? 1200000 : 8400000;
   return {
     pixelRatio: Math.max(
       0.75,
-      Math.min(dpr, touch ? 1.5 : 1.75, Math.sqrt(budget / area)),
+      Math.min(dpr, touch ? 1.5 : 2, Math.sqrt(budget / area)),
     ),
     segments: touch ? (memory <= 4 || cores <= 4 ? 256 : 512) : 768,
     shadowSize: touch ? 1024 : 2048,

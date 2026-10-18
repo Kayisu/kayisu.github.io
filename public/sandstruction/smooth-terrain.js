@@ -1,6 +1,7 @@
 import * as T from "./vendor/three.module.js";
-import { N, SIZE, CELL } from "./terrain.js?v=0.5.0";
-import { SurfaceField } from "./surface-field.js?v=0.5.0";
+import { N, SIZE, CELL } from "./terrain.js?v=0.6.0";
+import { SurfaceField } from "./surface-field.js?v=0.6.0";
+import { ROAD_MATERIAL_GLSL } from "./road-material.js?v=0.6.0";
 export const SURFACE_QUALITIES = [256, 512, 768, 1024];
 const constants = `const float SS_N=${N.toFixed(1)}; const float SS_SIZE=${SIZE.toFixed(1)}; const float SS_CELL=${CELL.toFixed(8)}; const float SS_TEX=${(N + 1).toFixed(1)};`;
 const weights = `vec4 SS_weights(float t){float a=1.0-t;float t2=t*t;float t3=t2*t;return vec4(a*a*a,3.0*t3-6.0*t2+4.0,-3.0*t3+3.0*t2+3.0*t+1.0,t3)/6.0;}`;
@@ -56,25 +57,27 @@ export function configureSurfaceShader(shader, uniforms) {
     "#include <begin_vertex>",
     "#include <begin_vertex>\ntransformed.y=ssTerrain.height;vSurfaceGrid=clamp((position.xz+vec2(SS_SIZE*0.5))/SS_CELL,vec2(0.0),vec2(SS_N));vSurfaceCompaction=ssTerrain.compaction;",
   );
-  shader.fragmentShader = SURFACE_FRAGMENT_GLSL + shader.fragmentShader;
+  shader.fragmentShader =
+    SURFACE_FRAGMENT_GLSL + ROAD_MATERIAL_GLSL + shader.fragmentShader;
   shader.fragmentShader = shader.fragmentShader.replace(
     "#include <color_fragment>",
-    "#include <color_fragment>\ndiffuseColor.rgb*=SS_color(vSurfaceGrid);",
+    "#include <color_fragment>\nRD_Surface ssRoad;if(uDesktopDetail>.5){ssRoad=RD_read(vSurfaceGrid,SS_color(vSurfaceGrid));diffuseColor.rgb*=ssRoad.color;}else{diffuseColor.rgb*=SS_color(vSurfaceGrid);}",
   );
   shader.fragmentShader = shader.fragmentShader.replace(
     "#include <roughnessmap_fragment>",
-    "#include <roughnessmap_fragment>\nroughnessFactor*=mix(1.0,0.68,vSurfaceCompaction);",
+    "#include <roughnessmap_fragment>\nroughnessFactor*=uDesktopDetail>.5?ssRoad.roughness:mix(1.0,0.68,vSurfaceCompaction);",
   );
   shader.fragmentShader = shader.fragmentShader.replace(
     "#include <normal_fragment_maps>",
     T.ShaderChunk.normal_fragment_maps.replace(
       "dHdxy_fwd()",
-      "dHdxy_fwd()*mix(1.0,0.12,vSurfaceCompaction)",
-    ),
+      "dHdxy_fwd()*mix(1.0,0.12,vSurfaceCompaction)*(1.0-uDesktopDetail)",
+    ) +
+      "\nif(uDesktopDetail>.5){normal=perturbNormalArb(-vViewPosition,normal,vec2(dFdx(ssRoad.relief),dFdy(ssRoad.relief)),faceDirection);}",
   );
 }
 export class SmoothTerrain {
-  constructor(blend, detailTexture, segments = 768) {
+  constructor(blend, detailTexture, segments = 768, detailed = false) {
     this.blend = blend;
     this.field = new SurfaceField();
     this.heightTexture = new T.DataTexture(
@@ -96,11 +99,26 @@ export class SmoothTerrain {
     );
     this.colorTexture.minFilter = this.colorTexture.magFilter = T.LinearFilter;
     this.colorTexture.generateMipmaps = false;
-    const uniforms = {
+    this.materialTexture = new T.DataTexture(
+      this.field.material,
+      N + 1,
+      N + 1,
+      T.RGBAFormat,
+      T.UnsignedByteType,
+    );
+    this.materialTexture.minFilter = this.materialTexture.magFilter =
+      T.LinearFilter;
+    this.materialTexture.generateMipmaps = false;
+    const uniforms = (this.uniforms = {
+      uDesktopDetail: { value: detailed ? 1 : 0 },
+      uInspection: { value: 0 },
+      uRoadLine: { value: new T.Vector4() },
+      uRoadGrade: { value: new T.Vector4() },
+      uSurfaceMaterial: { value: this.materialTexture },
       uSurfaceField: { value: this.heightTexture },
       uSurfaceColor: { value: this.colorTexture },
       uTerrainBlend: blend,
-    };
+    });
     this.material = new T.MeshStandardMaterial({
       color: 0xffffff,
       roughness: 1,
@@ -112,11 +130,25 @@ export class SmoothTerrain {
     this.material.onBeforeCompile = (shader) =>
       configureSurfaceShader(shader, uniforms);
     this.material.customProgramCacheKey = () =>
-      "sandstruction-cubic-surface-v04";
+      "sandstruction-road-material-v06";
     this.mesh = new T.Mesh(new T.BufferGeometry(), this.material);
     this.mesh.receiveShadow = true;
     this.mesh.frustumCulled = false;
     this.setQuality(segments);
+  }
+  setRoad(plan) {
+    this.uniforms.uRoadLine.value.set(
+      plan?.start.x || 0,
+      plan?.start.z || 0,
+      plan?.dx || 0,
+      plan?.dz || 0,
+    );
+    this.uniforms.uRoadGrade.value.set(
+      plan?.start.h || 0,
+      plan?.length || 0,
+      plan?.width || 0,
+      plan?.slope || 0,
+    );
   }
   setQuality(segments) {
     this.segments = SURFACE_QUALITIES.includes(segments) ? segments : 768;
@@ -132,7 +164,10 @@ export class SmoothTerrain {
   }
   update(terrain, instant = false) {
     this.field.update(terrain, this.blend.value, instant);
-    this.heightTexture.needsUpdate = this.colorTexture.needsUpdate = true;
+    this.heightTexture.needsUpdate =
+      this.colorTexture.needsUpdate =
+      this.materialTexture.needsUpdate =
+        true;
     this.blend.value = 0;
   }
 }

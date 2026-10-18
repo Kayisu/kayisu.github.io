@@ -1,4 +1,4 @@
-import { sampleSpline } from "./cubic-surface.js?v=0.5.0";
+import { sampleSpline } from "./cubic-surface.js?v=0.6.0";
 export const N = 256,
   SIZE = 96,
   CELL = SIZE / N;
@@ -262,6 +262,87 @@ export class Terrain {
     for (const i of sorted)
       this.add(i, Math.max(0, level - this.h[i]), material);
     return volume;
+  }
+  spreadLayer(x, z, angle, width, depth, volume, material) {
+    if (volume <= 0) return 0;
+    const dx = -Math.sin(angle),
+      dz = -Math.cos(angle),
+      cells = this.footprint(x, z, angle, width, depth);
+    const weights = cells.map(([i]) => {
+        const [wx, wz] = this.coord(i),
+          side = Math.abs((wx - x) * dz - (wz - z) * dx),
+          front = Math.abs((wx - x) * dx + (wz - z) * dz);
+        return (
+          clamp((width / 2 - side) / 0.18, 0, 1) *
+          clamp((depth / 2 - front) / 0.15, 0, 1) *
+          (material === 3
+            ? 0.65 + grain(wx, wz) * 0.7
+            : 0.95 + grain(wx, wz) * 0.1)
+        );
+      }),
+      total = weights.reduce((a, b) => a + b, 0);
+    if (!total) return 0;
+    cells.forEach(([i], k) =>
+      this.add(i, (volume * weights[k]) / total / (CELL * CELL), material),
+    );
+    this.touch(x, z, width / 2 + 1);
+    return volume;
+  }
+  // Cut at a fixed (optionally sloped) blade plane, backfill low spots, then
+  // carry the remaining windrow forward. Every removed cubic metre is placed.
+  bladeGrade(
+    x,
+    z,
+    angle,
+    target,
+    strength,
+    width = 3.2,
+    slopeX = 0,
+    slopeZ = 0,
+  ) {
+    if (strength <= 0) return 0;
+    const dx = -Math.sin(angle),
+      dz = -Math.cos(angle),
+      source = this.bladeFootprint(x, z, angle, width, 1.5);
+    const front = this.footprint(
+      clamp(x + dx * 1.5, -46, 46),
+      clamp(z + dz * 1.5, -46, 46),
+      angle,
+      width,
+      1.5,
+    );
+    if (!source.length || !front.length) return 0;
+    const height = (i) => {
+      const [wx, wz] = this.coord(i);
+      return Math.max(-3, target + (wx - x) * slopeX + (wz - z) * slopeZ);
+    };
+    const materialVolumes = [0, 0, 0, 0];
+    let removed = 0;
+    for (const [i, w] of source) {
+      const cut = Math.min(Math.max(0, this.h[i] - height(i)), strength * w);
+      if (cut <= 0) continue;
+      this.h[i] -= cut;
+      this.loose[i] = Math.max(0, this.loose[i] - cut);
+      this.compact[i] = 0;
+      this.marks[i] = 0.22;
+      removed += cut;
+      materialVolumes[this.mat[i]] += cut;
+    }
+    if (!removed) return 0;
+    const material = materialVolumes.indexOf(Math.max(...materialVolumes));
+    let remaining = removed;
+    for (const cells of [source, front]) {
+      const low = cells.map(([i]) => [i, Math.max(0, height(i) - this.h[i])]),
+        total = low.reduce((sum, [, d]) => sum + d, 0);
+      const use = Math.min(remaining, total);
+      if (use > 0)
+        for (const [i, d] of low) this.add(i, (use * d) / total, material);
+      remaining -= use;
+    }
+    if (remaining > 0)
+      this.fillLowest(front, remaining * CELL * CELL, material);
+    this.touch(x, z, width / 2 + 3);
+    return removed * CELL * CELL;
   }
   bladeFootprint(x, z, angle, width, depth) {
     width = clamp(width, 1.2, 6);

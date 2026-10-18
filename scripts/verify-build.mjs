@@ -322,9 +322,9 @@ for (const absent of [
 // Sandstruction is an isolated static game; the old island route is a redirect.
 const sandboxHtml = read(htmlPath(sandboxRoute));
 if (!sandboxHtml.includes('/sandstruction/')) fail('Legacy sandbox must link to Sandstruction');
-for (const asset of ['index.html','game.js','terrain.js','physics.js','models.js','nature.js','terrain-render.js','cubic-surface.js','smooth-terrain.js','surface-field.js','touch-input.js','mobile-ui.js','mobile.css','style.css','vendor/three.module.js','vendor/THREE-LICENSE.txt']) requireFile(`sandstruction/${asset}`);
+for (const asset of ['index.html','game.js','terrain.js','physics.js','models.js','nature.js','terrain-render.js','cubic-surface.js','smooth-terrain.js','surface-field.js','touch-input.js','mobile-ui.js','mobile.css','desktop.css','road-plan.js','road-work.js','road-guide.js','road-material.js','style.css','vendor/three.module.js','vendor/THREE-LICENSE.txt']) requireFile(`sandstruction/${asset}`);
 const gameHtml = read('sandstruction/index.html');
-if (!gameHtml.includes('Sandstruction') || !gameHtml.includes('v0.5')) fail('Sandstruction metadata/version is missing');
+if (!gameHtml.includes('Sandstruction') || !gameHtml.includes('v0.6')) fail('Sandstruction metadata/version is missing');
 for (const [route, html] of htmlByRoute) {
   if (route !== '/sandstruction/' && /(?:src|href)="[^" ]*sandstruction\/(?:game\.js|vendor\/three)/.test(html)) fail(`${route} must not load the game engine`);
 }
