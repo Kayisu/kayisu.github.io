@@ -107,7 +107,7 @@ test("surface shader hooks preserve Three normals, lighting and custom height/co
       "dHdxy_fwd()*mix(1.0,0.12,vSurfaceCompaction)",
     ),
   );
-  assert.deepEqual(SURFACE_QUALITIES, [512, 768, 1024]);
+  assert.deepEqual(SURFACE_QUALITIES, [256, 512, 768, 1024]);
 });
 test("dozer widths clamp safely, change the processed footprint and conserve mass", () => {
   assert.equal(clampBladeWidth(undefined), 3.2);

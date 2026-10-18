@@ -1,4 +1,4 @@
-import { N, CELL, MATERIALS, random } from "./terrain.js?v=0.4.0";
+import { N, CELL, MATERIALS, random } from "./terrain.js?v=0.5.0";
 const linear = (c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
 const rgb = (hex) => [
   linear(((hex >> 16) & 255) / 255),

@@ -1,0 +1,763 @@
+/* v0.5: one screen for the site, scrollable sheets for secondary tasks. */
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overscroll-behavior: none;
+}
+body {
+  position: fixed;
+  inset: 0 auto auto 0;
+  width: var(--app-width, 100%);
+  height: var(--app-height, 100dvh);
+}
+#world {
+  position: absolute;
+}
+.mobile-only {
+  display: none;
+}
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+.overlay {
+  overflow: auto;
+  padding: max(12px, env(safe-area-inset-top))
+    max(12px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom))
+    max(12px, env(safe-area-inset-left));
+}
+.welcome {
+  max-width: 100%;
+  max-height: calc(var(--app-height, 100dvh) - 32px);
+  overflow: auto;
+}
+dialog {
+  max-height: calc(var(--app-height, 100dvh) - 32px);
+  overscroll-behavior: contain;
+}
+.close {
+  min-width: 44px;
+  min-height: 44px;
+  right: 7px;
+  top: 7px;
+  background: var(--paper);
+  border-radius: 50%;
+}
+.camera-tools button {
+  min-width: 40px;
+  min-height: 40px;
+}
+
+.touch-layout {
+  --edge-left: max(12px, env(safe-area-inset-left));
+  --edge-right: max(12px, env(safe-area-inset-right));
+  --edge-top: max(8px, env(safe-area-inset-top));
+  --edge-bottom: max(10px, env(safe-area-inset-bottom));
+  --pad-size: clamp(108px, 19vmin, 138px);
+  --controls-height: max(calc(var(--pad-size) + 18px), 146px);
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+.touch-layout .mobile-only {
+  display: flex;
+}
+.touch-layout .topbar {
+  top: var(--edge-top);
+  left: var(--edge-left);
+  right: var(--edge-right);
+  gap: 8px;
+  z-index: 3;
+}
+.touch-layout .brand {
+  font-size: clamp(14px, 3.8vw, 20px);
+  gap: 7px;
+  letter-spacing: 0.5px;
+  min-width: 0;
+}
+.touch-layout .brand small {
+  font-size: 5px;
+  letter-spacing: 0.5px;
+}
+.touch-layout .brand-mark {
+  width: 32px;
+  height: 34px;
+  font-size: 24px;
+  flex: 0 0 auto;
+}
+.touch-layout .menu-toggle {
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 14px;
+  border-radius: 7px;
+  background: var(--paper);
+  font-size: 11px;
+  font-weight: 700;
+}
+.touch-layout .session,
+.touch-layout .guide,
+.touch-layout .route-context {
+  display: none;
+}
+.touch-layout .mobile-hud {
+  position: absolute;
+  top: calc(var(--edge-top) + 51px);
+  left: var(--edge-left);
+  gap: 4px;
+  flex-direction: column;
+  padding: 8px 11px;
+  border-radius: 7px;
+  background: #f3f1e7e8;
+  pointer-events: none;
+  max-width: calc(100% - var(--edge-left) - var(--edge-right) - 108px);
+}
+.mobile-hud b {
+  font-size: 12px;
+}
+.mobile-hud span {
+  color: var(--muted);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+.touch-layout .camera-tools {
+  top: calc(var(--edge-top) + 51px) !important;
+  bottom: auto;
+  right: var(--edge-right);
+  gap: 6px;
+}
+.touch-layout .camera-tools button {
+  width: 44px;
+  height: 44px;
+  border-radius: 7px;
+}
+.touch-layout .mobile-toolbar {
+  position: absolute;
+  bottom: calc(var(--edge-bottom) + var(--controls-height) + 12px);
+  left: var(--edge-left);
+  right: var(--edge-right);
+  gap: 6px;
+  justify-content: center;
+}
+.mobile-toolbar button {
+  flex: 1;
+  max-width: 170px;
+  min-height: 44px;
+  background: #f3f1e7f0;
+  border: 1px solid #fff8;
+  border-radius: 7px;
+  font-size: 11px;
+  padding: 8px;
+  box-shadow: 0 3px 16px #24372e12;
+}
+.mobile-toolbar button span {
+  background: #dfe4d6;
+  margin-left: 5px;
+  padding: 2px 5px;
+  border-radius: 4px;
+  font-size: 9px;
+}
+.touch-layout .mobile-controls {
+  position: absolute;
+  left: var(--edge-left);
+  right: var(--edge-right);
+  bottom: var(--edge-bottom);
+  height: var(--controls-height);
+  align-items: flex-end;
+  justify-content: space-between;
+  pointer-events: none;
+  gap: 8px;
+}
+.mobile-controls button {
+  pointer-events: auto;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.drive-control {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.drive-pad {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: var(--pad-size);
+  height: var(--pad-size);
+  border: 1px solid #ffffffb3;
+  background: #f3f1e7b8;
+  box-shadow:
+    inset 0 0 0 8px #f3f1e738,
+    0 4px 25px #24372e18;
+  border-radius: 50%;
+}
+.stick-arrows {
+  position: absolute;
+  inset: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  color: #24372e88;
+  font-size: 14px;
+}
+.stick-arrows span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  word-spacing: 24px;
+  width: 100%;
+  font-size: 13px;
+}
+.drive-thumb {
+  width: 42%;
+  height: 42%;
+  display: block;
+  background: #52634dde;
+  border: 3px solid #f3f1e7;
+  border-radius: 50%;
+  box-shadow: 0 3px 10px #24372e33;
+  pointer-events: none;
+}
+.drive-pad.pressed {
+  background: #e8c65c70;
+}
+.control-caption {
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  margin-top: 7px;
+  color: #24372ec9;
+}
+.touch-brake {
+  width: 52px;
+  height: 48px;
+  margin-bottom: 17px;
+  background: #f3f1e7e8;
+  border: 1px solid #fff9;
+  border-radius: 8px;
+  font-size: 9px;
+  font-weight: 700;
+}
+.work-control {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 17px;
+}
+.touch-work {
+  width: 88px;
+  height: 78px;
+  border-radius: 18px;
+  background: var(--ink);
+  color: var(--paper);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  box-shadow: 0 4px 20px #24372e28;
+}
+.touch-work span {
+  font-size: 11px;
+  letter-spacing: 0.3px;
+  font-weight: 700;
+}
+.touch-work small {
+  font-size: 6px;
+  letter-spacing: 1px;
+  opacity: 0.6;
+}
+.work-lock {
+  min-width: 88px;
+  min-height: 44px;
+  padding: 8px;
+  background: #f3f1e7e8;
+  border-radius: 8px;
+  border: 1px solid #fff9;
+  font-size: 10px;
+}
+.mobile-controls .pressed,
+.work-lock[aria-pressed="true"] {
+  background: var(--accent);
+  color: var(--ink);
+  border-color: var(--ink);
+}
+.touch-layout:not(.playing) .mobile-controls,
+.touch-layout:not(.playing) .mobile-toolbar,
+.touch-layout:not(.playing) .mobile-hud,
+.touch-layout:not(.playing) .camera-tools,
+.touch-layout:not(.playing) .menu-toggle {
+  display: none;
+}
+.touch-layout .working-banner {
+  top: calc(var(--edge-top) + 107px);
+  max-width: calc(100% - var(--edge-left) - var(--edge-right));
+  width: max-content;
+  font-size: 8px;
+  padding: 9px 12px;
+  text-align: center;
+  pointer-events: none;
+}
+.touch-layout #toast {
+  bottom: calc(var(--edge-bottom) + var(--controls-height) + 66px);
+  padding: 10px 14px;
+  font-size: 11px;
+  width: max-content;
+  max-width: calc(100% - 28px);
+  z-index: 6;
+}
+
+/* The original controls are moved here, so state and keyboard shortcuts stay
+   shared with desktop. Each sheet scrolls instead of clipping controls. */
+.touch-layout dialog {
+  width: min(
+    520px,
+    calc(100% - env(safe-area-inset-left) - env(safe-area-inset-right) - 24px)
+  );
+  padding: 27px 20px 20px;
+  border-radius: 16px;
+  max-height: calc(
+    var(--app-height, 100dvh) - env(safe-area-inset-top) -
+      env(safe-area-inset-bottom) - 24px
+  );
+  top: calc(var(--viewport-top, 0px) + var(--app-height, 100dvh) / 2);
+  bottom: auto;
+  margin: 0 auto;
+  transform: translateY(-50%);
+}
+.touch-layout dialog h2 {
+  font-size: 25px;
+  margin: 16px 0 8px;
+  padding-right: 24px;
+}
+.touch-layout dialog p {
+  font-size: 12px;
+}
+.touch-layout dialog button,
+.touch-layout dialog a {
+  min-height: 44px;
+}
+.touch-layout dialog kbd {
+  display: none;
+}
+.touch-layout .sheet-done {
+  margin-top: 18px;
+  font-size: 12px;
+}
+.touch-layout .instrument,
+.touch-layout .bottom,
+.touch-layout .map-panel {
+  position: static;
+  inset: auto;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: 0;
+  box-shadow: none;
+}
+.touch-layout .instrument h2 {
+  font-size: 25px;
+  margin-top: 16px;
+}
+.touch-layout .instrument p {
+  display: block;
+  font-size: 11px;
+}
+.touch-layout .machine-heading {
+  margin-top: 20px;
+  font-size: 9px;
+}
+.touch-layout .status-chip {
+  font-size: 8px;
+}
+.touch-layout .readouts {
+  gap: 8px;
+  margin-top: 18px;
+}
+.touch-layout .readouts b {
+  font-size: 25px;
+}
+.touch-layout .readouts small {
+  font-size: 8px;
+}
+.touch-layout .readouts b span {
+  font-size: 10px;
+}
+.touch-layout .material-row {
+  gap: 6px;
+  margin: 12px 0;
+}
+.touch-layout .material-row button {
+  flex: 1;
+  justify-content: center;
+  padding: 10px 8px;
+  font-size: 12px;
+}
+.touch-layout .tool-row {
+  gap: 6px;
+}
+.touch-layout .tool-row button {
+  font-size: 11px;
+  padding: 10px;
+}
+.touch-layout .tool-row button span {
+  display: none;
+}
+.touch-layout .blade-panel > span,
+.touch-layout .blade-width-row > span {
+  font-size: 9px;
+  letter-spacing: 1px;
+}
+.touch-layout .blade-panel button {
+  width: 54px;
+  height: 44px;
+  font-size: 22px;
+}
+.touch-layout .blade-panel output {
+  font-size: 20px;
+}
+.touch-layout .work-utilities {
+  margin-top: 16px;
+  gap: 8px;
+}
+.touch-layout .work-utilities button {
+  font-size: 11px;
+  padding: 10px;
+}
+.touch-layout .action-hint {
+  font-size: 11px;
+}
+.touch-layout .action-hint kbd {
+  display: none;
+}
+.touch-layout .instrument .surface-status {
+  font-size: 11px !important;
+}
+.touch-layout .fleet-head,
+.touch-layout .bottom-line {
+  display: none;
+}
+.touch-layout .fleet {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 16px;
+}
+.touch-layout .fleet button {
+  height: 83px;
+  flex-direction: column;
+  gap: 3px;
+  padding: 8px 4px;
+}
+.touch-layout .fleet svg {
+  width: 54px;
+  height: 30px;
+  margin: 0;
+}
+.touch-layout .fleet .fleet-name {
+  font-size: 11px;
+  max-width: none;
+}
+.touch-layout .fleet .fleet-role {
+  display: none;
+}
+.touch-layout .fleet .number {
+  font-size: 8px;
+}
+.touch-layout .map-panel {
+  margin-top: 20px;
+}
+.touch-layout .panel-title {
+  font-size: 10px;
+}
+.touch-layout #mapBtn {
+  font-size: 22px;
+  min-width: 44px;
+}
+.touch-layout #minimap {
+  width: min(100%, 310px);
+  height: auto;
+  aspect-ratio: 1;
+  margin: 0 auto;
+  image-rendering: auto;
+}
+.touch-layout .map-caption {
+  font-size: 10px;
+}
+.touch-layout .map-caption span:last-child {
+  display: inline;
+}
+.touch-layout .top-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 22px;
+}
+.touch-layout .top-actions button,
+.touch-layout .top-actions .home-link {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 8px !important;
+  font-size: 11px !important;
+  letter-spacing: 0 !important;
+  min-width: 0;
+}
+.touch-layout .top-actions button[hidden] {
+  display: none !important;
+}
+.touch-layout .home-link:before {
+  content: none;
+}
+.touch-layout .top-actions button span {
+  margin-left: 5px;
+}
+.menu-extras {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+.menu-extras button {
+  flex: 1;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 10px 7px;
+  font-size: 11px;
+}
+.touch-layout .key-table {
+  display: none;
+}
+.touch-layout .touch-help {
+  flex-direction: column;
+  background: #e6e8da;
+  padding: 14px;
+  border-radius: 8px;
+  margin-top: 18px;
+}
+.touch-help p {
+  margin: 10px 0 0;
+}
+.touch-layout .welcome {
+  padding: 28px 24px;
+  width: min(460px, 100%);
+  border-radius: 16px;
+  max-height: calc(
+    var(--app-height, 100dvh) - env(safe-area-inset-top) -
+      env(safe-area-inset-bottom) - 24px
+  );
+}
+.touch-layout .welcome h2 {
+  font-size: clamp(29px, 8vw, 39px);
+}
+.touch-layout .welcome-steps {
+  display: none;
+}
+.touch-layout .touch-welcome {
+  flex-direction: column;
+  gap: 7px;
+  margin-top: 20px;
+  font-size: 10px;
+}
+.touch-welcome > span {
+  display: flex;
+  gap: 8px;
+  line-height: 1.5;
+}
+.touch-welcome b {
+  min-width: 106px;
+  font-weight: 500;
+  color: var(--muted);
+}
+.touch-layout .modal-tag {
+  font-size: 7px;
+  margin-top: 18px;
+}
+.touch-layout .welcome small {
+  font-size: 10px;
+}
+.touch-layout .seed-input input {
+  font-size: 24px;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+@media (min-width: 700px) and (min-height: 600px) {
+  .touch-layout {
+    --edge-left: max(24px, env(safe-area-inset-left));
+    --edge-right: max(24px, env(safe-area-inset-right));
+    --edge-bottom: max(20px, env(safe-area-inset-bottom));
+  }
+  .touch-layout .mobile-toolbar {
+    left: 50%;
+    right: auto;
+    width: 430px;
+    transform: translateX(-50%);
+    bottom: calc(var(--edge-bottom) + 22px);
+  }
+  .touch-layout .mobile-controls {
+    pointer-events: none;
+  }
+  .touch-layout .touch-brake {
+    position: absolute;
+    bottom: 72px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .touch-layout .fleet {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-height: 500px) and (orientation: landscape) {
+  .touch-layout {
+    --pad-size: 96px;
+    --controls-height: 108px;
+    --edge-bottom: max(6px, env(safe-area-inset-bottom));
+  }
+  .touch-layout .brand small {
+    display: none;
+  }
+  .touch-layout .brand-mark {
+    height: 29px;
+    width: 28px;
+  }
+  .touch-layout .menu-toggle {
+    min-height: 44px;
+    padding-inline: 10px;
+  }
+  .touch-layout .mobile-hud {
+    top: calc(var(--edge-top) + 48px);
+    padding: 5px 9px;
+    flex-direction: row;
+    gap: 9px;
+  }
+  .touch-layout .mobile-hud b,
+  .touch-layout .mobile-hud span {
+    font-size: 9px;
+  }
+  .touch-layout .mobile-toolbar {
+    bottom: calc(var(--edge-bottom) + 10px);
+    left: calc(var(--edge-left) + 108px);
+    right: calc(var(--edge-right) + 154px);
+    width: auto;
+    max-width: 380px;
+    margin: auto;
+    transform: none;
+    gap: 5px;
+  }
+  .touch-layout .mobile-toolbar button {
+    font-size: 9px;
+    padding: 6px;
+  }
+  .touch-layout .mobile-toolbar button span {
+    display: none;
+  }
+  .touch-layout .touch-brake {
+    position: absolute;
+    bottom: 64px;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
+    height: 44px;
+  }
+  .touch-layout .work-control {
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 6px;
+    margin-bottom: 0;
+  }
+  .touch-layout .touch-work {
+    width: 76px;
+    height: 70px;
+    border-radius: 15px;
+  }
+  .touch-layout .work-lock {
+    min-width: 60px;
+    width: 60px;
+    font-size: 9px;
+  }
+  .touch-layout .camera-tools {
+    top: calc(var(--edge-top) + 49px) !important;
+  }
+  .touch-layout .working-banner {
+    top: var(--edge-top);
+    left: 50%;
+    max-width: 230px;
+    padding: 13px 10px;
+  }
+  .touch-layout #toast {
+    bottom: calc(var(--edge-bottom) + 123px);
+    max-width: 50%;
+  }
+  .touch-layout .welcome {
+    padding: 20px 24px;
+  }
+  .touch-layout .welcome h2 {
+    font-size: 29px;
+    margin: 14px 0;
+  }
+  .touch-layout .touch-welcome {
+    display: none;
+  }
+}
+@media (max-width: 350px) {
+  .touch-layout {
+    --edge-left: max(8px, env(safe-area-inset-left));
+    --edge-right: max(8px, env(safe-area-inset-right));
+    --pad-size: 102px;
+  }
+  .touch-layout .brand {
+    font-size: 13px;
+  }
+  .touch-layout .brand small {
+    display: none;
+  }
+  .touch-layout .menu-toggle {
+    padding-inline: 10px;
+  }
+  .touch-layout .touch-work {
+    width: 78px;
+  }
+  .touch-layout .work-lock {
+    min-width: 78px;
+  }
+  .touch-layout .touch-brake {
+    width: 46px;
+  }
+}
+@media (hover: none) {
+  button:hover {
+    filter: none;
+  }
+  .fleet button:hover {
+    transform: none;
+  }
+}
+
+.dialog-feedback {
+  background: #e5e9d8;
+  border-radius: 6px;
+  padding: 12px;
+  font-size: 12px;
+  color: var(--ink);
+}
+.dialog-feedback:empty {
+  display: none;
+}
+
+.touch-layout .brand {
+  min-height: 44px;
+}
+.touch-layout #mapBtn::before {
+  content: "Üstten bak ";
+  font-size: 11px;
+}
+@media (max-height: 500px) and (orientation: landscape) {
+  .touch-layout .working-banner {
+    display: none;
+  }
+}

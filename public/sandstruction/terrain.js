@@ -1,4 +1,4 @@
-import { sampleSpline } from "./cubic-surface.js?v=0.4.0";
+import { sampleSpline } from "./cubic-surface.js?v=0.5.0";
 export const N = 256,
   SIZE = 96,
   CELL = SIZE / N;

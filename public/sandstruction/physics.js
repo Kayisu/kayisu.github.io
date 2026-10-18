@@ -1,4 +1,4 @@
-import { clamp } from "./terrain.js?v=0.4.0";
+import { clamp } from "./terrain.js?v=0.5.0";
 
 export function stepVehicle(v, input, terrain, others, dt) {
   dt = clamp(dt, 0, 0.05);
@@ -10,16 +10,22 @@ export function stepVehicle(v, input, terrain, others, dt) {
       : material === 1
         ? 0.64 + terrain.compact[index] * 0.25
         : 0.85;
-  const desired = (input.forward ? 1 : 0) - (input.backward ? 1 : 0);
+  const desired = Number.isFinite(input.throttle)
+    ? clamp(input.throttle, -1, 1)
+    : (input.forward ? 1 : 0) - (input.backward ? 1 : 0);
   const braking =
-    desired && Math.sign(v.speed) !== desired && Math.abs(v.speed) > 0.2;
+    desired &&
+    Math.sign(v.speed) !== Math.sign(desired) &&
+    Math.abs(v.speed) > 0.2;
   const acceleration = v.id === "shovel" ? 8 : 2.7;
   v.speed += desired * (braking ? 7.5 : acceleration) * dt;
   if (!desired || input.brake)
     v.speed *= Math.exp(-dt * (input.brake ? 14 : 2.1));
   v.speed = clamp(v.speed, -v.max * 0.45, v.max * grip);
   if (Math.abs(v.speed) < 0.015) v.speed = 0;
-  const turn = (input.left ? 1 : 0) - (input.right ? 1 : 0);
+  const turn = Number.isFinite(input.steer)
+    ? clamp(input.steer, -1, 1)
+    : (input.left ? 1 : 0) - (input.right ? 1 : 0);
   v.steer =
     (v.steer || 0) + (turn * 0.48 - (v.steer || 0)) * (1 - Math.exp(-dt * 8));
   const oldAngle = v.angle;

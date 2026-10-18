@@ -7,17 +7,41 @@ import {
   MATERIALS,
   clamp,
   random,
-} from "./terrain.js?v=0.4.0";
+} from "./terrain.js?v=0.5.0";
 import {
   MACHINES,
   machineModel,
   fleetIcon,
   clampBladeWidth,
-} from "./models.js?v=0.4.0";
-import { stepVehicle } from "./physics.js?v=0.4.0";
-import { TerrainSurface } from "./terrain-render.js?v=0.4.0";
-import { SmoothTerrain, SURFACE_QUALITIES } from "./smooth-terrain.js?v=0.4.0";
-import { plantForest } from "./nature.js?v=0.4.0";
+} from "./models.js?v=0.5.0";
+import { stepVehicle } from "./physics.js?v=0.5.0";
+import { TerrainSurface } from "./terrain-render.js?v=0.5.0";
+import { SmoothTerrain, SURFACE_QUALITIES } from "./smooth-terrain.js?v=0.5.0";
+import { plantForest } from "./nature.js?v=0.5.0";
+import { initMobileUI, MOBILE_QUERY } from "./mobile-ui.js?v=0.5.0";
+import { CameraGestures, renderProfile } from "./touch-input.js?v=0.5.0";
+const gestures = new CameraGestures();
+let mobileUI;
+const touchLayout = matchMedia(MOBILE_QUERY).matches;
+function viewportSize() {
+  return {
+    width: Math.max(1, Math.round(window.visualViewport?.width || innerWidth)),
+    height: Math.max(
+      1,
+      Math.round(window.visualViewport?.height || innerHeight),
+    ),
+  };
+}
+function currentProfile() {
+  return renderProfile({
+    ...viewportSize(),
+    dpr: devicePixelRatio,
+    touch: mobileUI?.touch ?? touchLayout,
+    memory: navigator.deviceMemory ?? 8,
+    cores: navigator.hardwareConcurrency ?? 8,
+  });
+}
+const initialProfile = currentProfile();
 const $ = (id) => document.getElementById(id),
   keys = new Set(),
   SAVE_KEY = "sandstruction-save-v2";
@@ -43,8 +67,7 @@ let terrain = new Terrain(3817),
   cameraAngle = 0.68,
   cameraDistance = 22,
   mapView = false,
-  orbiting = false,
-  pointerX = 0,
+  cameraPitch = Math.PI / 4,
   toastTimer = 0,
   lastUI = 0,
   lastMap = 0,
@@ -65,8 +88,8 @@ try {
     "Bu cihazda 3D görüntü başlatılamadı. WebGL destekleyen güncel bir tarayıcıda donanım hızlandırmayı açıp tekrar dene.";
   throw error;
 }
-renderer.setPixelRatio(Math.min(devicePixelRatio, 1.75));
-renderer.setSize(innerWidth, innerHeight);
+renderer.setPixelRatio(initialProfile.pixelRatio);
+renderer.setSize(viewportSize().width, viewportSize().height);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = T.PCFSoftShadowMap;
 renderer.outputColorSpace = T.SRGBColorSpace;
@@ -82,7 +105,7 @@ scene.add(hemi);
 const sun = new T.DirectionalLight(0xffedc1, 3.1);
 sun.position.set(-30, 55, 20);
 sun.castShadow = true;
-sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.mapSize.set(initialProfile.shadowSize, initialProfile.shadowSize);
 Object.assign(sun.shadow.camera, {
   left: -58,
   right: 58,
@@ -145,11 +168,7 @@ ground.material.customProgramCacheKey = () => "sandstruction-smooth-ground-v03";
 ground.receiveShadow = true;
 scene.add(ground);
 const smoothGround = renderer.capabilities.floatVertexTextures
-  ? new SmoothTerrain(
-      terrainBlend,
-      groundTexture(),
-      innerWidth < 700 ? 512 : 768,
-    )
+  ? new SmoothTerrain(terrainBlend, groundTexture(), initialProfile.segments)
   : null;
 if (smoothGround) {
   ground.visible = false;
@@ -256,11 +275,12 @@ function updateWorkGuide(v) {
 }
 const dustGeo = new T.IcosahedronGeometry(0.035, 1),
   dustMat = new T.MeshStandardMaterial({ color: 0xffffff, roughness: 1 });
-const particles = new T.InstancedMesh(dustGeo, dustMat, 2000);
+const particleCount = touchLayout ? 1000 : 2000;
+const particles = new T.InstancedMesh(dustGeo, dustMat, particleCount);
 particles.instanceMatrix.setUsage(T.DynamicDrawUsage);
 particles.frustumCulled = false;
 scene.add(particles);
-const dust = Array.from({ length: 2000 }, () => ({
+const dust = Array.from({ length: particleCount }, () => ({
   life: 0,
   x: 0,
   y: -100,
@@ -500,7 +520,8 @@ function buildFleetUI() {
     .forEach((b) => (b.onclick = () => select(+b.dataset.machine)));
 }
 function select(i) {
-  keys.delete(" ");
+  clearKeys();
+  if ($("fleetSheet").open) $("fleetSheet").close();
   workStarted = false;
   selected = i;
   vehicles.forEach((v) => (v.speed = 0));
@@ -522,6 +543,7 @@ function select(i) {
 }
 function updateMode() {
   const v = vehicles[selected];
+  mobileUI?.machineChanged(v);
   $("modeBtn").innerHTML =
     (v.unload ? "Boşaltma modu" : "Kazı modu") + " <span>X</span>";
   if (v.id === "dozer")
@@ -698,11 +720,23 @@ function drive(dt) {
   const motion = stepVehicle(
     v,
     {
-      forward: keys.has("w") || keys.has("arrowup"),
-      backward: keys.has("s") || keys.has("arrowdown"),
-      left: keys.has("a") || keys.has("arrowleft"),
-      right: keys.has("d") || keys.has("arrowright"),
-      brake: keys.has("shift"),
+      throttle:
+        keys.has("w") ||
+        keys.has("arrowup") ||
+        keys.has("s") ||
+        keys.has("arrowdown")
+          ? Number(keys.has("w") || keys.has("arrowup")) -
+            Number(keys.has("s") || keys.has("arrowdown"))
+          : (mobileUI?.input.throttle ?? 0),
+      steer:
+        keys.has("a") ||
+        keys.has("arrowleft") ||
+        keys.has("d") ||
+        keys.has("arrowright")
+          ? Number(keys.has("a") || keys.has("arrowleft")) -
+            Number(keys.has("d") || keys.has("arrowright"))
+          : (mobileUI?.input.steer ?? 0),
+      brake: keys.has("shift") || mobileUI?.input.brake,
     },
     terrain,
     [...vehicles, ...obstacles],
@@ -722,7 +756,7 @@ function drive(dt) {
       )
         changed = true;
   }
-  working = keys.has(" ") && started && !document.querySelector("dialog[open]");
+  working = (keys.has(" ") || mobileUI?.input.work) && canPlay();
   if (working && !workStarted) {
     rememberWork();
     v.bladeDatum = terrain.sample(v.x, v.z);
@@ -825,10 +859,12 @@ function updateCamera(dt, instant = false) {
   lookTarget.set(v.x, terrain.sample(v.x, v.z) + 0.7, v.z);
   cameraTarget.lerp(lookTarget, instant ? 1 : 1 - Math.exp(-dt * 4));
   const dist = mapView ? 65 : cameraDistance;
+  const horizontal = mapView ? 0.12 : Math.cos(cameraPitch) * 1.1,
+    vertical = mapView ? 1.1 : Math.sin(cameraPitch) * 1.1;
   const desired = new T.Vector3(
-    cameraTarget.x + Math.sin(cameraAngle) * dist * (mapView ? 0.12 : 0.78),
-    cameraTarget.y + dist * (mapView ? 1.1 : 0.78),
-    cameraTarget.z + Math.cos(cameraAngle) * dist * (mapView ? 0.12 : 0.78),
+    cameraTarget.x + Math.sin(cameraAngle) * dist * horizontal,
+    cameraTarget.y + dist * vertical,
+    cameraTarget.z + Math.cos(cameraAngle) * dist * horizontal,
   );
   desired.y = Math.max(
     desired.y,
@@ -884,6 +920,10 @@ function drawMinimap() {
 }
 function updateUI() {
   const v = vehicles[selected];
+  mobileUI?.readout(
+    Math.abs(v.speed * 3.6).toFixed(0),
+    (v.capacity ? v.cargo : stats.moved).toFixed(1),
+  );
   $("speed").innerHTML =
     Math.abs(v.speed * 3.6).toFixed(0) + "<span>km/sa</span>";
   $("load").innerHTML =
@@ -917,6 +957,17 @@ function updateUI() {
     (v.bladeOffset >= 0 ? "+" : "") + v.bladeOffset.toFixed(2) + " m";
 }
 function toast(message) {
+  const dialog = document.querySelector("dialog[open]");
+  if (dialog) {
+    let notice = dialog.querySelector(".dialog-feedback");
+    if (!notice) {
+      notice = document.createElement("p");
+      notice.className = "dialog-feedback";
+      notice.setAttribute("role", "status");
+      dialog.append(notice);
+    }
+    notice.textContent = message;
+  }
   $("toast").textContent = message;
   $("toast").classList.add("show");
   clearTimeout(toastTimer);
@@ -942,6 +993,8 @@ function save(manual = false) {
       stats,
       cameraAngle,
       cameraDistance,
+      cameraPitch,
+      displayTouch: mobileUI?.touch ?? touchLayout,
       surfaceQuality: smoothGround?.segments,
     };
     localStorage.setItem(SAVE_KEY, JSON.stringify(data));
@@ -986,8 +1039,15 @@ function load() {
     selected = clamp(Math.trunc(data.selected) || 0, 0, 5);
     cameraAngle = Number.isFinite(data.cameraAngle) ? data.cameraAngle : 0.68;
     cameraDistance = clamp(data.cameraDistance || 19, 10, 40);
+    cameraPitch = Number.isFinite(data.cameraPitch)
+      ? clamp(data.cameraPitch, 0.35, 1.2)
+      : Math.PI / 4;
     if (smoothGround && SURFACE_QUALITIES.includes(data.surfaceQuality)) {
-      smoothGround.setQuality(data.surfaceQuality);
+      smoothGround.setQuality(
+        (mobileUI?.touch ?? touchLayout) && data.displayTouch !== true
+          ? Math.min(data.surfaceQuality, initialProfile.segments)
+          : data.surfaceQuality,
+      );
       updateQualityLabel();
     }
     rebuildScenery();
@@ -1012,6 +1072,7 @@ function newWorld(seed) {
   selected = 0;
   cameraAngle = 0.68;
   cameraDistance = 22;
+  cameraPitch = Math.PI / 4;
   mapView = false;
   rebuildScenery();
   updateTerrain();
@@ -1026,20 +1087,36 @@ function start(resume) {
   started = true;
   document.body.classList.add("playing");
   $("overlay").hidden = true;
-  keys.clear();
+  clearKeys();
   updateCamera(1, true);
-  toast("WASD ile sür · SPACE ile çalıştır · 1–6 ile makine değiştir");
+  toast(
+    mobileUI?.touch
+      ? "Sol çubukla sür · sağdan çalıştır · araziyi sürükleyerek kamerayı döndür"
+      : "WASD ile sür · SPACE ile çalıştır · 1–6 ile makine değiştir",
+  );
   save();
+}
+function canPlay() {
+  return started && !document.hidden && !document.querySelector("dialog[open]");
 }
 function clearKeys() {
   keys.clear();
+  mobileUI?.reset();
+  gestures.reset();
+  if (engineGain)
+    engineGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.05);
   working = false;
   vehicles.forEach((v) => (v.speed = 0));
   workStarted = false;
 }
 function openDialog(id) {
   clearKeys();
-  $(id).showModal();
+  document.querySelectorAll("dialog[open]").forEach((d) => {
+    if (d.id !== id) d.close();
+  });
+  const notice = $(id).querySelector(".dialog-feedback");
+  if (notice) notice.textContent = "";
+  if (!$(id).open) $(id).showModal();
 }
 function toggleMode() {
   const v = vehicles[selected];
@@ -1051,14 +1128,20 @@ function toggleMode() {
     toast(
       v.unload
         ? "Tesviye modu · kot farkını azalt"
-        : "İtme modu · SPACE basılıyken ileri sür",
+        : mobileUI?.touch
+          ? "İtme modu · çalıştırırken ileri sür"
+          : "İtme modu · SPACE basılıyken ileri sür",
     );
     return;
   }
   toast(
     v.unload
-      ? "Boşaltma modu · SPACE basılı tut"
-      : "Kazı modu · SPACE basılı tut",
+      ? mobileUI?.touch
+        ? "Boşaltma modu · sağdaki düğmeyle çalıştır"
+        : "Boşaltma modu · SPACE basılı tut"
+      : mobileUI?.touch
+        ? "Kazı modu · sağdaki düğmeyle çalıştır"
+        : "Kazı modu · SPACE basılı tut",
   );
 }
 function refill() {
@@ -1114,38 +1197,31 @@ document.addEventListener("visibilitychange", () => {
 });
 renderer.domElement.addEventListener("contextmenu", (e) => e.preventDefault());
 renderer.domElement.addEventListener("pointerdown", (e) => {
-  if (e.button === 2) {
-    orbiting = true;
-    pointerX = e.clientX;
-    renderer.domElement.setPointerCapture(e.pointerId);
-  }
+  if (!canPlay() || (e.pointerType === "mouse" && e.button !== 2)) return;
+  e.preventDefault();
+  gestures.start(e.pointerId, e.clientX, e.clientY);
+  renderer.domElement.setPointerCapture(e.pointerId);
 });
 renderer.domElement.addEventListener("pointermove", (e) => {
-  if (orbiting) {
-    cameraAngle -= (e.clientX - pointerX) * 0.007;
-    pointerX = e.clientX;
-  }
+  if (!canPlay()) return;
+  const delta = gestures.move(e.pointerId, e.clientX, e.clientY);
+  if (!delta) return;
+  cameraAngle += delta.yaw;
+  cameraPitch = clamp(cameraPitch + delta.pitch, 0.35, 1.2);
+  cameraDistance = clamp(cameraDistance * delta.zoom, 10, 40);
+  dirty = true;
 });
-renderer.domElement.addEventListener("pointerup", () => (orbiting = false));
-renderer.domElement.addEventListener("pointercancel", () => (orbiting = false));
+for (const event of ["pointerup", "pointercancel", "lostpointercapture"])
+  renderer.domElement.addEventListener(event, (e) => gestures.end(e.pointerId));
 renderer.domElement.addEventListener(
   "wheel",
   (e) => {
     e.preventDefault();
-    cameraDistance = clamp(cameraDistance + e.deltaY * 0.025, 10, 40);
+    if (canPlay())
+      cameraDistance = clamp(cameraDistance + e.deltaY * 0.025, 10, 40);
   },
   { passive: false },
 );
-document.querySelectorAll("[data-key]").forEach((b) => {
-  b.addEventListener("pointerdown", (e) => {
-    e.preventDefault();
-    if (!started) return;
-    keys.add(b.dataset.key);
-    b.setPointerCapture(e.pointerId);
-  });
-  for (const event of ["pointerup", "pointercancel", "lostpointercapture"])
-    b.addEventListener(event, () => keys.delete(b.dataset.key));
-});
 $("startBtn").onclick = () => start(false);
 $("continueBtn").onclick = () => start(true);
 $("helpBtn").onclick = () => openDialog("helpDialog");
@@ -1156,7 +1232,10 @@ $("newBtn").onclick = () => {
 $("saveBtn").onclick = () => save(true);
 $("modeBtn").onclick = toggleMode;
 $("refillBtn").onclick = refill;
-$("mapBtn").onclick = () => (mapView = !mapView);
+$("mapBtn").onclick = () => {
+  mapView = !mapView;
+  if ($("mapSheet").open) $("mapSheet").close();
+};
 document
   .querySelectorAll("[data-close]")
   .forEach((b) => (b.onclick = () => b.closest("dialog").close()));
@@ -1213,14 +1292,37 @@ $("soundBtn").onclick = () => {
     toast("Bu tarayıcıda ses başlatılamadı.");
   }
 };
-window.addEventListener("resize", () => {
-  camera.aspect = innerWidth / innerHeight;
+function resizeViewport() {
+  const { width, height } = viewportSize();
+  document.documentElement.style.setProperty("--app-width", width + "px");
+  document.documentElement.style.setProperty("--app-height", height + "px");
+  document.documentElement.style.setProperty(
+    "--viewport-top",
+    (window.visualViewport?.offsetTop || 0) + "px",
+  );
+  camera.aspect = width / height;
   camera.updateProjectionMatrix();
-  renderer.setSize(innerWidth, innerHeight);
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 1.75));
-});
+  renderer.setPixelRatio(currentProfile().pixelRatio);
+  renderer.setSize(width, height);
+}
+let resizeFrame = 0;
+function scheduleResize() {
+  clearKeys();
+  cancelAnimationFrame(resizeFrame);
+  resizeFrame = requestAnimationFrame(resizeViewport);
+}
+window.addEventListener("resize", scheduleResize);
+window.visualViewport?.addEventListener("resize", scheduleResize);
+window.visualViewport?.addEventListener("scroll", scheduleResize);
 window.addEventListener("pagehide", () => {
+  clearKeys();
   if (dirty) save();
+});
+mobileUI = initMobileUI({
+  canPlay,
+  clearInput: clearKeys,
+  openDialog,
+  onLayout: resizeViewport,
 });
 buildFleetUI();
 newWorld(3817);
@@ -1237,10 +1339,11 @@ function frame(now) {
   requestAnimationFrame(frame);
   const dt = Math.min((now - previous) / 1000, 0.05);
   previous = now;
+  if (document.hidden) return;
   elapsed += dt;
   terrainTimer += dt;
   autoSaveElapsed += dt;
-  if (started && !document.querySelector("dialog[open]")) drive(dt);
+  if (canPlay()) drive(dt);
   else {
     working = false;
     if (engineGain)
@@ -1250,7 +1353,7 @@ function frame(now) {
       v.group.rotation.y = v.angle;
     });
   }
-  if (started && !document.querySelector("dialog[open]")) {
+  if (canPlay()) {
     settlingClock += dt;
     while (settlingClock >= 1 / 30) {
       if (terrain.settle(1 / 30) > 0.0000001) changed = dirty = true;
@@ -1479,7 +1582,12 @@ function adjustWidth(delta) {
 $("widthDown").onclick = () => adjustWidth(-0.2);
 $("widthUp").onclick = () => adjustWidth(0.2);
 function updateQualityLabel() {
-  const labels = { 512: "Dengeli", 768: "Pürüzsüz", 1024: "En yüksek" };
+  const labels = {
+    256: "Hafif",
+    512: "Dengeli",
+    768: "Pürüzsüz",
+    1024: "En yüksek",
+  };
   $("qualityBtn").textContent =
     "Yüzey: " + (labels[smoothGround?.segments] || "Uyumlu");
 }

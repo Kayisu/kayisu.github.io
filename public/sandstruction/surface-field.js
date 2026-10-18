@@ -1,5 +1,5 @@
-import { N, MATERIALS } from "./terrain.js?v=0.4.0";
-import { TerrainSurface } from "./terrain-render.js?v=0.4.0";
+import { N, MATERIALS } from "./terrain.js?v=0.5.0";
+import { TerrainSurface } from "./terrain-render.js?v=0.5.0";
 const lin = (c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
 const palette = MATERIALS.map((m) => [
   lin(((m.color >> 16) & 255) / 255),

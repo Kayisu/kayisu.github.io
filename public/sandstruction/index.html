@@ -9,11 +9,12 @@
     <meta name="theme-color" content="#24372e" />
     <meta
       name="description"
-      content="Sandstruction: bu sayfa henüz hazır değil. Madem buradasın, iş makineleriyle bir şeyler inşa et. Sandbox v0.4."
+      content="Sandstruction: bu sayfa henüz hazır değil. Madem buradasın, iş makineleriyle bir şeyler inşa et. Sandbox v0.5."
     />
     <link rel="canonical" href="https://kayisu.github.io/sandstruction/" />
     <title>Sandstruction — Sayfa yapılıyor. Sen de bir şeyler yap.</title>
-    <link rel="stylesheet" href="./style.css?v=0.4.0" />
+    <link rel="stylesheet" href="./style.css?v=0.5.0" />
+    <link rel="stylesheet" href="./mobile.css?v=0.5.0" />
   </head>
   <body>
     <div id="world" aria-label="3 boyutlu iş makinesi oyun alanı"></div>
@@ -29,8 +30,16 @@
       >
       <div class="session">
         <span class="live-dot"></span> SERBEST SAHA <span class="sep">/</span
-        ><span id="seedLabel">SAHA 3817</span><span class="version">v0.4</span>
+        ><span id="seedLabel">SAHA 3817</span><span class="version">v0.5</span>
       </div>
+      <button
+        id="mobileMenuBtn"
+        class="mobile-only menu-toggle"
+        aria-label="Saha menüsünü aç"
+        aria-haspopup="dialog"
+      >
+        Menü ☰
+      </button>
       <div class="top-actions">
         <a
           class="home-link"
@@ -164,21 +173,99 @@
       <button id="zoomIn" aria-label="Yakınlaş">＋</button
       ><button id="zoomOut" aria-label="Uzaklaş">−</button>
     </div>
-    <div class="touch-drive" aria-label="Dokunmatik sürüş">
-      <button data-key="w" aria-label="İleri">↑</button>
-      <div>
-        <button data-key="a" aria-label="Sol">←</button
-        ><button data-key="s" aria-label="Geri">↓</button
-        ><button data-key="d" aria-label="Sağ">→</button>
+    <div class="mobile-hud mobile-only" aria-label="Makine göstergeleri">
+      <b id="mobileMachineName">Kamyon</b>
+      <span id="mobileReadout">0 km/sa · 12 m³</span>
+    </div>
+    <nav class="mobile-toolbar mobile-only" aria-label="Saha panelleri">
+      <button id="fleetSheetBtn" aria-haspopup="dialog">
+        Makineler <span>6</span>
+      </button>
+      <button id="toolSheetBtn" aria-haspopup="dialog">Alet ayarları</button>
+      <button id="mapSheetBtn" aria-haspopup="dialog">Harita</button>
+    </nav>
+    <div class="mobile-controls mobile-only">
+      <div class="drive-control">
+        <button
+          id="drivePad"
+          class="drive-pad"
+          aria-label="Sürüş çubuğu: yukarı ileri, aşağı geri, sağ ve sol direksiyon"
+        >
+          <span class="stick-arrows" aria-hidden="true"
+            >↑<span>← · →</span>↓</span
+          >
+          <span id="driveThumb" class="drive-thumb" aria-hidden="true"></span>
+        </button>
+        <span class="control-caption">SÜRÜŞ</span>
+      </div>
+      <button id="touchBrake" class="touch-brake" aria-label="Fren: basılı tut">
+        FREN
+      </button>
+      <div class="work-control">
+        <button
+          id="workLock"
+          class="work-lock"
+          aria-pressed="false"
+          title="Çalışmayı sabitle; yeniden dokunarak durdur"
+        >
+          Sabitle
+        </button>
+        <button
+          id="touchWork"
+          class="touch-work"
+          aria-label="Çalıştır: basılı tut"
+        >
+          <span id="touchWorkLabel">DÖK</span><small>BASILI TUT</small>
+        </button>
       </div>
     </div>
-    <button class="touch-action" data-key=" " aria-label="Makineyi çalıştır">
-      ÇALIŞTIR
-    </button>
+    <dialog aria-label="Makine seçimi" id="fleetSheet" class="mobile-sheet">
+      <button class="close" data-close aria-label="Kapat">×</button>
+      <span class="eyebrow">MAKİNE PARKI</span>
+      <h2>İşe göre makine.</h2>
+      <p>Bir makineye dokun. Sahaya hemen dön.</p>
+      <div id="fleetSheetBody"></div>
+    </dialog>
+    <dialog aria-label="Alet ayarları" id="toolSheet" class="mobile-sheet">
+      <button class="close" data-close aria-label="Kapat">×</button>
+      <span class="eyebrow">ALETLER & MALZEME</span>
+      <div id="toolSheetBody"></div>
+      <button class="primary sheet-done" data-close>Sahaya dön ↗</button>
+    </dialog>
+    <dialog
+      aria-label="Saha haritası"
+      id="mapSheet"
+      class="mobile-sheet map-sheet"
+    >
+      <button class="close" data-close aria-label="Kapat">×</button>
+      <span class="eyebrow">ARAZİ HARİTASI</span>
+      <h2>Sahanın tamamı.</h2>
+      <div id="mapSheetBody"></div>
+      <button class="primary sheet-done" data-close>Sahaya dön ↗</button>
+    </dialog>
+    <dialog
+      aria-label="Saha menüsü"
+      id="menuSheet"
+      class="mobile-sheet menu-sheet"
+    >
+      <button class="close" data-close aria-label="Kapat">×</button>
+      <span class="eyebrow">SANDSTRUCTION / v0.5</span>
+      <h2>Saha menüsü</h2>
+      <div id="menuSheetBody"></div>
+      <div class="menu-extras">
+        <button id="mobileHelpBtn">Dokunmatik rehber ↗</button>
+        <button id="fullscreenBtn">Tam ekran ↗</button>
+      </div>
+      <p class="fine">
+        Kaydın bu tarayıcıda tutulur. iOS, Android ve tabletlerde dikey veya
+        yatay oynayabilirsin.
+      </p>
+      <button class="primary sheet-done" data-close>Sahaya dön ↗</button>
+    </dialog>
     <div id="overlay" class="overlay">
       <section class="welcome modal">
         <span class="eyebrow" id="arrivalBadge"
-          >SANDSTRUCTION / SANDBOX 0.4</span
+          >SANDSTRUCTION / SANDBOX 0.5</span
         >
         <h2 id="welcomeTitle">
           Sayfa yapılıyor.<br /><em>Sen de bir şeyler yap.</em>
@@ -195,44 +282,66 @@
         <button id="startBtn" class="primary">Sahaya gir <span>↗</span></button
         ><button id="continueBtn" class="continue" hidden>
           Kayıtlı sahaya devam et →</button
-        ><small>Görev yok. Süre yok. İstediğin kadar dene.</small
-        ><span class="modal-tag">PROTOTİP · MASAÜSTÜ ÖNERİLİR</span>
+        ><small>Görev yok. Süre yok. İstediğin kadar dene.</small>
+        <div class="touch-welcome mobile-only">
+          <span><b>Sol başparmak</b>Sürüş çubuğu</span>
+          <span><b>Sağ başparmak</b>Çalıştır / sabitle</span>
+          <span><b>Araziye dokun</b>Döndür · iki parmakla yakınlaş</span>
+        </div>
+        <span class="modal-tag">SANDBOX · TELEFON / TABLET / MASAÜSTÜ</span>
       </section>
     </div>
-    <dialog id="helpDialog">
+    <dialog aria-label="Saha rehberi" id="helpDialog">
       <button class="close" data-close aria-label="Kapat">×</button
       ><span class="eyebrow">SAHA EL KİTABI</span>
       <h2>Önce dök. Sonra düzle.</h2>
       <p>Yol yapmanın tek bir doğru şekli yok. İşte başlamak için bir akış:</p>
+      <div class="touch-help mobile-only">
+        <b>Dokunmatik kontroller</b>
+        <p>
+          Sol çubuğu yukarı/aşağı sürükle: ileri/geri. Sağ/sol: direksiyon.
+          Çubuktan elini çekince gaz kesilir; FREN basılıyken durursun.
+        </p>
+        <p>
+          Sağdaki çalışma düğmesini basılı tut veya Sabitle’ye dokun. Sabit
+          çalışma yeniden dokununca durur; panel açarken, makine değiştirirken
+          ve oyundan çıkarken de kapanır.
+        </p>
+        <p>
+          Arazide tek parmakla kamerayı döndür; iki parmağını açıp kapatarak
+          yakınlaş. +/− düğmeleri de kullanılabilir. Alet ayarları: malzeme,
+          doldurma, mod, dozer yüksekliği/genişliği, geri al ve kamera hizalama.
+        </p>
+      </div>
       <ol class="instructions">
         <li>
           <b>Kamyonla kum veya çakıl dök.</b
           ><span
-            >1 ile seç; SPACE basılıyken malzeme aracın arkasına dökülür. R ile
-            yeniden doldur.</span
+            >Kamyonu seç; çalıştırırken malzeme aracın arkasına dökülür. Kasayı
+            doldur düğmesiyle yeniden yükle.</span
           >
         </li>
         <li>
           <b>Kepçeyle kaz, taşı, boşalt.</b
           ><span
-            >2 ile seç. SPACE kazı yapar; X ile boşaltma moduna geç. Kürek de
-            aynı mantıkla çalışır.</span
+            >Kepçeyi seç. Çalıştırarak kaz; mod düğmesiyle boşaltmaya geç. Kürek
+            de aynı mantıkla çalışır.</span
           >
         </li>
         <li>
           <b>Dozerle yay, silindirle sıkıştır.</b
           ><span
-            >3 ve 4 ile seç. SPACE basılı tutarak ilerle. Dozerde X itme/tesviye
-            seçer; J/K bıçağı indirir/yükseltir. SPACE başında bıçak kotu
-            sabitlenir. Dozer yerel kot farkını azaltır, silindir dökülmüş
-            malzemeyi sıkıştırır.</span
+            >Dozeri veya silindiri seç. Çalıştırırken ilerle. Dozerde mod
+            düğmesi itme/tesviye seçer; bıçak yüksekliği ve genişliği ayarlanır.
+            Çalışmaya başlarken bıçak kotu sabitlenir. Dozer kot farkını
+            azaltır; silindir dökülmüş malzemeyi sıkıştırır.</span
           >
         </li>
         <li>
           <b>Asfalt sericiyle bitir.</b
           ><span
-            >5 ile seç; SPACE basılıyken ilerle. Asfalt önce gevşek ve pürüzlü
-            serilir. Silindirle birkaç geçiş yaparak düzgünleştir.</span
+            >Asfalt sericiyi seç; çalıştırırken ilerle. Asfalt önce gevşek ve
+            pürüzlü serilir. Silindirle birkaç geçiş yaparak düzgünleştir.</span
           >
         </li>
       </ol>
@@ -243,7 +352,8 @@
         ><span>Fare tekerleği</span><b>Yakınlaş / uzaklaş</b
         ><span>M / G / H</span><b>Üst görünüm / ızgara / rehber</b
         ><span>Shift / Z / C</span><b>Fren / geri al / kamera hizala</b
-        ><span>1–6 / Tab</span><b>Makine değiştir</b>
+        ><span>1–6 / Tab</span><b>Makine değiştir</b><span>J · K / U · I</span
+        ><b>Bıçak yüksekliği / genişliği</b>
       </div>
       <p class="fine">
         Bu sürümde fizik basitleştirilmiştir. Malzeme arazinin yüksekliğini
@@ -251,7 +361,7 @@
         tutulur.
       </p>
     </dialog>
-    <dialog id="newDialog">
+    <dialog aria-label="Yeni saha" id="newDialog">
       <button class="close" data-close aria-label="Kapat">×</button
       ><span class="eyebrow">YENİ BİR BAŞLANGIÇ</span>
       <h2>Sıradaki saha neresi?</h2>
@@ -262,6 +372,7 @@
           type="number"
           min="1"
           max="999999"
+          inputmode="numeric"
           value="3817" /></label
       ><button id="randomBtn" class="secondary">Rastgele numara seç ↻</button
       ><button id="generateBtn" class="primary">Yeni sahayı oluştur ↗</button
@@ -269,6 +380,6 @@
         >Mevcut saha ve otomatik kaydın yeni sahayla değiştirilir.</small
       >
     </dialog>
-    <script type="module" src="./game.js?v=0.4.0"></script>
+    <script type="module" src="./game.js?v=0.5.0"></script>
   </body>
 </html>

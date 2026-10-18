@@ -1,7 +1,7 @@
 import * as T from "./vendor/three.module.js";
-import { N, SIZE, CELL } from "./terrain.js?v=0.4.0";
-import { SurfaceField } from "./surface-field.js?v=0.4.0";
-export const SURFACE_QUALITIES = [512, 768, 1024];
+import { N, SIZE, CELL } from "./terrain.js?v=0.5.0";
+import { SurfaceField } from "./surface-field.js?v=0.5.0";
+export const SURFACE_QUALITIES = [256, 512, 768, 1024];
 const constants = `const float SS_N=${N.toFixed(1)}; const float SS_SIZE=${SIZE.toFixed(1)}; const float SS_CELL=${CELL.toFixed(8)}; const float SS_TEX=${(N + 1).toFixed(1)};`;
 const weights = `vec4 SS_weights(float t){float a=1.0-t;float t2=t*t;float t3=t2*t;return vec4(a*a*a,3.0*t3-6.0*t2+4.0,-3.0*t3+3.0*t2+3.0*t+1.0,t3)/6.0;}`;
 export const SURFACE_VERTEX_GLSL = `

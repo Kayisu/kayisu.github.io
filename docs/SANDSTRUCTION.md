@@ -2,9 +2,19 @@
 
 **Sayfa yapılıyor. Sen de bir şeyler yap.**
 
-Version **0.4.0**. A browser construction sandbox and a playable destination for unfinished or missing portfolio pages.
+Version **0.5.0**. A browser construction sandbox and a playable destination for unfinished or missing portfolio pages.
 
 Serve `dist/` with a static HTTP server. No build or install required. Three.js r160 is vendored under MIT. Run `npm test` for terrain conservation, driving/collision, save migration, model geometry and entrypoint checks.
+
+## Touch flow in 0.5
+
+Coarse-pointer devices (including tablets and hybrids) and viewports up to 900 CSS pixels use the touch layout. A proportional joystick drives/steers, while separate held work/brake controls accept simultaneous pointers. Optional work lock frees a thumb for the camera. Pointer capture loss releases its owning control; window blur, backgrounding, resize, panel opening and machine selection reset held/locked actions. Keyboard controls stay available.
+
+Machine selection, full tool controls, the map and settings move into scrollable native dialogs without duplicating their state. All controls remain reachable on portrait/landscape phones and tablets, including material/refill, blade width/height, sound, lighting, saving and surface quality. Touch targets are at least 44 CSS pixels. One-finger terrain drag orbits/tilts the camera; two-finger pinch zooms. Fullscreen is offered only where supported. Visual viewport sizing and safe-area padding accommodate browser bars, the keyboard and display cutouts. The welcome and help screens explain touch controls.
+
+Mobile defaults use 512 surface subdivisions (256 for reported low memory/core counts), a bounded render-pixel budget, 1024 shadow maps and fewer visual tracers. The curved surface reconstruction remains active at every quality. An older desktop save cannot silently impose its high graphics setting on touch. Backgrounded frames skip simulation/rendering. Existing v1–v4 world saves remain compatible; optional camera/display fields do not change the terrain format.
+
+Validation covers pointer ownership/cancellation, simultaneous controls, pinch transitions, analog vehicle input, portrait/landscape render budgets and actual DOM event bindings in a small harness. No device browser/WebGL session was available for visual QA; physical iOS/Android/tablet testing remains necessary before claiming universal device compatibility.
 
 ## Curved surfaces and blade width in 0.4
 
@@ -39,6 +49,16 @@ v0.1–v0.3 saves migrate on the same origin. Sites and GitHub Pages are differe
 Original prototype; no commercial assets or game binaries were used. Terrain is a heightfield with a dominant surface material, not discrete grains or full strata. Mixed bucket contents use one dominant material. Collision bodies are circles, not full rigid bodies. Some scenery is decorative. Water is visual with no fluid simulation. Excavation floor: −3 m. Mission mode and an autonomous delivery vehicle are deferred.
 
 # Changelog
+
+## 0.5.0 — Mobile flow
+
+- Responsive touch layout for phones/tablets in portrait and landscape, with safe-area/visual-viewport sizing.
+- Analog joystick; independent work/brake fingers; optional work lock with lifecycle resets.
+- One-finger camera orbit/tilt and two-finger pinch zoom.
+- Scrollable machine, tool, map and settings sheets; all settings remain accessible.
+- Bounded mobile render budget, light surface option, lower default shadows/visual particle count.
+- Touch onboarding, supported-device fullscreen and dialog-local action feedback.
+- Existing v1–v4 saves remain readable.
 
 ## 0.4.0 — 2026-10-18
 
