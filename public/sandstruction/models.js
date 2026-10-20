@@ -47,7 +47,7 @@ function wheel(g, x, z, r = 0.55) {
       0.16,
       dark,
     );
-    tread.rotation.x = -a;
+    tread.rotation.x = a;
   }
   return pivot;
 }
@@ -234,7 +234,13 @@ export function machineModel(id) {
     box(g, 0, 0.85, 0.3, 1.7, 0.4, 2.5);
     for (const x of [-0.9, 0.9]) wheels.push(wheel(g, x, 1, 0.6));
     cab(g, 0, 1.8, 0.7);
-    wheels.push(cyl(g, 0, 0.67, -1.25, 0.67, 2.3, metal));
+    const drumPivot = new T.Group();
+    drumPivot.position.set(0, 0.67, -1.25);
+    g.add(drumPivot);
+    const drum = cyl(drumPivot, 0, 0, 0, 0.67, 2.3, metal);
+    drumPivot.userData.radius = 0.67;
+    drumPivot.userData.spin = drumPivot;
+    wheels.push(drumPivot);
     for (const x of [-1.2, 1.2]) box(g, x, 0.75, -0.8, 0.15, 0.22, 1.35);
     box(g, 0, 1.17, -0.25, 1.6, 0.3, 0.6);
   } else if (id === "paver") {

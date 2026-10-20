@@ -9,15 +9,54 @@
     <meta name="theme-color" content="#24372e" />
     <meta
       name="description"
-      content="Sandstruction: bu sayfa henüz hazır değil. Madem buradasın, iş makineleriyle bir şeyler inşa et. Sandbox v0.6.1."
+      content="Sandstruction: iş makineleriyle kaz, taşı, düzle ve kendi yolunu inşa et. Açık saha sandbox v0.7.0."
     />
     <link rel="canonical" href="https://kayisu.github.io/sandstruction/" />
-    <title>Sandstruction — Sayfa yapılıyor. Sen de bir şeyler yap.</title>
-    <link rel="stylesheet" href="./style.css?v=0.6.1" />
-    <link rel="stylesheet" href="./mobile.css?v=0.6.1" />
-    <link rel="stylesheet" href="./desktop.css?v=0.6.1" />
+    <title>Sandstruction — İnşa et. Düzle. Yolunu aç.</title>
+    <style>
+      body {
+        margin: 0;
+        background: #16221e;
+      }
+      body:not(.playing)
+        :is(
+          .topbar,
+          .guide,
+          .map-panel,
+          .instrument,
+          .bottom,
+          .camera-tools,
+          .desktop-only,
+          .mobile-hud,
+          .mobile-toolbar,
+          .mobile-controls
+        ) {
+        visibility: hidden;
+      }
+      [hidden] {
+        display: none !important;
+      }
+    </style>
+    <link rel="stylesheet" href="./style.css?v=0.7.0" />
+    <link rel="stylesheet" href="./mobile.css?v=0.7.0" />
+    <link rel="stylesheet" href="./desktop.css?v=0.7.0" />
+    <link rel="stylesheet" href="./game-shell.css?v=0.7.0" />
   </head>
-  <body>
+  <body class="booting">
+    <noscript
+      ><p
+        style="
+          position: fixed;
+          inset: 0;
+          z-index: 300;
+          background: #17271f;
+          color: white;
+          padding: 40px;
+        "
+      >
+        Sandstruction için JavaScript açık olmalı.
+      </p></noscript
+    >
     <div id="world" aria-label="3 boyutlu iş makinesi oyun alanı"></div>
     <div id="error" hidden></div>
     <header class="topbar">
@@ -31,11 +70,28 @@
       >
       <div class="session">
         <span class="live-dot"></span> SERBEST SAHA <span class="sep">/</span
-        ><span id="seedLabel">SAHA 3817</span><span class="version">v0.6.1</span>
+        ><span id="seedLabel">SAHA 3817</span
+        ><span class="version">v0.7.0</span>
       </div>
+      <nav class="hud-switches desktop-only" aria-label="Ekran panelleri">
+        <button
+          id="roadPanelBtn"
+          aria-controls="roadPanel"
+          aria-expanded="false"
+        >
+          Yol rehberi
+        </button>
+        <button
+          id="vehiclePanelBtn"
+          aria-controls="vehiclePanel"
+          aria-expanded="true"
+        >
+          Araç ayarları
+        </button>
+      </nav>
       <button
         id="mobileMenuBtn"
-        class="mobile-only menu-toggle"
+        class="menu-toggle"
         aria-label="Saha menüsünü aç"
         aria-haspopup="dialog"
       >
@@ -63,7 +119,7 @@
       </div>
     </header>
     <nav class="workbar desktop-only" aria-label="Yol çalışma araçları">
-      <button id="workCameraBtn">Kamera: İş <kbd>O</kbd></button>
+      <button id="workCameraBtn">Serbest kamera <kbd>O</kbd></button>
       <button id="inspectionBtn">Görünüm: Malzeme <kbd>V</kbd></button>
       <button id="workGearBtn" aria-pressed="true">
         İş vitesi açık <kbd>B</kbd>
@@ -72,11 +128,22 @@
         Ekipmanı aç <kbd>F</kbd>
       </button>
     </nav>
-    <aside class="road-desk desktop-only" aria-label="Yol atölyesi">
+    <aside
+      id="roadPanel"
+      class="road-desk desktop-only"
+      aria-label="Yol atölyesi"
+    >
+      <button
+        id="closeRoadBtn"
+        class="panel-close"
+        aria-label="Yol rehberini kapat"
+      >
+        ×
+      </button>
       <div class="desk-kicker">
         <span class="live-dot"></span> YOL ATÖLYESİ <span>06</span>
       </div>
-      <h2>Yaptığın yol,<br /><em>gözünün önünde.</em></h2>
+      <h2>Yol rehberi</h2>
       <p id="roadSummary">Bir hat çiz veya serbestçe çalış.</p>
       <div class="road-plan-actions">
         <button id="planRoadBtn">＋ Hat çiz</button
@@ -176,7 +243,14 @@
     </div>
     <div id="toast" role="status" aria-live="polite"></div>
     <div id="routeContext" class="route-context" hidden></div>
-    <section class="instrument">
+    <section id="vehiclePanel" class="instrument" aria-label="Araç ayarları">
+      <button
+        id="closeVehicleBtn"
+        class="panel-close"
+        aria-label="Araç ayarlarını kapat"
+      >
+        ×
+      </button>
       <div class="machine-heading">
         <span id="machineCode">01 / HAULER</span
         ><span class="status-chip">HAZIR</span>
@@ -250,6 +324,9 @@
         ><span id="saveStatus">Yalnızca bu tarayıcıda otomatik kayıt</span>
       </div>
     </footer>
+    <button id="hudBtn" class="desktop-only" aria-pressed="false">
+      Sade ekran · P
+    </button>
     <div class="camera-tools">
       <button id="zoomIn" aria-label="Yakınlaş">＋</button
       ><button id="zoomOut" aria-label="Uzaklaş">−</button>
@@ -330,11 +407,11 @@
       class="mobile-sheet menu-sheet"
     >
       <button class="close" data-close aria-label="Kapat">×</button>
-      <span class="eyebrow">SANDSTRUCTION / v0.6</span>
+      <span class="eyebrow">SANDSTRUCTION / v0.7</span>
       <h2>Saha menüsü</h2>
       <div id="menuSheetBody"></div>
       <div class="menu-extras">
-        <button id="mobileHelpBtn">Dokunmatik rehber ↗</button>
+        <button id="mobileHelpBtn">Kontroller ve rehber ↗</button>
         <button id="fullscreenBtn">Tam ekran ↗</button>
       </div>
       <p class="fine">
@@ -346,22 +423,22 @@
     <div id="overlay" class="overlay">
       <section class="welcome modal">
         <span class="eyebrow" id="arrivalBadge"
-          >SANDSTRUCTION / SANDBOX 0.6</span
+          >SANDSTRUCTION / SANDBOX 0.7</span
         >
-        <h2 id="welcomeTitle">
-          Sayfa yapılıyor.<br /><em>Sen de bir şeyler yap.</em>
-        </h2>
+        <h2 id="welcomeTitle">İnşa et. Düzle.<br /><em>Yolunu aç.</em></h2>
         <p id="welcomeDescription">
-          Bir avuç kum. Birkaç büyük makine. Madem buradasın, kendi yolunu inşa
-          et.
+          Altı makine, açık bir saha. Kum dök, zemini şekillendir, asfalt ser.
+          Burada yolu sen yaparsın.
         </p>
         <code id="arrivalPath" hidden></code>
         <div class="welcome-steps">
           <span><b>01</b> Makineni seç</span><span><b>02</b> Malzemeyi dök</span
           ><span><b>03</b> Kendi yolunu yap</span>
         </div>
-        <button id="startBtn" class="primary">Sahaya gir <span>↗</span></button
-        ><button id="continueBtn" class="continue" hidden>
+        <p id="bootStatus" role="status">SAHA HAZIRLANIYOR…</p>
+        <button id="startBtn" class="primary" disabled>
+          Sahaya gir <span>↗</span></button
+        ><button id="continueBtn" class="continue" hidden disabled>
           Kayıtlı sahaya devam et →</button
         ><small>Görev yok. Süre yok. İstediğin kadar dene.</small>
         <div class="touch-welcome mobile-only">
@@ -408,10 +485,11 @@
           için Sol/Sağ kenarı seçip Başa al düğmesini kullan.
         </p>
         <p>
-          O: iş/takip/serbest kamera. V: malzeme/sıkışma/kot. B: yavaş iş
-          vitesi. F: ekipmanı açık tut. Kot görünümünde mavi eksik, turuncu
-          fazla, yeşil uygun yüksekliği gösterir. Yeni hat çizerken ESC iptal
-          eder.
+          Fareyle sürükle: kamerayı döndür. Tekerlek: yakınlaş. C: hizala. O:
+          otomatik takibi aç/kapat. P: sade ekran. V: malzeme/sıkışma/kot. B:
+          yavaş iş vitesi. F: ekipmanı açık tut. Kot görünümünde mavi eksik,
+          turuncu fazla, yeşil uygun yüksekliği gösterir. Yeni hat çizerken ESC
+          iptal eder.
         </p>
       </div>
       <ol class="instructions">
@@ -449,7 +527,7 @@
       <div class="key-table">
         <span>W / S veya ↑ / ↓</span><b>Gaz / fren ve geri</b
         ><span>A / D veya ← / →</span><b>Direksiyon</b
-        ><span>Sağ fare / Q · E</span><b>Kamera döndür</b
+        ><span>Fare sürükle / Q · E</span><b>Kamera döndür</b
         ><span>Fare tekerleği</span><b>Yakınlaş / uzaklaş</b
         ><span>M / G / H</span><b>Üst görünüm / ızgara / rehber</b
         ><span>Shift / Z / C</span><b>Fren / geri al / kamera hizala</b
@@ -481,6 +559,14 @@
         >Mevcut saha ve otomatik kaydın yeni sahayla değiştirilir.</small
       >
     </dialog>
-    <script type="module" src="./game.js?v=0.6.1"></script>
+    <script>
+      window.addEventListener("error", function () {
+        if (document.body.classList.contains("booting")) {
+          document.getElementById("bootStatus").textContent =
+            "Saha başlatılamadı. Sayfayı yenileyerek tekrar dene.";
+        }
+      });
+    </script>
+    <script type="module" src="./game.js?v=0.7.0"></script>
   </body>
 </html>

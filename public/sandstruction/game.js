@@ -7,28 +7,32 @@ import {
   MATERIALS,
   clamp,
   random,
-} from "./terrain.js?v=0.6.1";
+} from "./terrain.js?v=0.7.0";
 import {
   MACHINES,
   machineModel,
   fleetIcon,
   clampBladeWidth,
-} from "./models.js?v=0.6.1";
-import { stepVehicle } from "./physics.js?v=0.6.1";
-import { TerrainSurface } from "./terrain-render.js?v=0.6.1";
-import { SmoothTerrain, SURFACE_QUALITIES } from "./smooth-terrain.js?v=0.6.1";
-import { plantForest } from "./nature.js?v=0.6.1";
-import { initMobileUI, MOBILE_QUERY } from "./mobile-ui.js?v=0.6.1";
-import { CameraGestures, renderProfile } from "./touch-input.js?v=0.6.1";
-import { RoadPlan, prepareWorkshop } from "./road-plan.js?v=0.6.1";
-import { RoadGuide, intersectTerrain } from "./road-guide.js?v=0.6.1";
+} from "./models.js?v=0.7.0";
+import { stepVehicle } from "./physics.js?v=0.7.0";
+import { TerrainSurface } from "./terrain-render.js?v=0.7.0";
+import { SmoothTerrain, SURFACE_QUALITIES } from "./smooth-terrain.js?v=0.7.0";
+import { plantForest } from "./nature.js?v=0.7.0";
+import { initMobileUI, MOBILE_QUERY } from "./mobile-ui.js?v=0.7.0";
+import { CameraGestures, renderProfile } from "./touch-input.js?v=0.7.0";
+import { RoadPlan, prepareWorkshop } from "./road-plan.js?v=0.7.0";
+import { RoadGuide, intersectTerrain } from "./road-guide.js?v=0.7.0";
 import {
   ROAD_WORK_SPEED,
   ROAD_FILL_DEPTH,
   ROAD_ASPHALT_DEPTH,
   ROAD_SPREAD_WIDTH,
   roadPlacement,
-} from "./road-work.js?v=0.6.1";
+} from "./road-work.js?v=0.7.0";
+import { solveContact, sampleDisplayMesh } from "./vehicle-contact.js?v=0.7.0";
+import { TireTracks } from "./tire-tracks.js?v=0.7.0";
+import { initGameShell, finishBoot } from "./game-shell.js?v=0.7.0";
+const shell = initGameShell();
 const gestures = new CameraGestures();
 let roadPlan = null,
   roadMeasure = null,
@@ -36,7 +40,7 @@ let roadPlan = null,
   planDraft = null;
 let equipmentLatched = false,
   workGear = true,
-  cameraMode = 0,
+  cameraMode = 2,
   inspectionMode = 0,
   lastRoadUI = -1;
 function isMobile() {
@@ -79,6 +83,7 @@ let workStarted = false,
   obstacles = [];
 let settlingClock = 0,
   terrainInitialized = false;
+const tireTracks = new TireTracks(touchLayout ? 768 : 1536);
 const terrainBlend = { value: 1 };
 let surfaceCache;
 let terrain = new Terrain(3817),
@@ -112,6 +117,11 @@ try {
   $("error").hidden = false;
   $("error").textContent =
     "Bu cihazda 3D görüntü başlatılamadı. WebGL destekleyen güncel bir tarayıcıda donanım hızlandırmayı açıp tekrar dene.";
+  const retry = document.createElement("button");
+  retry.id = "bootRetry";
+  retry.textContent = "Tekrar dene";
+  retry.onclick = () => location.reload();
+  $("error").append(retry);
   throw error;
 }
 renderer.setPixelRatio(initialProfile.pixelRatio);
@@ -180,17 +190,24 @@ const ground = new T.Mesh(
     bumpScale: 0.035,
   }),
 );
+let fallbackTrackTexture;
 ground.material.onBeforeCompile = (shader) => {
+  shader.uniforms.uTireTracks = { value: fallbackTrackTexture };
   shader.uniforms.uTerrainBlend = terrainBlend;
   shader.vertexShader =
-    "uniform float uTerrainBlend; attribute float aPreviousHeight; attribute float aCompaction; varying float vCompaction;\n" +
+    "uniform float uTerrainBlend; attribute float aPreviousHeight; attribute float aCompaction; varying float vCompaction; varying vec2 vTrackUV;\n" +
     shader.vertexShader;
   shader.vertexShader = shader.vertexShader.replace(
     "#include <begin_vertex>",
-    "#include <begin_vertex>\n transformed.y=mix(aPreviousHeight,position.y,uTerrainBlend); vCompaction=aCompaction;",
+    "#include <begin_vertex>\n transformed.y=mix(aPreviousHeight,position.y,uTerrainBlend); vCompaction=aCompaction; vTrackUV=(position.xz+48.0)/96.0;",
   );
   shader.fragmentShader =
-    "varying float vCompaction;\n" + shader.fragmentShader;
+    "varying float vCompaction; varying vec2 vTrackUV; uniform sampler2D uTireTracks;\n" +
+    shader.fragmentShader;
+  shader.fragmentShader = shader.fragmentShader.replace(
+    "#include <color_fragment>",
+    "#include <color_fragment>\n diffuseColor.rgb*=1.0-texture2D(uTireTracks,vTrackUV).r*.23;",
+  );
   shader.fragmentShader = shader.fragmentShader.replace(
     "#include <roughnessmap_fragment>",
     "#include <roughnessmap_fragment>\n roughnessFactor *= mix(1.0,0.68,vCompaction);",
@@ -212,11 +229,23 @@ const smoothGround = renderer.capabilities.floatVertexTextures
       groundTexture(),
       initialProfile.segments,
       !touchLayout,
+      tireTracks,
     )
   : null;
 if (smoothGround) {
   ground.visible = false;
   scene.add(smoothGround.mesh);
+} else {
+  fallbackTrackTexture = new T.DataTexture(
+    tireTracks.data,
+    tireTracks.resolution,
+    tireTracks.resolution,
+    T.RGBAFormat,
+  );
+  fallbackTrackTexture.minFilter = fallbackTrackTexture.magFilter =
+    T.LinearFilter;
+  fallbackTrackTexture.generateMipmaps = false;
+  fallbackTrackTexture.needsUpdate = true;
 }
 
 let edges;
@@ -438,7 +467,7 @@ function rebuildScenery() {
   ctx.fillStyle = "#ece9db";
   ctx.fillText("MAKE YOUR OWN ROAD.", 28, 121);
   ctx.font = "bold 21px Arial";
-  ctx.fillText("SANDSTRUCTION / 0.6.1", 28, 207);
+  ctx.fillText("SANDSTRUCTION / 0.7.0", 28, 207);
   const face = new T.Mesh(
     new T.PlaneGeometry(5, 2.5),
     new T.MeshStandardMaterial({
@@ -528,7 +557,7 @@ function createVehicles(saved) {
   vehicles = MACHINES.map((def, i) => {
     const model = machineModel(def.id);
     const state = saved?.[i];
-    const workshop = !state && roadPlan && !isMobile();
+    const workshop = !state && roadPlan;
     const x = state?.x ?? (workshop ? (i === 0 ? -3 : 7) : -32 + (i % 3) * 4.6),
       z =
         state?.z ??
@@ -574,6 +603,9 @@ function buildFleetUI() {
 }
 function select(i) {
   clearKeys();
+  vehicles.forEach((v) => {
+    v.lastTrack = null;
+  });
   if ($("fleetSheet").open) $("fleetSheet").close();
   workStarted = false;
   selected = i;
@@ -596,16 +628,11 @@ function select(i) {
 }
 function updateMode() {
   const v = vehicles[selected];
-  $("modeBtn").hidden = ![
-    "loader",
-    "shovel",
-    "dozer",
-    ...(!isMobile() ? ["truck"] : []),
-  ].includes(v.id);
+  $("modeBtn").hidden = !["loader", "shovel", "dozer", "truck"].includes(v.id);
   mobileUI?.machineChanged(v);
   $("modeBtn").innerHTML =
     (v.unload ? "Boşaltma modu" : "Kazı modu") + " <span>X</span>";
-  if (v.id === "truck" && !isMobile())
+  if (v.id === "truck")
     $("modeBtn").innerHTML =
       (v.unload ? "Şerit dökümü" : "Yığın dökümü") + " <span>X</span>";
   if (v.id === "dozer")
@@ -680,7 +707,7 @@ function operate(v, dt, distance = 0) {
     id = v.id;
   let amount = 0;
   if (id === "truck") {
-    if (!isMobile() && v.unload) {
+    if (v.unload) {
       amount = terrain.spreadLayer(
         p.x,
         p.z,
@@ -714,7 +741,7 @@ function operate(v, dt, distance = 0) {
       v.cargo += amount;
     }
   } else if (id === "dozer") {
-    if (v.unload && !isMobile()) {
+    if (v.unload) {
       const alongRoad = roadPlan?.contains(p.x, p.z, 2);
       amount = terrain.bladeGrade(
         p.x,
@@ -749,27 +776,24 @@ function operate(v, dt, distance = 0) {
   } else if (id === "roller") {
     amount = terrain.finish(p.x, p.z, v.angle, 2.2, 1.3, dt * 2.4);
   } else if (id === "paver") {
-    amount = isMobile()
-      ? terrain.ribbon(
-          p.x,
-          p.z,
-          v.angle,
-          3.1,
-          1.2,
-          Math.min(v.cargo, 0.28 * Math.abs(v.speed) * dt),
-        )
-      : terrain.spreadLayer(
-          p.x,
-          p.z,
-          v.angle,
-          ROAD_SPREAD_WIDTH,
-          1.1,
-          Math.min(v.cargo, ROAD_SPREAD_WIDTH * ROAD_ASPHALT_DEPTH * distance),
-          3,
-        );
+    amount = terrain.spreadLayer(
+      p.x,
+      p.z,
+      v.angle,
+      ROAD_SPREAD_WIDTH,
+      1.1,
+      Math.min(v.cargo, ROAD_SPREAD_WIDTH * ROAD_ASPHALT_DEPTH * distance),
+      3,
+    );
     v.cargo -= amount;
   }
   if (amount > 0.00001) {
+    if (id !== "roller")
+      tireTracks.erase(
+        p.x,
+        p.z,
+        id === "dozer" ? v.bladeWidth * 0.55 : id === "shovel" ? 0.5 : 1.6,
+      );
     changed = true;
     dirty = true;
     const pouring =
@@ -835,10 +859,7 @@ function drive(dt) {
             Number(keys.has("d") || keys.has("arrowright"))
           : (mobileUI?.input.steer ?? 0),
       brake: keys.has("shift") || mobileUI?.input.brake,
-      speedLimit:
-        !isMobile() && workGear && wantsWork()
-          ? ROAD_WORK_SPEED[v.id]
-          : undefined,
+      speedLimit: workGear && wantsWork() ? ROAD_WORK_SPEED[v.id] : undefined,
     },
     terrain,
     [...vehicles, ...obstacles],
@@ -846,17 +867,33 @@ function drive(dt) {
   );
   if (motion.distance > 0) dirty = true;
   trackDistance += motion.distance;
-  if (trackDistance > 0.22 && v.id !== "shovel") {
-    trackDistance = 0;
-    for (const side of [-1, 1])
-      if (
-        terrain.track(
-          v.x + Math.cos(v.angle) * side * 0.95,
-          v.z - Math.sin(v.angle) * side * 0.95,
-          0.3,
-        )
-      )
-        changed = true;
+  if (v.id !== "shovel" && motion.distance > 0) {
+    const axle = v.id === "truck" ? 1.5 : v.id === "roller" ? 1 : 0;
+    const width = ["dozer", "paver"].includes(v.id) ? 0.5 : 0.32;
+    const points = [-1, 1].map((side) => ({
+      x: v.x + Math.cos(v.angle) * side * 0.98 + Math.sin(v.angle) * axle,
+      z: v.z - Math.sin(v.angle) * side * 0.98 + Math.cos(v.angle) * axle,
+    }));
+    if (v.lastTrack && trackDistance >= 0.1) {
+      points.forEach((p, i) => {
+        const old = v.lastTrack[i],
+          cell = terrain.nearest(p.x, p.z);
+        const strength = terrain.mat[cell] === 3 ? 0.2 : 0.68;
+        tireTracks.stroke(
+          old.x,
+          old.z,
+          p.x,
+          p.z,
+          width,
+          strength,
+          v.trackPhase || 0,
+        );
+        if (terrain.track(p.x, p.z, 0.2)) changed = true;
+      });
+      v.trackPhase = (v.trackPhase || 0) + trackDistance;
+      trackDistance = 0;
+      v.lastTrack = points;
+    } else if (!v.lastTrack) v.lastTrack = points;
   }
   working = wantsWork() && canPlay();
   if (working && !workStarted) {
@@ -866,7 +903,6 @@ function drive(dt) {
   if (!working) v.bladeDatum = terrain.sample(v.x, v.z);
   const bladePoint = toolPosition(v);
   if (
-    !isMobile() &&
     v.id === "dozer" &&
     v.unload &&
     roadPlan?.contains(bladePoint.x, bladePoint.z, 2)
@@ -881,38 +917,11 @@ function drive(dt) {
   if (keys.has("q")) cameraAngle += dt * 1.3;
   if (keys.has("e")) cameraAngle -= dt * 1.3;
   vehicles.forEach((m, i) => {
-    m.group.position.y = T.MathUtils.damp(
-      m.group.position.y,
-      terrain.sample(m.x, m.z),
-      12,
-      dt,
-    );
-    m.group.position.x = m.x;
-    m.group.position.z = m.z;
     for (const wheel of m.wheels) {
       const spin = wheel.userData.spin || wheel;
       spin.rotation.x -= (m.speed * dt) / (wheel.userData.radius || 0.67);
       if (wheel.userData.front) wheel.rotation.y = m.steer || 0;
     }
-    m.group.rotation.y = m.angle;
-    const dx = -Math.sin(m.angle),
-      dz = -Math.cos(m.angle),
-      front = terrain.sample(m.x + dx * 1.3, m.z + dz * 1.3),
-      rear = terrain.sample(m.x - dx * 1.3, m.z - dz * 1.3),
-      left = terrain.sample(m.x + dz * 0.8, m.z - dx * 0.8),
-      right = terrain.sample(m.x - dz * 0.8, m.z + dx * 0.8);
-    m.group.rotation.x = T.MathUtils.damp(
-      m.group.rotation.x,
-      clamp(Math.atan2(front - rear, 2.6), -0.38, 0.38),
-      10,
-      dt,
-    );
-    m.group.rotation.z = T.MathUtils.damp(
-      m.group.rotation.z,
-      clamp(Math.atan2(left - right, 1.6), -0.38, 0.38),
-      10,
-      dt,
-    );
     if (m.load) {
       m.load.visible = m.cargo > 0.005;
       m.load.scale.y = Math.max(0.02, m.cargo / (m.capacity || 1));
@@ -928,7 +937,7 @@ function drive(dt) {
     for (const part of m.bladeParts) part.scale.x = m.bladeWidth / 3.2;
     if (m.id === "dozer" && m.moving)
       m.moving.position.y = clamp(
-        m.bladeDatum + m.bladeOffset - terrain.sample(m.x, m.z) - 0.11,
+        m.bladeDatum + m.bladeOffset - m.group.position.y - 0.11,
         -0.55,
         0.7,
       );
@@ -970,23 +979,14 @@ const cameraTarget = new T.Vector3(-29, 0, 26),
   lookTarget = new T.Vector3();
 function updateCamera(dt, instant = false) {
   const v = vehicles[selected];
-  const focus = !isMobile() && cameraMode === 0 ? toolPosition(v) : v;
+  const focus = v;
   lookTarget.set(focus.x, terrain.sample(focus.x, focus.z) + 0.65, focus.z);
-  if (!isMobile() && cameraMode !== 2 && !mapView) {
-    cameraAngle = T.MathUtils.damp(
-      cameraAngle,
-      v.angle + (cameraMode === 0 ? 0.85 : 0.12),
-      3,
-      dt,
-    );
-    cameraPitch = T.MathUtils.damp(
-      cameraPitch,
-      cameraMode === 0 ? 0.61 : 0.5,
-      3,
-      dt,
-    );
+  if (!isMobile() && cameraMode === 1 && !mapView) {
+    cameraAngle = T.MathUtils.damp(cameraAngle, v.angle + 0.12, 3, dt);
+    cameraPitch = T.MathUtils.damp(cameraPitch, 0.61, 3, dt);
   }
-  roadGuide.group.visible = !!roadPlan && !isMobile() && started;
+  roadGuide.group.visible =
+    !!roadPlan && !isMobile() && started && shell.state.hud;
   cameraTarget.lerp(lookTarget, instant ? 1 : 1 - Math.exp(-dt * 4));
   const dist = mapView ? 65 : cameraDistance;
   const horizontal = mapView ? 0.12 : Math.cos(cameraPitch) * 1.1,
@@ -1147,6 +1147,7 @@ function save(manual = false) {
   try {
     const data = {
       version: 4,
+      tireTracks: tireTracks.serialize(),
       terrain: terrain.serialize(true),
       vehicles: vehicles.map((v) => ({
         x: v.x,
@@ -1203,6 +1204,8 @@ function load() {
     )
       throw Error("Kayıt geçersiz");
     terrain = Terrain.restore(data.terrain);
+    tireTracks.restore(data.tireTracks);
+    terrainInitialized = false;
     stats = {
       moved: Number.isFinite(data.stats?.moved) ? data.stats.moved : 0,
     };
@@ -1211,7 +1214,7 @@ function load() {
       restoredRoad = RoadPlan.restore(data.roadPlan);
     } catch {}
     setRoad(restoredRoad);
-    cameraMode = [0, 1, 2].includes(data.cameraMode) ? data.cameraMode : 0;
+    cameraMode = data.cameraMode === 1 ? 1 : 2;
     createVehicles(data.vehicles);
     selected = clamp(Math.trunc(data.selected) || 0, 0, 5);
     cameraAngle = Number.isFinite(data.cameraAngle) ? data.cameraAngle : 0.68;
@@ -1240,7 +1243,8 @@ function load() {
 function newWorld(seed) {
   cancelPlanning();
   terrain = new Terrain(seed);
-  setRoad(isMobile() ? null : prepareWorkshop(terrain));
+  tireTracks.clear();
+  setRoad(prepareWorkshop(terrain));
   terrainInitialized = false;
   settlingClock = 0;
   stats = { moved: 0 };
@@ -1252,7 +1256,7 @@ function newWorld(seed) {
   cameraAngle = 0.68;
   cameraDistance = isMobile() ? 22 : 15;
   cameraPitch = isMobile() ? Math.PI / 4 : 0.61;
-  cameraMode = 0;
+  cameraMode = 2;
   mapView = false;
   rebuildScenery();
   updateTerrain();
@@ -1309,12 +1313,7 @@ function openDialog(id) {
 }
 function toggleMode() {
   const v = vehicles[selected];
-  if (
-    !["loader", "shovel", "dozer", ...(!isMobile() ? ["truck"] : [])].includes(
-      v.id,
-    )
-  )
-    return;
+  if (!["loader", "shovel", "dozer", "truck"].includes(v.id)) return;
   v.unload = !v.unload;
   updateMode();
   dirty = true;
@@ -1388,18 +1387,20 @@ document.addEventListener("keydown", (e) => {
   if (k === "i") adjustWidth(0.2);
   if (k === "m") mapView = !mapView;
   if (!isMobile()) {
+    if (k === "p") shell.toggle("hud");
     if (k === "o") cycleWorkCamera();
     if (k === "v") cycleInspection();
     if (k === "b") toggleWorkGear();
     if (k === "f") toggleEquipment();
-    if (k === "escape") cancelPlanning();
+    if (k === "escape") openDialog("menuSheet");
   }
   if (k === "g") grid.visible = !grid.visible;
   if (k === "h") openDialog("helpDialog");
   if (k === "z") undoWork();
   if (k === "c") {
     if (!isMobile()) {
-      cameraMode = 1;
+      cameraMode = 2;
+      cameraPitch = 0.61;
       updateDesktopButtons();
     }
     cameraAngle = vCameraHeading();
@@ -1418,7 +1419,8 @@ renderer.domElement.addEventListener("pointerdown", (e) => {
     placeRoadPoint(e);
     return;
   }
-  if (!canPlay() || (e.pointerType === "mouse" && e.button !== 2)) return;
+  if (!canPlay() || (e.pointerType === "mouse" && ![0, 2].includes(e.button)))
+    return;
   e.preventDefault();
   if (!isMobile()) {
     cameraMode = 2;
@@ -1560,14 +1562,6 @@ mobileUI = initMobileUI({
 });
 buildFleetUI();
 newWorld(3817);
-if (!isMobile()) {
-  $("arrivalBadge").textContent = "SANDSTRUCTION / YOL ATÖLYESİ 0.6.1";
-  $("welcomeTitle").innerHTML =
-    "Malzemeyi hisset.<br/><em>Yolunu inşa et.</em>";
-  $("welcomeDescription").textContent =
-    "24 metrelik bozuk bir hat. Kum, dozer, asfalt ve silindir. Yeni sahada yol yapmayı dene veya kendi hattını çiz.";
-  $("startBtn").innerHTML = "Yol sahasına gir <span>↗</span>";
-}
 updateDesktopButtons();
 setAtmosphere(0);
 applyArrivalContext();
@@ -1591,10 +1585,6 @@ function frame(now) {
     working = false;
     if (engineGain)
       engineGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.1);
-    vehicles.forEach((v) => {
-      v.group.position.set(v.x, terrain.sample(v.x, v.z), v.z);
-      v.group.rotation.y = v.angle;
-    });
   }
   if (canPlay()) {
     settlingClock += dt;
@@ -1608,6 +1598,36 @@ function frame(now) {
     terrainTimer = 0;
   }
   terrainBlend.value = T.MathUtils.damp(terrainBlend.value, 1, 42, dt);
+  // Resolve against the exact visible interpolated surface, after terrain updates.
+  for (const v of vehicles) {
+    const sample = smoothGround
+      ? (x, z) => smoothGround.field.sample(x, z, terrainBlend.value)
+      : (x, z) =>
+          sampleDisplayMesh(
+            terrainGeo.attributes.position.array,
+            previousHeights,
+            terrainBlend.value,
+            x,
+            z,
+            N,
+            SIZE,
+          );
+    const teleported =
+      !v.contact || Math.hypot(v.x - v.contactX, v.z - v.contactZ) > 2;
+    v.contact = solveContact(v, sample, dt, teleported ? null : v.contact);
+    v.contactX = v.x;
+    v.contactZ = v.z;
+    v.group.position.set(v.x, v.contact.y, v.z);
+    v.group.rotation.set(v.contact.pitch, v.angle, v.contact.roll, "YXZ");
+  }
+  if (elapsed - (frame.trackUpload || 0) > 0.08) {
+    smoothGround?.updateTracks();
+    if (fallbackTrackTexture && tireTracks.dirty) {
+      fallbackTrackTexture.needsUpdate = true;
+      tireTracks.dirty = false;
+    }
+    frame.trackUpload = elapsed;
+  }
   updateCamera(dt);
   for (let i = 0; i < dust.length; i++) {
     const p = dust[i];
@@ -1649,6 +1669,7 @@ function frame(now) {
   }
   water.material.color.offsetHSL(0, 0, Math.sin(elapsed * 0.5) * 0.00002);
   renderer.render(scene, camera);
+  if (document.body.classList.contains("booting")) finishBoot();
 }
 requestAnimationFrame(frame);
 
@@ -1673,6 +1694,7 @@ function groundTexture() {
 }
 function rememberWork() {
   undoStack.push({
+    tireTracks: tireTracks.serialize(),
     h: terrain.h.slice(),
     mat: terrain.mat.slice(),
     compact: terrain.compact.slice(),
@@ -1691,6 +1713,7 @@ function undoWork() {
     toast("Henüz geri alınacak bir işlem yok.");
     return;
   }
+  tireTracks.restore(prev.tireTracks);
   terrain.h.set(prev.h);
   terrain.mat.set(prev.mat);
   terrain.compact.set(prev.compact);
@@ -1798,7 +1821,8 @@ $("undoBtn").onclick = undoWork;
 $("lightBtn").onclick = () => setAtmosphere(atmosphere + 1);
 $("cameraBtn").onclick = () => {
   if (!isMobile()) {
-    cameraMode = 1;
+    cameraMode = 2;
+    cameraPitch = 0.61;
     updateDesktopButtons();
   }
   cameraAngle = vCameraHeading();
@@ -1909,7 +1933,8 @@ function updateRoadUI(force = false) {
 }
 function updateDesktopButtons() {
   $("workCameraBtn").innerHTML =
-    "Kamera: " + ["İş", "Takip", "Serbest"][cameraMode] + " <kbd>O</kbd>";
+    (cameraMode === 1 ? "Otomatik takip açık" : "Serbest kamera") +
+    " <kbd>O</kbd>";
   $("inspectionBtn").innerHTML =
     "Görünüm: " +
     ["Malzeme", "Sıkışma", "Kot"][inspectionMode] +
@@ -1927,9 +1952,9 @@ function updateDesktopButtons() {
 }
 function cycleWorkCamera() {
   cancelPlanning();
-  cameraMode = (cameraMode + 1) % 3;
+  cameraMode = cameraMode === 1 ? 2 : 1;
   mapView = false;
-  if (cameraMode === 0) cameraDistance = 15;
+
   updateDesktopButtons();
 }
 function cycleInspection() {
@@ -1994,7 +2019,7 @@ function placeRoadPoint(e) {
     );
     cancelPlanning();
     mapView = false;
-    cameraMode = 0;
+    cameraMode = 2;
     updateRoadUI(true);
     toast("Hat çizildi. Arazi değişmedi; çalışmaya başlayabilirsin.");
   } catch (error) {
@@ -2027,6 +2052,7 @@ function alignToRoad(atEnd = false) {
     toast("Bu konum dolu veya sınır dışında. Diğer uç/şeridi seç.");
     return false;
   }
+  v.lastTrack = null;
   v.x = x;
   v.z = z;
   v.angle = angle;
@@ -2038,7 +2064,7 @@ function alignToRoad(atEnd = false) {
   }
   if (v.id === "truck") v.unload = true;
   mapView = false;
-  cameraMode = 0;
+  cameraMode = 2;
   cameraDistance = 15;
   cameraAngle = angle + 0.85;
   updateMode();

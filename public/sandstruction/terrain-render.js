@@ -1,5 +1,5 @@
-import { filterContours, shoulderCoverage } from "./contour-surface.js?v=0.6.1";
-import { N, CELL, MATERIALS, random } from "./terrain.js?v=0.6.1";
+import { filterContours, shoulderCoverage } from "./contour-surface.js?v=0.7.0";
+import { N, CELL, MATERIALS, random } from "./terrain.js?v=0.7.0";
 const linear = (c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
 const rgb = (hex) => [
   linear(((hex >> 16) & 255) / 255),
@@ -52,9 +52,7 @@ export class TerrainSurface {
         const i = z * stride + x,
           j = i * 3,
           mat = terrain.mat[i],
-          shade =
-            (1 - terrain.marks[i] * 0.25) *
-            (1 + this.grain[i] - terrain.compact[i] * 0.16);
+          shade = 1 + this.grain[i] - terrain.compact[i] * 0.16;
         previous[i] = instant
           ? h[i]
           : previous[i] + (positions[j + 1] - previous[i]) * blend;

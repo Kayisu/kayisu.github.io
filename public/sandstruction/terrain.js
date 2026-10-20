@@ -1,4 +1,4 @@
-import { sampleContour, shoulderCoverage } from "./contour-surface.js?v=0.6.1";
+import { sampleContour, shoulderCoverage } from "./contour-surface.js?v=0.7.0";
 export const N = 256,
   SIZE = 96,
   CELL = SIZE / N;

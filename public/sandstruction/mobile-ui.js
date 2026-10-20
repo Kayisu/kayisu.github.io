@@ -1,4 +1,4 @@
-import { TouchInput } from "./touch-input.js?v=0.6.1";
+import { TouchInput } from "./touch-input.js?v=0.7.0";
 
 export const MOBILE_QUERY = "(pointer: coarse)";
 
@@ -37,7 +37,7 @@ export function initMobileUI({ canPlay, clearInput, openDialog, onLayout }) {
       node.hidden = !query.matches;
     });
     for (const { node, target, anchor } of relocations)
-      if (query.matches) target.append(node);
+      if (query.matches || target === $("menuSheetBody")) target.append(node);
       else anchor.after(node);
     if (!query.matches)
       document

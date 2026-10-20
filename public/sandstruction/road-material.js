@@ -7,6 +7,7 @@ export function sharpenCoverage(weights, power = 5) {
 }
 export const ROAD_MATERIAL_GLSL = `
 uniform sampler2D uSurfaceMaterial;
+uniform sampler2D uTireTracks;
 uniform sampler2D uSurfaceField;
 uniform float uDesktopDetail;
 uniform float uInspection;
@@ -42,10 +43,17 @@ RD_Surface RD_read(vec2 grid,vec3 natural){
  gravel*=.91+.1*macro;
  vec3 asphalt=mix(vec3(.105,.105,.09),vec3(.027,.034,.039),comp);
  asphalt*=mix(.65+grain*.8,.95+fine*.1,comp);
- vec3 earth=natural*(.88+.2*macro+.06*fine);
+ float clods=RD_noise(world*5.4+RD_noise(world*1.7)*2.0);
+ float stone=smoothstep(.73,.91,RD_noise(world*31.0))*detailFade;
+ float bare=smoothstep(.28,.66,RD_noise(world*.32+8.0));
+ vec3 soil=mix(vec3(.19,.135,.077),vec3(.33,.245,.14),clods);
+ soil=mix(soil,vec3(.38,.35,.27),stone*.38);
+ vec3 earth=mix(natural*.86,soil,.55+bare*.4)*(.91+.14*macro+.1*fine);
+ float tracks=texture2D(uTireTracks,(world+SS_SIZE*.5)/SS_SIZE).r;
+ float trackWeight=tracks*(1.0-w.w*comp*.85);
  RD_Surface r;r.color=earth*w.x+sand*w.y+gravel*w.z+asphalt*w.w;
- r.color*=1.0-field.a*.13*(1.0-w.w*comp);
- r.relief=(w.y*.005*fine+w.z*.035*grain+w.w*mix(.03,.0018,comp)*grain)*detailFade;
+ r.color*=1.0-trackWeight*.28;
+ r.relief=w.x*(clods*.025+fine*.004+stone*.012)+ (w.y*.007*fine+w.z*.035*grain+w.w*mix(.03,.0018,comp)*grain)*detailFade-trackWeight*.006;
  r.roughness=dot(w,vec4(.98,.96,.94,mix(.95,.72,comp)));r.compaction=comp;
  if(uInspection>.5){
   vec2 d=vec2(uRoadLine.z,uRoadLine.w),v=world-uRoadLine.xy;

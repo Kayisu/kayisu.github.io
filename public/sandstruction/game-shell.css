@@ -1,0 +1,337 @@
+/* One game screen, from the first HTML paint to the working sandbox. */
+body {
+  background: #16221e;
+}
+body:not(.playing)
+  :is(
+    .topbar,
+    .workbar,
+    .road-desk,
+    .guide,
+    .map-panel,
+    .instrument,
+    .bottom,
+    .camera-tools,
+    .surface-probe,
+    .mobile-hud,
+    .mobile-toolbar,
+    .mobile-controls,
+    .hud-switches,
+    #hudBtn
+  ) {
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+.guide {
+  display: none !important;
+}
+body.booting #world {
+  visibility: hidden;
+}
+body.booting .welcome {
+  opacity: 1;
+}
+body.booting .welcome-steps,
+body.booting .touch-welcome {
+  display: none;
+}
+#bootStatus {
+  color: #cfb677;
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+#bootStatus[hidden] {
+  display: none;
+}
+#startBtn:disabled {
+  opacity: 0.4;
+  cursor: wait;
+}
+#bootRetry {
+  margin-top: 16px;
+  padding: 10px 18px;
+  border: 1px solid #d9c28e;
+  color: inherit;
+  border-radius: 5px;
+}
+#error:not([hidden]) {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: #17271f;
+  color: #ecebdd;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  text-align: center;
+  font-size: 16px;
+  line-height: 1.7;
+}
+.overlay {
+  background: linear-gradient(90deg, #14261cf5, #14261c8c 65%, #14261c22);
+  backdrop-filter: none;
+}
+.welcome {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  color: #f0efdf !important;
+  max-width: 660px;
+  text-align: left;
+}
+.welcome h2 {
+  font-size: clamp(40px, 6vw, 72px);
+  line-height: 1.04;
+  letter-spacing: -2px;
+  color: #f0efdf;
+}
+.welcome h2 em {
+  color: #e2bc62;
+}
+.welcome p,
+.welcome small,
+.welcome .eyebrow,
+.welcome .modal-tag {
+  color: #bdc9b9;
+}
+.welcome .primary {
+  background: #e4bd60;
+  color: #172b20;
+}
+.welcome .continue {
+  color: #e9d8ab;
+  border-color: #b9c6af55;
+}
+.welcome-steps {
+  border-color: #c9d4ba33;
+  color: #c9d4ba;
+}
+#hudBtn {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  z-index: 12;
+  background: #192a23ed;
+  color: #d8e1d3;
+  border: 1px solid #a6ba9c40;
+  border-radius: 6px;
+  padding: 10px 13px;
+  font-size: 11px;
+  pointer-events: auto;
+}
+.hud-switches {
+  display: flex;
+  gap: 5px;
+  margin-left: auto;
+}
+.hud-switches button,
+.menu-toggle {
+  background: #192a23ed;
+  color: #e7eadd;
+  border: 1px solid #a6ba9c40;
+  border-radius: 6px;
+  padding: 9px 13px;
+  min-height: 36px;
+  font-size: 11px;
+  pointer-events: auto;
+}
+.hud-switches button[aria-expanded="true"] {
+  border-color: #d9b659;
+  color: #e9c978;
+}
+.menu-toggle {
+  display: block !important;
+  margin-left: 8px;
+}
+.panel-close {
+  position: absolute;
+  right: 12px;
+  top: 10px;
+  font-size: 21px;
+  line-height: 1;
+  padding: 4px;
+  color: inherit;
+}
+.road-desk .desk-kicker {
+  padding-right: 23px;
+}
+.desk-kicker > span:last-child {
+  display: none;
+}
+body:not(.touch-layout).playing .topbar {
+  top: 16px;
+  left: 18px;
+  right: 18px;
+  align-items: center;
+}
+body:not(.touch-layout).playing .brand {
+  background: #192a23ed;
+  color: #e7eadd !important;
+  border: 1px solid #a6ba9c40;
+  border-radius: 6px;
+  padding: 9px 13px;
+  gap: 10px;
+}
+body:not(.touch-layout) .brand small {
+  display: none;
+}
+body:not(.touch-layout) .brand-mark {
+  font-size: 18px;
+  width: 25px;
+  height: 25px;
+}
+body:not(.touch-layout).playing .workbar {
+  top: 76px;
+  gap: 4px;
+}
+body:not(.touch-layout) .workbar button {
+  padding: 8px 10px;
+}
+body:not(.touch-layout).playing .road-desk {
+  top: 125px;
+  left: 18px;
+  max-height: calc(var(--app-height, 100dvh) - 250px);
+}
+body:not(.touch-layout).playing .instrument {
+  top: 125px;
+  right: 18px;
+  max-height: calc(var(--app-height, 100dvh) - 250px);
+}
+body:not(.touch-layout) .instrument .machine-heading {
+  padding-right: 22px;
+}
+body:not(.touch-layout) .road-desk h2 {
+  font-family: inherit;
+  font-size: 20px;
+  letter-spacing: -0.4px;
+  margin: 14px 0 5px;
+}
+body:not(.touch-layout) .bottom {
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+  width: min(620px, calc(100% - 32px));
+  bottom: 18px;
+  max-width: none;
+}
+body:not(.touch-layout) .fleet {
+  gap: 5px;
+}
+body:not(.touch-layout) .fleet button {
+  height: 65px;
+}
+body:not(.touch-layout) .fleet .fleet-role {
+  display: none;
+}
+body:not(.touch-layout) .bottom-line {
+  justify-content: center;
+  color: #e8efdb;
+  text-shadow: 0 1px 4px #14251c;
+}
+body:not(.touch-layout) .bottom-line > span:first-child:after {
+  content: "WASD sür · SPACE çalıştır · fareyle sürükle · C hizala";
+}
+body:not(.touch-layout) #saveStatus {
+  display: none;
+}
+body:not(.touch-layout) .surface-probe {
+  bottom: 112px;
+  max-width: calc(100% - 32px);
+  padding: 8px 12px;
+  background: #172b24d9;
+}
+body:not(.touch-layout) #probeHint {
+  display: none;
+}
+body:not(.touch-layout) #toast {
+  max-width: min(540px, calc(100% - 32px));
+  bottom: 166px;
+}
+body:not(.touch-layout).road-panel-hidden #roadPanel,
+body:not(.touch-layout).vehicle-panel-hidden #vehiclePanel {
+  display: none !important;
+}
+body:not(.touch-layout).hud-hidden
+  :is(
+    .topbar,
+    .workbar,
+    .road-desk,
+    .instrument,
+    .bottom,
+    .surface-probe,
+    .camera-tools,
+    .working-banner,
+    #routeContext
+  ) {
+  display: none !important;
+}
+#menuSheet .top-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 18px 0;
+}
+#menuSheet .top-actions > * {
+  display: block !important;
+  text-align: left;
+  background: #e6e9dd;
+  color: #243b2c;
+  padding: 13px;
+  font-size: 12px;
+  border-radius: 5px;
+}
+#menuSheet .menu-extras {
+  display: flex;
+  gap: 8px;
+}
+#menuSheet .menu-extras button {
+  padding: 12px;
+  background: #e6e9dd;
+  border-radius: 5px;
+}
+.touch-layout .hud-switches,
+.touch-layout #hudBtn,
+.touch-layout .panel-close {
+  display: none !important;
+}
+.touch-layout .menu-toggle {
+  margin-left: auto;
+}
+.touch-layout .welcome h2 {
+  font-size: 38px;
+  letter-spacing: -1px;
+}
+@media (max-width: 800px) {
+  body:not(.touch-layout) .brand > span:last-child {
+    display: none;
+  }
+  .hud-switches button {
+    padding: 8px;
+    font-size: 10px;
+  }
+  body:not(.touch-layout) #hudBtn {
+    bottom: 108px;
+  }
+  body:not(.touch-layout) .workbar {
+    left: 18px;
+    transform: none;
+  }
+  .workbar kbd {
+    display: none;
+  }
+  body:not(.touch-layout) .surface-probe {
+    display: none !important;
+  }
+}
+@media (max-height: 600px) {
+  body:not(.touch-layout).playing .road-desk,
+  body:not(.touch-layout).playing .instrument {
+    top: 112px;
+    max-height: calc(100dvh - 215px);
+  }
+  body:not(.touch-layout) .surface-probe {
+    display: none !important;
+  }
+}

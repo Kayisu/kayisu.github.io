@@ -1,4 +1,4 @@
-import { splineWeights, splineDerivatives } from "./cubic-surface.js?v=0.6.1";
+import { splineWeights, splineDerivatives } from "./cubic-surface.js?v=0.7.0";
 
 // Resolve raster stair steps before cubic reconstruction. This small symmetric
 // kernel rounds the shoulder profile; material sharpness is handled separately.

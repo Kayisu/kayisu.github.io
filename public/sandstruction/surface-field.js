@@ -1,6 +1,7 @@
-import { filterContours } from "./contour-surface.js?v=0.6.1";
-import { N, MATERIALS } from "./terrain.js?v=0.6.1";
-import { TerrainSurface } from "./terrain-render.js?v=0.6.1";
+import { filterContours } from "./contour-surface.js?v=0.7.0";
+import { splineWeights } from "./cubic-surface.js?v=0.7.0";
+import { N, SIZE, CELL, MATERIALS } from "./terrain.js?v=0.7.0";
+import { TerrainSurface } from "./terrain-render.js?v=0.7.0";
 const lin = (c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
 const palette = MATERIALS.map((m) => [
   lin(((m.color >> 16) & 255) / 255),
@@ -18,6 +19,27 @@ export class SurfaceField {
     this.heightScratch = new Float32Array(this.height.length);
     this.cache = null;
   }
+  sample(x, z, blend = 1) {
+    const gx = Math.max(0, Math.min(N, (x + SIZE / 2) / CELL)),
+      gz = Math.max(0, Math.min(N, (z + SIZE / 2) / CELL));
+    const bx = Math.floor(gx),
+      bz = Math.floor(gz),
+      wx = splineWeights(gx - bx),
+      wz = splineWeights(gz - bz);
+    let height = 0;
+    for (let j = 0; j < 4; j++)
+      for (let i = 0; i < 4; i++) {
+        const at =
+          (Math.max(0, Math.min(N, bz + j - 1)) * (N + 1) +
+            Math.max(0, Math.min(N, bx + i - 1))) *
+          4;
+        height +=
+          (this.data[at] + (this.data[at + 1] - this.data[at]) * blend) *
+          wx[i] *
+          wz[j];
+      }
+    return height;
+  }
   update(terrain, blend = 1, instant = false) {
     if (!this.cache || this.cache.seed !== terrain.seed)
       this.cache = new TerrainSurface(terrain.seed);
@@ -27,9 +49,7 @@ export class SurfaceField {
       const j = i * 4,
         k = i * 3,
         mat = terrain.mat[i],
-        shade =
-          (1 - terrain.marks[i] * 0.25) *
-          (1 + this.cache.grain[i] - terrain.compact[i] * 0.16);
+        shade = 1 + this.cache.grain[i] - terrain.compact[i] * 0.16;
       this.data[j] = instant
         ? this.height[i]
         : this.data[j] + (this.data[j + 1] - this.data[j]) * blend;

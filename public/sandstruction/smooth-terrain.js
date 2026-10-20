@@ -1,7 +1,7 @@
 import * as T from "./vendor/three.module.js";
-import { N, SIZE, CELL } from "./terrain.js?v=0.6.1";
-import { SurfaceField } from "./surface-field.js?v=0.6.1";
-import { ROAD_MATERIAL_GLSL } from "./road-material.js?v=0.6.1";
+import { N, SIZE, CELL } from "./terrain.js?v=0.7.0";
+import { SurfaceField } from "./surface-field.js?v=0.7.0";
+import { ROAD_MATERIAL_GLSL } from "./road-material.js?v=0.7.0";
 export const SURFACE_QUALITIES = [256, 512, 768, 1024];
 const constants = `const float SS_N=${N.toFixed(1)}; const float SS_SIZE=${SIZE.toFixed(1)}; const float SS_CELL=${CELL.toFixed(8)}; const float SS_TEX=${(N + 1).toFixed(1)};`;
 const weights = `vec4 SS_weights(float t){float a=1.0-t;float t2=t*t;float t3=t2*t;return vec4(a*a*a,3.0*t3-6.0*t2+4.0,-3.0*t3+3.0*t2+3.0*t+1.0,t3)/6.0;}`;
@@ -61,7 +61,7 @@ export function configureSurfaceShader(shader, uniforms) {
     SURFACE_FRAGMENT_GLSL + ROAD_MATERIAL_GLSL + shader.fragmentShader;
   shader.fragmentShader = shader.fragmentShader.replace(
     "#include <color_fragment>",
-    "#include <color_fragment>\nRD_Surface ssRoad;if(uDesktopDetail>.5){ssRoad=RD_read(vSurfaceGrid,SS_color(vSurfaceGrid));diffuseColor.rgb*=ssRoad.color;}else{diffuseColor.rgb*=SS_color(vSurfaceGrid);}",
+    "#include <color_fragment>\nRD_Surface ssRoad;if(uDesktopDetail>.5){ssRoad=RD_read(vSurfaceGrid,SS_color(vSurfaceGrid));diffuseColor.rgb*=ssRoad.color;}else{diffuseColor.rgb*=SS_color(vSurfaceGrid)*(1.0-texture2D(uTireTracks,vSurfaceGrid/SS_N).r*.23);}",
   );
   shader.fragmentShader = shader.fragmentShader.replace(
     "#include <roughnessmap_fragment>",
@@ -77,8 +77,24 @@ export function configureSurfaceShader(shader, uniforms) {
   );
 }
 export class SmoothTerrain {
-  constructor(blend, detailTexture, segments = 768, detailed = false) {
+  constructor(
+    blend,
+    detailTexture,
+    segments = 768,
+    detailed = false,
+    tracks = null,
+  ) {
     this.blend = blend;
+    this.tracks = tracks;
+    this.trackTexture = new T.DataTexture(
+      tracks?.data || new Uint8Array(4),
+      tracks?.resolution || 1,
+      tracks?.resolution || 1,
+      T.RGBAFormat,
+    );
+    this.trackTexture.minFilter = this.trackTexture.magFilter = T.LinearFilter;
+    this.trackTexture.generateMipmaps = false;
+    this.trackTexture.needsUpdate = true;
     this.field = new SurfaceField();
     this.heightTexture = new T.DataTexture(
       this.field.data,
@@ -110,6 +126,7 @@ export class SmoothTerrain {
       T.LinearFilter;
     this.materialTexture.generateMipmaps = false;
     const uniforms = (this.uniforms = {
+      uTireTracks: { value: this.trackTexture },
       uDesktopDetail: { value: detailed ? 1 : 0 },
       uInspection: { value: 0 },
       uRoadLine: { value: new T.Vector4() },
@@ -129,12 +146,17 @@ export class SmoothTerrain {
     });
     this.material.onBeforeCompile = (shader) =>
       configureSurfaceShader(shader, uniforms);
-    this.material.customProgramCacheKey = () =>
-      "sandstruction-contour-surface-v061";
+    this.material.customProgramCacheKey = () => "sandstruction-surface-v070";
     this.mesh = new T.Mesh(new T.BufferGeometry(), this.material);
     this.mesh.receiveShadow = true;
     this.mesh.frustumCulled = false;
     this.setQuality(segments);
+  }
+  updateTracks() {
+    if (this.tracks?.dirty) {
+      this.trackTexture.needsUpdate = true;
+      this.tracks.dirty = false;
+    }
   }
   setRoad(plan) {
     this.uniforms.uRoadLine.value.set(
