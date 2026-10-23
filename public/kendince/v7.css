@@ -1,0 +1,79 @@
+/* Male style atlas: editorial cards stay distinct from personal recommendations. */
+.style-teaser{margin:12px 0 42px}
+.style-section-heading{display:flex;justify-content:space-between;align-items:end;gap:24px;margin-bottom:23px}
+.style-section-heading h2{font:400 clamp(28px,3vw,43px)/1.1 var(--serif);margin:13px 0}
+.style-section-heading h2 em,.atlas-heading h1 em{color:var(--green);font-weight:400}
+.style-section-heading p{font-size:14px;color:var(--muted)}
+.atlas-grid,.atlas-teaser-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.atlas-card{border:1px solid var(--line);background:#fffdf7;min-width:0;border-radius:10px;overflow:hidden}
+.atlas-card-art{position:relative;background:#eae6dc;isolation:isolate;overflow:hidden}
+.atlas-card-art:after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 50px #6b625414;pointer-events:none}
+.atlas-card-art .mannequin-stage{height:390px;background:transparent!important;border-radius:0}
+.atlas-card-art .mannequin-svg{height:100%;max-width:100%;width:100%;padding:22px 18px 0}
+.atlas-card-art .mannequin-caption{display:none}
+.atlas-index{position:absolute;top:17px;left:17px;z-index:2;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#4f534b;background:#ffffffab;padding:6px 9px;border-radius:3px}
+.atlas-zoom{position:absolute;bottom:14px;right:14px;width:34px;height:34px;border:1px solid #fff9;background:#fff9;border-radius:50%;font-size:19px;cursor:pointer}
+.atlas-street .atlas-card-art{background:#dfe2e0}
+.atlas-tailoring .atlas-card-art,.atlas-smart .atlas-card-art{background:#e3e2de}
+.atlas-artisan .atlas-card-art,.atlas-bold .atlas-card-art{background:#e8dccf}
+.atlas-workwear .atlas-card-art,.atlas-heritage .atlas-card-art{background:#e0dfd1}
+.atlas-outdoor .atlas-card-art{background:#dce1d5}
+.atlas-monochrome .atlas-card-art{background:#deddd9}
+.atlas-card-copy{padding:23px}
+.atlas-card-copy h2,.atlas-card-copy h3{font:400 25px/1.2 var(--serif);margin:0 0 11px;min-height:31px}
+.atlas-card-copy>p{font-size:13px;line-height:1.7;color:var(--muted);margin:0 0 14px}
+.atlas-recipe{font-size:12px;line-height:1.7;padding:12px 0;border-top:1px solid var(--line);color:#4a5045}
+.atlas-pieces{display:flex;flex-wrap:wrap;gap:5px;margin:4px 0 15px}
+.atlas-pieces span{font-size:10px;border:1px solid #d8d8ca;border-radius:3px;padding:4px 7px;color:#58614d}
+.atlas-products{display:flex;gap:7px;padding-top:8px}
+.atlas-products button{width:calc(25% - 5px);height:76px;max-width:76px;border:1px solid var(--line);border-radius:4px;overflow:hidden;background:#f0f0e9;cursor:pointer}
+.atlas-products img{width:100%;height:100%;object-fit:cover}
+.atlas-card-copy .atlas-price{font-size:11px;line-height:1.8;margin:14px 0 0;color:#77796d}
+.atlas-price strong{font-size:13px;font-weight:500;color:#3b4535}
+.atlas-actions{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;border-top:1px solid var(--line);margin-top:18px;padding-top:14px}
+.atlas-actions .text-button{font-size:11px}
+.atlas-teaser-grid .atlas-card{display:grid;grid-template-columns:44% 56%;border-radius:6px}
+.atlas-teaser-grid .atlas-card-art .mannequin-stage{height:260px}
+.atlas-teaser-grid .atlas-card-art .mannequin-svg{padding:28px 0 0}
+.atlas-teaser-grid .atlas-index{top:10px;left:8px;font-size:8px;letter-spacing:0;background:#fff8;padding:4px}
+.atlas-teaser-grid .atlas-card-copy{padding:38px 18px 18px;display:flex;flex-direction:column;justify-content:center}
+.atlas-teaser-grid .atlas-card-copy h3{font-size:22px}
+.atlas-teaser-grid .atlas-card-copy>p{font-size:11px}
+.atlas-teaser-grid .atlas-actions{margin-top:auto;border-top:0;padding-top:6px}
+.atlas-teaser-grid .atlas-zoom{width:26px;height:26px;font-size:15px;bottom:8px;right:8px}
+.atlas-heading{padding-bottom:30px;max-width:850px}
+.atlas-heading h1{font-size:clamp(44px,6vw,78px);line-height:1.05;letter-spacing:-.04em}
+.atlas-heading-tags{display:flex;gap:9px;flex-wrap:wrap;margin-top:24px}
+.atlas-heading-tags span{font-size:11px;padding:7px 11px;border:1px solid var(--line);border-radius:4px}
+.atlas-intro{padding:20px 24px;background:#ebeee4;border:1px solid #d6ddcc;border-radius:6px;margin:5px 0 28px}
+.atlas-intro strong{font-size:14px;font-weight:500}
+.atlas-intro p{font-size:12px;line-height:1.8;margin:8px 0 0;color:#66705d;max-width:900px}
+.atlas-footer{padding:27px 0;display:flex;gap:30px;align-items:center;justify-content:space-between}
+.atlas-footer p{font-size:12px;line-height:1.8;color:var(--muted);max-width:600px}
+.atlas-footer .primary{white-space:nowrap}
+.atlas-modal-grid{display:grid;grid-template-columns:45% 55%;gap:25px}
+.atlas-modal-grid>.mannequin-stage,.atlas-modal-grid>div>.mannequin-stage{height:600px}
+.atlas-modal-products{display:grid;gap:9px;margin:20px 0}
+.atlas-modal-products button{display:flex;align-items:center;gap:13px;text-align:left;background:#f4f3ed;border:1px solid var(--line);padding:8px;border-radius:5px;cursor:pointer;min-width:0}
+.atlas-modal-products img{width:58px;height:68px;object-fit:cover}
+.atlas-modal-products span{display:flex;flex-direction:column;gap:7px}
+.atlas-modal-products strong{font-size:12px;font-weight:500}
+.atlas-modal-products small{font-size:11px;color:var(--muted)}
+.catalog-style-rail{display:flex;gap:7px;overflow:auto;padding:2px 0 13px;scrollbar-width:thin}
+.catalog-style-rail button{flex:0 0 auto;border:1px solid #cbd2c0;background:transparent;border-radius:4px;padding:10px 13px;font-size:12px;color:#59654f;cursor:pointer}
+.catalog-style-rail button.selected{background:var(--green);color:white;border-color:var(--green)}
+.catalog-style-note{display:flex;align-items:center;gap:16px;background:#e9eddf;border-radius:5px;padding:14px 16px;margin-bottom:14px;font-size:12px;line-height:1.7}
+.catalog-style-note strong{white-space:nowrap}
+.catalog-style-note span{flex:1}
+.catalog-identity-filters{display:grid;grid-template-columns:1fr 1fr 1.5fr;gap:12px;margin:16px 0}
+.catalog-identity-filters .field{min-width:0}
+.catalog-identity-filters select{width:100%;font-size:12px}
+.catalog-identity-filters>p{grid-column:1/-1;font-size:11px;line-height:1.7;color:var(--muted);margin:0}
+.catalog-result-bar>div>select{max-width:270px}
+.site-header nav{gap:21px}
+.site-header .nav-link{white-space:nowrap}
+button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid #71865d;outline-offset:4px}
+@media(min-width:1001px){.site-header{gap:25px}.site-header nav{margin-left:auto}.profile-button{flex-shrink:0}}
+@media(max-width:1050px){.atlas-teaser-grid{gap:12px}.atlas-teaser-grid .atlas-card-copy{padding:34px 12px 15px}.atlas-teaser-grid .atlas-card-copy h3{font-size:19px}.atlas-grid{gap:16px}.atlas-card-copy{padding:18px}.site-header nav{gap:15px}}
+@media(max-width:780px){.atlas-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.atlas-teaser-grid{grid-template-columns:1fr}.atlas-teaser-grid .atlas-card{grid-template-columns:34% 66%}.atlas-teaser-grid .atlas-card-art .mannequin-stage{height:210px}.atlas-teaser-grid .atlas-card-copy{padding:28px 22px}.atlas-teaser-grid .atlas-card-copy h3{font-size:25px}.atlas-teaser-grid .atlas-card-copy>p{font-size:13px}.atlas-teaser-grid .atlas-actions{margin-top:14px}.style-section-heading{align-items:start}.style-section-heading>.outline-button{font-size:11px;padding:10px}.atlas-footer{align-items:start;flex-direction:column}.catalog-style-note{flex-wrap:wrap}.catalog-style-note span{flex-basis:70%}.atlas-modal-grid{grid-template-columns:1fr}.atlas-modal-grid>div>.mannequin-stage{height:430px}}
+@media(max-width:600px){.atlas-grid{grid-template-columns:1fr}.atlas-card-art .mannequin-stage{height:420px}.atlas-card-copy{padding:22px}.atlas-card-copy h2{font-size:29px}.atlas-products button{height:80px}.atlas-identity-filters{gap:9px}.catalog-identity-filters{grid-template-columns:1fr 1fr}.catalog-identity-filters .field:last-of-type{grid-column:1/-1}.style-section-heading{display:block}.style-section-heading .outline-button{margin-top:10px}.style-section-heading h2{font-size:34px}.atlas-heading h1{font-size:52px}.atlas-intro{padding:17px}.site-header nav{gap:20px;overflow-x:auto;max-width:100%;padding-bottom:12px}.site-header .nav-link{font-size:12px}.catalog-result-bar>div>select{max-width:190px}.style-teaser{margin-bottom:28px}}

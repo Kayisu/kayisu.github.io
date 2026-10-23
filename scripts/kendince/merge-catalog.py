@@ -77,7 +77,7 @@ def main():
             product['retailer'] = product.get('brand') or 'Diğer'
     products = list(by_id.values())
     stamps = [p['verifiedAt'] for p in products if p.get('verifiedAt')]
-    eligible = [p for p in products if p.get('priceStatus') == 'verified' and p['stock']['status'] == 'available']
+    eligible = [p for p in products if not p.get('catalogExcluded') and p.get('priceStatus') == 'verified' and p['stock']['status'] == 'available']
     stats = {'total': len(products), 'modelCount': len({(p['retailer'], p.get('modelId') or p['id']) for p in products}),
              'priceVerified': sum(p.get('priceStatus') == 'verified' for p in products),
              'stockAvailable': sum(p['stock']['status'] == 'available' for p in products),

@@ -48,14 +48,14 @@ export function garmentFacts(p){
  let kind=sourceKind||'unknown',warmth=1,sleeve='long',roles=[],breathable=false,insulated=false,mesh=false;
  // Specific construction cues refine broad source categories (e.g. "jacket" or "shirt").
  if(p.category==='shoe'||['sneaker','boot','loafer','derby'].includes(sourceKind)){
-  kind=has(/\bbot(?:u|lar|lari)?\b|\bboot\b|postal/)?'boot':has(/derby|oxford/)?'derby':has(/loafer|mokasen/)?'loafer':sourceKind||'sneaker';
+  const shoeName=normalized(p.name);kind=/\bbot(?:u|lar|lari)?\b|\bboots?\b|postal/.test(shoeName)?'boot':/derby|oxford/.test(shoeName)?'derby':/loafer|mokasen/.test(shoeName)?'loafer':sourceKind||'sneaker';
   mesh=has(/\bmesh\b|fileli|file kumas|orgu sayali|triko sayali|knit upper/);roles=['shoe'];sleeve=null;warmth=kind==='boot'?2:1;breathable=mesh;
  }else if(p.category==='bottom'||['jean','chino','cargo','jogger','corduroy','shorts','technical'].includes(sourceKind)){
-  kind=has(/kadife|corduroy/)?'corduroy':has(/kargo|cargo/)?'cargo':has(/\bsort\b|shorts|bermuda/)?'shorts':has(/jogger|esofman alti/)?'jogger':sourceKind||'chino';
+  kind=sourceKind==='shorts'||/\bsort\b|\bshorts\b|bermuda/.test(normalized(p.name))?'shorts':has(/kadife|corduroy/)?'corduroy':has(/kargo|cargo/)?'cargo':has(/jogger|esofman alti/)?'jogger':sourceKind||'chino';
   roles=['bottom'];sleeve=null;breathable=has(/keten|linen|ince kumas/);warmth=kind==='shorts'?0:kind==='corduroy'||has(/yunlu|wool|polar|ici tuylu/)?2:1;
  }else{
   const specific=['puffer','parka','coat','raincoat','overshirt','blazer','turtleneck','knit','hoodie','cardigan','vest'];
-  if(!specific.includes(sourceKind))kind=has(/sisme|puffer|dolgulu/)?'puffer':has(/parka/)?'parka':has(/kaban|palto|\bcoat\b/)?'coat':has(/yagmurluk|raincoat/)?'raincoat':has(/overshirt|oduncu|gomlek ceket/)?'overshirt':has(/blazer/)?'blazer':p.category==='outer'||sourceKind==='jacket'?'jacket':has(/balikci yaka|bogazli|turtleneck/)?'turtleneck':has(/yelek|suveter|sleeveless sweater|sweater vest/)?'vest':has(/hirka|cardigan/)?'cardigan':has(/fermuarli.*sweat|zip.*hood/)?'cardigan':has(/kapusonlu|hoodie/)?'hoodie':has(/triko|kazak|\bknit\b/)&&!has(/ceket|mont/)?'knit':has(/sweatshirt|\bsweat\b/)?'sweat':has(/gomlek|\bshirt\b/)?'shirt':has(/polo/)?'polo':has(/tisort|t-shirt|\btee\b/)?'tee':has(/mont|ceket|jacket|bomber/)?'jacket':kind;
+  if(!specific.includes(sourceKind))kind=has(/sisme|puffer|dolgulu/)?'puffer':has(/parka/)?'parka':has(/kaban|palto|\bcoat\b/)?'coat':has(/yagmurluk|raincoat/)?'raincoat':has(/overshirt|oduncu|gomlek ceket/)?'overshirt':has(/blazer/)?'blazer':p.category==='outer'||sourceKind==='jacket'?'jacket':has(/balikci yaka|bogazli|turtleneck/)?'turtleneck':has(/yelek|suveter|sleeveless sweater|sweater vest/)?'vest':has(/hirka|cardigan/)?'cardigan':has(/fermuarli.*sweat|zip.*hood/)?'cardigan':has(/kapusonlu|hoodie/)?'hoodie':has(/triko|kazak|\bknit\b/)&&!has(/ceket|mont/)?'knit':has(/sweatshirt|\bsweat\b/)?'sweat':has(/tisort|t[ -]?shirt|\btee\b/)?'tee':has(/polo/)?'polo':has(/gomlek|\bshirt\b/)?'shirt':has(/mont|ceket|jacket|bomber/)?'jacket':kind;
   if(['puffer','parka','coat'].includes(kind)){roles=['outer'];warmth=3;insulated=true;}
   else if(kind==='blazer'){roles=['layer','outer'];warmth=2;}
   else if(['raincoat','jacket'].includes(kind)||p.category==='outer'){roles=['outer'];warmth=has(/dolgulu|kapitone|ici polar|yunlu/)?3:2;insulated=warmth>=3;}

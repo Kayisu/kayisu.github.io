@@ -1,0 +1,213 @@
+{
+  "schemaVersion": 1,
+  "preparedAt": "2026-10-22T14:34:25.983Z",
+  "note": "Real catalog references independent of personal filters; illustrative, not virtual fitting.",
+  "looks": [
+    {
+      "style": "clean",
+      "temperature": 16,
+      "items": [
+        "les-benjamins-9014719414351",
+        "norse-projects-15532167889227",
+        "les-benjamins-9015143071823",
+        "wax-london-15036043854200"
+      ],
+      "slots": [
+        "top",
+        "layer",
+        "bottom",
+        "shoe"
+      ],
+      "template": "open-shirt"
+    },
+    {
+      "style": "earth",
+      "temperature": 16,
+      "items": [
+        "portuguese-flannel-15406262518083",
+        "portuguese-flannel-15406244626755",
+        "norse-projects-15646079811915",
+        "drake-s-9524742979797"
+      ],
+      "slots": [
+        "top",
+        "outer",
+        "bottom",
+        "shoe"
+      ],
+      "template": "outer"
+    },
+    {
+      "style": "street",
+      "temperature": 16,
+      "items": [
+        "service-works-15424463012219",
+        "a-kind-of-guise-7934503419965",
+        "stan-ray-15326901862779",
+        "drake-s-9524742127829"
+      ],
+      "slots": [
+        "top",
+        "layer",
+        "bottom",
+        "shoe"
+      ],
+      "template": "overshirt"
+    },
+    {
+      "style": "smart",
+      "temperature": 16,
+      "items": [
+        "portuguese-flannel-15406816002371",
+        "drake-s-9524756611285",
+        "stan-ray-15440687366523",
+        "universal-works-15055909716344"
+      ],
+      "slots": [
+        "top",
+        "outer",
+        "bottom",
+        "shoe"
+      ],
+      "template": "outer"
+    },
+    {
+      "style": "bold",
+      "temperature": 16,
+      "items": [
+        "folk-16195848831354",
+        "percival-15680352682364",
+        "service-works-15452352512379",
+        "mfpen-15371925881156"
+      ],
+      "slots": [
+        "top",
+        "outer",
+        "bottom",
+        "shoe"
+      ],
+      "template": "outer"
+    },
+    {
+      "style": "workwear",
+      "temperature": 16,
+      "items": [
+        "ymc-15815584121216",
+        "service-works-15407936078203",
+        "studio-nicholson-15460037624183",
+        "ymc-15903876710784"
+      ],
+      "slots": [
+        "top",
+        "layer",
+        "bottom",
+        "shoe"
+      ],
+      "template": "overshirt"
+    },
+    {
+      "style": "preppy",
+      "temperature": 16,
+      "items": [
+        "portuguese-flannel-15407106326851",
+        "percival-16007131529596",
+        "drake-s-9524768407765",
+        "a-kind-of-guise-7934521376829"
+      ],
+      "slots": [
+        "top",
+        "layer",
+        "bottom",
+        "shoe"
+      ],
+      "template": "vest"
+    },
+    {
+      "style": "outdoor",
+      "temperature": 16,
+      "items": [
+        "wax-london-15039124177272",
+        "ymc-15815582876032",
+        "les-benjamins-9014711255119",
+        "drake-s-9524743078101"
+      ],
+      "slots": [
+        "top",
+        "outer",
+        "bottom",
+        "shoe"
+      ],
+      "template": "outer"
+    },
+    {
+      "style": "monochrome",
+      "temperature": 16,
+      "items": [
+        "drake-s-9524765098197",
+        "studio-nicholson-15513744277879",
+        "mfpen-15575723606340",
+        "folk-16220384231802"
+      ],
+      "slots": [
+        "top",
+        "outer",
+        "bottom",
+        "shoe"
+      ],
+      "template": "outer"
+    },
+    {
+      "style": "tailoring",
+      "temperature": 16,
+      "items": [
+        "story-mfg-7726680932419",
+        "service-works-15407980413307",
+        "norse-projects-15532153373003",
+        "mfpen-15371926274372"
+      ],
+      "slots": [
+        "top",
+        "outer",
+        "bottom",
+        "shoe"
+      ],
+      "template": "outer"
+    },
+    {
+      "style": "heritage",
+      "temperature": 16,
+      "items": [
+        "drake-s-9524760412373",
+        "studio-nicholson-15513744900471",
+        "drake-s-9524767195349",
+        "mfpen-15575721771332"
+      ],
+      "slots": [
+        "top",
+        "outer",
+        "bottom",
+        "shoe"
+      ],
+      "template": "outer"
+    },
+    {
+      "style": "artisan",
+      "temperature": 16,
+      "items": [
+        "stan-ray-15440686285179",
+        "story-mfg-7602446467139",
+        "wax-london-15039123849592",
+        "drake-s-9524767195349",
+        "universal-works-15032984732024"
+      ],
+      "slots": [
+        "top",
+        "layer",
+        "outer",
+        "bottom",
+        "shoe"
+      ],
+      "template": "three-layer"
+    }
+  ]
+}

@@ -29,8 +29,12 @@ def classify(p):
  if re.search(r"women|woman|womens|waitress|skirt|dress\b",title+' '+typ) and 'unisex' not in t:return
  if re.search(r'(^|[ ,])(?:women|womens|woman|x-women)($|[ ,])',tags) and not re.search(r'(^|[ ,])(?:men|mens|unisex)($|[ ,])',tags):return
  if re.search(r'^(?:W\d)',str(p.get('variants',[{}])[0].get('sku',''))) and p.get('vendor','').lower()=='mfpen':return
- if re.search(r'\b(?:hat|cap|scarf|scarves|tie|sock|belt|boxer|pyjama|pajama|bag|beanie|bandana|tote|pocket square|voucher|gift|keyring|perfume|fragrance|washbag|overalls|dungaree)\b',title):return
- if re.search(r'boot|chukka',title):return 'shoe','boot'
+ if re.search(r'\b(?:hat|cap|beret|scarf|scarves|tie|sock|belt|boxer|pyjama|pajama|bag|beanie|bandana|tote|pocket square|voucher|gift|keyring|perfume|fragrance|washbag|overalls|dungaree)\b',title):return
+ # Oxford and boot-print can name clothes; resolve explicit garment nouns first.
+ if re.search(r't[ -]?shirt|\btee\b',title):return 'top','longtee' if re.search(r'long sleeve|ls tee',title) else 'tee'
+ if re.search(r'\bshirt\b|\bbrushed oxford\b',title) and not re.search(r'overshirt|workshirt',title):return 'top','shirt'
+ if re.search(r'\bpants?\b|trouser|jean',title):return 'bottom','jean' if 'jean' in title else 'cargo' if re.search(r'cargo|fatigue|painter',title) else 'corduroy' if 'cord' in title else 'chino'
+ if re.search(r'\bboots?\b|chukka',title):return 'shoe','boot'
  if re.search(r'loafer|moccasin|boat shoe',title):return 'shoe','loafer'
  if re.search(r'derby|oxford|michael|montana',title):return 'shoe','derby'
  if re.search(r'sneaker|trainer',title):return 'shoe','sneaker'

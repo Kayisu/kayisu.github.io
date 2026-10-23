@@ -6,6 +6,43 @@ unchanged to `dist/kendince/`. No model API, account or server is required.
 Profile, owned items, saved looks, feedback and manual price observations stay
 in browser localStorage (`kendince-v1`); existing IDs and saved slots survive.
 
+## October 22 — Men's style atlas / 07
+
+The male-only update adds **127 distinct models from Folk (33), YMC (35),
+Gramicci (27), and Service Works (32)**. Source catalog: **24 storefronts,
+1,024 model families and 1,132 product/color records**. One legacy beret record
+is retained for identity/history but excluded from clothing discovery and
+recommendations; it was incorrectly imported as knitwear. Visible styles have
+not been inferred from a brand name alone.
+
+Twelve recipe-backed directions include modern tailoring, heritage and
+artisan/craft-led outfits. `style-atlas.json` contains real source product IDs
+and explicit assigned slots for 12 reference outfits. The atlas is inspiration
+at 16°C, independent of a user's filters. Its actions re-enter the workshop
+with the user's budget, climate and profile intact, or filter the catalog by
+style. `build-style-atlas.mjs` rebuilds references after reviewed data changes.
+
+Discovery now supports style, cut, color family and declared composition in
+addition to existing shop, texture, size and price filters. Default discovery
+rotates stores and garment categories. Price sorts remain available. Model/color
+grouping, per-product dates, foreign currency disclosures and material warnings
+remain explicit; unknown source fit is not labelled regular.
+
+The illustrative male mannequin has revised anatomy, actual shorts, different
+trouser widths, garment details and a studio plinth. Without a validated source
+texture, source-described patterns use labelled representative SVG motifs.
+No body measurement simulation, virtual fit, exact print or drape is claimed.
+
+Source-title repairs prevent Oxford fabric, boot-print tees and Paraboot
+collaborations becoming shoes, and prioritize shorts over corduroy texture.
+The source importer avoids treating the word boot inside a brand name as a boot.
+User localStorage key/version and valid existing source IDs remain unchanged.
+
+Validation includes 12 atlas/assigned-slot checks, combined catalog filters,
+store/category variety, preserved budget/climate actions, and clothing identity
+regressions. The new style and mannequin suites complement all prior checks.
+`verify-live.mjs` compares the two new presentation assets as well as core files.
+
 ## Current discovery expansion
 
 The October 18 update adds **369 selected product records from 12 new storefronts**:

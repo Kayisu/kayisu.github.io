@@ -1,16 +1,18 @@
-import {modelKey,slotOf,garmentFacts,SEASONS,seasonForMonth,effectiveClimate,structureKey,seasonCompatibility,TEMPERATURE_BANDS,temperatureBand,climateAdvice,storeKey} from './wardrobe-rules.js?v=6';
+import {modelKey,slotOf,garmentFacts,SEASONS,seasonForMonth,effectiveClimate,structureKey,seasonCompatibility,TEMPERATURE_BANDS,temperatureBand,climateAdvice,storeKey} from './wardrobe-rules.js?v=7';
 export {modelKey,slotOf,garmentFacts,SEASONS,seasonForMonth,effectiveClimate,structureKey,seasonCompatibility,TEMPERATURE_BANDS,temperatureBand,climateAdvice,storeKey};
 export const STYLE = {
- clean:{name:'Sade, ama sıradan değil',short:'Sade casual',subtitle:'Az parça. Temiz bir denge.',colors:['cream','navy','gray','black'],fit:'regular',formality:1},
- earth:{name:'Biraz toprak, biraz şehir',short:'Toprak tonları',subtitle:'Sıcak tonlar, rahat bir silüet.',colors:['brown','olive','cream'],fit:'regular',formality:1},
- street:{name:'Rahatına bak',short:'Rahat sokak',subtitle:'Bol kesimler, hareket alanı.',colors:['gray','navy','cream','black','blue'],fit:'wide',formality:0},
- smart:{name:'Günün devamı var',short:'Smart casual',subtitle:'Ofisten akşama kolayca.',colors:['navy','cream','brown','black','gray'],fit:'regular',formality:2},
- bold:{name:'Bir küçük ters köşe',short:'Biraz farklı',subtitle:'Tek bir vurgu yeter.',colors:['red','purple','olive','cream','black'],fit:'wide',formality:0},
- workwear:{name:'Doku ve sağlam çizgiler',short:'Şehir workwear',subtitle:'Kargo, denim, kadife ve işçi ceketi etkisi.',colors:['olive','brown','navy','cream','black'],fit:'wide',formality:0},
- preppy:{name:'Klasiklerin rahat tarafı',short:'Rahat preppy',subtitle:'Polo, gömlek ve örgü katmanlar.',colors:['navy','cream','gray','brown'],fit:'regular',formality:2},
- outdoor:{name:'Şehirden dışarı',short:'Şehir outdoor',subtitle:'Hafif teknik katmanlar ve rahat altlar.',colors:['olive','gray','navy','black','brown'],fit:'regular',formality:0},
- monochrome:{name:'Tek aile, farklı dokular',short:'Tonal / monokrom',subtitle:'Yakın renkler, belirgin doku farkları.',colors:['black','gray','cream','navy'],fit:'regular',formality:1}
-
+ clean:{name:'Az parça, net çizgi',short:'Minimal casual',subtitle:'Düz yüzeyler, sakin renkler, temiz kesimler.',recipe:'Desensiz üst + sade pantolon + yalın ayakkabı.',pieces:['Düz üst','Sade pantolon','Temiz çizgi'],family:'minimal',colors:['cream','navy','gray','black'],fit:'regular',formality:1},
+ earth:{name:'Toprak tonlarında doku',short:'Toprak & doku',subtitle:'Haki, kahve ve ekru; dokulu gündelik katmanlar.',recipe:'Toprak renginde bir parça + jean, chino veya kadife.',pieces:['Haki / kahve','Dokulu katman','Rahat alt'],family:'natural',colors:['brown','olive','cream'],fit:'regular',formality:1},
+ street:{name:'Hacimle oyna',short:'Streetwear',subtitle:'Bol altlar, sweatshirt ve belirgin sneaker çizgisi.',recipe:'Bol pantolon veya sweatshirt + sneaker / bot; spor silüet.',pieces:['Bol silüet','Sweat / hoodie','Sneaker'],family:'street',colors:['gray','navy','cream','black','blue'],fit:'wide',formality:0},
+ smart:{name:'Günün devamı var',short:'Smart casual',subtitle:'Gömlek, triko ve özenli pantolon dengesi.',recipe:'Gömlek, polo veya triko + chino; özenli gündelik çizgi.',pieces:['Gömlek / triko','Chino','Özenli çizgi'],family:'tailored',colors:['navy','cream','brown','black','gray'],fit:'regular',formality:2},
+ bold:{name:'Vurgu görünür olsun',short:'Renk & desen',subtitle:'Gerçek bir desen veya vurgu rengi; sakin tamamlayıcılar.',recipe:'Desenli veya canlı renkli en az bir görünür kıyafet.',pieces:['Desen / baskı','Vurgu rengi','Sakin tamamlayıcı'],family:'expressive',colors:['red','purple','olive','cream','black','yellow'],fit:'wide',formality:0},
+ workwear:{name:'İşlevden gelen çizgi',short:'Workwear',subtitle:'Overshirt, kargo, denim ve işçi ceketi etkisi.',recipe:'İşçi ceketi / overshirt + denim, kargo veya kadife.',pieces:['Chore / overshirt','Kargo / denim','Sağlam çizgi'],family:'utility',colors:['olive','brown','navy','cream','black'],fit:'wide',formality:0},
+ preppy:{name:'Kolejden gündeliğe',short:'Preppy',subtitle:'Polo, gömlek ve örgü katmanlar; chino ve loafer.',recipe:'Polo, gömlek veya örgü katman + chino / klasik ayakkabı.',pieces:['Polo / gömlek','Örgü katman','Chino / loafer'],family:'collegiate',colors:['navy','cream','gray','brown'],fit:'regular',formality:2},
+ outdoor:{name:'Şehirden patikaya',short:'Outdoor',subtitle:'Gerçek teknik katman, polar ve işlevsel altlar.',recipe:'Yağmurluk, parka veya polar + teknik alt / bot.',pieces:['Teknik katman','Polar','Teknik alt / bot'],family:'technical',colors:['olive','gray','navy','black','brown'],fit:'regular',formality:0},
+ monochrome:{name:'Tek aile, farklı dokular',short:'Tonal / monokrom',subtitle:'Yakın renkler; çizgiyi doku ve oran kurar.',recipe:'Aynı veya komşu renk ailesinde, desensiz kıyafetler.',pieces:['Yakın tonlar','Desensiz yüzey','Doku farkı'],family:'minimal',colors:['black','gray','cream','navy'],fit:'regular',formality:1},
+ tailoring:{name:'Terzilik, gündelik tavır',short:'Modern terzilik',subtitle:'Blazer veya palto, kumaş pantolon ve klasik ayakkabı.',recipe:'Blazer / palto + chino / kumaş pantolon + derby / loafer.',pieces:['Blazer / palto','Kumaş pantolon','Derby / loafer'],family:'tailored',colors:['navy','gray','cream','brown','black'],fit:'regular',formality:2},
+ heritage:{name:'Zamana dayanan parçalar',short:'Heritage',subtitle:'Bot, denim veya kadife; örgü ve tok kumaşlarla.',recipe:'Bot + denim / kadife pantolon + dokulu üst veya katman.',pieces:['Bot','Denim / kadife','Örgü / tok doku'],family:'heritage',colors:['brown','olive','navy','cream','blue'],fit:'regular',formality:1},
+ artisan:{name:'Doku bir hikâye anlatsın',short:'Artisan / dokulu',subtitle:'Nakış, jakar, kroşe ve el işi etkili parçalar.',recipe:'Yapısı kaynakta belirtilen zanaat etkili bir üst + sade alt.',pieces:['Nakış / jakar','Kroşe / patchwork','Sade alt'],family:'expressive',colors:['cream','brown','olive','red','navy'],fit:'wide',formality:1}
 };
 export const AXES=[['minimal','Sade'],['relaxed','Rahat kesim'],['earthy','Toprak tonları'],['smart','Özenli'],['bold','Deneysel']];
 export const round = x=>Math.round(x*100)/100;
@@ -36,24 +38,65 @@ export function compatible(items){
  const clothing=items.filter(p=>slotOf(p)!=='shoe');if(clothing.length&&clothing.every(p=>p.family==='cream'))return false;
  return new Set(items.map(modelKey)).size===items.length;
 }
-// A named style needs a recognizable recipe. A score alone cannot turn an
-// arbitrary tee and jeans into preppy, workwear or technical outdoor clothing.
-export function styleRecipe(o,style=o.style){
- const clothing=o.items.filter(p=>slotOf(p)!=='shoe'),kinds=o.items.map(p=>garmentFacts(p).kind),upper=clothing.filter(p=>['top','layer','outer'].includes(slotOf(p))),bottom=o.items.find(p=>slotOf(p)==='bottom');
- if(style==='workwear')return upper.some(p=>['overshirt','jacket'].includes(garmentFacts(p).kind))&&kinds.some(k=>['jean','cargo','corduroy','boot'].includes(k))||kinds.includes('boot')&&kinds.some(k=>['cargo','corduroy'].includes(k));
- if(style==='preppy')return upper.some(p=>['polo','shirt','cardigan','knit','blazer','vest'].includes(garmentFacts(p).kind))&&kinds.some(k=>['chino','loafer','derby'].includes(k))&&!kinds.some(k=>['cargo','technical','jogger','hoodie'].includes(k));
- if(style==='outdoor')return upper.some(p=>['raincoat','parka','puffer'].includes(garmentFacts(p).kind)||garmentFacts(p).texture==='fleece')&&kinds.some(k=>['cargo','technical','jogger','boot'].includes(k));
- if(style==='monochrome'){const families=new Set(clothing.map(p=>p.family));return !clothing.some(p=>p.patterned)&&(families.size===1||[['black','gray'],['cream','brown'],['navy','blue']].some(pair=>[...families].every(f=>pair.includes(f))));}
- return true;
+// Garment construction defines style membership. A source brand or a new color
+// cannot turn an unrelated basic outfit into a different style.
+const ACCENTS=['red','purple','yellow'];
+const CRAFT=/embroider|nak[iı]ş|nakis|crochet|kroşe|krose|jacquard|jakar|patchwork|hand.?woven|hand.?knit|hand.?emb|block.?print|tie.?dye|ikat|batik|pointelle|ajur|sashiko|broidery/i;
+const craftCache=new WeakMap();
+const craft=p=>{if(!craftCache.has(p))craftCache.set(p,CRAFT.test([p.name,p.description,p.material,...Object.values(p.sourceFacts||{})].join(' ')));return craftCache.get(p);};
+const clothing=p=>slotOf(p)!=='shoe';
+const isUpper=p=>['top','layer','outer'].includes(slotOf(p));
+const kind=p=>garmentFacts(p).kind;
+const textured=p=>['knit','woolly','corduroy','denim','suede'].includes(garmentFacts(p).texture);
+const noSport=p=>!['hoodie','sweat','jogger','cargo','technical'].includes(kind(p));
+export function styleMatch(p,style){
+ const k=kind(p),f=garmentFacts(p);
+ if(!STYLE[style])return false;
+ if(style==='clean')return !p.patterned&&!['cargo','jogger','technical','hoodie'].includes(k)&&!ACCENTS.includes(p.family);
+ if(style==='earth')return ['brown','olive','cream'].includes(p.family)||textured(p);
+ if(style==='street')return p.fit==='wide'||['tee','longtee','hoodie','sweat','cargo','jean','sneaker','boot'].includes(k);
+ if(style==='smart')return ['shirt','polo','knit','turtleneck','cardigan','blazer','coat','chino','corduroy','derby','loafer'].includes(k);
+ if(style==='bold')return p.patterned||ACCENTS.includes(p.family);
+ if(style==='workwear')return ['overshirt','jacket','cargo','corduroy','jean','boot'].includes(k);
+ if(style==='preppy')return ['polo','shirt','cardigan','knit','vest','chino','loafer','derby'].includes(k);
+ if(style==='outdoor')return ['raincoat','parka','puffer','cargo','technical','jogger','boot'].includes(k)||f.texture==='fleece';
+ if(style==='monochrome')return !p.patterned&&['black','gray','cream','brown','navy','blue'].includes(p.family);
+ if(style==='tailoring')return ['blazer','coat','chino','turtleneck','derby','loafer'].includes(k);
+ if(style==='heritage')return ['jean','corduroy','boot'].includes(k)||isUpper(p)&&textured(p);
+ return craft(p)&&isUpper(p);
 }
-function partialRecipePossible(items,remaining,style){
- if(!['workwear','preppy','outdoor','monochrome'].includes(style))return true;
- const possible=[...items,...remaining.flat()],has=(kinds,role)=>possible.some(p=>(!role||role.includes(slotOf(p)))&&kinds.includes(garmentFacts(p).kind));
- if(style==='preppy')return !items.some(p=>['cargo','technical','jogger','hoodie'].includes(garmentFacts(p).kind))&&has(['polo','shirt','knit','cardigan','blazer','vest'],['top','layer','outer'])&&has(['chino','loafer','derby']);
- if(style==='workwear')return has(['overshirt','jacket'],['top','layer','outer'])&&has(['jean','cargo','corduroy','boot'])||has(['boot'])&&has(['cargo','corduroy']);
- if(style==='outdoor')return (has(['raincoat','parka','puffer'],['top','layer','outer'])||possible.some(p=>['top','layer','outer'].includes(slotOf(p))&&garmentFacts(p).texture==='fleece'))&&has(['cargo','technical','jogger','boot']);
- const clothing=items.filter(p=>slotOf(p)!=='shoe'),families=new Set(clothing.map(p=>p.family));
- return !clothing.some(p=>p.patterned)&&(families.size<=1||[['black','gray'],['cream','brown'],['navy','blue']].some(pair=>[...families].every(f=>pair.includes(f))));
+export const productStyles=p=>Object.keys(STYLE).filter(style=>styleMatch(p,style));
+// Requirements are checked against possible future slots, while exclusions are
+// checked only against already selected items. The complete recipe uses the same
+// predicate with no future candidates, so generation and swaps cannot disagree.
+function recipe(items,possible,style){
+ if(!STYLE[style])return false;
+ const has=(kinds,role)=>possible.some(p=>(!role||role.includes(slotOf(p)))&&kinds.includes(kind(p))),upperRoles=['top','layer','outer'];
+ const selectedClothes=items.filter(clothing),possibleClothes=possible.filter(clothing);
+ if(style==='clean')return selectedClothes.every(p=>!p.patterned&&!['cargo','jogger','technical','hoodie'].includes(kind(p)));
+ if(style==='earth')return !items.some(p=>['technical','jogger'].includes(kind(p)))&&possibleClothes.some(p=>['brown','olive'].includes(p.family))&&has(['chino','jean','corduroy','cargo']);
+ if(style==='street')return !items.some(p=>['blazer','loafer','derby'].includes(kind(p)))&&has(['sneaker','boot'])&&(has(['hoodie','sweat'],upperRoles)||possible.some(p=>slotOf(p)==='bottom'&&p.fit==='wide'));
+ if(style==='smart')return items.every(noSport)&&has(['shirt','polo','knit','turtleneck','cardigan','blazer'],upperRoles)&&(has(['chino','corduroy'])||has(['derby','loafer'])&&has(['jean']));
+ if(style==='bold')return possibleClothes.some(p=>p.patterned||ACCENTS.includes(p.family));
+ if(style==='workwear')return has(['overshirt','jacket'],upperRoles)&&has(['jean','cargo','corduroy','boot'])||has(['boot'])&&has(['cargo','corduroy']);
+ if(style==='preppy')return !items.some(p=>['cargo','technical','jogger','hoodie'].includes(kind(p)))&&has(['polo','shirt','cardigan','knit','blazer','vest'],upperRoles)&&has(['chino','loafer','derby']);
+ if(style==='outdoor')return (has(['raincoat','parka','puffer'],upperRoles)||possible.some(p=>isUpper(p)&&garmentFacts(p).texture==='fleece'))&&has(['cargo','technical','jogger','boot']);
+ if(style==='monochrome'){const families=new Set(selectedClothes.map(p=>p.family));return !selectedClothes.some(p=>p.patterned)&&(families.size<=1||[['black','gray'],['cream','brown'],['navy','blue']].some(pair=>[...families].every(f=>pair.includes(f))));}
+ if(style==='tailoring')return items.every(noSport)&&has(['blazer','coat'],upperRoles)&&has(['chino'])&&has(['derby','loafer']);
+ if(style==='heritage')return !items.some(p=>['technical','jogger','hoodie','blazer'].includes(kind(p)))&&has(['boot'])&&has(['jean','corduroy'])&&possible.some(p=>isUpper(p)&&textured(p));
+ return !items.some(p=>['technical','jogger','hoodie'].includes(kind(p)))&&possible.some(p=>isUpper(p)&&craft(p))&&has(['chino','jean','corduroy','shorts']);
+}
+export function styleRecipe(o,style=o.style){return recipe(o.items,o.items,style);}
+function partialRecipePossible(items,remaining,style){return style==='all'||recipe(items,[...items,...remaining.flat()],style);}
+function styleAllowsRole(p,role,style){
+ const k=kind(p);
+ if(style==='all')return true;
+ if(style==='clean')return !clothing(p)||!p.patterned&&!['cargo','jogger','technical','hoodie'].includes(k);
+ if(['smart','tailoring'].includes(style)&&!noSport(p))return false;
+ if(style==='tailoring')return role==='bottom'?k==='chino':role==='shoe'?['derby','loafer'].includes(k):role==='outer'?['coat','blazer'].includes(k):true;
+ if(style==='heritage')return !['technical','jogger','hoodie','blazer'].includes(k)&&(role==='bottom'?['jean','corduroy'].includes(k):role==='shoe'?k==='boot':true);
+ if(style==='street')return !['blazer','derby','loafer'].includes(k)&&(role==='shoe'?['sneaker','boot'].includes(k):true);
+ return true;
 }
 const TEMPLATES=[
  {key:'single',label:'Tek üst · sade silüet',slots:['top','bottom','shoe']},
@@ -95,17 +138,17 @@ function partialCompatible(items,filters={}){
  const accents=items.filter(p=>['red','purple','yellow'].includes(p.family));return new Set(accents.map(p=>p.family)).size<=1;
 }
 function partialClimatePossible(items,remaining,filters){
- const upper=p=>['top','layer','outer'].includes(slotOf(p)),warmth=p=>garmentFacts(p).warmth;
- const total=items.reduce((n,p)=>n+(upper(p)?warmth(p):0),0),minRequired=filters.weather==='freezing'?6:filters.weather==='cool'?2:0,maxAllowed=filters.weather==='warm'?2:filters.weather==='mild'?3:filters.weather==='cool'&&filters.temperature!==undefined?5:Infinity;
+ const warmth=p=>garmentFacts(p).warmth;
+ const total=items.reduce((n,p)=>n+(isUpper(p)?warmth(p):0),0),minRequired=filters.weather==='freezing'?6:filters.weather==='cool'?2:0,maxAllowed=filters.weather==='warm'?2:filters.weather==='mild'?3:filters.weather==='cool'&&filters.temperature!==undefined?5:Infinity;
  let futureMin=0,futureMax=0;
- for(const list of remaining){if(!list.length)return false;if(!upper(list[0]))continue;let min=Infinity,max=0;for(const p of list){const w=warmth(p);min=Math.min(min,w);max=Math.max(max,w);}futureMin+=min;futureMax+=max;}
+ for(const list of remaining){if(!list.length)return false;if(!isUpper(list[0]))continue;let min=Infinity,max=0;for(const p of list){const w=warmth(p);min=Math.min(min,w);max=Math.max(max,w);}futureMin+=min;futureMax+=max;}
  return total+futureMax>=minRequired&&total+futureMin<=maxAllowed;
 }
 function applicableTemplates(weather){return TEMPLATES.filter(t=>weather==='freezing'?t.key==='three-layer':weather==='cold'?t.slots.includes('outer'):weather==='cool'?t.slots.includes('layer')||t.slots.includes('outer'):weather==='warm'?!t.slots.includes('outer'):true);}
 function templateAllows(p,role,template,weather){const f=garmentFacts(p);return(!template[role]||template[role](f))&&(!['cold','freezing'].includes(weather)||role!=='top'||template.slots.includes('layer')||f.warmth>=2&&f.sleeve==='long');}
 function matchesTemplate(o,template){return !template||template.slots.every(role=>{const p=o.items.find(p=>slotOf(p)===role);return p&&(!template[role]||template[role](garmentFacts(p)));})&&o.items.length===template.slots.length;}
 function productScore(p,style,state,filters){
- const t=STYLE[style],f=garmentFacts(p);let score=(t.colors.includes(p.family)?12:0)+(p.fit===t.fit?7:0)-Math.abs((p.formality||0)-t.formality)*4;
+ const t=STYLE[style],f=garmentFacts(p);let score=(t.colors.includes(p.family)?12:0)+(p.fit===t.fit?7:0)-Math.abs((p.formality||0)-t.formality)*4+(styleMatch(p,style)?10:0);
  if(state.profile.fit!=='any'&&p.fit===state.profile.fit)score+=7;
  if(style==='clean'&&p.patterned)score-=15;
  if(style==='bold'&&(p.patterned||['red','purple','yellow'].includes(p.family)))score+=16+filters.explore*.15;
@@ -118,6 +161,9 @@ function productScore(p,style,state,filters){
  if(style==='outdoor')score+=['parka','raincoat','puffer','cargo','technical','jogger','boot'].includes(kind)?23:['blazer','loafer','derby'].includes(kind)?-24:0;
  if(style==='outdoor'&&f.texture==='fleece')score+=14;
  if(style==='monochrome'&&p.patterned)score-=18;
+ if(style==='tailoring')score+=['blazer','coat','chino','derby','loafer'].includes(kind)?28:['hoodie','sweat','cargo','jogger','technical','sneaker'].includes(kind)?-24:0;
+ if(style==='heritage')score+=(textured(p)?17:0)+(['boot','jean','corduroy'].includes(kind)?25:0);
+ if(style==='artisan'&&isUpper(p)&&craft(p))score+=42;
  if(['cold','freezing'].includes(filters.weather)&&role==='outer'&&f.insulated)score+=7;
  const climate=effectiveClimate(filters),upper=role==='top'||role==='layer'||role==='outer';
  if(upper&&climate.temperature!==undefined){const desired=climate.temperature<5?role==='outer'?3:2:climate.temperature<12?role==='outer'?3:2:climate.temperature<18?role==='outer'?2:1:climate.temperature<24?1:0;score-=Math.abs(f.warmth-desired)*5;}
@@ -187,14 +233,14 @@ export function generate(catalog,state,filters={}){
  // Find the cheapest valid seasonal arrangement independently of the user's budget.
  // Branch-and-bound uses actual available variant prices and owned items cost zero.
  for(const template of applicableTemplates(filters.weather)){
-  const choices=template.slots.map(role=>pools[role].filter(p=>templateAllows(p,role,template,filters.weather)).sort((a,b)=>amount(a)-amount(b)));
+  const choices=template.slots.map(role=>pools[role].filter(p=>templateAllows(p,role,template,filters.weather)&&styleAllowsRole(p,role,filters.style)).sort((a,b)=>amount(a)-amount(b)));
   if(choices.some(list=>!list.length))continue;
   const lower=new Array(choices.length+1).fill(0);for(let i=choices.length-1;i>=0;i--)lower[i]=round(lower[i+1]+amount(choices[i][0]));
   const minimum=(index,items,spend)=>{
    if(round(spend+lower[index])>=cheapest||!partialClimatePossible(items,choices.slice(index),filters)||!partialRecipePossible(items,choices.slice(index),filters.style))return;
    if(index===choices.length){
-    const o={items,style:filters.style==='all'?'clean':filters.style};
-    if(compatible(items)&&seasonCompatibility(o,filters).ok&&STYLE[o.style]&&styleRecipe(o)&&!(state.feedback[fingerprint(o)]?.value<0)&&!rejectedModels.has(modelSet(o))){cheapest=spend;cheapestLook={items,template,spend};}
+    const o={items,style:filters.style==='all'?'clean':filters.style},validStyle=filters.style==='all'?Object.keys(STYLE).some(style=>styleRecipe(o,style)):styleRecipe(o);
+    if(compatible(items)&&seasonCompatibility(o,filters).ok&&STYLE[o.style]&&validStyle&&!(state.feedback[fingerprint(o)]?.value<0)&&!rejectedModels.has(modelSet(o))){cheapest=spend;cheapestLook={items,template,spend};}
     return;
    }
    for(const p of choices[index]){const next=round(spend+amount(p));if(round(next+lower[index+1])>=cheapest)break;if(items.some(q=>modelKey(q)===modelKey(p)))continue;const nextItems=[...items,p];if(partialCompatible(nextItems,filters))minimum(index+1,nextItems,next);}
@@ -204,7 +250,7 @@ export function generate(catalog,state,filters={}){
  for(const style of filters.style==='all'?Object.keys(STYLE):[filters.style]){
   if(!STYLE[style])continue;
   for(const template of applicableTemplates(filters.weather)){
-   const eligible=template.slots.map(role=>pools[role].filter(p=>templateAllows(p,role,template,filters.weather))),minimums=eligible.map(list=>list.reduce((n,p)=>Math.min(n,amount(p)),Infinity)),minimumSum=minimums.reduce((n,a)=>n+a,0);
+   const eligible=template.slots.map(role=>pools[role].filter(p=>templateAllows(p,role,template,filters.weather)&&styleAllowsRole(p,role,style))),minimums=eligible.map(list=>list.reduce((n,p)=>Math.min(n,amount(p)),Infinity)),minimumSum=minimums.reduce((n,a)=>n+a,0);
    if(!Number.isFinite(minimumSum)||minimumSum>filters.budget||!partialRecipePossible([],eligible,style))continue;
    const options=template.slots.map((role,index)=>shortlist(eligible[index].filter(p=>round(amount(p)+minimumSum-minimums[index])<=filters.budget),style,state,filters,{top:6,layer:4,outer:4,bottom:5,shoe:4}[role],scoreProduct));
    if(options.some(p=>!p.length))continue;
@@ -221,7 +267,13 @@ export function generate(catalog,state,filters={}){
  while(selected.length<3&&remaining.length){
   const upper=o=>modelKey(o.items.find(p=>slotOf(p)==='top')),novelStructure=remaining.filter(o=>selected.every(s=>s.structure!==o.structure));if(!novelStructure.length)break;
   // Keep explicit style choices meaningful; diversity is chosen among competitive looks.
-  const bestScore=novelStructure[0].score,quality=novelStructure.filter(o=>o.score>=bestScore-(filters.style==='all'?45:24));
+  const bestScore=novelStructure[0].score;
+  let quality=novelStructure.filter(o=>o.score>=bestScore-(filters.style==='all'?65:24));
+  if(filters.style==='all'&&selected.length){
+   const freshFamily=quality.filter(o=>selected.every(s=>STYLE[s.style].family!==STYLE[o.style].family));
+   const freshStyle=quality.filter(o=>selected.every(s=>s.style!==o.style));
+   if(freshFamily.length)quality=freshFamily;else if(freshStyle.length)quality=freshStyle;
+  }
   const novelAnchor=quality.filter(o=>selected.every(s=>modelKey(dominant(s))!==modelKey(dominant(o))));let options=novelAnchor.length?novelAnchor:quality;
   const familyFitsStyle=o=>filters.style!=='street'||(dominant(o).formality||0)<2||dominant(o).fit==='wide'||state.owned.includes(dominant(o).id)||dominant(o).custom;
   const novelFamily=options.filter(o=>familyFitsStyle(o)&&selected.every(s=>dominantFamily(s)!==dominantFamily(o)));if(novelFamily.length)options=novelFamily;
@@ -262,13 +314,13 @@ export function fitAdvice(profile){
  return tips.length?tips:['Boyunu ve ölçülerini ekle; kalıp ve uzunluk için başlangıç noktaları çıkaralım.'];
 }
 
-export const KIND_LABELS={technical:'Teknik / outdoor pantolon',vest:'Süveter / yelek',tee:'Tişört',longtee:'Uzun kollu tişört',polo:'Polo',knit:'Triko / kazak',sweat:'Sweatshirt',shirt:'Gömlek',jacket:'Ceket / mont',cardigan:'Hırka',turtleneck:'Balıkçı yaka',hoodie:'Kapüşonlu sweatshirt',overshirt:'Overshirt / gömlek ceket',blazer:'Blazer',coat:'Kaban / palto',puffer:'Şişme mont',parka:'Parka',raincoat:'Yağmurluk',corduroy:'Kadife pantolon',derby:'Derby / bağcıklı klasik',shorts:'Şort',jean:'Jean',chino:'Chino / kumaş',cargo:'Kargo',jogger:'Jogger',sneaker:'Sneaker',boot:'Bot',loafer:'Loafer'};
+export const KIND_LABELS={shoe:'Ayakkabı / türü belirsiz',technical:'Teknik / outdoor pantolon',vest:'Süveter / yelek',tee:'Tişört',longtee:'Uzun kollu tişört',polo:'Polo',knit:'Triko / kazak',sweat:'Sweatshirt',shirt:'Gömlek',jacket:'Ceket / mont',cardigan:'Hırka',turtleneck:'Balıkçı yaka',hoodie:'Kapüşonlu sweatshirt',overshirt:'Overshirt / gömlek ceket',blazer:'Blazer',coat:'Kaban / palto',puffer:'Şişme mont',parka:'Parka',raincoat:'Yağmurluk',corduroy:'Kadife pantolon',derby:'Derby / bağcıklı klasik',shorts:'Şort',jean:'Jean',chino:'Chino / kumaş',cargo:'Kargo',jogger:'Jogger',sneaker:'Sneaker',boot:'Bot',loafer:'Loafer'};
 export function stockInfo(p){const status=p.custom?'owned':p.stock?.status||'unknown',available=(p.sizes||[]).filter(v=>v.available);return{status,label:status==='owned'?'Gardırobumda':status==='out_of_stock'?'Tükendi':status==='available'?(!p.sizes?.length?'Ürün stoğu görüldü':available.length<=2?'Sınırlı beden':'Stok görüldü'):'Stok doğrulanamadı',sizes:available.map(v=>v.size),checkedAt:p.stock?.checkedAt||p.verifiedAt||null};}
 function sizeKey(s){return String(s??'').trim().toUpperCase().replace(/^W/,'').replace(/\s+/g,'').replace(/^2XL$/,'XXL').replace(/^3XL$/,'XXXL').replace(/^4XL$/,'XXXXL');}
 export function wantedSize(p,profile){return p.category==='shoe'?profile.shoe:p.category==='bottom'?profile.bottomSize:profile.size;}
 export function sizeMatches(p,profile){const w=sizeKey(wantedSize(p,profile));if(!w||p.custom)return true;if(!p.sizes?.length)return false;return p.sizes.some(v=>(stockInfo(p).status==='unknown'||v.available)&&(sizeKey(v.size)===w||p.category==='bottom'&&sizeKey(v.size).split(/[\/-]/)[0]===w));}
 export function unitPrice(p,state){if(p.custom)return 0;const manual=state.priceNotes?.[p.id]?.at(-1);if(manual)return Number(manual.price);const w=sizeKey(wantedSize(p,state.profile||{})),vs=(p.sizes||[]).filter(v=>v.available&&Number.isFinite(v.price)&&(!w||sizeKey(v.size)===w||p.category==='bottom'&&sizeKey(v.size).split(/[\/-]/)[0]===w));return vs.length?Math.max(...vs.map(v=>v.price)):Number(p.price);}
-export function canUse(p,state,filters){if(p.custom||state.owned.includes(p.id))return true;if(filters.stores?.length&&!filters.stores.includes(storeKey(p)))return false;if(stockInfo(p).status==='out_of_stock')return false;if(filters.availableOnly!==false&&(stockInfo(p).status!=='available'||p.priceStatus!=='verified'))return false;return sizeMatches(p,state.profile);}
+export function canUse(p,state,filters){if(p.catalogExcluded)return false;if(p.custom||state.owned.includes(p.id))return true;if(filters.stores?.length&&!filters.stores.includes(storeKey(p)))return false;if(stockInfo(p).status==='out_of_stock')return false;if(filters.availableOnly!==false&&(stockInfo(p).status!=='available'||p.priceStatus!=='verified'))return false;return sizeMatches(p,state.profile);}
 export function priceBand(p,catalog,state){
  if(p.custom)return null;
  const base={...state,priceNotes:{}},kind=garmentFacts(p).kind,peers=catalog.filter(q=>q.category===p.category&&garmentFacts(q).kind===kind&&q.priceStatus==='verified'&&stockInfo(q).status==='available'&&sizeMatches(q,state.profile)),models=new Map();
