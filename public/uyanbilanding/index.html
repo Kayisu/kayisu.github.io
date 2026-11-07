@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#4c3480"><meta name="description" content="Alarm çaldı. Ponçik seni bekliyor. Nesneyi bul, adımlarını tamamla, güne uyan. 60 saniyelik bir sabah macerası.">
+<title>UyanBi — Sabah macerası</title>
+<link rel="icon" href="assets/sun.svg"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800;900;1000&display=swap" rel="stylesheet"><link rel="stylesheet" href="game.css?v=20"><link rel="stylesheet" href="ending.css?v=20"><link rel="stylesheet" href="phone-games.css?v=20"><link rel="stylesheet" href="phone-polish.css?v=20">
+  <link rel="preload" as="image" href="assets/rooms/bedroom.webp">
+  <link rel="preload" as="image" href="assets/hand-phone.webp">
+  <link rel="prefetch" as="image" href="assets/rooms/hallway.webp">
+  <link rel="prefetch" as="image" href="assets/rooms/kitchen.webp">
+  <link rel="prefetch" as="image" href="assets/rooms/bathroom.webp">
+  <link rel="prefetch" as="image" href="assets/rooms/balcony.webp">
+</head>
+<body>
+<main id="app">
+<section id="welcome" class="welcome" aria-labelledby="welcome-title">
+  <div class="welcome-art" id="welcome-art" aria-hidden="true"></div><div class="welcome-shade"></div>
+  <header class="welcome-header"><a href="./" class="logo" aria-label="UyanBi ana sayfa">uyan<span>bi</span><i>✳</i></a><span>Sabahın bir hikâyesi var.</span></header>
+  <div class="welcome-content"><div class="hello-note"><span></span> Ponçik seni bekliyor</div><h1 id="welcome-title">Bu sabahın<br>kahramanı sensin.</h1><p>Alarm çaldı. Evde küçük bir macera,<br>kapıda tatlı bir inat var.</p>
+  <div class="choices"><button id="begin" class="choice adventure"><span class="choice-icon">✳</span><span class="choice-body"><strong>Maceraya başla</strong><small>60 saniye. Bir ev. Yepyeni bir sabah.</small></span><span class="choice-arrow">↗</span></button><a href="intro.html" class="choice introduction"><span class="choice-icon">▷</span><span class="choice-body"><strong>Tanıtımı gör</strong><small>UyanBi ve Ponçik’le tanış.</small></span><span class="choice-arrow">↗</span></a></div>
+  <div class="welcome-foot"><span>⌁</span> Dokun, keşfet, güne uyan.</div></div>
+  <div class="welcome-poncik"><div class="welcome-bubble">Hadi. Güzel bir gün<br>bizi bekliyor!</div><img src="assets/X1.png" alt="Kapıda seni bekleyen, gülümseyen Ponçik"></div>
+  <span class="welcome-bottom">Uyan. Kazan. Tekrar et.</span>
+</section>
+<section id="game" class="game" hidden aria-label="Ponçik’le sabah macerası">
+  <div id="room-art" class="room-art"></div><div class="room-vignette" aria-hidden="true"></div><div class="sun-wash" aria-hidden="true"></div>
+  <div class="hud"><div class="timer" id="timer-box"><span class="timer-icon" aria-hidden="true">◷</span><div><small>Kalan süre</small><strong id="time">01:00</strong></div><svg class="timer-ring" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="21"/><circle id="time-arc" cx="24" cy="24" r="21"/></svg></div><div class="location"><span id="room-name">Yatak odası</span><small id="room-hint">Gün burada başlıyor.</small></div></div>
+  <div class="game-tools"><button id="sound" class="tool" aria-label="Sesi aç" aria-pressed="false">♪<span class="sound-slash">/</span></button><button id="help" class="tool" aria-label="Nasıl oynanır?">?</button><button id="pause" class="tool" aria-label="Oyunu duraklat">Ⅱ</button></div>
+  <div id="guide" class="guide"><div class="guide-bubble" id="guide-message" role="status">Günaydın! Önce görevine bakalım.</div><div class="guide-character" id="poncik-actor"></div><span class="contact-shadow" aria-hidden="true"></span></div>
+  <div class="mission-toast" id="mission-toast" role="status"></div>
+  <div id="navigation" class="navigation" aria-label="Odalarda gezinme"></div>
+
+  <button id="phone-open" class="phone-open" aria-label="Telefonu yakından incele" aria-expanded="false">Telefonu incele</button><div class="phone-focus-shade" aria-hidden="true"></div><div id="phone-rig" class="phone-rig"><div class="phone-assembly">
+  <div class="phone"><div class="phone-speaker"></div><div class="phone-screen"><div class="phone-status"><span>07:30</span><span>● ▰</span></div><div class="phone-app"><button id="phone-close" class="phone-close" hidden>Telefonu indir <span aria-hidden="true">↓</span></button><span>uyan<b>bi</b> ✳</span><span class="camera-dot">●</span></div>
+    <div id="phone-alarm" class="phone-alarm"><span class="alarm-bell" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><circle cx="24" cy="26" r="15"/><path d="M24 17V27L31 31M9 6L3 13M39 6L45 13M13 39L9 44M35 39L39 44M20 5H28"/></svg></span><small>Günaydın!</small><strong>07:30</strong><p>Ponçik kapıda.<br>Sabahın seni bekliyor.</p><button id="accept-mission">Göreve başla</button></div>
+    <div id="phone-mission" class="phone-mission" hidden><div class="phone-task"><small id="task-eyebrow">Uyanma görevin</small><strong id="task-title">Bir kupa bul.</strong></div><div class="camera" id="camera"><div id="camera-live" class="camera-live" aria-hidden="true"></div><div class="camera-shade"></div><span class="live-label">● Canlı</span><div class="scan-brackets"><i></i><i></i><i></i><i></i></div><div class="scan-line"></div><div id="camera-object" class="camera-object"></div><span id="camera-caption" class="camera-caption">Nesneye dokun, kadraja al.</span></div><button id="scan" class="scan-button" disabled><span>⌗</span> Nesneyi tara</button><div id="phone-feedback" class="phone-feedback" role="status">Kupayı bulmak için etrafına bak.</div><div class="step-tracker"><span class="step-symbol" aria-hidden="true"><svg viewBox="0 0 30 36" fill="currentColor"><ellipse cx="9" cy="11" rx="5" ry="9" transform="rotate(-22 9 11)"/><ellipse cx="10" cy="26" rx="4" ry="5"/><ellipse cx="23" cy="16" rx="4" ry="7" transform="rotate(22 23 16)"/><ellipse cx="22" cy="29" rx="3" ry="4"/></svg></span><div><small>Adımların</small><strong><span id="steps">0</span><em> / 6</em></strong></div><div id="step-dots" class="step-dots"><i></i><i></i><i></i><i></i><i></i><i></i></div></div></div>
+  <div class="offline-entry" id="offline-entry"><p>İnternetin yok mu?<br><b>Dert değil.</b></p><button id="offline-play">Mini oyunu oyna</button><button id="camera-return" class="camera-return" hidden>Kamera görevine dön</button></div><div id="phone-games" hidden></div></div><div class="phone-home"></div></div><img class="hand-phone-art" src="assets/hand-phone.webp" alt="" aria-hidden="true"></div></div>
+  <div class="game-caption" id="game-caption">Nesnelere dokunarak telefonunun kadrajına al.</div>
+  <aside id="morning-ending" class="morning-ending" aria-labelledby="ending-title" hidden></aside>
+  <dialog id="game-dialog" class="game-dialog"><div class="dialog-content" id="dialog-content"></div></dialog>
+</section>
+</main>
+<script src="rooms.js?v=20"></script><script src="actor.js?v=20"></script><script src="scene.js?v=20"></script><script src="stores.js"></script><script src="ending.js?v=20"></script><script src="phone-games.js?v=20"></script><script src="game.js?v=20"></script>
+</body></html>

@@ -23,7 +23,7 @@ function read(relativePath) {
 
 function htmlPath(route) {
   if (route === '/') return 'index.html';
-  if (route === '/404.html') return '404.html';
+  if (route.endsWith('.html')) return route.replace(/^\//, '');
   const clean = route.replace(/^\//, '').replace(/\/$/, '');
   return `${clean}/index.html`;
 }

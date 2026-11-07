@@ -1,0 +1,60 @@
+/* The grip belongs to the world. Opening the phone brings its screen into a
+   readable, unscaled close-up with the same frame throughout the task. */
+.game.phone-focused .phone-rig{inset:78px auto auto 50%;width:min(340px,calc(100vw - 28px));height:min(620px,calc(100svh - 98px));transform:translateX(-50%);transform-origin:50% 0;z-index:24;transition:transform .35s,opacity .25s}
+.game.phone-focused .phone-assembly{transform:none}
+.game.phone-focused .hand-phone-art{display:none}
+.game.phone-focused .phone{inset:0;width:100%;height:100%;border:3px solid #8d77a7;border-radius:32px;background:#332c3c;padding:10px 7px 15px;box-shadow:4px 5px 0 #2b2338;transform:none}
+.game.phone-focused .phone-screen{display:flex;flex-direction:column;min-height:0;border-radius:20px;overflow:hidden}
+.game.phone-focused .phone-status{flex-shrink:0;height:19px;font-size:10px;padding:5px 15px 0}
+.game.phone-focused .phone-app{flex-shrink:0;height:44px;margin:0 12px;gap:6px;font-size:16px;border-bottom:1px solid #e4dbe9}
+.game.phone-focused .phone-app>span{margin-left:auto}.game.phone-focused .camera-dot{display:none}
+.game.phone-focused .phone-close{position:static;display:flex;align-items:center;gap:5px;min-height:44px;margin:0 auto 0 0;padding:5px 6px 5px 0;transform:none;background:none;box-shadow:none;border:0;border-radius:6px;font-size:13px;white-space:nowrap;color:#634281;letter-spacing:0}
+.game.phone-focused .phone-close span{font-size:26px;margin:0;line-height:1;font-weight:700}
+.game.phone-focused .phone-alarm{flex:1;min-height:0;overflow:auto;display:flex;flex-direction:column;justify-content:center;padding:16px 20px 24px}
+.game.phone-focused .phone-alarm strong{font-size:58px;line-height:1.25}
+.game.phone-focused .phone-alarm p{font-size:14px;line-height:1.5;margin:6px 0 20px}
+.game.phone-focused #accept-mission{min-height:48px;flex-shrink:0}
+.game.phone-focused .phone-mission{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;padding-bottom:10px}
+.game.phone-focused .phone-task{padding:12px 14px 10px}
+.game.phone-focused .phone-task small{font-size:11px;font-weight:800}
+.game.phone-focused .phone-task strong{font-size:22px;line-height:1.2;font-weight:900;overflow-wrap:break-word}
+.game.phone-focused .camera{height:clamp(90px,20svh,160px);margin:0 12px;border-radius:12px}
+.game.phone-focused .camera-caption{font-size:12px;line-height:1.35;background:linear-gradient(0deg,#342746a8,transparent);inset:auto 0 0;padding:14px 8px 8px}
+.game.phone-focused .live-label{font-size:10px}
+.game.phone-focused .scan-brackets{top:50%;transform:translate(-50%,-50%)}
+.game.phone-focused .scan-button{min-height:46px;margin:10px 12px 0;width:calc(100% - 24px);font-size:14px;font-weight:900;padding:10px 12px;line-height:1.3}
+.game.phone-focused .phone-feedback{width:auto;min-height:34px;padding:7px 14px;font-size:12px;font-weight:700;line-height:1.4;text-align:center;justify-content:center;overflow-wrap:break-word}
+.game.phone-focused .step-tracker{margin:5px 14px 0;padding-top:9px;gap:9px;align-items:center}
+.game.phone-focused .step-tracker>div:nth-child(2){display:flex;align-items:center;justify-content:space-between;flex:1;gap:8px}
+.game.phone-focused .step-tracker small{font-size:12px;font-weight:800}
+.game.phone-focused .step-tracker strong{font-size:23px;line-height:1.2}
+.game.phone-focused .step-symbol svg{width:20px;height:23px}
+.offline-entry{margin:10px 9px 0;padding:9px 0 4px;border-top:1px solid #d9cce3;width:112px}
+.offline-entry p{font-size:11px;line-height:1.4;margin:0 0 8px;color:#725985}.offline-entry b{color:#4c3267;font-weight:900}
+.offline-entry button{font:inherit;font-size:11px;font-weight:900;min-height:44px;width:100%;border:0;border-radius:10px;background:#ffe38b;color:#4b315f;padding:8px;line-height:1.35}
+.offline-entry .camera-return{background:#eee4f3;color:#634281}
+.game.phone-focused .offline-entry{flex-shrink:0;display:grid;grid-template-columns:minmax(0,1fr) 132px;gap:10px;align-items:center;width:auto;margin:0;padding:12px;background:#f1e9f5;border-top:1px solid #e1d3ea}
+.game.phone-focused .offline-entry p{font-size:12px;line-height:1.4;margin:0}.game.phone-focused .offline-entry button{font-size:12px;min-height:48px;padding:8px 10px}
+.game.phone-focused .phone-focus-shade{z-index:22}
+.game.phone-focused .game-tools,.game.phone-focused .hud{z-index:27}
+.game.phone-focused:not(.phone-game-mode) .phone-rig:focus-within .phone-screen{outline:none}
+/* Mini-games share the close-up frame; their own back bar stays in view. */
+.game.phone-game-mode .phone-status,.game.phone-game-mode .phone-app,.game.phone-game-mode #phone-alarm,.game.phone-game-mode #phone-mission,.game.phone-game-mode .offline-entry{display:none}
+.game.phone-game-mode .phone-screen{display:block}
+.game.phone-game-mode #phone-close{display:none}
+.epilogue .room-art{top:0}
+@media(max-height:660px){.game.phone-focused .phone-task{padding:8px 12px}.game.phone-focused .phone-task strong{font-size:20px}.game.phone-focused .camera{height:90px}.game.phone-focused .phone-feedback{padding:5px 12px;min-height:30px}.game.phone-focused .step-tracker{padding-top:6px;margin-top:3px}.game.phone-focused .offline-entry{padding:9px 12px}.game.phone-focused .phone-alarm{padding:8px 16px 16px}.game.phone-focused .phone-alarm .alarm-bell{display:none}}
+@media(max-height:460px) and (min-width:601px){.game.phone-focused .phone-rig{top:16px;height:calc(100svh - 32px);width:330px}.game.phone-focused .phone-alarm{justify-content:flex-start}.game.phone-focused .phone-alarm strong{font-size:40px}.game.phone-focused .phone-alarm p{margin:2px 0 10px;font-size:13px}}
+@media(prefers-reduced-motion:reduce){.game.phone-focused .phone-rig{transition:none}}
+
+.game.phone-focused .guide-bubble{opacity:0;visibility:hidden}
+
+.game.phone-focused .phone-focus-shade{pointer-events:auto}
+/* On short landscapes the world HUD uses the side gutters, clear of the app. */
+@media(max-height:460px) and (min-width:601px){
+ .game.phone-focused .hud{left:12px;top:16px}.game.phone-focused .hud .location,.game.phone-focused .timer-ring{display:none}
+ .game.phone-focused .timer{padding:9px;gap:6px}.game.phone-focused .timer-icon{font-size:22px}.game.phone-focused .timer strong{font-size:23px}.game.phone-focused .timer small{font-size:10px}
+ .game.phone-focused .game-tools{top:16px;right:12px;flex-direction:column;gap:5px}
+ .game.phone-focused .phone-task{padding:6px 12px}.game.phone-focused .camera{height:70px}.game.phone-focused .scan-brackets{height:50px;width:70px}
+}
+@media(min-width:1050px) and (min-height:461px){.game.phone-focused .phone-rig{left:auto;right:clamp(24px,5vw,100px);transform:none}}

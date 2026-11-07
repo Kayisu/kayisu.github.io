@@ -1,0 +1,59 @@
+/* The small games use the phone's own paper, ink and touch-sized controls. */
+.games-panel{position:absolute;inset:0;z-index:6;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;background:#faf6ee;color:#342746;padding:12px 12px 20px;font-size:14px;line-height:1.4;container-type:inline-size}
+.games-panel[hidden]{display:none!important}
+.games-panel *{box-sizing:border-box}
+.games-panel button{font:inherit;min-height:44px;min-width:44px;touch-action:manipulation;border:0;cursor:pointer;font-weight:900;color:inherit}
+.games-panel button:focus-visible{outline:3px solid #7650ac;outline-offset:3px}
+.games-panel button:disabled{cursor:default}
+.games-panel h2{font-size:24px;line-height:1.08;letter-spacing:-.035em;font-weight:1000;margin:12px 0 9px;outline:none}
+.games-panel h2:focus-visible{outline:0}
+.games-panel p{margin:0}
+.games-header{display:flex;align-items:center;justify-content:space-between;gap:4px;min-height:44px}
+.games-header .games-back{background:transparent;text-align:left;padding:0 5px 0 0;font-size:12px;display:flex;align-items:center;gap:5px;flex-shrink:0}
+.games-back>span{font-size:27px;font-weight:700;line-height:1}
+.games-progress{font-size:10px;font-weight:900;color:#6a537d;text-align:right}
+.games-intro>p{font-size:12px;color:#665170;line-height:1.45}
+.games-equation{font-size:36px;line-height:1.2;font-weight:1000;letter-spacing:-.035em;text-align:center;padding:25px 0 20px;color:#513479}
+.games-equation>span{color:#9b83b5}
+.games-answers{display:grid;grid-template-columns:repeat(3,minmax(44px,1fr));gap:7px}
+.games-answers>button{border-radius:12px;background:#e9dff1;font-size:20px;transition:background .15s,transform .15s}
+.games-answers>button:hover:not(:disabled){background:#ffd43c;transform:translateY(-2px)}
+.games-answers>button:disabled{opacity:.6}
+.games-feedback{font-size:12px;color:#86536b;line-height:1.4;min-height:42px;padding:10px 0}
+.games-feedback.is-success{color:#326951}
+.games-panel .games-primary{display:block;width:100%;min-height:46px;border-radius:11px;padding:10px 12px;background:#7954bd;color:#fff;font-size:13px;transition:background .15s}
+.games-panel .games-primary:hover:not(:disabled){background:#65409e}
+.games-panel .games-primary:disabled{background:#dfd5e8;color:#75617f}
+.games-panel .games-quiet{display:block;width:100%;background:transparent;color:#715689;font-size:12px;margin-top:3px}
+.games-sentence{min-height:91px;margin-top:17px;padding:9px 0 12px;border-top:1px solid #d7c9e2;border-bottom:1px solid #d7c9e2;display:flex;align-content:flex-start;align-items:flex-start;flex-wrap:wrap;gap:5px}
+.games-sentence>span{color:#95819f;font-size:12px;align-self:center;width:100%;text-align:center;padding:12px 0}
+.games-panel .games-sentence button{background:#7954bd;color:#fff;border-radius:9px;font-size:12px;padding:8px 9px;min-height:44px}
+.games-word-pool{display:flex;flex-wrap:wrap;gap:5px;margin-top:12px}
+.games-panel .games-word-pool button{border-radius:9px;padding:8px 9px;background:#e9dff1;font-size:12px;min-height:44px}
+.games-panel .games-word-pool button:disabled{opacity:.28}
+.games-memory{display:grid;grid-template-columns:repeat(4,minmax(44px,1fr));gap:6px;margin-top:18px}
+.games-panel .games-memory button{background:#7954bd;color:#e9def8;border-radius:11px;aspect-ratio:1;font-size:25px;line-height:1;border:2px solid transparent;min-height:48px;min-width:44px;padding:0;transition:background .15s,border-color .15s}
+.games-panel .games-memory button.is-open{background:#eee4f3;color:#67438f;border-color:#cdb8de}
+.games-panel .games-memory button.is-matched{background:#fff0aa;color:#634a48;border-color:#e4ce7a}
+.games-count{display:flex;justify-content:space-between;font-size:11px;font-weight:900;color:#705783;margin-top:10px!important}
+.games-count span{color:#8a7596;font-weight:700}
+.games-menu{display:grid;gap:8px;margin-top:20px}
+.games-panel .games-menu button{display:flex;gap:11px;align-items:center;background:#eee4f3;text-align:left;border-radius:13px;padding:12px 11px;min-height:73px}
+.games-panel .games-menu button:first-child{background:#fff0af}
+.games-menu-sign{display:grid;place-items:center;width:34px;flex-shrink:0;font-size:26px;line-height:1;color:#7954bd;letter-spacing:-.08em}
+.games-menu strong{display:block;font-size:15px;line-height:1.2;font-weight:1000}
+.games-menu small{display:block;font-size:11px;line-height:1.35;color:#75617f;font-weight:700;margin-top:4px}
+.games-complete{text-align:center;padding-top:27px}
+.games-complete-sign{display:grid;place-items:center;width:58px;height:58px;margin:0 auto 18px;border-radius:50%;background:#ffd43c;color:#684789;font-size:31px;font-weight:900}
+.games-complete p{color:#6b5577;font-size:12px;line-height:1.5;margin:13px 0 22px}
+.games-panel[data-paused="true"] .games-content{opacity:.6}
+@container(max-width:240px){.games-memory{grid-template-columns:repeat(2,minmax(44px,1fr))}.games-panel h2{font-size:23px}}
+@media(prefers-reduced-motion:reduce){.games-panel *, .games-panel *:before, .games-panel *:after{transition:none!important;animation:none!important}}
+/* Familiar app header remains available while the game content scrolls. */
+.games-panel{padding:0 14px 18px;scroll-padding-top:62px;font-weight:700}
+.games-header{position:sticky;top:0;z-index:2;background:#faf6eef7;border-bottom:1px solid #e4dbe9;min-height:54px;gap:10px;backdrop-filter:blur(8px)}
+.games-header .games-back{font-size:13px;font-weight:800;line-height:1.3;min-width:0;flex-shrink:1}.games-progress{font-size:11px;font-weight:800;flex-shrink:0}
+.games-panel h2{font-size:25px;line-height:1.16;letter-spacing:-.025em;font-weight:900;margin:22px 0 10px;text-wrap:pretty;overflow-wrap:break-word}
+.games-intro>p,.games-feedback{font-size:13px;line-height:1.5;font-weight:700}.games-equation{font-size:40px;padding:32px 0 24px}.games-menu small{font-size:12px;line-height:1.45}.games-menu>button>span:last-child{min-width:0}.games-panel button{line-height:1.35;overflow-wrap:break-word}
+.games-sentence{min-height:86px}.games-feedback:empty{min-height:0}.games-panel button:not(:disabled):active{transform:scale(.98)}
+@media(max-height:660px){.games-panel h2{font-size:23px;margin-top:17px}.games-equation{font-size:35px;padding:24px 0 20px}.games-intro>p{font-size:12px}.games-sentence{margin-top:13px;min-height:76px}}
