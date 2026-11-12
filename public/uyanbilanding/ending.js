@@ -1,22 +1,134 @@
-/* A quiet, non-modal coda: the balcony remains the main scene. */
+/* The ending: Ponçik, hugging the phone, comes forward from the balcony to the middle of the screen and stays
+   there (fixed) while the page scrolls on into the story. Ponçik, the live phone and his hands in front of it
+   are one box (#phone-rig); it moves with transform and opacity only. */
 (() => {
-  const host = document.getElementById('morning-ending');
-  let actions = {}, visit = 0;
-  const apple = '<svg viewBox="0 0 24 28" aria-hidden="true"><path fill="currentColor" d="M19.7 14.8c0-3 2.5-4.5 2.6-4.6-1.4-2.1-3.7-2.4-4.5-2.4-1.9-.2-3.7 1.1-4.6 1.1s-2.4-1.1-4-1.1C7.1 7.9 5 9.1 3.9 11c-2.3 4-.6 10 1.6 13.2 1.1 1.5 2.3 3.2 4 3.1 1.6-.1 2.2-1 4.2-1s2.6 1 4.3.9c1.8 0 2.9-1.5 4-3.1 1.2-1.7 1.7-3.4 1.7-3.5-.1-.1-4-1.6-4-5.8ZM16.5 5.7c.9-1.1 1.5-2.7 1.3-4.2-1.3.1-2.9.9-3.9 2-.8.9-1.6 2.5-1.4 4 1.5.1 3-.7 4-1.8Z"/></svg>';
-  const play = '<svg viewBox="0 0 28 31" aria-hidden="true"><path d="M1 1.5v28l14-14Z" fill="#59c8f8"/><path d="m1 1.5 17 10.2-4 3.8Z" fill="#69d291"/><path d="m1 29.5 17-10.2-4-3.8Z" fill="#f07186"/><path d="m18 11.7 8 4-8 3.6-4-3.8Z" fill="#ffd363"/></svg>';
-  host.innerHTML = `<div class="ending-inner"><div class="ending-copy"><span class="ending-mark" aria-hidden="true">✳</span><h2 id="ending-title">Bu sabah senin.</h2><p>Yarın da Ponçik kapında olsun.</p><span id="ending-summary" class="ending-summary"></span></div><div class="ending-actions"><div class="ending-stores"><a href="#" data-end-store="apple" class="store-badge" aria-label="App Store’dan edinin">${apple}<span><small>App Store’dan</small><strong>Edinin</strong></span></a><a href="#" data-end-store="google" class="store-badge" aria-label="Google Play’den edinin">${play}<span><small>Google Play’den</small><strong>Edinin</strong></span></a></div><div class="ending-links"><button data-ending="games">Biraz daha kal</button><span aria-hidden="true">·</span><button data-ending="replay">Yeniden oyna</button><span aria-hidden="true">·</span><a href="intro.html">UyanBi’yi tanı</a></div><p id="ending-store-status" class="ending-store-status" role="status"></p></div></div><p class="visually-hidden" id="ending-announcement" role="status"></p>`;
-  const stores = window.UYANBI_STORES || {};
-  host.querySelectorAll('[data-end-store]').forEach(link => {
-    const key = link.dataset.endStore;
-    let valid = false;
-    try {const url = new URL(stores[key]);valid = url.protocol === 'https:' && url.hostname === (key === 'apple' ? 'apps.apple.com' : 'play.google.com');} catch {}
-    if(valid){link.href = stores[key];link.target = '_blank';link.rel = 'noopener noreferrer';}
-    else link.addEventListener('click',event=>{event.preventDefault();document.getElementById('ending-store-status').textContent='Mağaza bağlantıları bu ön izlemede henüz bağlı değil.';});
+  const $ = id => document.getElementById(id);
+  const game = $('game'), rig = $('phone-rig'), phone = game.querySelector('.phone'), screen = phone.querySelector('.phone-screen');
+  const nav = $('story-nav'), fade = $('game-fade'), screens = $('phone-story'), copy = $('ending-copy'), stores = $('scene-stores');
+  const back = $('hug-back'), hands = $('hug-hands');
+  const html = document.documentElement;
+  const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const wide = () => matchMedia('(min-width: 1100px)').matches;
+  // A damped spring (about 4% overshoot), sampled; older engines get a plain overshooting curve.
+  const SPRING = CSS.supports?.('transition-timing-function', 'linear(0, 1)')
+    ? 'linear(0, .048, .163, .309, .46, .602, .724, .824, .901, .958, .996, 1.02, 1.033, 1.038, 1.038, 1.034, 1.029, 1.023, 1.017, 1.012, 1.008, 1.005, 1.002, 1.001, 1)'
+    : 'cubic-bezier(.3,1.2,.5,1)';
+  let actions = {}, visit = 0, timers = [], frame = 0;
+
+  // Ponçik behind the phone, his hands in front of it: both ride inside the rig, so the three move as one.
+  rig.prepend(back); rig.append(hands);
+
+  const wait = ms => new Promise(resolve => timers.push(setTimeout(resolve, ms)));
+  const announce = text => { const node = $('ending-announcement'); node.textContent = ''; setTimeout(() => { node.textContent = text; }, 80); };
+  const decoded = img => (img.complete && img.naturalWidth ? Promise.resolve() : new Promise(resolve => { img.addEventListener('load', resolve, { once: true }); img.addEventListener('error', resolve, { once: true }); }))
+    .then(() => img.decode?.()).catch(() => {});
+
+  /* Scroll placement. Wide screens: nothing moves, the text columns pass on both sides.
+     Narrow screens: over the first half screen of scrolling the unit shrinks towards the top (origin: its top
+     edge, which stays under the buttons) and a band fades in behind it, so the text below never runs under Ponçik. */
+  function placeRig() {
+    if (!game.classList.contains('story')) { game.classList.remove('phone-small'); screen.inert = false; return; }
+    let p = 0, scale = 1;
+    if (!wide() && html.classList.contains('story-on')) {
+      p = Math.min(1, Math.max(0, scrollY / (innerHeight * .5)));
+      const h0 = rig.offsetHeight || 1, h1 = Math.min(h0, innerHeight * .53);
+      scale = 1 + (h1 / h0 - 1) * p;
+      html.style.setProperty('--band-h', `${Math.round(rig.offsetTop + h1 + 30)}px`); // solid to 12px under his feet, then an 18px fade
+    }
+    rig.style.setProperty('--sc', scale.toFixed(4));
+    // A phone shrunk below 0.8 is a picture of the app (the store links are in the scene and the last section): no taps or focus inside it.
+    const small = scale < .8;
+    game.classList.toggle('phone-small', small); screen.inert = small;
+    html.style.setProperty('--band', p.toFixed(3));
+    // the scene's two cards fade as they scroll up, before they could pass under the corner buttons
+    html.style.setProperty('--leave', Math.min(1, Math.max(0, scrollY / (innerHeight * .3))).toFixed(3));
+  }
+  function schedule() { if (!frame) frame = requestAnimationFrame(() => { frame = 0; placeRig(); }); }
+  addEventListener('scroll', schedule, { passive: true });
+  addEventListener('resize', schedule);
+
+  function layers(on) { [nav, fade, screens, copy, stores].forEach(node => { node.hidden = !on; }); }
+  function summary({ seconds, steps, preview }) {
+    $('ending-summary').textContent = preview ? '' : `${seconds} saniyede ${steps} adım`;
+  }
+  function settle() {
+    game.classList.add('story-ready');
+    phone.inert = false;
+    html.classList.add('story-on');
+    window.UyanbiStory?.open();
+    placeRig();
+  }
+  /* Where Ponçik stands on the balcony: the unit starts there, his size, and grows into the middle. */
+  function startBox() {
+    const actor = $('poncik-actor'), box = actor?.getBoundingClientRect();
+    if (!box || box.width < 8 || box.height < 8) return null;
+    return box;
+  }
+  async function deliver(token) {
+    phone.inert = true;
+    // Ponçik never appears half-painted: wait for both layers. Until then the balcony stays as it is.
+    await Promise.race([Promise.all([decoded(back), decoded(hands)]), wait(4000)]);
+    if (token !== visit) return;
+    // One frame: the standing Ponçik is measured, then the hugging one takes his place and size and comes forward.
+    const from = startBox();
+    game.classList.add('story', 'handoff-on'); layers(true);
+    rig.getAnimations().forEach(animation => animation.cancel());
+    placeRig();
+    const to = rig.getBoundingClientRect();
+    if (reduced() || !from || !to.height) {
+      await rig.animate([{ opacity: 0 }, { opacity: 1 }], { duration: reduced() ? 300 : 450, easing: 'linear' }).finished.catch(() => {});
+    } else {
+      const k = Math.min(.8, Math.max(.2, from.height / to.height));
+      const dx = from.left + from.width / 2 - (to.left + to.width / 2), dy = from.top + from.height / 2 - (to.top + to.height / 2);
+      const move = rig.animate([
+        { translate: `${dx.toFixed(1)}px ${dy.toFixed(1)}px`, scale: String(k), transformOrigin: '50% 50%' },
+        { translate: '0px 0px', scale: '1', transformOrigin: '50% 50%' }
+      ], { duration: 900, easing: SPRING });
+      const show = rig.animate([{ opacity: .3 }, { opacity: 1 }], { duration: 220, easing: 'ease-out' });
+      await Promise.all([move.finished, show.finished]).catch(() => {});
+    }
+    if (token !== visit) return;
+    settle();
+    $('ending-title').focus({ preventScroll: true });
+  }
+  function instant() {
+    game.classList.add('story', 'handoff-on'); layers(true);
+    settle();
+  }
+  function reset() {
+    timers.forEach(clearTimeout); timers = [];
+    rig.getAnimations().forEach(animation => animation.cancel());
+    game.classList.remove('story', 'story-ready', 'handoff-on');
+    layers(false);
+    html.classList.remove('story-on'); html.style.removeProperty('--band'); html.style.removeProperty('--band-h'); html.style.removeProperty('--leave');
+    rig.style.removeProperty('--sc');
+    game.classList.remove('phone-small'); screen.inert = false;
+    phone.inert = true;
+    window.UyanbiStory?.close();
+  }
+
+  document.addEventListener('click', event => {
+    const name = event.target.closest('[data-ending]')?.dataset.ending;
+    if (name) actions[name]?.();
   });
-  host.addEventListener('click',event=>{const name=event.target.closest('[data-ending]')?.dataset.ending;if(name)actions[name]?.();});
+  $('story-scroll').addEventListener('click', event => {
+    event.preventDefault();
+    $('hikaye')?.scrollIntoView({ behavior: reduced() ? 'auto' : 'smooth' });
+  });
+  window.UyanbiStores?.bind(document);
+
   window.MorningEnding = {
-    mount(callbacks){actions=callbacks;},
-    show({seconds,steps}){const current=++visit;host.hidden=false;host.classList.remove('is-visible');document.getElementById('ending-summary').textContent=`${seconds} saniye · ${steps} adım · Güzel bir başlangıç.`;document.getElementById('ending-announcement').textContent='Günaydın, maceran tamamlandı. UyanBi’yi keşfedebilir veya biraz daha kalabilirsin.';requestAnimationFrame(()=>{if(current===visit)host.classList.add('is-visible');});},
-    hide(){visit++;host.hidden=true;host.classList.remove('is-visible');document.getElementById('ending-store-status').textContent='';}
+    mount(callbacks) { actions = callbacks; },
+    // preview: the ending without the game ("Tanıtımı gör" and #hikaye); it opens in its settled state.
+    show({ seconds = 0, steps = 0, preview = false } = {}) {
+      const token = ++visit;
+      reset(); summary({ seconds, steps, preview });
+      announce(preview ? 'UyanBi tanıtımı. Aşağı kaydırarak devam edebilirsin.' : 'Maceran tamamlandı. Telefon sende. Aşağı kaydırarak UyanBi’yi keşfedebilirsin.');
+      if (preview) instant(); else deliver(token);
+    },
+    hide() {
+      visit++; reset();
+      if (scrollY) scrollTo({ top: 0, behavior: 'instant' });
+    }
   };
 })();

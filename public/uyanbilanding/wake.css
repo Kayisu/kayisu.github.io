@@ -1,0 +1,143 @@
+/* Uyanma anı: uygulamanın alarm ekranı (karanlık, titreşen telefon), "Uyan" / "Ertele"; sonra göz kapağı açılır. */
+.welcome::after{content:'';position:absolute;inset:0;z-index:50;background:var(--night);opacity:0;pointer-events:none;transition:opacity .5s ease}
+.welcome.fade-out::after{opacity:1}
+
+.wake{position:absolute;inset:0;z-index:7;display:none;overflow:hidden;background:#07040de6;color:var(--paper)}
+.asleep .wake,.waking .wake{display:block}
+.asleep .wake-ui{animation:wake-in .45s ease both}
+.asleep.wake-cut .wake-ui{animation:none}
+.waking .wake{background:transparent;pointer-events:none}
+
+/* The view from the bed: under the dark alarm screen, under the eyelids, and for the mission card. */
+.game.bed-view{background:var(--night)}
+.bed-pov{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:78% 50%;display:none;opacity:0;transition:opacity .6s ease;pointer-events:none;transform-origin:50% 72%;will-change:transform}
+.bed-pov.bed-ok{opacity:1}
+.bed-view .bed-pov{display:block}
+.bed-view .room-art,.bed-view .navigation,.bed-view .room-vignette,.bed-view .sun-wash{visibility:hidden}
+/* Portrait: the window holds the right-hand foot bump and the left end of the shelves; the other bump is just out of frame. */
+@media(max-aspect-ratio:1/1){.bed-pov{object-position:63% 50%}}
+/* In bed, on tall screens the mission card is shorter so Ponçik's face stays below it on the blanket. */
+@media(max-aspect-ratio:1/1){.game.bed-view.phone-focused .phone-rig{height:min(620px,calc(100svh - 98px - 26svh))}}
+/* When the mission card comes forward he steps aside only after it has arrived: one movement at a time. */
+.bed-view .guide{transition:left .4s cubic-bezier(.2,.8,.2,1)}
+.bed-view.phone-focused .guide{transition-delay:.4s}
+/* After waking the mission card comes to the middle of the screen and stays there until "Göreve başla". Ponçik steps aside (scene.js). */
+.game.bed-view.phone-focused .phone-rig{left:50%;right:auto;transform:translateX(-50%)}
+/* The greeting stays visible beside the mission card. */
+@media(min-width:1050px) and (min-height:461px){.game.bed-view.phone-focused .guide-bubble{opacity:1;visibility:visible}}
+.wake-glow{position:absolute;inset:0;background:radial-gradient(ellipse 62% 46% at 50% 35%,#7954bd47,transparent 72%)}
+.wake-ui{position:absolute;inset:0;display:grid;place-items:center}
+.waking .wake-ui,.waking .wake-glow{animation:wake-fade-out .25s ease forwards}
+
+/* The alarm screen is the app's alarm screen redrawn: a framed phone on desktop, the whole screen on phones. */
+.wake-phone{--wh:min(92svh,780px);position:relative;isolation:isolate;height:var(--wh);aspect-ratio:216/454;max-width:88vw;padding:7px;border-radius:calc(var(--wh) * .062);background:#15121c;border:2px solid #3b3350;box-shadow:0 0 70px 6px #7954bd30,0 0 150px 50px #7954bd1f;animation:wake-buzz 1.9s ease-in-out infinite}
+.wake-phone::before{content:'';position:absolute;inset:-70px;z-index:-1;border-radius:50%;background:radial-gradient(circle,#7954bd30,#7954bd16 45%,transparent 70%);animation:wake-pulse 1.9s ease-in-out infinite}
+.wake-screen{position:relative;height:100%;overflow:hidden;border-radius:calc(var(--wh) * .052);background:#0a0a0c;color:#fff;font-family:'Manrope','Nunito',ui-rounded,system-ui,sans-serif;container-type:inline-size;display:flex;flex-direction:column;align-items:center}
+.wake-screen::before{content:'';position:absolute;left:0;right:0;top:0;height:62%;background:radial-gradient(ellipse 78% 58% at 50% 8%,#5b49b0a8,#35286e70 42%,transparent 78%);pointer-events:none}
+.wake-screen::after{content:'';position:absolute;top:3.4cqw;left:50%;width:27cqw;height:7.6cqw;transform:translateX(-50%);border-radius:99px;background:#000}
+.wake-top{position:relative;display:flex;flex-direction:column;align-items:center;padding-top:19cqw}
+.wake-time{font-size:19cqw;line-height:1;font-weight:800;letter-spacing:-.025em;font-variant-numeric:tabular-nums;text-shadow:0 0 40px #9a86f066}
+.wake-state{display:inline-flex;align-items:center;gap:.5em;margin-top:3.4cqw;padding:.5em 1.15em .5em .95em;border-radius:99px;background:#866ee63d;color:#d3cbff;font-size:max(14px,4.6cqw);font-weight:600;line-height:1.2}
+.wake-state svg{width:1.2em;height:1.2em;transform-origin:50% 12%;animation:alarm-ring .5s ease-in-out infinite}
+.wake-task{position:relative;margin-top:19cqw;padding:0 6cqw;text-align:center}
+.wake-eyebrow{display:block;font-size:max(12px,3.5cqw);font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#a09ab6}
+.wake-title{display:block;margin-top:2.4cqw;font-size:max(26px,8.4cqw);line-height:1.12;font-weight:800;letter-spacing:-.02em;color:#fff}
+.wake-actions{position:relative;margin-top:auto;width:100%;padding:0 8.5cqw max(26px,calc(env(safe-area-inset-bottom) + 18px));display:flex;flex-direction:column;align-items:stretch;gap:1.5cqw}
+.wake-mascot{position:relative;order:-1;height:0}
+.wake-poncik{position:absolute;right:-8cqw;bottom:-2cqw;width:34cqw;height:auto;transform-origin:50% 90%;pointer-events:none;filter:drop-shadow(0 8px 14px #0008)}
+.wake-poncik.shake{animation:poncik-shake .6s ease}
+.wake-bubble{position:absolute;right:7cqw;bottom:calc(34cqw + 3cqw);width:max-content;max-width:66cqw;margin:0;padding:.75em 1em;border-radius:17px 17px 4px 17px;background:#fffaf1;color:#493458;box-shadow:0 5px 17px #0006;font-family:'Nunito',ui-rounded,system-ui,sans-serif;font-weight:800;font-size:max(14px,4cqw);line-height:1.4;animation:wake-fade-in .4s ease both}
+.wake-bubble:after{content:'';position:absolute;bottom:-7px;right:20px;border-width:8px 0 0 9px;border-style:solid;border-color:#fffaf1 transparent transparent transparent}
+.wake-btn{display:flex;align-items:center;justify-content:center;width:100%;border:0;font:inherit;letter-spacing:-.005em;white-space:nowrap;transition:opacity .25s ease,transform .25s ease,color .2s,background .2s}
+.wake-go{min-height:max(56px,15.5cqw);border-radius:99px;background:#866ee6;color:#fff;font-size:max(19px,5.4cqw);font-weight:800;box-shadow:0 10px 30px #866ee644}
+.wake-go:hover{background:#9580ef}
+.wake-snooze{min-height:48px;background:none;color:#9a94b0;font-size:max(16px,4.4cqw);font-weight:600}
+.wake-snooze:hover{color:#cbc5df}
+.wake-btn:focus-visible{outline:4px solid #fff3b3;outline-offset:4px}
+.wake-btn.shake{animation:wake-shake .45s ease}
+.wake-btn.gone{opacity:0;transform:scale(.8);pointer-events:none}
+.wake .wake-snooze[hidden]{display:flex!important;visibility:hidden}
+@media(max-width:600px){
+ .wake-phone{position:absolute;inset:0;height:auto;max-width:none;aspect-ratio:auto;padding:0;border:0;border-radius:0;background:none;box-shadow:none;animation:none}
+ .wake-phone::before,.wake-screen::after{display:none}
+ .wake-screen{border-radius:0}
+ .wake-top{padding-top:max(72px,19cqw)}
+}
+
+/* Dark-screen chrome and the mascot's cameo */
+.asleep .location,.asleep .phone-open,.waking .phone-open{display:none}
+/* Help and pause keep their place while hidden on the dark screen, so the sound and house icons never move. */
+.asleep #help,.asleep #pause{visibility:hidden}
+.waking .location,.waking #help,.waking #pause{animation:wake-fade-in .5s .9s ease both}
+.asleep .home-back,.asleep .tool{background:#ffffff1f;color:var(--lavender);box-shadow:none}
+/* The deadline runs from the first alarm: the timer sits on the dark screen too, then turns cream with the room. */
+.timer{transition:background-color .6s ease,color .6s ease}
+.asleep .timer{background:#ffffff1f;color:#f6f1ff;box-shadow:none}
+.asleep .timer-icon{color:#b9a6ea}
+.asleep .timer small{color:#c9bfe4}
+.asleep .timer-ring circle{stroke:#ffffff2b}
+.asleep .timer-ring circle:last-child{stroke:#b9a6ea}
+.asleep .timer.urgent{color:#ffb3c4}
+.asleep .timer.urgent circle:last-child{stroke:#ff8fa8}
+.asleep .guide,.asleep .phone-rig{visibility:hidden}
+.waking .guide{animation:wake-fade-in .6s .9s ease both}
+
+/* Eyelids and the focus-pull on the room behind them */
+.wake-lid{position:absolute;left:-4%;right:-4%;height:58%;display:none;background:var(--night);will-change:transform}
+.wake-lid-top{top:0;border-radius:0 0 50% 50%/0 0 15vh 15vh}
+.wake-lid-bottom{bottom:0;border-radius:50% 50%/15vh 15vh 0 0}
+.waking .wake-lid{display:block}
+.waking .wake-lid-top{animation:lid-top 1.5s cubic-bezier(.4,0,.2,1) both}
+.waking .wake-lid-bottom{animation:lid-bottom 1.5s cubic-bezier(.4,0,.2,1) both}
+.waking .bed-pov{animation:wake-focus 1.5s ease-out both}
+
+@keyframes wake-in{from{opacity:0}to{opacity:1}}
+@keyframes wake-fade-in{from{opacity:0}to{opacity:1}}
+@keyframes wake-fade-out{to{opacity:0}}
+@keyframes wake-pulse{0%,100%{opacity:.55;transform:scale(.94)}50%{opacity:1;transform:scale(1.06)}}
+@keyframes wake-buzz{0%,34%,100%{transform:translate(0,0) rotate(0)}3%{transform:translate(-4px,1px) rotate(-1.8deg)}6%{transform:translate(4px,-1px) rotate(1.8deg)}9%{transform:translate(-4px,1px) rotate(-1.8deg)}12%{transform:translate(4px,-1px) rotate(1.8deg)}15%{transform:translate(-3px,0) rotate(-1.2deg)}18%{transform:translate(3px,0) rotate(1.2deg)}21%{transform:translate(-3px,1px) rotate(-1.2deg)}24%{transform:translate(2px,0) rotate(.8deg)}28%{transform:translate(-1px,0) rotate(-.4deg)}}
+@keyframes poncik-shake{0%,100%{transform:rotate(0)}18%{transform:rotate(-9deg)}40%{transform:rotate(8deg)}62%{transform:rotate(-5deg)}82%{transform:rotate(3deg)}}
+@keyframes wake-shake{0%,100%{transform:translateX(0)}15%{transform:translateX(-9px)}35%{transform:translateX(8px)}55%{transform:translateX(-6px)}75%{transform:translateX(4px)}}
+@keyframes lid-top{0%{transform:translateY(0)}16%{transform:translateY(-46%)}30%{transform:translateY(-14%)}46%{transform:translateY(-64%)}100%{transform:translateY(-110%)}}
+@keyframes lid-bottom{0%{transform:translateY(0)}16%{transform:translateY(46%)}30%{transform:translateY(14%)}46%{transform:translateY(64%)}100%{transform:translateY(110%)}}
+@keyframes wake-focus{0%{filter:blur(20px) brightness(.5)}30%{filter:blur(15px) brightness(.65)}100%{filter:blur(0) brightness(1)}}
+
+/* Short landscape: the frame takes nearly the full height. */
+@media(max-height:520px) and (min-width:601px){
+ .wake-phone{--wh:94svh}
+ .wake-top{padding-top:14cqw}.wake-task{margin-top:10cqw}
+ .wake-actions{padding-bottom:12px}.wake-go{min-height:48px}
+}
+
+/* The blink that hides a change of place (game.js blink()): the same eyelids as waking up, above everything. */
+.blink{position:absolute;inset:0;z-index:60;pointer-events:none;display:none}
+.blink-closing .blink,.blink-shut .blink,.blink-open .blink{display:block}
+.blink-lid{position:absolute;left:-4%;right:-4%;height:70%;background:var(--night);will-change:transform}
+.blink-top{top:0;border-radius:0 0 50% 50%/0 0 15vh 15vh;transform:translateY(-110%)}
+.blink-bottom{bottom:0;border-radius:50% 50%/15vh 15vh 0 0;transform:translateY(110%)}
+.blink-closing .blink-top{animation:blink-top-close .18s cubic-bezier(.55,0,.8,.4) forwards}
+.blink-closing .blink-bottom{animation:blink-bottom-close .18s cubic-bezier(.55,0,.8,.4) forwards}
+.blink-shut .blink-lid{transform:none}
+.blink-open .blink-top{animation:blink-top-open .3s cubic-bezier(.2,.6,.3,1) both}
+.blink-open .blink-bottom{animation:blink-bottom-open .3s cubic-bezier(.2,.6,.3,1) both}
+/* Everything takes its new place in one step while the eyes are shut: no transition may run behind the lids. */
+.blink-cut,.blink-cut *,.blink-cut *::before,.blink-cut *::after{transition:none!important}
+.blink-open .room-art,.blink-open .bed-pov,.blink-open .guide{animation:blink-focus .3s ease-out both}
+@keyframes blink-top-close{from{transform:translateY(-110%)}to{transform:none}}
+@keyframes blink-bottom-close{from{transform:translateY(110%)}to{transform:none}}
+@keyframes blink-top-open{from{transform:none}to{transform:translateY(-110%)}}
+@keyframes blink-bottom-open{from{transform:none}to{transform:translateY(110%)}}
+@keyframes blink-focus{from{filter:blur(6px)}to{filter:blur(0)}}
+
+/* Reduced motion: no buzz, no eyelids; the dark screen simply cross-fades into the room. */
+@media(prefers-reduced-motion:reduce){
+ .welcome::after{transition:opacity .3s linear!important}
+ .wake{opacity:1}
+ .waking .wake{display:block;opacity:0;background:var(--night);transition:opacity .5s linear!important}
+ .waking .wake-lid{display:none}
+ .wake-btn{transition:opacity .3s linear!important}
+ .wake-phone,.wake-state svg{animation:none!important}
+ .blink{display:block;background:var(--night);opacity:0;transition:opacity .2s linear!important}
+ .blink-lid{display:none}
+ .blink-closing .blink,.blink-shut .blink{opacity:1;transition-duration:.12s!important}
+}

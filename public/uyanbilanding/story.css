@@ -1,0 +1,108 @@
+/* The story: the unit (Ponçik + phone) stays in the middle (fixed, see ending.css), text lives outside it.
+   Dark purple for the four problem and solution sections, back to morning cream for the download. */
+:root{--gut:clamp(28px,3vw,64px)} /* text to Ponçik's widest point (his hands) */
+.story{position:relative;font-family:'Nunito',ui-rounded,system-ui,sans-serif;color:var(--paper);overflow-x:clip}
+.story-js .rv{opacity:0;transform:translateY(16px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1);transition-delay:calc(var(--i,0) * 70ms)}
+.story-js .rv.in{opacity:1;transform:none}
+
+.story-dark{background:linear-gradient(180deg,var(--paper) 0,var(--deep) 34svh,var(--deep) 100%)}
+.sec{position:relative;min-height:100svh;display:flex;align-items:center;padding:max(88px,12svh) clamp(16px,2.5vw,64px)}
+.sec .sec-title{font-size:clamp(2rem,3.5vw,4.25rem)} /* side columns next to the wide unit */
+#b1{padding-top:calc(34svh + 24px)}
+.sec-grid{width:100%;max-width:1760px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) calc(var(--u-w) + 2 * var(--gut)) minmax(0,1fr);align-items:center}
+.sec-text{min-width:0;width:min(100%,34rem);container-type:inline-size}
+.sec-text.left{grid-column:1;justify-self:end}
+.sec-text.right{grid-column:3;justify-self:start}
+/* B1-B4 use both sides of the phone: label, title and diagnosis on the left, the solution on the right. */
+.sec-text.head{grid-column:1;justify-self:end}
+.sec-text.body{grid-column:3;justify-self:start}
+
+.eyebrow{margin:0 0 .7rem;font-size:1.0625rem;font-weight:900;line-height:1.3;letter-spacing:.09em;color:var(--yellow)}
+.sec-title{margin:0 0 .5em;font-size:clamp(2rem,4.6vw,4.25rem);line-height:1.02;font-weight:900;letter-spacing:-.035em;text-wrap:balance}
+.diag{margin:0;font-size:clamp(1.125rem,1.5vw,1.25rem);line-height:1.55;font-weight:500;color:#f1eafb}
+.fix-title{margin:0 0 .45em;font-size:clamp(1.5rem,2.5vw,2.125rem);line-height:1.12;font-weight:900;letter-spacing:-.02em;color:var(--yellow)}
+.lead{margin:0 0 1em;font-size:clamp(1.125rem,1.5vw,1.25rem);line-height:1.5;font-weight:600;color:#f1eafb}
+.story a:focus-visible,.story button:focus-visible,.story summary:focus-visible{outline:3px solid var(--yellow);outline-offset:4px;border-radius:4px}
+.b6 a:focus-visible,.b6 button:focus-visible,.b6 summary:focus-visible{outline-color:var(--purple)}
+
+/* B6: morning cream, download */
+.b6{padding:calc(26svh + clamp(24px,5svh,56px)) clamp(20px,4vw,64px) 40px;background:linear-gradient(180deg,var(--deep) 0,var(--paper) 26svh,var(--paper) 100%);color:var(--ink)}
+.b6 .lead{color:#4a3a5e}
+.b6-grid{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(24px,5vw,80px);align-items:center;min-height:calc(100svh - 26svh - 2 * clamp(24px,5svh,56px))}
+.b6-copy{max-width:34rem}
+.b6-actions{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin:.4rem 0 1.6rem}
+.b6-actions .store-btn{height:56px}
+.cta{display:inline-flex;align-items:center;justify-content:center;min-height:64px;margin:0;padding:0 40px;border-radius:20px;background:var(--yellow);color:#3e285c;font-size:1.375rem;font-weight:900;box-shadow:0 10px 28px #ba8a2744;transition:transform .2s,background .2s}
+.cta:hover{background:#ffdc5e;transform:translateY(-2px)}
+.offer{position:relative;justify-self:center;width:min(100%,400px,calc((100svh - 120px) * 789 / 828));margin:0}
+.wave-fig{display:block;width:100%;height:auto;filter:drop-shadow(0 14px 14px #2a1a4a33)}
+.faq{max-width:46rem;margin:clamp(48px,9svh,110px) auto 0}
+.faq h3{margin:0 0 .75rem;font-size:1.5rem;font-weight:900;letter-spacing:-.02em}
+.faq details{border-top:1px solid #d6c9e1}
+.faq details:last-of-type{border-bottom:1px solid #d6c9e1}
+.faq summary{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:60px;padding:12px 0;font-size:1.125rem;line-height:1.35;font-weight:800;list-style:none;cursor:pointer}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:'+';flex-shrink:0;font-size:1.75rem;line-height:1;font-weight:700;color:var(--purple)}
+.faq details[open] summary::after{content:'−'}
+.faq details p{margin:0 0 1.2rem;font-size:1.125rem;line-height:1.6;font-weight:600;color:#4a3a5e}
+.story-foot{max-width:46rem;margin:clamp(36px,6svh,64px) auto 0;padding-top:1rem;border-top:1px solid #d6c9e1;display:flex;flex-wrap:wrap;gap:0 24px;align-items:center;font-size:.9375rem;font-weight:700;color:#5c456c}
+.story-foot button{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0;border:0;background:none;color:var(--deep);font:inherit;font-weight:800;text-decoration:underline;text-underline-offset:3px}
+.story-foot button span{font-size:1.4rem;line-height:1;text-decoration:none}
+
+/* ---- phone screens (decorative mock-ups; sizes follow the phone through --u) ---- */
+.ps-alarm,.ps-task,.ps-sun{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:calc(var(--u) * 9);padding:0 calc(var(--u) * 16) calc(var(--u) * 14);text-align:center;color:var(--ink)}
+.al-label{font-size:calc(var(--u) * 13);line-height:1.2;font-weight:900;color:#6a5280}
+.al-cap{font-size:calc(var(--u) * 12);font-weight:800;color:#6a5280}
+.wk{display:grid;grid-template-columns:repeat(7,1fr);gap:calc(var(--u) * 3);width:100%}
+.wk div{display:flex;flex-direction:column;align-items:center;gap:calc(var(--u) * 5);padding:calc(var(--u) * 6) 0;border-radius:calc(var(--u) * 9);background:#f1e9f5}
+.wk span{font-size:calc(var(--u) * 10);font-weight:900;color:#6a5280}
+.wk i{display:grid;place-items:center;width:calc(var(--u) * 20);height:calc(var(--u) * 20);border-radius:50%;background:var(--yellow);color:#3e285c;font-size:calc(var(--u) * 12);font-style:normal;font-weight:900}
+.wk small{font-size:calc(var(--u) * 8);font-weight:800;color:#6a5280}
+.set-cta{width:100%;padding:calc(var(--u) * 11);border-radius:calc(var(--u) * 12);background:var(--yellow);color:#3e285c;font-size:calc(var(--u) * 14);font-weight:900}
+.ps-task{justify-content:flex-start;gap:calc(var(--u) * 8);padding-top:calc(var(--u) * 6)}
+.m-task{width:100%;text-align:left;border-bottom:1px solid #e4dbe9;padding-bottom:calc(var(--u) * 6)}
+.m-task small{display:block;font-size:calc(var(--u) * 10);font-weight:800;color:#6a5280}
+.m-task strong{display:block;font-size:calc(var(--u) * 20);line-height:1.2;font-weight:900}
+.m-cam{position:relative;width:100%;height:calc(var(--u) * 150);border-radius:calc(var(--u) * 11);overflow:hidden;background:#9789a4 var(--m-cam-img,none) 44% 66% / 300% auto no-repeat}
+.m-cam::after{content:'';position:absolute;inset:0;background:linear-gradient(0deg,#342746a0,transparent 45%)}
+.m-br{position:absolute;left:50%;top:46%;width:calc(var(--u) * 80);height:calc(var(--u) * 70);transform:translate(-50%,-50%);border:calc(var(--u) * 2) solid #fff;border-radius:calc(var(--u) * 8);-webkit-mask:linear-gradient(#000,#000) top left/22% 22% no-repeat,linear-gradient(#000,#000) top right/22% 22% no-repeat,linear-gradient(#000,#000) bottom left/22% 22% no-repeat,linear-gradient(#000,#000) bottom right/22% 22% no-repeat;mask:linear-gradient(#000,#000) top left/22% 22% no-repeat,linear-gradient(#000,#000) top right/22% 22% no-repeat,linear-gradient(#000,#000) bottom left/22% 22% no-repeat,linear-gradient(#000,#000) bottom right/22% 22% no-repeat}
+.m-cam span{position:absolute;z-index:1;left:0;right:0;bottom:calc(var(--u) * 7);font-size:calc(var(--u) * 11);font-weight:900;color:#fff}
+.m-steps{width:100%;display:flex;align-items:center;justify-content:space-between;padding-top:calc(var(--u) * 4)}
+.m-n{font-size:calc(var(--u) * 26);font-weight:900;letter-spacing:-.03em}
+.m-n em{font-style:normal;font-size:calc(var(--u) * 13);color:#735b83}
+.m-dots{display:flex;gap:calc(var(--u) * 3)}
+.m-dots i{width:calc(var(--u) * 7);height:calc(var(--u) * 14);border-radius:calc(var(--u) * 4);background:#8d67b3;transform:rotate(15deg)}
+.ps-sun img{width:calc(var(--u) * 64);height:calc(var(--u) * 64)}
+.sun-plus{font-size:calc(var(--u) * 33);line-height:1.1;font-weight:900;letter-spacing:-.03em;color:#8a4b2f}
+.game.phone-game-mode .story-band{display:none}
+
+/* ---- mobile sticky band + out state ---- */
+.story-band{position:fixed;left:0;right:0;top:0;height:var(--band-h,50dvh);z-index:25;background:var(--deep);opacity:var(--band,0);pointer-events:none;-webkit-mask-image:linear-gradient(#000 calc(100% - 18px),transparent);mask-image:linear-gradient(#000 calc(100% - 18px),transparent)}
+.game.story.story-out #phone-rig,.game.story-out .story-band{opacity:0;visibility:hidden;pointer-events:none;transition:opacity .4s,visibility 0s .4s}
+
+@media(min-width:1100px){.story-band{display:none}}
+@media(max-width:1099px){
+  .sec{display:block;min-height:100svh;padding:20svh 24px 16svh}
+  .sec-grid{display:block}
+  .sec-text{width:100%;max-width:36rem;margin:0 auto}
+  .sec-text.body{margin-top:1.8rem}
+  .b6{padding-top:calc(26svh + 24px)}
+  .b6-grid{display:flex;flex-direction:column;align-items:stretch;min-height:0}
+  .offer{justify-self:center;margin:8px auto 0;width:min(78%,300px)}
+  .sec .sec-title{font-size:clamp(2rem,4.6vw,4.25rem)}
+}
+@media(max-width:420px){.cta{width:100%}}
+@media(prefers-reduced-motion:reduce){.story-js .rv{opacity:1;transform:none}}
+
+/* B1: the phone shows the app's dark alarm screen. */
+.ps-ring{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:calc(var(--u) * 14);padding:0 calc(var(--u) * 16) calc(var(--u) * 20);text-align:center;color:#fff}
+.ring-time{font-size:calc(var(--u) * 60);line-height:1;font-weight:900;letter-spacing:-.03em;font-variant-numeric:tabular-nums;text-shadow:0 0 calc(var(--u) * 18) #9a86f066}
+.ring-state{display:inline-flex;align-items:center;gap:calc(var(--u) * 6);padding:calc(var(--u) * 6) calc(var(--u) * 14) calc(var(--u) * 6) calc(var(--u) * 11);border-radius:99px;background:#866ee63d;color:#d3cbff;font-size:calc(var(--u) * 14);font-weight:800}
+.ring-state svg{width:calc(var(--u) * 17);height:calc(var(--u) * 17)}
+.ring-snooze{width:100%;margin-top:calc(var(--u) * 26);padding:calc(var(--u) * 11);border-radius:calc(var(--u) * 13);background:#ffffff14;color:#ffffff73;font-size:calc(var(--u) * 15);font-weight:800;text-decoration:line-through;text-decoration-thickness:calc(var(--u) * 2)}
+.game.story-night .phone-screen{background:#0a0a0c;color:#fff}
+.game.story-night .phone-screen::before{content:'';position:absolute;left:0;right:0;top:0;height:62%;background:radial-gradient(ellipse 78% 58% at 50% 8%,#5b49b0a8,#35286e70 42%,transparent 78%);pointer-events:none}
+.game.story-night .phone-status,.game.story-night .phone-app{position:relative;color:#fff}
+.game.story-night .phone-app b{color:#c3b3ff}
+.game.story-night .camera-dot{color:#7ad0a8}
+.game.story .phone-screen{transition:background-color .35s ease}

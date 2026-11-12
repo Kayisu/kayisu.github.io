@@ -148,7 +148,7 @@
     return `<div class="games-intro"><h2>Bir oyun daha?</h2><p>Bir oyun seç, keyfine bak. Burada süre yok.</p></div><div class="games-menu">${button('practice','<span class="games-menu-sign" aria-hidden="true">＋</span><span><strong>Kısa hesap</strong><small>Bir işlem, küçük bir zihin açılışı.</small></span>','data-kind="math"')}${button('practice','<span class="games-menu-sign" aria-hidden="true">Aa</span><span><strong>Cümleyi kur</strong><small>Karışan kelimeleri yerine koy.</small></span>','data-kind="words"')}${button('practice','<span class="games-menu-sign" aria-hidden="true">☀︎</span><span><strong>Eşini bul</strong><small>Dört çift, bir parça dikkat.</small></span>','data-kind="memory"')}</div>`;
   }
   function completeView() {
-    return '<div class="games-complete"><span class="games-complete-sign" aria-hidden="true">✓</span><h2>Zihnin hazır.<br>Gün seni bekliyor.</h2><p>İşlem ve cümle tamamlandı. Şimdi adımlarını tamamlayıp balkona çıkabilirsin.</p>'+button('close','Maceraya dön','class="games-primary"')+'</div>';
+    return '<div class="games-complete"><span class="games-complete-sign" aria-hidden="true">✓</span><h2>Zihnin hazır.<br>Gün seni bekliyor.</h2><p>İşlem ve cümle tamamlandı. Şimdi adımlarını tamamlayıp balkona çıkabilirsin.</p>'+button('close','<span aria-hidden="true">‹</span> Telefona dön','class="games-primary"')+'</div>';
   }
   function render(focus=false) {
     if(!host)return;

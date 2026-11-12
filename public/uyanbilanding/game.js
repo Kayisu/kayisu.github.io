@@ -1,15 +1,18 @@
 /* The game clock owns all gameplay work. Pausing freezes both the deadline and
-   pending scans/transitions; no delayed callback can outlive a session. */
+   pending scans/transitions; no delayed callback can outlive a session.
+   The deadline starts running the moment the adventure starts, while the alarm still rings. */
 (function (root) {
   'use strict';
 
+  // Doors are [target room, key direction]. Labels live in rooms.js, the single source.
   const ROUTES = {
-    bedroom: [['hallway', '↑', 'Kapıdan çık', 'Koridora geç']],
-    hallway: [['bathroom', '←', 'Sola git', 'Banyo'], ['kitchen', '→', 'Sağa git', 'Mutfak'], ['balcony', '↑', 'İleri git', 'Balkon'], ['bedroom', '↶', 'Geri dön', 'Yatak odası']],
-    kitchen: [['hallway', '↶', 'Koridora dön', 'Diğer odalara geç']],
-    bathroom: [['hallway', '↶', 'Koridora dön', 'Diğer odalara geç']],
-    balcony: [['hallway', '↶', 'İçeri dön', 'Koridora geç']]
+    bedroom: [['hallway', '↑']],
+    hallway: [['bathroom', '←'], ['kitchen', '→'], ['balcony', '↑'], ['bedroom', '↶']],
+    kitchen: [['hallway', '↶']],
+    bathroom: [['hallway', '↶']],
+    balcony: [['hallway', '↶']]
   };
+  const GOAL_STEPS = 10, STEPS_PER_DOOR = 2;
   const OBJECT_NAMES = { mug: 'Kupa', book: 'Kitap', bottle: 'Su şişesi', shoe: 'Terlik', apple: 'Elma', toothbrush: 'Diş fırçası' };
 
   class GameEngine {
@@ -21,7 +24,7 @@
       this.restart();
     }
     restart() {
-      this.current = { room: 'bedroom', phase: 'alarm', steps: 0, leftMs: this.duration, selected: null, cup: false, mode:'scan', paused: false, scanning: false, moving: false, feedback: null };
+      this.current = { room: 'bedroom', phase: 'asleep', snoozed: false, steps: 0, leftMs: this.duration, selected: null, cup: false, mode:'scan', paused: false, scanning: false, moving: false, feedback: null };
       this.pending = null;
       this.events = [];
     }
@@ -29,11 +32,23 @@
     drain() { const events = this.events; this.events = []; return events; }
     emit(type, detail = {}) { this.events.push({ type, ...detail }); }
     isPlaying() { return this.current.phase === 'seek' || this.current.phase === 'walk'; }
+    // The deadline runs from the first alarm until the final arrival (it stands still in the finale).
+    clockRuns() { return ['asleep', 'alarm', 'seek', 'walk'].includes(this.current.phase); }
     canAct() { return this.isPlaying() && !this.current.paused && !this.pending && this.current.leftMs > 0; }
+    snooze() {
+      // There is no snooze: the call is recorded for the mascot's reply, nothing else changes.
+      if (this.current.phase !== 'asleep' || this.current.snoozed) return false;
+      this.current.snoozed = true;
+      return true;
+    }
+    wake() {
+      if (this.current.phase !== 'asleep') return false;
+      this.current.phase = 'alarm';
+      return true;
+    }
     accept() {
       if (this.current.phase !== 'alarm' || this.current.paused) return false;
       this.current.phase = 'seek';
-      this.emit('accepted');
       return true;
     }
     select(object) {
@@ -66,16 +81,16 @@
     }
     move(room) {
       if (!this.canAct() || !ROUTES[this.current.room].some(route => route[0] === room)) return false;
-      Object.assign(this.current, { room, steps: this.current.steps + 1, selected: null, feedback: null, moving: true });
+      Object.assign(this.current, { room, steps: this.current.steps + STEPS_PER_DOOR, selected: null, feedback: null, moving: true });
       // A valid final arrival is accepted only while time remains. Its scene
       // transition and celebration then run with the deadline frozen.
-      if (this.current.cup && this.current.steps >= 6 && room === 'balcony') this.current.phase = 'finale';
+      if (this.current.cup && this.current.steps >= GOAL_STEPS && room === 'balcony') this.current.phase = 'finale';
       this.pending = { type: 'move', remaining: this.moveDuration };
       this.emit('room', { room, final: this.current.phase === 'finale' });
       return true;
     }
     pause() {
-      if (!['alarm', 'seek', 'walk', 'finale'].includes(this.current.phase) || this.current.paused) return false;
+      if (!['asleep', 'alarm', 'seek', 'walk', 'finale'].includes(this.current.phase) || this.current.paused) return false;
       this.current.paused = true;
       return true;
     }
@@ -83,6 +98,11 @@
       if (!this.current.paused) return false;
       this.current.paused = false;
       return true;
+    }
+    // The story preview ("Tanıtımı gör", #hikaye) opens on the finished balcony without playing.
+    preview() {
+      Object.assign(this.current, { room: 'balcony', phase: 'won', cup: true, steps: GOAL_STEPS, leftMs: this.duration, snoozed: false });
+      this.pending = null; this.events = [];
     }
     home() {
       this.current.phase = 'home';
@@ -127,8 +147,8 @@
     advance(milliseconds) {
       let remaining = Math.max(0, Number(milliseconds) || 0);
       if (this.current.paused) return;
-      while (remaining > 0 && ['seek', 'walk', 'finale'].includes(this.current.phase)) {
-        const clockRuns = this.isPlaying();
+      while (remaining > 0 && ['asleep', 'alarm', 'seek', 'walk', 'finale'].includes(this.current.phase)) {
+        const clockRuns = this.clockRuns();
         const clockBoundary = clockRuns ? this.current.leftMs : Infinity;
         const jobBoundary = this.pending ? this.pending.remaining : Infinity;
         const amount = Math.min(remaining, clockBoundary, jobBoundary);
@@ -146,7 +166,7 @@
   }
 
   root.UyanbiGameEngine = GameEngine;
-  if (typeof module !== 'undefined' && module.exports) module.exports = { GameEngine, ROUTES };
+  if (typeof module !== 'undefined' && module.exports) module.exports = { GameEngine, ROUTES, GOAL_STEPS, STEPS_PER_DOOR };
   if (typeof document === 'undefined') return;
 
   const $ = id => document.getElementById(id);
@@ -155,41 +175,54 @@
   if (!game || !dialog) return;
   const engine = new GameEngine();
   const names = { bedroom: 'Yatak odası', hallway: 'Koridor', kitchen: 'Mutfak', bathroom: 'Banyo', balcony: 'Balkon' };
-  const subtitles = { bedroom: 'Gün burada başlıyor.', hallway: 'Her oda geçişi bir adım.', kitchen: 'Kupa masada seni bekliyor.', bathroom: 'Biraz su, biraz ferahlık.', balcony: 'Yeni güne bir adım daha.' };
+  const subtitles = { bedroom: 'Gün burada başlıyor.', hallway: `Her oda geçişi ${STEPS_PER_DOOR} adım.`, kitchen: 'Kupa masada seni bekliyor.', bathroom: 'Biraz su, biraz ferahlık.', balcony: 'Yeni güne bir adım daha.' };
   const wrongMessages = {
     book: 'Güzel kitap, sonra okuruz. Bizim görevimiz bir kupa bulmak!',
     shoe: 'Terlik tamam. Şimdi mutfaktaki kupayı bulalım.',
-    bottle: 'Su iyi fikir! Ama telefonunda bir kupa istiyorum.',
+    bottle: 'Su iyi fikir! Ama ben bir kupa taramanı istiyorum.',
     apple: 'Kahvaltı birazdan. Önce masadaki kupa!',
     toothbrush: 'Diş fırçası burada. Kupamız mutfakta bekliyor.'
   };
+  const phoneEl = game.querySelector('.phone'), rig = $('phone-rig');
+  const reducedMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
   let raf = 0;
   let previousTime = null;
   let dialogKind = '';
-  let sound = false;
-  let audio = null;
+  let sound = false, soundTouched = false;
+  let audio = null, alarmTimer = 0, alarmBus = null;
   let returnFocus = null;
   let navRoom = '', bedReplies = 0;
+  let startTimer = 0, wakeTimer = 0, snoozeTimer = 0, flipAnimation = null;
+  let rising = false, riseTimers = [], bedOk = false;
+  const bed = $('bed-pov');
 
-  const active = state => ['seek', 'walk', 'finale'].includes(state.phase);
-  const remainingSteps = state => Math.max(0, 6 - state.steps);
+  // Everything the frame loop and the tab-visibility guard look after: the clock also runs on the alarm screen and in bed.
+  const clocked = state => ['asleep', 'alarm', 'seek', 'walk', 'finale'].includes(state.phase);
+  const remainingSteps = state => Math.max(0, GOAL_STEPS - state.steps);
+  const lastDoorFrom = GOAL_STEPS - STEPS_PER_DOOR;
   const taskTitle = state => !state.cup ? (state.mode === 'offline' ? 'Zihnini aç.' : 'Bir kupa bul.') : remainingSteps(state) ? `${remainingSteps(state)} adım daha at.` : 'Şimdi balkona çık.';
   function pose(name) { root.PoncikActor?.setPose?.(name); }
   function roomPose(state) {
     if (state.phase === 'finale' || state.phase === 'won') return 'success';
-    if (state.phase === 'alarm') return 'awake';
+    if (state.phase === 'asleep' || state.phase === 'alarm') return 'awake';
     if (state.mode === 'offline' && !state.cup) return 'invite';
     if (state.room === 'kitchen' && !state.cup) return 'down';
-    if (state.room === 'hallway') return state.cup && state.steps >= 5 ? 'invite' : 'right';
+    if (state.room === 'hallway') return state.cup && state.steps >= lastDoorFrom ? 'invite' : 'right';
     return 'invite';
   }
   function say(message, actorPose) {
     $('guide-message').textContent = message;
     if (actorPose) pose(actorPose);
   }
+  function announce(text) {
+    const node = $('wake-status');
+    node.textContent = '';
+    setTimeout(() => { node.textContent = text; }, 80);
+  }
   function guideMessage(state) {
-    if (state.phase === 'alarm') return 'Günaydın! Telefonundaki göreve bakalım.';
-    if (state.phase === 'finale' || state.phase === 'won') return 'İşte bu! Gün seninle başladı. Günaydın!';
+    if (state.phase === 'asleep') return 'Alarm çalıyor. Uyanma zamanı!';
+    if (state.phase === 'alarm') return 'Telefonundaki göreve bakalım.';
+    if (state.phase === 'finale' || state.phase === 'won') return 'İşte bu! Gün seninle başladı.';
     if (state.feedback?.type === 'error') return wrongMessages[state.feedback.object];
     if (state.mode === 'offline' && !state.cup) return 'Bir işlem, sonra küçük bir cümle. Telefonunda devam edelim.';
     if (state.cup) {
@@ -201,69 +234,143 @@
     return {
       bedroom: 'Kupayı mutfakta görmüştüm. Hadi, kapıdan çıkalım!',
       hallway: 'Mutfak sağda! İstersen diğer odalara da bakabilirsin.',
-      kitchen: 'İşte orada! Masadaki kupayı telefonuna göster.',
+      kitchen: 'İşte orada! Masadaki kupaya dokun, sonra tara.',
       bathroom: 'Diş fırçası burada. Bizim kupamız mutfakta!',
       balcony: 'Manzara güzel! Önce mutfaktaki kupayı bulalım.'
     }[state.room];
   }
+
+  /* ---- sound: short Web Audio patterns; the alarm is a looping pattern on its own bus ---- */
+  function unlockAudio() {
+    try { audio ??= new (root.AudioContext || root.webkitAudioContext)(); audio.resume().catch(() => {}); } catch {}
+  }
   function chirp(kind = 'tap') {
     if (!sound) return;
     try {
-      audio ??= new (root.AudioContext || root.webkitAudioContext)();
-      audio.resume().catch(() => {});
+      unlockAudio();
       const start = audio.currentTime;
-      const notes = kind === 'success' ? [523, 659, 784] : kind === 'error' ? [220, 174] : kind === 'alarm' ? [740, 554, 740] : [440];
+      const alarm = kind === 'alarm';
+      if (alarm && !alarmBus) { alarmBus = audio.createGain(); alarmBus.connect(audio.destination); }
+      const out = alarm ? alarmBus : audio.destination;
+      const notes = kind === 'success' ? [523, 659, 784] : kind === 'error' ? [220, 174] : alarm ? [880, 698, 880, 698] : [440];
+      const gap = alarm ? .17 : .13;
       notes.forEach((frequency, index) => {
-        const oscillator = audio.createOscillator(), gain = audio.createGain();
+        const oscillator = audio.createOscillator(), gain = audio.createGain(), at = start + index * gap;
         oscillator.type = 'sine'; oscillator.frequency.value = frequency;
-        gain.gain.setValueAtTime(0, start + index * .13);
-        gain.gain.linearRampToValueAtTime(.055, start + index * .13 + .02);
-        gain.gain.exponentialRampToValueAtTime(.001, start + index * .13 + .16);
-        oscillator.connect(gain); gain.connect(audio.destination);
-        oscillator.start(start + index * .13); oscillator.stop(start + index * .13 + .2);
+        gain.gain.setValueAtTime(0, at);
+        gain.gain.linearRampToValueAtTime(alarm ? .06 : .055, at + .02);
+        gain.gain.exponentialRampToValueAtTime(.001, at + (alarm ? .15 : .16));
+        oscillator.connect(gain); gain.connect(out);
+        oscillator.start(at); oscillator.stop(at + .2);
       });
     } catch {}
   }
+  function stopAlarm() {
+    clearInterval(alarmTimer); alarmTimer = 0;
+    if (!alarmBus) return;
+    const bus = alarmBus; alarmBus = null;
+    try { bus.gain.setTargetAtTime(0, audio.currentTime, .015); } catch {}
+    setTimeout(() => { try { bus.disconnect(); } catch {} }, 200);
+  }
+  function syncAlarm() {
+    const on = sound && !game.hidden && !document.hidden && engine.state.phase === 'asleep' && !engine.state.paused;
+    if (!on) { stopAlarm(); return; }
+    if (alarmTimer) return;
+    chirp('alarm'); alarmTimer = setInterval(() => chirp('alarm'), 1900);
+  }
+  function setSound(value) {
+    sound = value;
+    $('sound').setAttribute('aria-pressed', String(sound)); $('sound').setAttribute('aria-label', sound ? 'Sesi kapat' : 'Sesi aç');
+    const slash = $('sound').querySelector('.sound-slash'); if (slash) slash.hidden = sound;
+  }
+
+  /* ---- painting ---- */
   function paintTimer() {
     const state = engine.state, seconds = Math.max(0, Math.ceil(state.leftMs / 1000));
     $('time').textContent = `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
     if ($('time-arc')) $('time-arc').style.strokeDashoffset = String(132 * (1 - state.leftMs / engine.duration));
-    $('timer-box').classList.toggle('urgent', state.leftMs <= 15000 && engine.isPlaying());
+    $('timer-box').classList.toggle('urgent', state.leftMs <= 15000 && engine.clockRuns());
   }
   function paintSteps() {
-    const state = engine.state;
-    $('steps').textContent = Math.min(6, state.steps);
-    $('steps').parentElement?.setAttribute('aria-label', `Hedef: ${Math.min(6, state.steps)} / 6 adım. Toplam ${state.steps} adım.`);
-    [...($('step-dots')?.children || [])].forEach((dot, index) => dot.classList.toggle('done', state.steps > index));
+    const state = engine.state, shown = Math.min(GOAL_STEPS, state.steps);
+    $('steps').textContent = shown;
+    $('steps').parentElement?.setAttribute('aria-label', `Hedef: ${shown} / ${GOAL_STEPS} adım. Toplam ${state.steps} adım.`);
+    [...($('step-dots')?.children || [])].forEach((dot, index) => dot.classList.toggle('done', shown > index));
     $('step-dots')?.setAttribute('aria-hidden', 'true');
   }
   function recommendation(state) {
+    if (state.room === 'kitchen' && !state.cup) return null; // the mug is here: nothing to recommend leaving for
     if (state.room !== 'hallway') return 'hallway';
     if (!state.cup) return 'kitchen';
-    if (state.steps >= 5) return 'balcony';
+    if (state.steps >= lastDoorFrom) return 'balcony';
     return 'bathroom';
   }
+  // The way back is never a door in the picture: it is the top-left HUD button, named after the room it returns to.
+  const backNames = { bedroom: 'Yatak odasına dön', hallway: 'Koridora dön' };
   function paintNavigation() {
     const state = engine.state, navigation = $('navigation');
-    if (navRoom !== state.room || !navigation.children.length) {
-      navigation.innerHTML = ROUTES[state.room].map(([room, arrow, label, hint]) => `<button class="nav-button" data-room="${room}" aria-label="${label} ${hint}"><span class="nav-name">${hint}</span></button>`).join('');
+    if (navRoom !== state.room) {
+      // Painted doors only. Shape, label and aria-label are written by GameScene.positionNavigation from rooms.js.
+      navigation.innerHTML = ROUTES[state.room].filter(route => route[1] !== '↶').map(([room]) => `<button type="button" class="nav-button door" data-room="${room}"><svg class="door-fx" aria-hidden="true" focusable="false"></svg><span class="nav-name"></span></button>`).join('');
       navRoom = state.room;
     }
     const blocked = !engine.isPlaying() || state.paused || state.scanning || state.moving;
+    const rec = recommendation(state);
     navigation.querySelectorAll('[data-room]').forEach(button => {
       button.disabled = blocked;
-      button.classList.toggle('recommended', button.dataset.room === recommendation(state));
+      button.classList.toggle('recommended', button.dataset.room === rec);
     });
+    const back = ROUTES[state.room].find(route => route[1] === '↶'), backButton = $('room-back');
+    const showBack = !!back && ['seek', 'walk'].includes(state.phase);
+    backButton.hidden = !showBack; $('hud').classList.toggle('has-back', showBack);
+    if (back) {
+      backButton.dataset.room = back[0]; $('room-back-name').textContent = names[back[0]];
+      backButton.setAttribute('aria-label', backNames[back[0]] || names[back[0]]);
+    } else delete backButton.dataset.room;
+    backButton.disabled = blocked;
+    backButton.classList.toggle('recommended', !!back && back[0] === rec);
     root.GameScene?.positionNavigation?.();
+  }
+
+  /* ---- phone focus: layout flips instantly, the rig is animated with transform only (FLIP) ---- */
+  function phoneBox() {
+    const g = game.getBoundingClientRect(), r = rig.getBoundingClientRect(), p = phoneEl.getBoundingClientRect();
+    return { cx: p.left + p.width / 2 - g.left, cy: p.top + p.height / 2 - g.top, h: phoneEl.offsetHeight * (r.width / (rig.offsetWidth || 1)) };
+  }
+  let instantPhone = false; // behind closed eyelids the phone jumps to its new place, no FLIP
+  function flipPhone(change) {
+    if (game.hidden || reducedMotion() || instantPhone || !rig.animate) { change(); return; }
+    const first = phoneBox();
+    flipAnimation?.cancel();
+    rig.classList.add('flip');
+    change();
+    const last = phoneBox(), cs = getComputedStyle(rig);
+    if (!first.h || !last.h) { rig.classList.remove('flip'); return; }
+    const [ox, oy] = cs.transformOrigin.split(' ').map(parseFloat);
+    const rest = new DOMMatrix().translate(ox, oy).multiply(new DOMMatrix(cs.transform === 'none' ? undefined : cs.transform)).translate(-ox, -oy);
+    const k = first.h / last.h, Lx = rig.offsetLeft, Ly = rig.offsetTop;
+    const from = new DOMMatrix([rest.a * k, rest.b * k, rest.c * k, rest.d * k,
+      rest.e * k + (k - 1) * Lx - k * last.cx + first.cx, rest.f * k + (k - 1) * Ly - k * last.cy + first.cy]);
+    const animation = flipAnimation = rig.animate(
+      [{ transformOrigin: '0 0', transform: from.toString() }, { transformOrigin: '0 0', transform: rest.toString() }],
+      { duration: 420, easing: 'cubic-bezier(.2,.8,.2,1)' });
+    const done = () => { if (flipAnimation === animation) { flipAnimation = null; rig.classList.remove('flip'); } };
+    animation.onfinish = done; animation.oncancel = done;
+  }
+  function syncInert(focused) {
+    const state = engine.state;
+    const locked = focused || game.classList.contains('waking') || ['asleep', 'finale', 'won', 'timeout'].includes(state.phase);
+    $('room-art').inert = locked; $('navigation').inert = locked;
   }
   function setPhoneFocus(focused) {
     const state = engine.state;
-    focused = !!focused && !['finale','timeout','home'].includes(state.phase) && (state.phase !== 'won' || game.classList.contains('relaxing'));
-    game.classList.toggle('phone-focused', focused);
-    $('phone-rig').inert = !focused;
-    $('phone-open')?.setAttribute('aria-expanded', String(focused));
-    if ($('phone-close')) { $('phone-close').hidden = !focused; $('phone-close').innerHTML = '<span aria-hidden="true">‹</span> Odaya dön'; $('phone-close').setAttribute('aria-label','Odaya dön');
-      $('room-art').inert = focused || ['finale','won','timeout'].includes(state.phase); $('navigation').inert = focused || ['finale','won','timeout'].includes(state.phase); }
+    focused = !!focused && !['asleep', 'finale', 'timeout', 'home'].includes(state.phase) && (state.phase !== 'won' || game.classList.contains('relaxing'));
+    if (game.classList.contains('phone-focused') !== focused) flipPhone(() => game.classList.toggle('phone-focused', focused));
+    phoneEl.inert = !focused && !game.classList.contains('story');
+    $('phone-open').setAttribute('aria-expanded', String(focused));
+    // The mission card in bed stays in the middle until "Göreve başla": no way back to the room yet.
+    $('phone-close').hidden = !focused || state.phase === 'alarm'; $('phone-close').innerHTML = '<span aria-hidden="true">‹</span> Odaya dön'; $('phone-close').setAttribute('aria-label', 'Odaya dön');
+    syncInert(focused);
   }
   function focusRoom() {
     const state = engine.state, heading = $('room-name');
@@ -274,17 +381,18 @@
   }
   function paintMission() {
     const state = engine.state;
+    const intro = ['asleep', 'alarm'].includes(state.phase);
     $('room-name').setAttribute('aria-label', `${names[state.room]}. Toplam ${state.steps} adım. ${taskTitle(state)}`);
     $('phone-alarm').hidden = state.phase !== 'alarm';
-    $('offline-entry').hidden = state.cup || state.phase === 'alarm'; $('camera-return').hidden = state.mode !== 'offline';
+    $('offline-entry').hidden = state.cup || intro; $('camera-return').hidden = state.mode !== 'offline';
     $('camera').hidden = state.mode === 'offline';
     $('offline-play').hidden = state.mode === 'offline';
     $('offline-entry').querySelector('p').innerHTML = state.mode === 'offline' ? 'Kamerayı kullanmak ister misin?' : 'İnternetin yok mu?<br><b>Dert değil.</b>';
     root.PhoneGames?.setPaused(state.paused);
-    $('phone-mission').hidden = state.phase === 'alarm';
+    $('phone-mission').hidden = intro;
     $('room-art').querySelectorAll('[data-object]').forEach(node=>{const selected=state.mode === 'scan' && state.selected === node.dataset.object && !state.cup;node.classList.toggle('selected',selected);node.setAttribute('aria-pressed',String(selected));});
     $('task-eyebrow').textContent = state.cup ? 'Görev tamamlandı' : state.mode === 'offline' ? 'Çevrimdışı görevin' : 'Uyanma görevin';
-    $('task-title').textContent = ['finale', 'won'].includes(state.phase) ? 'Günaydın, başardın!' : taskTitle(state);
+    $('task-title').textContent = ['finale', 'won'].includes(state.phase) ? 'Harika, başardın!' : taskTitle(state);
     const scan = $('scan'), feedback = $('phone-feedback');
     feedback.className = 'phone-feedback';
     $('camera').classList.toggle('scanning', state.scanning);
@@ -299,22 +407,22 @@
       scan.textContent = 'Mini oyuna devam et'; scan.disabled = false;
       feedback.textContent = 'İşlemi çöz, cümleyi sırala. Sonra balkona doğru devam et.';
     } else if (state.feedback?.type === 'error') {
-      scan.textContent = 'Başka nesne seç'; scan.disabled = false;
+      scan.textContent = 'Odada nesne seç'; scan.disabled = false;
       feedback.classList.add('error');
       feedback.textContent = `Bu ${OBJECT_NAMES[state.feedback.object].toLocaleLowerCase('tr')}. Aradığımız nesne kupa.`;
     } else if (state.selected) {
       scan.textContent = 'Nesneyi tara'; scan.disabled = false;
-      feedback.textContent = 'Nesne hazır. Taramayı başlatabilirsin.';
+      feedback.textContent = 'Nesne hazır. Şimdi tara.';
     } else {
-      scan.textContent = 'Nesne seç'; scan.disabled = false;
-      feedback.textContent = 'Odaya dönüp bir nesneye dokun.';
+      scan.textContent = 'Odada nesne seç'; scan.disabled = false;
+      feedback.textContent = 'Odada bir nesneye dokun, sonra tara.';
     }
-    if (state.phase === 'alarm') $('game-caption').textContent = 'Telefonundaki görevi aç. Süre hazır olduğunda başlayacak.';
-    else if (['finale', 'won'].includes(state.phase)) $('game-caption').textContent = 'Günaydın. Güzel bir gün seni bekliyor.';
-    else if (state.cup) $('game-caption').textContent = remainingSteps(state) ? `Her oda geçişi 1 adım. ${remainingSteps(state)} adım kaldı.` : 'Adımlar tamam. Şimdi balkona çık.';
-    else $('game-caption').textContent = 'Kapılara dokunarak ilerle. Bir nesneyi seçip telefonunda tara.';
-    if (!state.selected && !state.feedback) $('camera-caption').textContent = state.cup ? 'Kupa tamam. Güne doğru devam et.' : 'Nesneye dokun, kadraja al.';
-    else if (state.feedback?.type === 'error') $('camera-caption').textContent = `${OBJECT_NAMES[state.feedback.object]} kadrajda`;
+    if (intro) $('game-caption').textContent = 'Süre işliyor. Hadi!';
+    else if (['finale', 'won'].includes(state.phase)) $('game-caption').textContent = 'Güzel bir gün seni bekliyor.';
+    else if (state.cup) $('game-caption').textContent = remainingSteps(state) ? `Her oda geçişi ${STEPS_PER_DOOR} adım. ${remainingSteps(state)} adım kaldı.` : 'Adımlar tamam. Şimdi balkona çık.';
+    else $('game-caption').textContent = ROUTES[state.room].some(route => route[1] !== '↶') ? 'Kapılara dokunarak ilerle. Bir nesneye dokun, sonra tara.' : 'Bir nesneye dokun, sonra tara. Geri dönüş sol üstte.';
+    if (!state.selected && !state.feedback) $('camera-caption').textContent = state.cup ? 'Kupa tamam. Güne doğru devam et.' : 'Bir nesneye dokun, sonra tara.';
+    else if (state.feedback?.type === 'error') $('camera-caption').textContent = `${OBJECT_NAMES[state.feedback.object]} taramaya hazır`;
     game.classList.toggle('moving', state.moving);
     game.classList.toggle('paused', state.paused);
     game.classList.toggle('finale', ['finale', 'won'].includes(state.phase));
@@ -343,22 +451,25 @@
     if (dialog.open) dialog.close();
     if (won) {
       root.PhoneGames?.close(); game.classList.remove('phone-game-mode');
-      game.classList.add('epilogue'); $('room-art').inert = true; $('navigation').inert = true;
-      $('phone-rig').inert = true;
+      game.classList.add('epilogue'); syncInert(false);
+      root.PoncikActor?.setPaused?.(true);
       root.MorningEnding.show({seconds:elapsed,steps:state.steps}); chirp('success'); return;
     }
     root.PhoneGames?.close(); game.classList.remove('phone-game-mode');
     dialogKind = 'result'; dialog.dataset.kind = 'result';
-    $('dialog-content').innerHTML = `<span class="dialog-icon" aria-hidden="true">◷</span><h2 id="dialog-title">Bir tur daha?<br>Ponçik hazır.</h2><p>60 saniye doldu. Küçük bir hareketle yeniden başlayalım.<br>Telefonundaki görevi tamamla, 6 adım at.<br>Balkonda gün seni bekliyor.</p><button class="primary" data-action="restart">Yeniden başla</button><button class="secondary" data-action="home">Ana sayfaya dön</button>`;
+    $('dialog-content').innerHTML = `<span class="dialog-icon" aria-hidden="true">◷</span><h2 id="dialog-title">Bir tur daha?<br>Ponçik hazır.</h2><p>60 saniye doldu. Küçük bir hareketle yeniden başlayalım.<br>Telefondaki görevi tamamla, ${GOAL_STEPS} adım at.<br>Balkonda gün seni bekliyor.</p><button class="primary" data-action="restart">Yeniden oyna</button><button class="secondary" data-action="home">Ana sayfaya dön</button>`;
     dialog.setAttribute('aria-labelledby', 'dialog-title'); dialog.showModal();
-    chirp(won ? 'success' : 'error');
+    chirp('error');
   }
   function processEvents() {
     for (const event of engine.drain()) {
       const state = engine.state;
       if (event.type === 'room') {
-        setPhoneFocus(false); mountRoom(); chirp();
-        if (event.final) { pose('success'); say('İşte bu! Gün seninle başladı. Günaydın!'); }
+        // Option, off: BLINK_ROOMS = true gives room-to-room moves the same blink as getting out of bed.
+        const swap = () => { setPhoneFocus(false); mountRoom(); };
+        if (BLINK_ROOMS && !event.final) blink(swap, RoomArt.load(event.room)); else swap();
+        chirp();
+        if (event.final) { pose('success'); say('İşte bu! Gün seninle başladı.'); }
       } else if (event.type === 'move-end') {
         paintMission(); if (engine.isPlaying()) focusRoom();
       } else if (event.type === 'wrong') {
@@ -368,6 +479,8 @@
       } else if (event.type === 'celebration') {
         setPhoneFocus(false); pose('success'); paintMission();
       } else if (event.type === 'finished') {
+        // Time can also run out on the alarm screen or in bed: the alarm goes quiet and the wake-up scene is torn down.
+        if (!event.won) { resetWake(); syncAlarm(); }
         setPhoneFocus(false); paintMission(); showResult(event.won);
       }
     }
@@ -381,48 +494,170 @@
   function tick(now) {
     raf = 0;
     syncTime(now);
-    if (active(engine.state) && !engine.state.paused) raf = requestAnimationFrame(tick);
+    if (clocked(engine.state) && !engine.state.paused) raf = requestAnimationFrame(tick);
     else previousTime = null;
   }
   function ensureFrame() {
-    if (!raf && active(engine.state) && !engine.state.paused) {
+    if (!raf && clocked(engine.state) && !engine.state.paused) {
       previousTime = performance.now(); raf = requestAnimationFrame(tick);
     }
   }
   function beforeAction() { if (previousTime !== null) syncTime(); }
-  function start() {
-    stopFrame(); engine.restart(); navRoom = ''; bedReplies = 0;
-    root.PhoneGames?.reset(); $('phone-rig').inert = false;
-    root.MorningEnding?.hide(); game.classList.remove('epilogue','relaxing','phone-game-mode');
-    $('room-art').inert = false; $('navigation').inert = false;
-    if (dialog.open) dialog.close();
-    $('welcome').hidden = true; game.hidden = false;
-    game.classList.remove('paused', 'moving', 'finale', 'morning');
-    $('mission-toast')?.classList.remove('show');
-    mountRoom(); setPhoneFocus(true); $('accept-mission').focus({ preventScroll: true }); chirp('alarm');
+
+  /* ---- start, wake, home ---- */
+  function resetWake() {
+    clearTimeout(startTimer); clearTimeout(wakeTimer); clearTimeout(snoozeTimer);
+    startTimer = wakeTimer = snoozeTimer = 0;
+    riseTimers.forEach(clearTimeout); riseTimers = []; rising = false;
+    game.classList.remove('asleep', 'waking', 'snoozed', 'wake-cut', 'bed-view', 'blink-closing', 'blink-shut', 'blink-cut', 'blink-open');
+    const button = $('snooze');
+    button.classList.remove('shake', 'gone'); button.hidden = false; button.disabled = false;
+    $('wake-status').textContent = '';
+    $('wake-bubble').hidden = true; $('wake-poncik').classList.remove('shake');
   }
+  function start() {
+    if (startTimer) return;
+    const fromWelcome = !$('welcome').hidden;
+    stopFrame(); resetWake(); engine.restart(); navRoom = ''; bedReplies = 0;
+    root.PhoneGames?.reset(); phoneEl.inert = true;
+    root.MorningEnding?.hide();
+    game.classList.remove('epilogue', 'relaxing', 'phone-game-mode', 'paused', 'moving', 'finale', 'morning', 'phone-focused');
+    root.PoncikActor?.setPaused?.(false);
+    if (dialog.open) dialog.close();
+    if (!soundTouched) setSound(true);
+    unlockAudio();
+    if (!history.state?.uyanbiGame) history.pushState({ uyanbiGame: true }, '');
+    game.classList.add('asleep', 'bed-view'); game.classList.toggle('wake-cut', fromWelcome);
+    ensureFrame(); // the deadline starts the moment "Maceraya başla" is pressed
+    const reveal = () => {
+      startTimer = 0;
+      $('welcome').hidden = true; $('welcome').classList.remove('fade-out'); game.hidden = false;
+      mountRoom(); setPhoneFocus(false);
+      $('wake-up').focus({ preventScroll: true });
+      syncAlarm(); announce('Alarm çalıyor. Saat 07.00. Uyan ya da ertele.');
+    };
+    if (fromWelcome) { $('welcome').classList.add('fade-out'); startTimer = setTimeout(reveal, reducedMotion() ? 300 : 500); } else reveal();
+  }
+  /* The story without the game: the finished balcony, the phone already in the middle, scrolling open. */
+  function enterStory() {
+    stopFrame(); resetWake(); engine.restart(); engine.preview(); navRoom = ''; bedReplies = 0;
+    root.PhoneGames?.reset(); phoneEl.inert = true;
+    game.classList.remove('relaxing', 'phone-game-mode', 'paused', 'moving', 'phone-focused');
+    if (dialog.open) dialog.close();
+    document.documentElement.classList.remove('to-story');
+    $('welcome').hidden = true; game.hidden = false;
+    root.GameScene?.mount?.('balcony');
+    root.PoncikActor?.setPaused?.(true);
+    paintMission(); setPhoneFocus(false);
+    game.classList.add('epilogue');
+    root.MorningEnding.show({ preview: true });
+    // The browser's fragment scroll would land on the story's first block: the ending scene is where this opens.
+    history.scrollRestoration = 'manual';
+    const top = () => scrollTo(0, 0);
+    requestAnimationFrame(top);
+    if (document.readyState !== 'complete') {
+      // Until the page has loaded the browser may re-apply the fragment as layout settles: hold the top unless the reader scrolls.
+      const release = () => { removeEventListener('scroll', top); ['wheel', 'touchstart', 'keydown'].forEach(type => removeEventListener(type, release)); };
+      addEventListener('scroll', top);
+      ['wheel', 'touchstart', 'keydown'].forEach(type => addEventListener(type, release, { once: true }));
+      addEventListener('load', () => { top(); requestAnimationFrame(() => { top(); release(); }); }, { once: true });
+    }
+  }
+  function openStory() { history.pushState({ uyanbiGame: true }, '', '#hikaye'); enterStory(); }
+  function snooze() {
+    if (!engine.snooze()) return;
+    const button = $('snooze'), bubble = $('wake-bubble'), mascot = $('wake-poncik');
+    const message = 'Erteleme yok! UyanBi’de o buton hiç olmadı.';
+    game.classList.add('snoozed'); button.disabled = true; button.classList.add('shake');
+    $('guide-message').textContent = message; bubble.textContent = message; bubble.hidden = false;
+    mascot.classList.remove('shake'); void mascot.offsetWidth; mascot.classList.add('shake');
+    announce(message); chirp('error');
+    $('wake-up').focus({ preventScroll: true });
+    snoozeTimer = setTimeout(() => {
+      button.classList.add('gone');
+      snoozeTimer = setTimeout(() => { button.hidden = true; snoozeTimer = 0; }, 500);
+    }, 450);
+  }
+  function wakeUp() {
+    if (engine.state.phase !== 'asleep') return;
+    // The eyelids open onto the view from the bed: wait until that picture is decoded.
+    if (!bedOk) { $('wake-up').setAttribute('aria-busy', 'true'); bedReady.then(() => { if (engine.state.phase === 'asleep') wakeUp(); }); return; }
+    $('wake-up').removeAttribute('aria-busy');
+    if (!engine.wake()) return;
+    clearTimeout(snoozeTimer); snoozeTimer = 0;
+    game.classList.remove('asleep', 'snoozed'); game.classList.add('waking');
+    syncAlarm(); syncInert(false);
+    say('Günaydın!', 'invite'); paintMission();
+    announce('Alarm sustu.');
+    wakeTimer = setTimeout(finishWake, reducedMotion() ? 600 : 2300);
+  }
+  function finishWake() {
+    wakeTimer = 0; game.classList.remove('waking');
+    setPhoneFocus(true); say(guideMessage(engine.state), roomPose(engine.state));
+    $('accept-mission').focus({ preventScroll: true });
+  }
+  /* A change of place happens behind a blink: the eyelids close, the picture, Ponçik, the phone and the HUD take
+     their new places at once while it is dark (transitions off), and the lids open only once the new picture is
+     decoded, from a slight blur to sharp. Reduced motion: a short fade through dark instead. */
+  const BLINK_CLOSE = 200, BLINK_OPEN = 300, BLINK_ROOMS = false;
+  const lids = document.createElement('div');
+  lids.className = 'blink'; lids.setAttribute('aria-hidden', 'true');
+  lids.innerHTML = '<i class="blink-lid blink-top"></i><i class="blink-lid blink-bottom"></i>';
+  game.append(lids);
+  const later = (fn, ms) => riseTimers.push(setTimeout(fn, ms));
+  function blink(change, ready) {
+    return new Promise(resolve => {
+      game.classList.remove('blink-open'); game.classList.add('blink-closing');
+      later(() => {
+        game.classList.replace('blink-closing', 'blink-shut'); game.classList.add('blink-cut');
+        instantPhone = true;
+        try { change(); } finally { instantPhone = false; }
+        Promise.resolve(ready).catch(() => {}).then(() => requestAnimationFrame(() => requestAnimationFrame(() => {
+          if (!game.classList.contains('blink-shut')) return; // torn down meanwhile (home, restart)
+          game.classList.remove('blink-cut'); game.classList.replace('blink-shut', 'blink-open');
+          later(() => { game.classList.remove('blink-open'); resolve(); }, BLINK_OPEN);
+        })));
+      }, reducedMotion() ? 120 : BLINK_CLOSE);
+    });
+  }
+  /* "Göreve başla": a blink, and Ponçik and the player are standing in the bedroom. The clock keeps running. */
   function accept() {
-    if (!engine.accept()) return;
-    setPhoneFocus(false); say(guideMessage(engine.state), roomPose(engine.state)); paintMission(); focusRoom(); ensureFrame();
+    if (rising || engine.state.phase !== 'alarm' || engine.state.paused) return;
+    rising = true;
+    const room = RoomArt.load('bedroom');
+    room.then(() => {
+      if (!rising || !engine.accept()) { rising = false; return; }
+      blink(() => {
+        game.classList.remove('bed-view'); setPhoneFocus(false); paintMission();
+        say(guideMessage(engine.state), roomPose(engine.state));
+        root.GameScene?.refresh?.();
+      }, room).then(() => {
+        riseTimers = []; rising = false;
+        if (!engine.state.paused) focusRoom();
+        ensureFrame();
+      });
+    });
   }
   function touchBed() {
     beforeAction(); const state=engine.state;
-    if(!engine.isPlaying() || state.paused || state.moving || state.scanning || game.classList.contains('phone-focused')) return;
+    if(rising || !engine.isPlaying() || state.paused || state.moving || state.scanning || game.classList.contains('phone-focused')) return;
     const replies=['Yok, hayır, olmaz! Yatağa dönüş yok. Gün bizi bekliyor!', 'Yastık çok ikna edici. Ama ben daha inatçıyım. Hadi bakalım!', 'Bir beş dakika mı? Asla! Önce şu sabaha bir merhaba.', 'O yatak akşam da burada. Şimdi sıra sende!'];
     say(replies[bedReplies++ % replies.length],'wrong'); chirp('tap');
   }
   function selectObject(node) {
+    if (rising) return;
     beforeAction();
     if (!engine.select(node.dataset.object)) return;
     engine.drain();
     $('room-art').querySelectorAll('[data-object]').forEach(object => object.classList.toggle('selected', object === node));
     frameSelectedObject(node);
     say(guideMessage(engine.state), node.dataset.object === 'mug' ? 'down' : roomPose(engine.state));
-    $('camera-caption').textContent = `${OBJECT_NAMES[node.dataset.object]} kadrajda`;
+    $('camera-caption').textContent = `${OBJECT_NAMES[node.dataset.object]} taramaya hazır`;
     setPhoneFocus(true); paintMission(); chirp();
     $('scan').focus({ preventScroll: true });
   }
   function scan() {
+    if (rising) return;
     beforeAction();
     const state = engine.state;
     if (!state.selected && state.mode === 'scan' && state.phase === 'seek' && !state.paused) {
@@ -433,6 +668,7 @@
     engine.drain(); paintMission(); ensureFrame();
   }
   function move(room) {
+    if (rising) return;
     beforeAction();
     if (!engine.move(room)) return;
     processEvents(); paintMission(); ensureFrame();
@@ -443,32 +679,41 @@
     stopFrame(); returnFocus = document.activeElement;
     dialogKind = kind; dialog.dataset.kind = kind;
     $('dialog-content').innerHTML = kind === 'help'
-      ? `<h2 id="dialog-title">Küçük bir sabah<br>macerası.</h2><ol class="help-list"><li>Kapıların kendisine dokunarak odalarda gez. Her oda geçişi 1 adım.</li><li>Bir nesneye dokun, telefonunda incele.</li><li>“Nesneyi tara”ya bas. Aradığımız nesne bir kupa.</li><li>Kupa ve 6 adım tamamlanınca balkona çık.</li></ol><p>Adımların kupayı ararken de sayılır.<br>Klavye: yön tuşlarıyla ilerle, <kbd>E</kbd> ile tara, <kbd>Esc</kbd> ile telefonu indir veya duraklat.</p><button class="primary" data-action="resume">Anladım, devam</button>`
-      : `<span class="dialog-icon" aria-hidden="true">Ⅱ</span><h2 id="dialog-title">Bir nefes arası.</h2><p>Süre ve devam eden işlemler durdu.<br>Ponçik seni bekliyor.</p><button class="primary" data-action="resume">Maceraya devam</button><button class="secondary" data-action="restart">Baştan başla</button><button class="text-button" data-action="home">Ana sayfaya dön</button>`;
-    dialog.setAttribute('aria-labelledby', 'dialog-title'); paintMission(); dialog.showModal();
+      ? `<h2 id="dialog-title">Küçük bir sabah<br>macerası.</h2><ol class="help-list"><li>Kapılara dokunarak odalarda gez; önceki odaya sol üstteki tuşla dön. Her oda geçişi ${STEPS_PER_DOOR} adım.</li><li>Bir nesneye dokun.</li><li>Telefonda “Nesneyi tara”ya bas. Aradığımız nesne bir kupa.</li><li>Kupa tarandı ve ${GOAL_STEPS} adım tamamlandıysa balkona çık.</li></ol><p>Adımların kupayı ararken de sayılır.<br>Klavye: yön tuşlarıyla ilerle, <kbd>E</kbd> ile tara, <kbd>Esc</kbd> ile telefonu kapat veya duraklat.</p><button class="primary" data-action="resume">Anladım, devam</button>`
+      : `<span class="dialog-icon" aria-hidden="true">Ⅱ</span><h2 id="dialog-title">Bir nefes arası.</h2><p>Süre durdu. Ponçik seni bekliyor.</p><button class="primary" data-action="resume">Devam et</button><button class="secondary" data-action="home">Ana sayfaya dön</button><button class="text-button" data-action="restart">Yeniden oyna</button>`;
+    dialog.setAttribute('aria-labelledby', 'dialog-title'); paintMission(); syncAlarm(); dialog.showModal();
   }
   function resume() {
     if (!engine.resume()) return;
     if (dialog.open) dialog.close();
-    paintMission();
+    paintMission(); syncAlarm();
     if (returnFocus?.isConnected && !returnFocus.disabled) returnFocus.focus({ preventScroll: true });
     else focusRoom();
     ensureFrame();
   }
   function home() {
-    stopFrame(); engine.home(); root.PhoneGames?.reset(); root.MorningEnding?.hide(); game.classList.remove('epilogue','relaxing','phone-game-mode');
+    stopFrame(); resetWake(); engine.home(); root.PhoneGames?.reset(); root.MorningEnding?.hide(); game.classList.remove('epilogue','relaxing','phone-game-mode','phone-focused');
     if (dialog.open) dialog.close();
-    setPhoneFocus(false); game.hidden = true; $('welcome').hidden = false;
+    if (location.hash === '#hikaye') history.replaceState(history.state, '', location.pathname + location.search);
+    game.hidden = true; $('welcome').hidden = false; $('welcome').classList.remove('fade-out');
+    setPhoneFocus(false); stopAlarm();
     root.PoncikActor?.setPaused?.(true);
     $('begin').focus({ preventScroll: true });
+  }
+  // Leaving the game goes through history so the browser back button and "Ana sayfa" agree.
+  let leaving = false;
+  function goHome() { if (leaving) return; if (history.state?.uyanbiGame) { leaving = true; history.back(); } else home(); }
+  // The house icon never leaves at once while the clock runs: it pauses, and the pause window asks.
+  function homeButton() {
+    const state = engine.state;
+    if (!clocked(state)) goHome(); else if (!state.paused) openDialog('pause');
   }
 
   function closePhoneGame() {
     root.PhoneGames.close(); game.classList.remove('phone-game-mode');
     if (engine.state.phase === 'won') {
-      game.classList.remove('relaxing'); setPhoneFocus(false); $('phone-rig').inert = true;
-      root.MorningEnding.show({seconds:Math.ceil((engine.duration-engine.state.leftMs)/1000),steps:engine.state.steps});
-      document.querySelector('[data-ending="games"]').focus({preventScroll:true});
+      game.classList.remove('relaxing');
+      document.querySelector('[data-ending="games"]')?.focus({preventScroll:true});
     } else { setPhoneFocus(true); paintMission(); $('scan').focus({preventScroll:true}); }
   }
   function openOfflineGame() {
@@ -477,19 +722,26 @@
   }
   function openArcade() {
     if(engine.state.phase !== 'won') return;
-    root.MorningEnding.hide(); $('phone-rig').inert = false;
-    game.classList.add('relaxing','phone-game-mode'); setPhoneFocus(true); root.PhoneGames.open('arcade');
+    phoneEl.inert = false;
+    game.classList.add('relaxing','phone-game-mode'); root.PhoneGames.open('arcade');
   }
   root.PhoneGames.mount($('phone-games'),{
     onComplete(){beforeAction();if(engine.completeOffline()){root.PhoneGames.close();game.classList.remove('phone-game-mode');processEvents();paintMission();ensureFrame();}},
     onClose:closePhoneGame,
     onScreen(){game.classList.add('phone-game-mode');}
   });
-  root.MorningEnding.mount({replay:start,games:openArcade});
+  root.MorningEnding.mount({replay:start,games:openArcade,home:goHome});
+  if (history.state?.uyanbiGame) history.replaceState(null, '');
   $('offline-play').addEventListener('click',openOfflineGame);
   $('camera-return').addEventListener('click',()=>{beforeAction();if(engine.returnToCamera()){root.PhoneGames.close();game.classList.remove('phone-game-mode');paintMission();say(guideMessage(engine.state),roomPose(engine.state));}});
-  $('welcome-art').innerHTML = root.RoomArt.render('bedroom', false);
+  const bedReady = RoomArt.load('bedPov').then(url => { bed.src = url; return bed.decode ? bed.decode().catch(() => {}) : 0; }).then(() => { bedOk = true; bed.classList.add('bed-ok'); });
+  // The welcome backdrop is the bedroom painting; it joins once decoded, never as a half-loaded image.
+  RoomArt.load('bedroom').then(() => { $('welcome-art').innerHTML = RoomArt.render('bedroom', false); $('welcome-art').classList.add('ready'); });
   $('begin').addEventListener('click', start);
+  $('snooze').addEventListener('click', snooze);
+  $('wake-up').addEventListener('click', wakeUp);
+  $('home-back').addEventListener('click', homeButton);
+  $('room-back').addEventListener('click', event => { const room = event.currentTarget.dataset.room; if (room) move(room); });
   $('accept-mission').addEventListener('click', accept);
   $('scan').addEventListener('click', scan);
   $('room-art').addEventListener('click', event => { if(event.target.closest('[data-scene-action="bed"]')) {touchBed();return;} const node = event.target.closest('[data-object]'); if (node) selectObject(node); });
@@ -502,25 +754,49 @@
   $('navigation').addEventListener('click', event => { const button = event.target.closest('[data-room]'); if (button) move(button.dataset.room); });
   $('pause').addEventListener('click', () => openDialog('pause'));
   $('help').addEventListener('click', () => openDialog('help'));
-  $('phone-open')?.addEventListener('click', () => { if (!game.hidden && !engine.state.paused) { setPhoneFocus(true); if (engine.state.phase === 'alarm') $('accept-mission').focus({ preventScroll: true }); else if (!$('scan').disabled) $('scan').focus({ preventScroll: true }); } });
-  document.querySelector('.phone-focus-shade').addEventListener('click',()=>{if(!game.classList.contains('phone-focused'))return;if(game.classList.contains('phone-game-mode'))closePhoneGame();else{setPhoneFocus(false);focusRoom();}});
-  $('phone-close')?.addEventListener('click', () => { if(game.classList.contains('phone-game-mode')) closePhoneGame(); else {setPhoneFocus(false); focusRoom();} });
+  $('phone-open').addEventListener('click', () => {
+    const phase = engine.state.phase;
+    if (game.hidden || engine.state.paused || phase === 'asleep' || rising || game.classList.contains('waking')) return;
+    setPhoneFocus(true);
+    if (phase === 'alarm') $('accept-mission').focus({ preventScroll: true }); else if (!$('scan').disabled) $('scan').focus({ preventScroll: true });
+  });
+  document.querySelector('.phone-focus-shade').addEventListener('click',()=>{if(!game.classList.contains('phone-focused')||engine.state.phase==='alarm')return;if(game.classList.contains('phone-game-mode'))closePhoneGame();else{setPhoneFocus(false);focusRoom();}});
+  $('phone-close').addEventListener('click', () => { if(game.classList.contains('phone-game-mode')) closePhoneGame(); else {setPhoneFocus(false); focusRoom();} });
   $('sound').addEventListener('click', () => {
-    sound = !sound; $('sound').setAttribute('aria-pressed', String(sound)); $('sound').setAttribute('aria-label', sound ? 'Sesi kapat' : 'Sesi aç');
-    const slash = $('sound').querySelector('.sound-slash'); if (slash) slash.hidden = sound;
-    chirp(engine.state.phase === 'alarm' ? 'alarm' : 'tap');
+    soundTouched = true; setSound(!sound);
+    if (engine.state.phase === 'asleep') syncAlarm(); else chirp('tap');
   });
   $('dialog-content').addEventListener('click', event => {
     const action = event.target.closest('[data-action]')?.dataset.action;
     if (action === 'resume') resume();
     else if (action === 'restart') start();
-    else if (action === 'home') home();
+    else if (action === 'home') goHome();
   });
-  dialog.addEventListener('cancel', event => { event.preventDefault(); if (dialogKind === 'result') home(); else resume(); });
-  document.addEventListener('visibilitychange', () => { if (document.hidden && active(engine.state) && !engine.state.paused) openDialog('pause'); });
+  dialog.addEventListener('cancel', event => { event.preventDefault(); if (dialogKind === 'result') goHome(); else resume(); });
+  window.addEventListener('popstate', () => {
+    leaving = false;
+    if (location.hash === '#hikaye' && game.hidden) enterStory();
+    else if (!game.hidden || startTimer) home();
+  });
+  $('story-open').addEventListener('click', event => { event.preventDefault(); openStory(); });
+  // #hikaye opens the story directly; Back still lands on the welcome screen.
+  if (location.hash === '#hikaye') {
+    history.replaceState(null, '', location.pathname + location.search);
+    history.pushState({ uyanbiGame: true }, '', '#hikaye');
+    enterStory();
+  }
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden && clocked(engine.state) && !engine.state.paused) openDialog('pause');
+    syncAlarm();
+  });
   document.addEventListener('keydown', event => {
     if (game.hidden || dialog.open || event.target.closest('input,textarea,select') || event.metaKey || event.ctrlKey || event.altKey) return;
     const key = event.key.toLowerCase();
+    if (engine.state.phase === 'asleep') {
+      if ((key === 'enter' || key === ' ') && !event.target.closest('button')) { event.preventDefault(); wakeUp(); }
+      return;
+    }
+    if (game.classList.contains('waking')) return;
     if(key === 'escape' && game.classList.contains('phone-game-mode')){event.preventDefault();closePhoneGame();return;}
     if(game.classList.contains('phone-game-mode')) return;
     if (key === 'escape') {
