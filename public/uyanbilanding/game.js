@@ -731,6 +731,8 @@
     onScreen(){game.classList.add('phone-game-mode');}
   });
   root.MorningEnding.mount({replay:start,games:openArcade,home:goHome});
+  // mode.js asks where the visitor is before it switches between the phone and the computer layout.
+  root.UyanbiGame = { enterStory, state: () => game.hidden ? 'welcome' : game.classList.contains('epilogue') ? 'story' : 'play' };
   if (history.state?.uyanbiGame) history.replaceState(null, '');
   $('offline-play').addEventListener('click',openOfflineGame);
   $('camera-return').addEventListener('click',()=>{beforeAction();if(engine.returnToCamera()){root.PhoneGames.close();game.classList.remove('phone-game-mode');paintMission();say(guideMessage(engine.state),roomPose(engine.state));}});

@@ -1,0 +1,85 @@
+/* Phones (html.is-phone, decided in the head): the scrolling introduction only, no game.
+   First screen: logo, the welcome's headline, Ponçik with the phone, "Kaydır", then the store badges.
+   Every section then shows its own Ponçik + phone screen right above its text: nothing is pinned, nothing shrinks. */
+picture{display:contents} /* the <picture> wrappers only swap the source on phones; layout stays on the <img> */
+.phone-logo,.foot-note,.sec-unit{display:none}
+
+html.is-phone #welcome{display:none}
+html.is-phone [data-ending="replay"],html.is-phone [data-ending="home"],html.is-phone .story-nav,html.is-phone .story-band{display:none!important}
+
+/* ---- first screen ---- */
+html.is-phone{
+  /* the unit as large as the screen allows: full width, or the screen height minus logo and headline (svh: no jump
+     when the address bar comes and goes) */
+  --u-h:clamp(300px,min(calc(100svh - 170px),calc((100vw - 20px) / var(--hg-ar))),640px);
+  --u-w:calc(var(--u-h) * var(--hg-ar));
+}
+html.is-phone .game{height:auto;min-height:100svh;overflow:visible;display:flex;flex-direction:column;align-items:center;gap:10px;padding:max(14px,env(safe-area-inset-top)) 10px 28px;background:linear-gradient(180deg,#fff4d6 0,var(--paper) 70%);isolation:auto}
+html.is-phone .game>:not(.phone-logo,#phone-rig,#ending-copy,#scene-stores,#ending-announcement,dialog){display:none!important}
+html.is-phone .phone-logo{display:block;order:1;align-self:flex-start;margin:0 0 2px 10px;font-size:30px;color:#3a2763;text-decoration:none}
+html.is-phone .phone-logo b{color:var(--purple)}
+html.is-phone .phone-logo i{color:#ba8a27;font-size:24px}
+html.is-phone .game.story #phone-rig{order:3;position:relative;left:auto;top:auto;flex-shrink:0;width:var(--u-w);height:var(--u-h);transform:none;z-index:1}
+html.is-phone .ending-copy{order:2;position:static;width:100%;max-width:30rem;padding:0 10px;text-align:center;text-shadow:none;opacity:1}
+html.is-phone .story-ready .ending-copy{opacity:1}
+html.is-phone .ending-copy-title{font-size:clamp(1.625rem,7.2vw,2.25rem);line-height:1.05}
+html.is-phone .ending-copy-sub{margin-top:.2em;font-size:clamp(1.0625rem,4.4vw,1.375rem);line-height:1.2}
+html.is-phone .scene-stores{order:4;position:static;width:100%;max-width:30rem;margin-top:8px;padding:0 6px;text-align:center;opacity:1;transform:none}
+html.is-phone .story-ready .scene-stores{opacity:1}
+html.is-phone .scene-stores .stores-note{margin:0 auto 10px;font-size:14px;line-height:1.4;text-shadow:none}
+html.is-phone .scene-stores .store-row{justify-content:center;flex-wrap:wrap;gap:8px}
+html.is-phone .scene-stores .store-btn{height:46px;padding:0 13px 0 11px;gap:8px}
+html.is-phone .scene-stores .store-txt strong{font-size:15px}
+/* sideways: headline and badges left, the unit right; the page simply scrolls on */
+@media(orientation:landscape){
+  /* the phone stays readable: the unit may be taller than a sideways screen, the page scrolls */
+  html.is-phone{--u-h:min(540px,max(calc(100svh - 24px),440px),calc(44vw / var(--hg-ar)))}
+  html.is-phone .end-ask{font-size:max(12px,calc(var(--u) * 18.5))}
+  html.is-phone .game{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto 1fr;column-gap:24px;row-gap:12px;align-items:start;padding:14px max(16px,env(safe-area-inset-right)) 24px max(16px,env(safe-area-inset-left))}
+  html.is-phone .phone-logo{grid-column:1;grid-row:1;margin:0}
+  html.is-phone .ending-copy{grid-column:1;grid-row:2;text-align:left;padding:0;max-width:none}
+  html.is-phone .scene-stores{grid-column:1;grid-row:3;text-align:left;margin:0;padding:0;max-width:none}
+  html.is-phone .scene-stores .stores-note{margin:0 0 10px}
+  html.is-phone .scene-stores .store-row{justify-content:flex-start}
+  html.is-phone .game.story #phone-rig{grid-column:2;grid-row:1 / span 3}
+}
+
+/* ---- the sections: one Ponçik per section, in the page flow ---- */
+html.is-phone .story-dark{background:linear-gradient(180deg,var(--paper) 0,var(--deep) 96px,var(--deep) 100%)}
+html.is-phone .sec{display:block;min-height:0;padding:44px 20px 52px}
+html.is-phone #b1{padding-top:120px}
+html.is-phone .sec-grid{display:block}
+html.is-phone .sec-text{width:100%;max-width:36rem;margin:0 auto}
+html.is-phone .sec-text.body{margin-top:1.6rem}
+html.is-phone .sec .sec-title{font-size:clamp(1.875rem,8.4vw,2.5rem)}
+html.is-phone .sec-unit{display:block;position:relative;width:min(100%,400px);aspect-ratio:var(--hg-ar);margin:0 auto 26px}
+@media(orientation:landscape){html.is-phone .sec-unit{width:min(100%,320px)}}
+.sec-unit img{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.su-back{filter:drop-shadow(0 8px 12px #0f082340)}
+.su-hands{z-index:2;filter:drop-shadow(0 2px 3px #1d0f3a47)}
+.su-phone{position:absolute;z-index:1;inset:var(--hp-inset);border-radius:var(--hp-rad);background:linear-gradient(155deg,#8069c8,#5d48a3 55%,#4f3c8f);box-shadow:0 8px 20px #0f082359,inset 0 0 0 1px #ffffff2e}
+.su-screen{position:absolute;inset:var(--hs-inset);border-radius:var(--hs-rad);overflow:hidden;background:#faf6ee;color:#342746;box-shadow:0 0 0 1.5px #2a1f45;container-type:inline-size;display:flex;flex-direction:column}
+.su-screen>*{--u:calc(100cqw / 184)} /* a little larger than the fixed phone's: these screens are read up close */
+.su-screen .phone-status{flex-shrink:0;height:calc(var(--u) * 26);padding:calc(var(--u) * 10) calc(var(--u) * 20) 0;font-size:calc(var(--u) * 10)}
+.su-screen .phone-app{flex-shrink:0;margin:calc(var(--u) * 6) calc(var(--u) * 20) 0;font-size:calc(var(--u) * 18)}
+.su-screen .phone-app .camera-dot{font-size:calc(var(--u) * 9)}
+.su-story{flex:1;min-height:0;position:relative}
+.su-story .ps{transition:none}
+.su-screen.night{background:#0a0a0c;color:#fff}
+.su-screen.night::before{content:'';position:absolute;left:0;right:0;top:0;height:62%;background:radial-gradient(ellipse 78% 58% at 50% 8%,#5b49b0a8,#35286e70 42%,transparent 78%);pointer-events:none}
+.su-screen.night .phone-status,.su-screen.night .phone-app{position:relative;color:#fff}
+.su-screen.night .phone-app b{color:#c3b3ff}
+.su-screen.night .camera-dot{color:#7ad0a8}
+/* no kitchen painting is fetched on a phone: the camera mock-up shows a soft lens gradient instead */
+html.is-phone .m-cam{background:radial-gradient(ellipse at 50% 40%,#b9a9c8,#7d6c93 70%)}
+
+/* ---- download section and footer ---- */
+html.is-phone .b6{padding-top:120px;background:linear-gradient(180deg,var(--deep) 0,var(--paper) 96px,var(--paper) 100%)}
+html.is-phone .foot-note{display:block;width:100%;padding:6px 0 4px;font-size:.9375rem;font-weight:700;color:#5c456c}
+html.is-phone .story-foot{gap:0}
+/* the smallest mock-up labels keep a readable floor; the per-day times repeat the caption under the week, so they go */
+.su-screen .wk small{display:none}
+.su-screen .wk span{font-size:max(8.5px,calc(var(--u) * 10))}
+.su-screen .m-task small,.su-screen .m-cam span,.su-screen .al-cap,.su-screen .al-label{font-size:max(9.5px,calc(var(--u) * 11))}
+.su-screen .phone-status{font-size:max(8.5px,calc(var(--u) * 10))}
+.su-screen .ps-task{--u:calc(100cqw / 216)} /* the task screen is the fullest one: it keeps the fixed phone's scale */

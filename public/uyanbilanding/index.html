@@ -4,9 +4,8 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#4c3480"><meta name="description" content="Alarm çaldı. Ponçik seni bekliyor. Nesneyi bul, adımlarını tamamla, güne uyan. 60 saniyelik bir sabah macerası.">
 <title>UyanBi — Sabah macerası</title>
-<script>if(location.hash==="#hikaye")document.documentElement.classList.add("to-story")</script>
-<link rel="stylesheet" href="tokens.css?v=40"><link rel="icon" href="assets/sun.svg"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800;900;1000&family=Manrope:wght@600;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="game.css?v=40"><link rel="stylesheet" href="ending.css?v=40"><link rel="stylesheet" href="story.css?v=40"><link rel="stylesheet" href="phone-games.css?v=40"><link rel="stylesheet" href="phone-polish.css?v=40"><link rel="stylesheet" href="wake.css?v=40">
-  <link rel="preload" as="image" href="assets/hand-phone.webp">
+<script>/* phone = narrow screen, or a touch screen whose short side is under 600 px (also held sideways). mode.js and the <picture> sources below use the same query. */window.UYANBI_PHONE_QUERY="(max-width: 819px), (pointer: coarse) and (max-width: 599px), (pointer: coarse) and (max-height: 599px)";(function(h){if(matchMedia(window.UYANBI_PHONE_QUERY).matches)h.classList.add("is-phone");else{var l=document.createElement("link");l.rel="preload";l.as="image";l.href="assets/hand-phone.webp";document.head.appendChild(l)}if(location.hash==="#hikaye")h.classList.add("to-story")})(document.documentElement)</script>
+<link rel="stylesheet" href="tokens.css?v=41"><link rel="icon" href="assets/sun.svg"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800;900;1000&family=Manrope:wght@600;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="game.css?v=41"><link rel="stylesheet" href="ending.css?v=41"><link rel="stylesheet" href="story.css?v=41"><link rel="stylesheet" href="phone-games.css?v=41"><link rel="stylesheet" href="phone-polish.css?v=41"><link rel="stylesheet" href="wake.css?v=41"><link rel="stylesheet" href="phone.css?v=41">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
@@ -20,10 +19,11 @@
   <div class="welcome-content"><div class="hello-note"><span></span> Ponçik seni bekliyor</div><h1 id="welcome-title">Bu sabahın<br>kahramanı sensin.</h1><p>Alarm çaldı. Evde küçük bir macera,<br>yanında tatlı bir inat var.</p>
   <div class="choices"><button id="begin" class="choice adventure"><span class="choice-icon">✳</span><span class="choice-body"><strong>Maceraya başla</strong><small>60 saniye. Bir ev. Yepyeni bir sabah.</small></span><span class="choice-arrow">↗</span></button><a href="#hikaye" id="story-open" class="choice introduction"><span class="choice-icon">▷</span><span class="choice-body"><strong>Tanıtımı gör</strong><small>UyanBi nasıl çalışır, kaydırarak gör.</small></span><span class="choice-arrow">↗</span></a></div>
   <div class="welcome-foot"><span>⌁</span> Dokun, keşfet, güne uyan.</div></div>
-  <div class="welcome-poncik"><div class="welcome-bubble">Hadi. Güzel bir gün<br>bizi bekliyor!</div><img class="img-wait" src="assets/X1.webp" width="1024" height="1024" fetchpriority="high" alt="Seni bekleyen, gülümseyen Ponçik"></div>
+  <div class="welcome-poncik"><div class="welcome-bubble">Hadi. Güzel bir gün<br>bizi bekliyor!</div><picture><source media="(max-width: 819px), (pointer: coarse) and (max-width: 599px), (pointer: coarse) and (max-height: 599px)" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"><img class="img-wait" src="assets/X1.webp" width="1024" height="1024" fetchpriority="high" alt="Seni bekleyen, gülümseyen Ponçik"></picture></div>
   <span class="welcome-bottom">Uyan. Kazan. Tekrar et.</span>
 </section>
 <section id="game" class="game" hidden data-ps="end" aria-label="Ponçik’le sabah macerası">
+  <a href="#app" class="logo phone-logo" aria-label="UyanBi, sayfa başı">uyan<b>bi</b><i>✳</i></a>
   <div id="room-art" class="room-art"></div><img id="bed-pov" class="bed-pov" width="1600" height="893" alt="" aria-hidden="true"><div class="room-vignette" aria-hidden="true"></div><div class="sun-wash" aria-hidden="true"></div>
   <div class="hud" id="hud"><button id="room-back" class="room-back" type="button" hidden><span class="room-back-arrow" aria-hidden="true">‹</span> <span id="room-back-name">Koridor</span></button><div class="timer" id="timer-box"><span class="timer-icon" aria-hidden="true">◷</span><div><small>Kalan süre</small><strong id="time">01:00</strong></div><svg class="timer-ring" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="21"/><circle id="time-arc" cx="24" cy="24" r="21"/></svg></div><div class="location"><span id="room-name">Yatak odası</span><small id="room-hint">Gün burada başlıyor.</small></div></div>
   <div class="game-tools"><button id="sound" class="tool" aria-label="Sesi aç" aria-pressed="false">♪<span class="sound-slash">/</span></button><button id="help" class="tool" aria-label="Nasıl oynanır?">?</button><button id="pause" class="tool" aria-label="Oyunu duraklat">Ⅱ</button><button id="home-back" class="tool tool-home" type="button" aria-label="Ana sayfa" title="Ana sayfa"><svg viewBox="0 0 24 24" width="21" height="21" aria-hidden="true" focusable="false"><path d="M3.6 11.1 12 4l8.4 7.1" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 10v9.2c0 .7.5 1.2 1.2 1.2h3.3v-5.3h3v5.3h3.3c.7 0 1.2-.5 1.2-1.2V10" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linejoin="round"/></svg></button></div>
@@ -60,7 +60,7 @@
     <div class="ps ps-sun" data-screen="b3" aria-hidden="true" inert>
       <img src="assets/sun.svg" alt="" width="64" height="64"><span class="al-label">Gün Işığı</span><strong class="sun-plus">+ Gün Işığı</strong><span class="al-cap">Pazartesi hesabında</span>
     </div>
-  </div><div id="phone-games" hidden></div></div><div class="phone-home"></div></div><button id="phone-open" class="phone-open" type="button" aria-expanded="false"><span class="phone-open-label">Telefona bak</span></button><img class="hand-phone-art img-wait" src="assets/hand-phone.webp" alt="" aria-hidden="true"></div></div>
+  </div><div id="phone-games" hidden></div></div><div class="phone-home"></div></div><button id="phone-open" class="phone-open" type="button" aria-expanded="false"><span class="phone-open-label">Telefona bak</span></button><picture><source media="(max-width: 819px), (pointer: coarse) and (max-width: 599px), (pointer: coarse) and (max-height: 599px)" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"><img class="hand-phone-art img-wait" src="assets/hand-phone.webp" alt="" aria-hidden="true"></picture></div></div>
   <div class="game-caption" id="game-caption">Süre işliyor. Hadi!</div>
   <div id="game-fade" class="game-fade" aria-hidden="true"></div>
   <div id="ending-copy" class="ending-copy" aria-hidden="true" hidden><p class="ending-copy-title">Bu sabah senin.</p><p class="ending-copy-sub">Yarın sabah da Ponçik yanında olsun.</p></div>
@@ -78,7 +78,7 @@
         <div class="wake-top"><strong class="wake-time" aria-hidden="true">07:00</strong><span class="wake-state" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#ffb53d" d="M12 2.6a1.6 1.6 0 0 1 1.6 1.6v.7a6.3 6.3 0 0 1 4.7 6.1v3.6l1.6 2.6c.4.7-.1 1.5-.9 1.5H5c-.8 0-1.3-.8-.9-1.5l1.6-2.6V11a6.3 6.3 0 0 1 4.7-6.1v-.7A1.6 1.6 0 0 1 12 2.6Zm-2.4 16.2h4.8a2.4 2.4 0 0 1-4.8 0Z"/></svg>Alarm çalıyor</span></div>
         <div class="wake-task"><small class="wake-eyebrow">Uyanmak için</small><strong class="wake-title">Yataktan kalk</strong></div>
         <div class="wake-actions">
-          <div class="wake-mascot"><p id="wake-bubble" class="wake-bubble" hidden></p><img id="wake-poncik" class="wake-poncik img-wait" src="assets/poncik-alarm.webp" width="715" height="710" alt="" aria-hidden="true"></div>
+          <div class="wake-mascot"><p id="wake-bubble" class="wake-bubble" hidden></p><picture><source media="(max-width: 819px), (pointer: coarse) and (max-width: 599px), (pointer: coarse) and (max-height: 599px)" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"><img id="wake-poncik" class="wake-poncik img-wait" src="assets/poncik-alarm.webp" width="715" height="710" alt="" aria-hidden="true"></picture></div>
           <button id="wake-up" class="wake-btn wake-go" type="button">Uyan</button><button id="snooze" class="wake-btn wake-snooze" type="button">Ertele</button>
         </div>
       </div></div>
@@ -145,9 +145,9 @@
     <details><summary>Depozito modu nedir?</summary><p>Sabah mücadelesine bir depozito yatırarak katılırsın. Zamanında uyanırsan depozitonu korursun ve o gün uyanamayanların ceza havuzundan pay alırsın. Ödemeler her pazartesi yapılır.</p></details>
     <details><summary>Hangi telefonlarda çalışacak?</summary><p>iPhone ve Android telefonlarda. UyanBi, lansman günü App Store ve Google Play'de yerini alacak.</p></details>
   </div>
-  <footer class="story-foot"><button type="button" data-ending="home"><span aria-hidden="true">‹</span> Ana sayfa</button><button type="button" data-ending="replay">Yeniden oyna</button><span>© 2026 UyanBi</span></footer>
+  <footer class="story-foot"><span class="foot-note">Mini oyun bilgisayarda oynanır.</span><button type="button" data-ending="home"><span aria-hidden="true">‹</span> Ana sayfa</button><button type="button" data-ending="replay">Yeniden oyna</button><span>© 2026 UyanBi</span></footer>
 </section>
 </section>
 </main>
-<script src="rooms.js?v=40"></script><script src="actor.js?v=40"></script><script src="scene.js?v=40"></script><script src="stores.js?v=40"></script><script src="story.js?v=40"></script><script src="ending.js?v=40"></script><script src="phone-games.js?v=40"></script><script src="game.js?v=40"></script>
+<script src="stores.js?v=41"></script><script src="story.js?v=41"></script><script src="ending.js?v=41"></script><script src="mode.js?v=41"></script>
 </body></html>

@@ -29,7 +29,8 @@
   function placeRig() {
     if (!game.classList.contains('story')) { game.classList.remove('phone-small'); screen.inert = false; return; }
     let p = 0, scale = 1;
-    if (!wide() && html.classList.contains('story-on')) {
+    // On a phone the unit is part of the first screen and scrolls away with it (phone.css): nothing to place.
+    if (!wide() && html.classList.contains('story-on') && !html.classList.contains('is-phone')) {
       p = Math.min(1, Math.max(0, scrollY / (innerHeight * .5)));
       const h0 = rig.offsetHeight || 1, h1 = Math.min(h0, innerHeight * .53);
       scale = 1 + (h1 / h0 - 1) * p;
@@ -41,15 +42,22 @@
     game.classList.toggle('phone-small', small); screen.inert = small;
     html.style.setProperty('--band', p.toFixed(3));
     // the scene's two cards fade as they scroll up, before they could pass under the corner buttons
-    html.style.setProperty('--leave', Math.min(1, Math.max(0, scrollY / (innerHeight * .3))).toFixed(3));
+    html.style.setProperty('--leave', html.classList.contains('is-phone') ? '0' : Math.min(1, Math.max(0, scrollY / (innerHeight * .3))).toFixed(3));
   }
   function schedule() { if (!frame) frame = requestAnimationFrame(() => { frame = 0; placeRig(); }); }
   addEventListener('scroll', schedule, { passive: true });
   addEventListener('resize', schedule);
 
   function layers(on) { [nav, fade, screens, copy, stores].forEach(node => { node.hidden = !on; }); }
+  /* After a game the scene speaks to the winner; as an introduction (no game played: "Tanıtımı gör", #hikaye, phones)
+     it uses the welcome screen's own lines. */
+  const LINES = { won: ['Bu sabah senin.', 'Yarın sabah da Ponçik yanında olsun.'], intro: ['Bu sabahın kahramanı sensin.', 'Sabahın bir hikâyesi var.'] };
   function summary({ seconds, steps, preview }) {
     $('ending-summary').textContent = preview ? '' : `${seconds} saniyede ${steps} adım`;
+    const [title, sub] = LINES[preview ? 'intro' : 'won'];
+    $('ending-title').textContent = title;
+    copy.querySelector('.ending-copy-title').textContent = title;
+    copy.querySelector('.ending-copy-sub').textContent = sub;
   }
   function settle() {
     game.classList.add('story-ready');
