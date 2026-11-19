@@ -1,27 +1,17 @@
-/* The ending: Ponçik, hugging the phone, comes forward from the balcony to the middle of the screen and stays
-   there (fixed) while the page scrolls on into the story. Ponçik, the live phone and his hands in front of it
-   are one box (#phone-rig); it moves with transform and opacity only. */
+/* The ending. After a won game (computer) the balcony is closed like a stage: perde.js closes red curtains, Ponçik bows, the
+   camera sinks and the stops layer (duraklar.js) settles from below; the phone never comes forward. Without the game
+   (#hikaye typed in the address bar, phones) the stops layer simply opens (instant); "Uygulamayı dene" on a computer plays the same
+   curtain from the welcome screen (curtainIn). The phone unit (rig) stays as the frame
+   under the stops layer; its scroll placement (placeRig) is still used by that path. */
 (() => {
   const $ = id => document.getElementById(id);
   const game = $('game'), rig = $('phone-rig'), phone = game.querySelector('.phone'), screen = phone.querySelector('.phone-screen');
   const nav = $('story-nav'), fade = $('game-fade'), screens = $('phone-story'), copy = $('ending-copy'), stores = $('scene-stores');
-  const back = $('hug-back'), hands = $('hug-hands');
   const html = document.documentElement;
-  const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
   const wide = () => matchMedia('(min-width: 1100px)').matches;
-  // A damped spring (about 4% overshoot), sampled; older engines get a plain overshooting curve.
-  const SPRING = CSS.supports?.('transition-timing-function', 'linear(0, 1)')
-    ? 'linear(0, .048, .163, .309, .46, .602, .724, .824, .901, .958, .996, 1.02, 1.033, 1.038, 1.038, 1.034, 1.029, 1.023, 1.017, 1.012, 1.008, 1.005, 1.002, 1.001, 1)'
-    : 'cubic-bezier(.3,1.2,.5,1)';
-  let actions = {}, visit = 0, timers = [], frame = 0;
+  let actions = {}, visit = 0, frame = 0;
 
-  // Ponçik behind the phone, his hands in front of it: both ride inside the rig, so the three move as one.
-  rig.prepend(back); rig.append(hands);
-
-  const wait = ms => new Promise(resolve => timers.push(setTimeout(resolve, ms)));
   const announce = text => { const node = $('ending-announcement'); node.textContent = ''; setTimeout(() => { node.textContent = text; }, 80); };
-  const decoded = img => (img.complete && img.naturalWidth ? Promise.resolve() : new Promise(resolve => { img.addEventListener('load', resolve, { once: true }); img.addEventListener('error', resolve, { once: true }); }))
-    .then(() => img.decode?.()).catch(() => {});
 
   /* Scroll placement. Wide screens: nothing moves, the text columns pass on both sides.
      Narrow screens: over the first half screen of scrolling the unit shrinks towards the top (origin: its top
@@ -51,7 +41,7 @@
   function layers(on) { [nav, fade, screens, copy, stores].forEach(node => { node.hidden = !on; }); }
   /* After a game the scene speaks to the winner; as an introduction (no game played: "Tanıtımı gör", #hikaye, phones)
      it uses the welcome screen's own lines. */
-  const LINES = { won: ['Bu sabah senin.', 'Yarın sabah da Ponçik yanında olsun.'], intro: ['Bu sabahın kahramanı sensin.', 'Sabahın bir hikâyesi var.'] };
+  const LINES = { won: ['Bu sabah senin', 'Yarın sabah da Ponçik yanında olsun'], intro: ['Bu sabahın kahramanı sensin', 'Sabahın bir hikâyesi var'] };
   function summary({ seconds, steps, preview }) {
     $('ending-summary').textContent = preview ? '' : `${seconds} saniyede ${steps} adım`;
     const [title, sub] = LINES[preview ? 'intro' : 'won'];
@@ -66,45 +56,26 @@
     window.UyanbiStory?.open();
     placeRig();
   }
-  /* Where Ponçik stands on the balcony: the unit starts there, his size, and grows into the middle. */
-  function startBox() {
-    const actor = $('poncik-actor'), box = actor?.getBoundingClientRect();
-    if (!box || box.width < 8 || box.height < 8) return null;
-    return box;
-  }
-  async function deliver(token) {
-    phone.inert = true;
-    // Ponçik never appears half-painted: wait for both layers. Until then the balcony stays as it is.
-    await Promise.race([Promise.all([decoded(back), decoded(hands)]), wait(4000)]);
-    if (token !== visit) return;
-    // One frame: the standing Ponçik is measured, then the hugging one takes his place and size and comes forward.
-    const from = startBox();
-    game.classList.add('story', 'handoff-on'); layers(true);
-    rig.getAnimations().forEach(animation => animation.cancel());
-    placeRig();
-    const to = rig.getBoundingClientRect();
-    if (reduced() || !from || !to.height) {
-      await rig.animate([{ opacity: 0 }, { opacity: 1 }], { duration: reduced() ? 300 : 450, easing: 'linear' }).finished.catch(() => {});
-    } else {
-      const k = Math.min(.8, Math.max(.2, from.height / to.height));
-      const dx = from.left + from.width / 2 - (to.left + to.width / 2), dy = from.top + from.height / 2 - (to.top + to.height / 2);
-      const move = rig.animate([
-        { translate: `${dx.toFixed(1)}px ${dy.toFixed(1)}px`, scale: String(k), transformOrigin: '50% 50%' },
-        { translate: '0px 0px', scale: '1', transformOrigin: '50% 50%' }
-      ], { duration: 900, easing: SPRING });
-      const show = rig.animate([{ opacity: .3 }, { opacity: 1 }], { duration: 220, easing: 'ease-out' });
-      await Promise.all([move.finished, show.finished]).catch(() => {});
-    }
-    if (token !== visit) return;
-    settle();
-    $('ending-title').focus({ preventScroll: true });
+  /* The curtain scene, one function for both ways in: after a won game (host: #game, Ponçik starts where the game's Ponçik stands)
+     and from the welcome screen's "Uygulamayı dene" (host: #app, Ponçik starts where the welcome Ponçik stands; game.js passes
+     `from`, and `prepare` to get the story's state ready at the moment the flight begins). The corner buttons are there from the
+     first moment after a game (Yeniden oyna and Ana sayfa work during the flight); the stops layer opens when the curtain is shut
+     (perde.js calls open) and rises into place under the camera. Resolves true when it settled, false when it was cancelled. */
+  function curtain(token, { host = game, from, mark = true, prepare } = {}) {
+    if (!window.UyanbiPerde) { prepare?.(); instant(); return Promise.resolve(false); }
+    nav.hidden = false;
+    return window.UyanbiPerde.play({
+      host, from, mark,
+      open() { if (token !== visit) return null; prepare?.(); instant(); return $('durak'); }
+    });
   }
   function instant() {
     game.classList.add('story', 'handoff-on'); layers(true);
     settle();
   }
   function reset() {
-    timers.forEach(clearTimeout); timers = [];
+    window.UyanbiPerde?.cancel();
+    game.classList.remove('perde-on');
     rig.getAnimations().forEach(animation => animation.cancel());
     game.classList.remove('story', 'story-ready', 'handoff-on');
     layers(false);
@@ -119,10 +90,6 @@
     const name = event.target.closest('[data-ending]')?.dataset.ending;
     if (name) actions[name]?.();
   });
-  $('story-scroll').addEventListener('click', event => {
-    event.preventDefault();
-    $('hikaye')?.scrollIntoView({ behavior: reduced() ? 'auto' : 'smooth' });
-  });
   window.UyanbiStores?.bind(document);
 
   window.MorningEnding = {
@@ -131,8 +98,15 @@
     show({ seconds = 0, steps = 0, preview = false } = {}) {
       const token = ++visit;
       reset(); summary({ seconds, steps, preview });
-      announce(preview ? 'UyanBi tanıtımı. Aşağı kaydırarak devam edebilirsin.' : 'Maceran tamamlandı. Telefon sende. Aşağı kaydırarak UyanBi’yi keşfedebilirsin.');
-      if (preview) instant(); else deliver(token);
+      announce(preview ? 'UyanBi. Bir ışık yakarak kavanozu doldur.' : 'Maceran tamamlandı. Şimdi bir ışık yakarak kavanozu doldur.');
+      if (preview) instant(); else curtain(token);
+    },
+    // The same curtain scene started from the welcome screen: { host, from, prepare } as in curtain(); returns its promise.
+    curtainIn({ host, from, prepare } = {}) {
+      const token = ++visit;
+      reset(); summary({ preview: true });
+      announce('UyanBi. Bir ışık yakarak kavanozu doldur.');
+      return curtain(token, { host, from, mark: false, prepare });
     },
     hide() {
       visit++; reset();

@@ -1,0 +1,61 @@
+/* The curtain scene (perde.js): red velvet curtains close over the balcony, Ponçik bows, the camera sinks.
+   One fixed layer inside #game, above the room and the HUD (z 45), below the stops layer (z 50, duraklar.css) and the corner
+   buttons (z 60, ending.css). Motion is driven from perde.js with the Web Animations API (transform, opacity); this file holds the shapes. */
+
+/* the game's own Ponçik leaves as the other one arrives; the phone (and the hand holding it) is not on the balcony in the finale */
+.game.perde-on .guide{opacity:0;transition:none}
+.game.finale:not(.story) .phone-rig,.game.perde-on .phone-rig{visibility:hidden;transition:none}
+
+.perde{position:fixed;inset:0;z-index:45;overflow:hidden;pointer-events:none;--floor:86px;--val:156px;--S:320px;font-size:0}
+.perde *{box-sizing:border-box}
+
+/* behind the stage: the night, and under it the cream of the site; they take over when the curtain lifts away */
+.pd-bg{position:absolute;inset:0;opacity:0}
+.pd-night,.pd-dusk,.pd-dawn{position:absolute;inset:0}
+.pd-night{background:radial-gradient(ellipse 90% 70% at 50% 108%,#6a47ad 0,#3a2468 38%,#1b0f36 78%,#120a26 100%)}
+.pd-dusk{opacity:0;background:radial-gradient(ellipse 100% 70% at 50% 105%,#ffd9a0 0,#f4a58f 36%,#b77bc4 72%,#7d56b3 100%)}
+.pd-dawn{opacity:0;background:radial-gradient(ellipse 70% 55% at 50% 100%,#e2d7f399,transparent 70%),linear-gradient(180deg,#fff4d6 0,var(--paper,#fcf8ee) 55%)}
+.pd-fx{position:absolute;inset:0;overflow:hidden}
+.pd-spark{position:absolute;top:100%;opacity:0;will-change:transform,opacity;background:radial-gradient(circle,#fff 0,#ffe9a2 28%,#ffc94f 62%,#ffc94f 100%);clip-path:polygon(50% 0,60% 38%,100% 50%,60% 62%,50% 100%,40% 62%,0 50%,40% 38%)}
+.pd-spark.s1{background:radial-gradient(circle,#fff 0,#fff3cf 45%,#ffe39a 100%)}
+.pd-spark.s2{background:radial-gradient(circle,#fff 0,#eedcff 40%,#c8a8f3 100%)}
+.pd-line{position:absolute;top:100%;opacity:0;will-change:transform,opacity;border-radius:3px;background:linear-gradient(180deg,#fff1b800,#fff1b8d9 38%,#ffd36fa6 70%,#ffd36f00)}
+
+/* the stage: everything that lifts away together */
+.pd-stage{position:absolute;inset:0;will-change:transform}
+.pd-panel{position:absolute;top:0;bottom:var(--floor);width:56%;will-change:transform}
+.pd-panel svg{display:block;width:100%;height:100%;overflow:visible}
+.pd-l{left:0;transform-origin:0 0;transform:scaleX(.17)}
+.pd-r{right:0;transform-origin:100% 0;transform:scaleX(.17)}
+.pd-lead{position:absolute;top:0;bottom:0;left:-34px;width:34px;background:linear-gradient(90deg,#16020a00,#16020a80)}
+
+/* the stage floor, with footlights along its lip */
+.pd-floor{position:absolute;left:0;right:0;bottom:0;height:var(--floor);
+  background:linear-gradient(180deg,#120805 0,#46291a 14%,#5b3822 52%,#352014 86%,#1b0e08 100%),
+    repeating-linear-gradient(90deg,#0000 0 119px,#00000038 119px 121px);
+  background-blend-mode:normal;box-shadow:inset 0 3px 0 #ffd89a40,inset 0 -5px 0 #130905}
+.pd-floor:after{content:'';position:absolute;left:0;right:0;bottom:0;height:20%;background:linear-gradient(180deg,#a56c35,#6b3f1d 55%,#3a2010);box-shadow:inset 0 2px 0 #ffe6b055}
+.pd-lights{position:absolute;left:0;right:0;bottom:19%;height:62%;background:radial-gradient(ellipse 46px 68% at 50% 100%,#ffe3a0 0,#ffbc5ec0 30%,#ffa43c00 100%) 0 0/132px 100% repeat-x}
+
+/* light: a warm cone from the top, a darker rim, a pool of light where Ponçik stands */
+.pd-light{position:absolute;inset:0;background:
+  radial-gradient(ellipse 54% 82% at 50% -8%,#ffe9b84d,#ffd89020 46%,#0000 74%),
+  radial-gradient(ellipse 125% 98% at 50% 40%,#0000 48%,#0b031899 100%),
+  radial-gradient(ellipse 28% 13% at 50% 93%,#ffe3a266,#0000 72%)}
+.pd-sheen{position:absolute;top:0;bottom:var(--floor);left:0;width:22vw;opacity:0;will-change:transform,opacity;background:linear-gradient(90deg,#fff0,#ffffff2e 42%,#ffffff40 56%,#fff0)}
+.pd-valance{position:absolute;left:0;right:0;top:0;height:var(--val);will-change:transform}
+.pd-valance svg{display:block;width:100%;height:100%}
+
+/* Ponçik: mirrored, so his raised hand is on the edge he pulls; his feet stand on the stage floor */
+.pd-pon{position:absolute;left:0;top:0;width:var(--S);will-change:transform;opacity:0;isolation:isolate}
+.pd-body{position:relative}
+.pd-body img{position:absolute;display:block;max-width:none;height:auto;transform:scaleX(-1);-webkit-user-drag:none;user-select:none}
+.pd-shadow{position:absolute;z-index:-1;left:12%;right:12%;bottom:-2%;height:9%;border-radius:50%;background:radial-gradient(ellipse,#000000b3,#0000 72%)}
+
+/* From the welcome screen ("Uygulamayı dene", game.js playWelcomeCurtain): the welcome Ponçik's picture and shadow go at once (the curtain
+   Ponçik stands in his exact place); the speech bubble, the buttons and the rest of the text fade softly (the curtains would cut the
+   headline in half otherwise); the screen itself is inert while it runs. The background painting stays. */
+.welcome-bubble,.welcome-header,.welcome-content,.welcome-bottom{transition:opacity .4s ease}
+.welcome.perde-out .welcome-poncik img{visibility:hidden;transition:none}
+.welcome.perde-out .welcome-poncik:after{opacity:0;transition:none}
+.welcome.perde-out .welcome-bubble,.welcome.perde-out .welcome-header,.welcome.perde-out .welcome-content,.welcome.perde-out .welcome-bottom{opacity:0}

@@ -1,10 +1,10 @@
-/* Phone or computer. On a phone (UYANBI_PHONE_QUERY, set in the head) the page is the scrolling introduction only:
+/* Phone or computer. On a phone (UYANBI_PHONE_QUERY, set in the head) the page is the app tour only:
    the game's scripts and pictures are never fetched. On a computer the game scripts load as before. The mode only
    changes while the visitor is on the welcome screen or in the story, never in the middle of a game. */
 (() => {
   const html = document.documentElement, query = matchMedia(window.UYANBI_PHONE_QUERY);
   const game = document.getElementById('game'), welcome = document.getElementById('welcome');
-  const GAME = ['rooms.js', 'actor.js', 'scene.js', 'phone-games.js', 'game.js'], V = '?v=41';
+  const GAME = ['rooms.js', 'actor.js', 'scene.js', 'phone-games.js', 'game.js'], V = '?v=43';
   let loading = null, phone = query.matches;
 
   function loadGame() {
@@ -19,16 +19,18 @@
     });
     return loading;
   }
-  // The page opens on the introduction's first screen, also when the address carries #hikaye.
+  // The page opens on the tour's first screen, also when the address carries #hikaye.
   function holdTop() {
     history.scrollRestoration = 'manual';
-    const top = () => scrollTo(0, 0);
+    let held = true;
+    const top = () => { if (held) scrollTo(0, 0); };
     requestAnimationFrame(top);
     if (document.readyState === 'complete') return;
-    const release = () => { removeEventListener('scroll', top); ['wheel', 'touchstart', 'keydown'].forEach(type => removeEventListener(type, release)); };
+    const release = () => { held = false; removeEventListener('scroll', top); ['wheel', 'touchstart', 'keydown'].forEach(type => removeEventListener(type, release)); };
     addEventListener('scroll', top);
     ['wheel', 'touchstart', 'keydown'].forEach(type => addEventListener(type, release, { once: true }));
-    addEventListener('load', () => { top(); requestAnimationFrame(() => { top(); release(); }); }, { once: true });
+    // the browser may re-jump to the #hikaye anchor after load; two late nudges cover that unless the visitor scrolled
+    addEventListener('load', () => { top(); requestAnimationFrame(() => { top(); release(); }); setTimeout(top, 700); setTimeout(top, 1800); }, { once: true });
   }
   function enterIntro() {
     welcome.hidden = true; game.hidden = false;

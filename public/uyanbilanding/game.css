@@ -96,6 +96,8 @@
 .offer img.img-wait~.offer-screen{opacity:0}
 .welcome-art{opacity:0;transition:opacity .6s ease}.welcome-art.ready{opacity:.66}@media(max-width:600px){.welcome-art.ready{opacity:.5}}
 .welcome-header .logo{padding-block:6px;margin-block:-6px}
+.welcome-header .logo img{display:block;height:44px;width:auto}
+@media(max-width:600px){.welcome-header .logo img{height:34px}}
 
 /* HUD: the top-left corner is only the way back to the previous room, named after it. Leaving the game is the house
    icon in the tool cluster; it pauses first. The HUD box itself never swallows taps meant for the room. */

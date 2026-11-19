@@ -1,0 +1,10 @@
+/* UyanbiWalk eyelids (walk.js): one fixed, full-screen layer of its own, above the page. Motion is driven from
+   walk.js with the Web Animations API (transform and opacity only); this file only holds the shapes. */
+.uw{position:fixed;inset:0;z-index:2147483000;pointer-events:none;display:none;overflow:hidden}
+.uw.on{display:block}
+.uw-lid{position:absolute;left:-4%;right:-4%;height:70%;background:var(--night,#07040d);will-change:transform}
+.uw-top{top:0;border-radius:0 0 50% 50%/0 0 15vh 15vh;transform:translateY(-110%)}
+.uw-bottom{bottom:0;border-radius:50% 50%/15vh 15vh 0 0;transform:translateY(110%)}
+/* Reduced motion (or any caller that asks for it): no lids, a short fade through dark instead. */
+.uw.dark{background:var(--night,#07040d)}
+.uw.dark .uw-lid{display:none}

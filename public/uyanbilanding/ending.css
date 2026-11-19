@@ -1,9 +1,7 @@
 .visually-hidden{position:absolute!important;width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 
-/* ---- the unit: the site's Ponçik (same character card) exactly as drawn, feet where they are, a phone in front of
-   his tummy and his own two hands gripping its sides. poncik-hug.webp is Ponçik (1035 x 1508 box),
-   poncik-hug-hands.webp his hands on the same box; the phone between them is HTML with a CSS frame (w:h .66).
-   Unit ≈ phone width × 2.11; the phone's top edge covers the lower quarter of his eyes, his feet show beside it. ---- */
+/* ---- the unit: during the ending the phone comes forward as the whole rig (a CSS frame, w:h .5),
+   stretched by tour.css's B values. The unit vars below are the site's original frame metrics. ---- */
 :root{
   --hg-ar:.6863;
   --hp-inset:50.27% 26.4% .54% 26.3%;            /* phone inside the unit (t r b l), centred on his body */
@@ -22,17 +20,13 @@
 
 .epilogue .hud,.epilogue .game-tools,.epilogue .game-caption{opacity:0;visibility:hidden;transition:opacity .7s,visibility .7s}
 .epilogue .phone-open{visibility:hidden}
-.game.story .guide{visibility:hidden} /* the hugging Ponçik takes his place in the same frame */
+.game.story .guide{visibility:hidden} /* the phone takes the guide's place in the same frame */
 .game.story{z-index:20}
 .game-fade{position:absolute;left:0;right:0;bottom:0;height:34%;z-index:8;pointer-events:none;background:linear-gradient(0deg,var(--paper) 0,var(--paper) 30%,#fcf8ee00 100%);opacity:0;transition:opacity 1s .5s}
 .handoff-on .game-fade{opacity:1}
 
 /* ---- the rig becomes the unit: fixed, above every section and band; it never clips ---- */
-.hug{display:none}
 .game.story #phone-rig{position:fixed;inset:auto;left:calc(50% - var(--u-w) / 2);top:var(--u-top);right:auto;bottom:auto;width:var(--u-w);height:var(--u-h);z-index:30;overflow:visible;transform:translate3d(0,var(--ty,0px),0) scale(var(--sc,1));transform-origin:50% 0;transition:opacity .4s,visibility 0s}
-.game.story .hug{display:block;position:absolute;inset:0;width:100%;height:100%;pointer-events:none;user-select:none;-webkit-user-drag:none}
-.game.story .hug-back{z-index:0;filter:drop-shadow(0 calc(var(--u-h) * .018) calc(var(--u-h) * .03) #1d0f3a40)}
-.game.story .hug-hands{z-index:3;filter:drop-shadow(0 calc(var(--u-h) * .005) calc(var(--u-h) * .007) #1d0f3a47)}
 .game.story .phone-assembly{position:absolute;inset:var(--hp-inset);transform:none;transition:none;z-index:1}
 .game.story .hand-phone-art,.game.story .phone-open{display:none}
 .game.story .phone{position:absolute;inset:0;width:100%;height:100%;padding:0;border:0;border-radius:var(--hp-rad);background:linear-gradient(155deg,#8069c8,#5d48a3 55%,#4f3c8f);box-shadow:0 calc(var(--u-h) * .012) calc(var(--u-h) * .03) #1d0f3a59,inset 0 0 0 1px #ffffff2e;transform:none;overflow:visible;pointer-events:none}
@@ -44,21 +38,6 @@
 .game.story .phone-app .camera-dot{font-size:calc(var(--u) * 9)}
 .game.story .phone-story{display:block;flex:1;min-height:0;position:relative}
 .game.phone-game-mode .phone-story{display:none}
-.ps{position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity .35s ease,visibility 0s .35s}
-.ps.is-active{opacity:1;visibility:visible;transition:opacity .35s ease}
-
-/* ---- first phone screen: the invitation ---- */
-.ps-end{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:calc(var(--u) * 12);padding:0 calc(var(--u) * 13) calc(var(--u) * 26)}
-.end-mark{font-size:calc(var(--u) * 30);line-height:1;color:#ba8a27}
-@container (max-width:200px){.end-mark{display:none}} /* on a small phone the ornament would crowd the app bar */
-.end-summary{margin:0;padding:calc(var(--u) * 4) calc(var(--u) * 11);border-radius:99px;background:#f1e9f5;font-size:max(10px,calc(var(--u) * 11.5));font-weight:800;color:#5f4a6f}
-.end-summary:empty{display:none}
-.end-ask{margin:0;font-size:max(13px,calc(var(--u) * 18.5));line-height:1.24;font-weight:900;letter-spacing:-.015em;color:#422c67;text-wrap:pretty}
-.scroll-cue{display:inline-flex;align-items:center;justify-content:center;gap:.35em;min-height:max(44px,calc(var(--u) * 46));margin-top:calc(var(--u) * 6);padding:0 calc(var(--u) * 22);border-radius:99px;background:var(--yellow);color:#3e285c;font-size:calc(var(--u) * 18);line-height:1;font-weight:900;letter-spacing:-.01em;white-space:nowrap;box-shadow:0 calc(var(--u) * 4) calc(var(--u) * 12) #ba8a2740;text-decoration:none}
-.scroll-cue:hover{background:#ffdc5e}
-.scroll-cue:focus-visible{outline:3px solid #5b3f86;outline-offset:3px}
-.scroll-cue span{display:inline-block;animation:scroll-cue 1.6s ease-in-out infinite}
-@keyframes scroll-cue{0%,100%{transform:translateY(-2px)}50%{transform:translateY(4px)}}
 .game.phone-small .phone-screen{pointer-events:none}
 
 /* ---- headline: left of the unit on wide screens, under it on narrow ones (it scrolls away with the scene) ---- */
@@ -124,4 +103,4 @@
   .scene-stores .store-btn{height:44px;padding:0 12px 0 10px;gap:7px}
   .scene-stores .store-txt strong{font-size:15px}
 }
-@media(prefers-reduced-motion:reduce){.scroll-cue span{animation:none}.story-ready .ending-copy{animation:none}.story-nav{animation-duration:.2s}.story-ready .scene-stores{animation:none}}
+@media(prefers-reduced-motion:reduce){.story-ready .ending-copy{animation:none}.story-nav{animation-duration:.2s}.story-ready .scene-stores{animation:none}}
