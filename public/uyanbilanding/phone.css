@@ -44,3 +44,5 @@ html.is-phone .ending-copy,html.is-phone .scene-stores{display:none!important}
 html.is-phone .b6{padding-top:120px;background:linear-gradient(180deg,var(--deep) 0,var(--paper) 96px,var(--paper) 100%)}
 html.is-phone .foot-note{display:block;width:100%;padding:6px 0 4px;font-size:.9375rem;font-weight:700;color:#5c456c}
 html.is-phone .story-foot{gap:0}
+/* the phone tour talks less about money: the deposit question is left to the computer */
+html.is-phone .faq-money{display:none}

@@ -19,14 +19,14 @@
   const CELEBRATION_MS = 800;
   class GameEngine {
     constructor(options = {}) {
-      this.duration = options.durationMs ?? 60000;
+      this.duration = options.durationMs ?? Infinity; // no time limit by default: the clock counts up
       this.scanDuration = options.scanMs ?? 850;
       this.moveDuration = options.moveMs ?? 480;
       this.celebrationDuration = options.celebrationMs ?? CELEBRATION_MS;
       this.restart();
     }
     restart() {
-      this.current = { room: 'bedroom', phase: 'asleep', snoozed: false, steps: 0, leftMs: this.duration, selected: null, cup: false, mode:'scan', paused: false, scanning: false, moving: false, frozen: false, feedback: null };
+      this.current = { room: 'bedroom', phase: 'asleep', snoozed: false, steps: 0, leftMs: this.duration, elapsedMs: 0, selected: null, cup: false, mode:'scan', paused: false, scanning: false, moving: false, frozen: false, feedback: null };
       this.pending = null;
       this.events = [];
     }
@@ -161,7 +161,7 @@
         const jobBoundary = this.pending ? this.pending.remaining : Infinity;
         const amount = Math.min(remaining, clockBoundary, jobBoundary);
         if (!Number.isFinite(amount)) return;
-        if (clockRuns) this.current.leftMs = Math.max(0, this.current.leftMs - amount);
+        if (clockRuns) { this.current.leftMs = Math.max(0, this.current.leftMs - amount); this.current.elapsedMs += amount; }
         if (this.pending) this.pending.remaining = Math.max(0, this.pending.remaining - amount);
         remaining -= amount;
         // A completion exactly on the deadline is late. This order is fixed,
@@ -304,10 +304,9 @@
 
   /* ---- painting ---- */
   function paintTimer() {
-    const state = engine.state, seconds = Math.max(0, Math.ceil(state.leftMs / 1000));
+    const state = engine.state, seconds = Math.floor(state.elapsedMs / 1000);
     $('time').textContent = `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
-    if ($('time-arc')) $('time-arc').style.strokeDashoffset = String(132 * (1 - state.leftMs / engine.duration));
-    $('timer-box').classList.toggle('urgent', state.leftMs <= 15000 && engine.clockRuns());
+    if ($('time-arc')) $('time-arc').style.strokeDashoffset = String(132 * (1 - (state.elapsedMs % 60000) / 60000));
   }
   function paintSteps(count) {
     const state = engine.state, shown = Math.min(GOAL_STEPS, count ?? state.steps);
@@ -465,7 +464,7 @@
     }
   }
   function showResult(won) {
-    const state = engine.state, elapsed = Math.min(60, Math.ceil((engine.duration - state.leftMs) / 1000));
+    const state = engine.state, elapsed = Math.max(1, Math.ceil(state.elapsedMs / 1000));
     if (dialog.open) dialog.close();
     if (won) {
       root.PhoneGames?.close(); game.classList.remove('phone-game-mode');

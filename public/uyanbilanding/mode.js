@@ -4,7 +4,7 @@
 (() => {
   const html = document.documentElement, query = matchMedia(window.UYANBI_PHONE_QUERY);
   const game = document.getElementById('game'), welcome = document.getElementById('welcome');
-  const GAME = ['rooms.js', 'actor.js', 'scene.js', 'phone-games.js', 'game.js'], V = '?v=43';
+  const GAME = ['rooms.js', 'actor.js', 'scene.js', 'phone-games.js', 'game.js'], V = '?v=44';
   let loading = null, phone = query.matches;
 
   function loadGame() {

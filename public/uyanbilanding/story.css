@@ -54,3 +54,5 @@
 }
 @media(max-width:420px){.cta{width:100%}}
 @media(prefers-reduced-motion:reduce){.story-js .rv{opacity:1;transform:none}}
+/* SSS link in the story footer */
+.story-foot .foot-link{display:inline-flex;align-items:center;min-height:44px;color:var(--deep);font-weight:800;text-decoration:underline;text-underline-offset:3px}

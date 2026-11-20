@@ -47,7 +47,8 @@
   });
 
   /* ---------- pieces shared by the views ---------- */
-  const CAVEAT = 'Bu deneyim semboliktir. Gerçek uygulama bakiyesi, ödül veya para değildir.';
+  const CAVEAT_FULL = 'Bu deneyim semboliktir. Gerçek uygulama bakiyesi, ödül veya para değildir.';
+  const CAVEAT_PHONE = 'Bu deneyim semboliktir; gerçek uygulama bakiyesi değildir.';
   const nextLabel = () => S.hub ? '‹ Merkeze dön' : (idx(cur) < STOPS.length - 1 ? `Sıradaki: ${STOPS[idx(cur) + 1].name} ›` : 'Merkeze geç ›');
   const nextBtn = ghost => `<button type="button" class="dk-btn dk-next${ghost ? ' is-ghost' : ''}" data-dk="next" hidden>${nextLabel()}</button>`;
   const skipBtn = () => S.hub ? '' : '<button type="button" class="dk-skip" data-dk="skip">Atla ›</button>';
@@ -123,7 +124,7 @@
         </div></div>
       </div>`,
       act: `<div class="dk-act-row"><button type="button" class="dk-btn dk-do dk-do-once" id="dk-plus">+ Bir ışık yak</button>${nextBtn()}${skipBtn()}</div>
-        <p class="dk-hint" id="dk-hint"></p><p class="dk-caveat">${CAVEAT}</p>`
+        <p class="dk-hint" id="dk-hint"></p><p class="dk-caveat">${isPhone() ? CAVEAT_PHONE : CAVEAT_FULL}</p>`
     });
   }
   function paintJar(from) {
@@ -238,26 +239,30 @@
   }
 
   /* ================= 3. the app ================= */
-  const SHOTS = [
-    { src: 'assets/v3/app-home.webp', alt: 'UyanBi uygulamasının ana ekranı: alarmlar ve günlük seri', name: 'Ana ekran', cap: 'Alarmların, serin ve gününün planı tek ekranda.' },
+  const ALL_SHOTS = [
+    { src: 'assets/v3/app-home.webp', alt: 'UyanBi uygulamasının ana ekranı: alarmlar ve günlük seri', name: 'Ana ekran', cap: 'Alarmlar, günün planı ve yaptığın seriler tek sayfada.' },
     { src: 'assets/v3/app-gunisigi.webp', alt: 'UyanBi uygulamasında Kazandığın Gün Işıkları ekranı', name: 'Gün Işıkları', cap: 'Zamanında uyandıkça kazandığın Gün Işıkları burada birikir.' },
-    { src: 'assets/v3/app-kazanc.webp', alt: 'UyanBi uygulamasında Gün Işıklarının nasıl paraya dönüştüğünü anlatan ekran', name: 'Kazancın', cap: 'Gün Işıkları haftalık olarak paraya dönüşür ve bankaya geçer.' }
+    { src: 'assets/v3/app-kazanc.webp', alt: 'UyanBi uygulamasında Gün Işıklarının nasıl paraya dönüştüğünü anlatan ekran', name: 'Kazancın', cap: 'Gün Işıkları haftalık olarak paraya dönüşür ve bankaya geçer.', money: true }
   ];
+  // On a phone the money screen is left out: the tour there talks less about money.
+  const shots = () => isPhone() ? ALL_SHOTS.filter(s => !s.money) : ALL_SHOTS;
   function appView() {
-    const a = S.app, s = SHOTS[a.shot];
+    const a = S.app;
+    if (a.shot >= shots().length) a.shot = 0;
+    const s = shots()[a.shot];
     return frame({
       id: 'app', cls: 'dk-split', eyebrow: 'Uygulamayı gör', title: 'Gerçek ekranlar, gerçek uygulama',
       lead: 'Ekranları sırayla gez ya da 24 saniyelik ekran kaydını izle.',
       stage: `<div class="dk-approw"><div class="dk-phone"><div class="dk-shot" id="dk-shot"><img id="dk-shot-img" src="${s.src}" alt="${s.alt}" width="540" height="1170" decoding="async"></div><img class="dk-pon" data-main alt="" width="360" height="354" decoding="async"></div></div>`,
       act: `<p class="dk-cap" id="dk-cap" role="status" aria-live="polite"><span><b id="dk-cap-name"></b><span id="dk-cap-text"></span></span></p>
-        <ol class="dk-shotdots" id="dk-shotdots" aria-hidden="true"><li></li><li></li><li></li></ol>
+        <ol class="dk-shotdots" id="dk-shotdots" aria-hidden="true">${shots().map(() => '<li></li>').join('')}</ol>
         <div class="dk-act-row"><button type="button" class="dk-btn dk-do" id="dk-nextshot">Sıradaki ekran ›</button><button type="button" class="dk-btn is-ghost" id="dk-film" aria-pressed="false">▶ Ekran kaydını izle</button></div>
         <div class="dk-act-row">${nextBtn()}${skipBtn()}</div>`
     });
   }
   function appPaint(fade) {
-    const a = S.app, s = SHOTS[a.shot];
-    q('#dk-cap-name').textContent = `${a.shot + 1} / ${SHOTS.length} · ${s.name}`;
+    const a = S.app, s = shots()[a.shot];
+    q('#dk-cap-name').textContent = `${a.shot + 1} / ${shots().length} · ${s.name}`;
     q('#dk-cap-text').textContent = s.cap;
     [...q('#dk-shotdots').children].forEach((li, i) => li.classList.toggle('is-cur', i === a.shot));
     const img = q('#dk-shot-img');
@@ -279,23 +284,23 @@
       q('#dk-cap-name').textContent = 'Ekran kaydı · 24 saniye';
       q('#dk-cap-text').textContent = 'Alarm kurmaktan Gün Işıklarına, uygulamada bir tur.';
     } else {
-      shot.innerHTML = `<img id="dk-shot-img" src="${SHOTS[a.shot].src}" alt="${SHOTS[a.shot].alt}" width="540" height="1170" decoding="async">`;
+      shot.innerHTML = `<img id="dk-shot-img" src="${shots()[a.shot].src}" alt="${shots()[a.shot].alt}" width="540" height="1170" decoding="async">`;
       appPaint(false);
     }
   }
   function appMount() {
     const a = S.app;
     setPon(q('.dk-pon[data-main]'), 'arastirmaci', true);
-    SHOTS.forEach(s => { const i = new Image(); i.src = s.src; });
+    shots().forEach(s => { const i = new Image(); i.src = s.src; });
     appPaint(false);
     q('#dk-nextshot').addEventListener('click', () => {
       window.UyanbiSfx?.play('ekran');
-      a.shot = (a.shot + 1) % SHOTS.length; a.viewed[a.shot] = true;
+      a.shot = (a.shot + 1) % shots().length; a.viewed[a.shot] = true;
       appPaint(true);
-      if (a.viewed.every(Boolean)) done('app');
+      if (a.viewed.slice(0, shots().length).every(Boolean)) done('app');
     });
     q('#dk-film').addEventListener('click', () => appFilm(!a.video));
-    if (a.viewed.every(Boolean)) done('app', true);
+    if (a.viewed.slice(0, shots().length).every(Boolean)) done('app', true);
   }
 
   /* ================= 4. Ponçik collection ================= */
@@ -410,8 +415,8 @@
   /* ================= 6. the waitlist ================= */
   const FAQ = [
     ['Erteleme butonu gerçekten yok mu?', 'Yok. Alarm 90 saniye boyunca çalar; görevi tamamlamazsan 1 dakika sonra yeniden başlar.'],
-    ['Nesne tarama nasıl çalışıyor?', 'Akşamdan bir nesne seçersin. Sabah o nesneyi telefonunun kamerasına gösterdiğinde alarm susar. Ekranda nesnenin fotoğrafını göstermek işe yaramaz.'],
-    ['Depozito modu nedir?', 'Sabah mücadelesine bir depozito yatırarak katılırsın. Zamanında uyanırsan depozitonu korursun ve o gün uyanamayanların ceza havuzundan pay alırsın. Ödemeler her pazartesi yapılır.'],
+    ['Nesne tarama nasıl çalışıyor?', 'Nesneyi sen seçmezsin. Alarm çaldığında UyanBi seçili eşyalar arasından birini rastgele ister; onu bulup kameraya gösterdiğinde alarm susar. Evde uyanacağını seçtiysen ev eşyaları da gelebilir. Ekranda nesnenin fotoğrafını göstermek işe yaramaz.'],
+    ['Depozito modu nedir?', 'Sabah mücadelesine bir depozito yatırarak katılırsın. Zamanında uyanırsan depozitonu korursun ve o gün uyanamayanların ceza havuzundan pay alırsın. Ödemeler her pazartesi yapılır.', true],
     ['Hangi telefonlarda çalışacak?', 'iPhone ve Android telefonlarda. UyanBi, lansman günü App Store ve Google Play\'de yerini alacak.']
   ];
   function preView() {
@@ -419,7 +424,7 @@
       id: 'pre', cls: 'dk-split dk-pre', eyebrow: 'Yarın sabah', title: 'Ertelemedin<br>Harekete geçtin',
       lead: 'UyanBi çok yakında App Store ve Google Play\'de. Ön kaydını bırak, ilk uyananlar arasında sen de ol.',
       stage: `<div class="dk-prerow"><div class="dk-faq"><img class="dk-pon dk-faq-pon" data-main alt="" width="360" height="364" decoding="async"><h3>Sıkça sorulan sorular</h3>
-        ${FAQ.map(([a, b]) => `<details><summary>${a}</summary><p>${b}</p></details>`).join('')}</div></div>`,
+        ${FAQ.filter(f => !(f[2] && isPhone())).map(([a, b]) => `<details><summary>${a}</summary><p>${b}</p></details>`).join('')}</div></div>`,
       act: `<div class="dk-cta"><a class="dk-btn" data-store="waitlist" href="#">Ön kayıt ol</a>${storeRow()}${nextBtn(true)}</div>
         <p class="dk-note dk-phone-only">Mini oyun bilgisayarda oynanır.</p>`
     });
