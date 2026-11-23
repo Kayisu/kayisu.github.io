@@ -369,7 +369,7 @@
         <div class="dk-skybuddy"><p class="dk-say" id="dk-say" aria-hidden="true"></p><img class="dk-pon" data-main alt="" width="360" height="354" decoding="async"></div></div></div>`,
       act: `<form class="dk-form" id="dk-form" autocomplete="off"><label class="dk-sr" for="dk-in">Bugünün ilk cümlesi</label><input id="dk-in" class="dk-input" type="text" maxlength="64" placeholder="Bugün güzel bir şey olacak..."><button type="submit" class="dk-btn dk-do">Yıldıza çevir</button></form>
         <p class="dk-hint" id="dk-hint" role="status" aria-live="polite"></p>
-        <p class="dk-caveat">Cümlen hiçbir yere gönderilmez; yalnızca bu sayfada kalır, sayfayı kapatınca silinir.</p>
+        <p class="dk-caveat">Cümlen 24 saat boyunca bu sayfayı açan herkese görünür, sonra silinir. Adını ya da iletişim bilgini yazma.</p>
         <div class="dk-act-row">${nextBtn()}${skipBtn()}</div>`
     });
   }
@@ -392,24 +392,53 @@
       ], { duration: 1100, easing: 'cubic-bezier(.3,.7,.3,1)' });
     }
   }
+  // Stars are shared: the API on the home server keeps each sentence for 24 hours.
+  const STARS_API = location.hostname === 'uyanbilanding.kayisu.dev' ? '/api/stars' : 'https://uyanbilanding.kayisu.dev/api/stars';
+  const starsFetch = (opts = {}) => fetch(STARS_API, { ...opts, signal: AbortSignal.timeout(5000) });
+  const STAR_ERR = {
+    language: 'Bu cümleyi yıldıza çeviremedim. Biraz daha güzel bir günaydın dener misin?',
+    link: 'Bağlantı, e-posta ya da numara olmadan yaz; yalnızca bir günaydın cümlesi.',
+    number: 'Bağlantı, e-posta ya da numara olmadan yaz; yalnızca bir günaydın cümlesi.',
+    slow_down: 'Biraz bekle; birkaç saniye sonra yeni bir yıldız bırakabilirsin.'
+  };
+  function paintSky() {
+    const sky = q('#dk-sky'), v = S.voice;
+    if (!sky) return;
+    sky.querySelectorAll('.dk-star').forEach(n => n.remove());
+    sky.classList.remove('has-stars'); v.k = 0;
+    v.stars.forEach(t => addStar(t, false));
+  }
   function voiceMount() {
     const v = S.voice;
     say('Bir günaydın cümlesi yaz, yıldız yapalım.', 'el-sallama');
-    v.stars.forEach(t => addStar(t, false));
-    const input = q('#dk-in');
-    q('#dk-form').addEventListener('submit', e => {
+    paintSky();
+    // others' stars from the last 24 hours (the API sends newest first)
+    starsFetch().then(r => r.ok ? r.json() : null).then(d => {
+      if (!d || !Array.isArray(d.stars) || S.voice !== v) return;
+      v.stars = d.stars.slice(0, SLOTS.length).map(s => s.text).reverse();
+      if (q('#dk-sky')) paintSky();
+    }).catch(() => {});
+    const input = q('#dk-in'), btn = q('#dk-form .dk-do'), hint = q('#dk-hint');
+    q('#dk-form').addEventListener('submit', async e => {
       e.preventDefault();
       const text = input.value.trim().replace(/\s+/g, ' ');
-      if (!text) { q('#dk-hint').textContent = 'Önce bir cümle yaz.'; input.focus(); return; }
+      if (!text) { hint.textContent = 'Önce bir cümle yaz.'; input.focus(); return; }
+      btn.disabled = true;
+      let res = null, body = null;
+      try { res = await starsFetch({ method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ text }) }); body = await res.json().catch(() => null); } catch { res = null; }
+      btn.disabled = false;
+      if (res && !res.ok) { hint.textContent = STAR_ERR[body?.error] || 'Şu an yıldız bırakılamıyor; biraz sonra yeniden dene.'; input.focus(); return; }
+      // sent, or the server is unreachable: the star still lights up on this page
       v.stars.push(text); if (v.stars.length > SLOTS.length) v.stars.shift();
       addStar(text, true);
       window.UyanbiSfx?.play('yildiz');
       input.value = '';
-      q('#dk-hint').textContent = 'Günaydının yıldız oldu. İstersen bir tane daha bırak.';
+      hint.textContent = res ? 'Günaydının yıldız oldu; 24 saat boyunca herkes görecek.' : 'Günaydının yıldız oldu. Sunucuya ulaşamadım; şimdilik yalnızca sen görüyorsun.';
       say('Günaydının yıldız oldu!', 'mutlu');
+      v.mine = true;
       done('voice', true);
     });
-    if (v.stars.length) done('voice', true);
+    if (v.mine) done('voice', true);
   }
 
   /* ================= 6. the waitlist ================= */
