@@ -41,7 +41,7 @@
     hub: false, done: {}, seen: {},
     jar: { n: 0, landed: 0 },
     champ: { open: false },
-    app: { shot: 0, viewed: [true, false, false], video: false },
+    app: { shot: 0, viewed: [true, false, false, false], video: false },
     coll: { flipped: [false, false, false], merch: 0, touched: false },
     voice: { stars: [], k: 0 }
   });
@@ -240,19 +240,19 @@
 
   /* ================= 3. the app ================= */
   const ALL_SHOTS = [
-    { src: 'assets/v3/app-home.webp', alt: 'UyanBi uygulamasının ana ekranı: alarmlar ve günlük seri', name: 'Ana ekran', cap: 'Alarmlar, günün planı ve yaptığın seriler tek sayfada.' },
-    { src: 'assets/v3/app-gunisigi.webp', alt: 'UyanBi uygulamasında Kazandığın Gün Işıkları ekranı', name: 'Gün Işıkları', cap: 'Zamanında uyandıkça kazandığın Gün Işıkları burada birikir.' },
-    { src: 'assets/v3/app-kazanc.webp', alt: 'UyanBi uygulamasında Gün Işıklarının nasıl paraya dönüştüğünü anlatan ekran', name: 'Kazancın', cap: 'Gün Işıkları haftalık olarak paraya dönüşür ve bankaya geçer.', money: true }
+    { src: 'assets/v3/app-ana.webp', alt: 'UyanBi uygulamasının ana ekranı: kurulu alarm, hafta şeridi ve günlük seri', name: 'Ana ekran', cap: 'Kurduğun alarmlar, haftan ve günlük serin tek sayfada.' },
+    { src: 'assets/v3/app-alarm-kur.webp', alt: 'UyanBi uygulamasında Alarm Oluştur ekranı: saat, alarm sesi ve görev seçimi', name: 'Alarm kur', cap: 'Saati seç, görevini belirle: soru çöz ya da etrafındaki bir nesneyi tara.' },
+    { src: 'assets/v3/app-kumbara.webp', alt: 'UyanBi uygulamasında Kumbara ekranı: kalan meydan okuma hakları ve hareketler', name: 'Kumbara', cap: 'Kalan meydan okuma hakların ve kazandığın sabahlar burada.' },
+    { src: 'assets/v3/app-kadran.webp', alt: 'UyanBi uygulamasında 24 saatlik kadranla alarm saati seçimi', name: 'Saat kadranı', cap: 'Alarmı 24 saatlik kadranla da kurabilirsin; 05:00 ile 08:00 arası ödül kazandırır.' }
   ];
-  // On a phone the money screen is left out: the tour there talks less about money.
-  const shots = () => isPhone() ? ALL_SHOTS.filter(s => !s.money) : ALL_SHOTS;
+  const shots = () => ALL_SHOTS;
   function appView() {
     const a = S.app;
     if (a.shot >= shots().length) a.shot = 0;
     const s = shots()[a.shot];
     return frame({
       id: 'app', cls: 'dk-split', eyebrow: 'Uygulamayı gör', title: 'Gerçek ekranlar, gerçek uygulama',
-      lead: 'Ekranları sırayla gez ya da 24 saniyelik ekran kaydını izle.',
+      lead: 'Ekranları sırayla gez ya da 35 saniyelik ekran kaydını izle.',
       stage: `<div class="dk-approw"><div class="dk-phone"><div class="dk-shot" id="dk-shot"><img id="dk-shot-img" src="${s.src}" alt="${s.alt}" width="540" height="1170" decoding="async"></div><img class="dk-pon" data-main alt="" width="360" height="354" decoding="async"></div></div>`,
       act: `<p class="dk-cap" id="dk-cap" role="status" aria-live="polite"><span><b id="dk-cap-name"></b><span id="dk-cap-text"></span></span></p>
         <ol class="dk-shotdots" id="dk-shotdots" aria-hidden="true">${shots().map(() => '<li></li>').join('')}</ol>
@@ -277,12 +277,12 @@
     btn.textContent = on ? '‹ Ekranlara dön' : '▶ Ekran kaydını izle';
     q('#dk-nextshot').disabled = on;
     if (on) {
-      shot.innerHTML = '<video id="dk-video" controls playsinline preload="none" poster="assets/v3/ekran-kaydi-poster.webp" src="assets/v3/uygulama-ekran-kaydi.mp4" aria-label="UyanBi uygulamasının 24 saniyelik ekran kaydı"></video>';
+      shot.innerHTML = '<video id="dk-video" controls playsinline preload="none" poster="assets/v3/uygulama-akisi-poster.webp" src="assets/v3/uygulama-akisi.mp4" aria-label="UyanBi uygulamasının 35 saniyelik ekran kaydı: alarm kurma, bildirimler, Kumbara ve özelleştirme"></video>';
       const v = q('#dk-video');
       v.addEventListener('play', () => done('app'), { once: true });
       v.play().catch(() => {});
-      q('#dk-cap-name').textContent = 'Ekran kaydı · 24 saniye';
-      q('#dk-cap-text').textContent = 'Alarm kurmaktan Gün Işıklarına, uygulamada bir tur.';
+      q('#dk-cap-name').textContent = 'Ekran kaydı · 35 saniye';
+      q('#dk-cap-text').textContent = 'Alarm kurmaktan Kumbara ve özelleştirmeye, uygulamada bir tur.';
     } else {
       shot.innerHTML = `<img id="dk-shot-img" src="${shots()[a.shot].src}" alt="${shots()[a.shot].alt}" width="540" height="1170" decoding="async">`;
       appPaint(false);
@@ -416,7 +416,8 @@
   const FAQ = [
     ['Erteleme butonu gerçekten yok mu?', 'Yok. Alarm 90 saniye boyunca çalar; görevi tamamlamazsan 1 dakika sonra yeniden başlar.'],
     ['Nesne tarama nasıl çalışıyor?', 'Nesneyi sen seçmezsin. Alarm çaldığında UyanBi seçili eşyalar arasından birini rastgele ister; onu bulup kameraya gösterdiğinde alarm susar. Evde uyanacağını seçtiysen ev eşyaları da gelebilir. Ekranda nesnenin fotoğrafını göstermek işe yaramaz.'],
-    ['Depozito modu nedir?', 'Sabah mücadelesine bir depozito yatırarak katılırsın. Zamanında uyanırsan depozitonu korursun ve o gün uyanamayanların ceza havuzundan pay alırsın. Ödemeler her pazartesi yapılır.', true],
+    ['Meydan okuma hakkı nedir?', 'Ödül modunda kurduğun her alarm, sabah görevi için bir meydan okuma hakkını riske atar. Görevi zamanında bitirirsen meydan okumayı kazanırsın: hakkın sende kalır, üstüne Gün Işığı kazanırsın. Meydan okumayı kaçırırsan bir hak eksilir. Kalan hakların ve hareketlerin Kumbara\'da görünür.'],
+    ['Hangi ödüller var?', 'Kazandığın her meydan okuma Gün Işığı getirir ve serini büyütür. Haftalık ve aylık sıralamada yükselirsin; ayın en istikrarlı uyananları Ayın Şampiyonu olur ve özel koleksiyon hediyeleri kazanır. Davet kodunu paylaşıp arkadaşını getirdiğinde de ödül kazanırsın.'],
     ['Hangi telefonlarda çalışacak?', 'iPhone ve Android telefonlarda. UyanBi, lansman günü App Store ve Google Play\'de yerini alacak.']
   ];
   function preView() {
